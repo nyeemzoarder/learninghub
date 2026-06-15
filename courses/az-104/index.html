@@ -64,6 +64,22 @@ strong{color:var(--primary);font-weight:700}
 .footer-item strong{display:block;color:var(--primary);margin-bottom:6px;font-size:.95rem}
 .footer-meta{margin-top:24px;padding-top:16px;border-top:1px solid var(--border);text-align:center;font-size:.85rem}
 
+/* ===== Page Sidebar (On This Page) ===== */
+.sidebar{
+  flex:0 0 260px;
+  position:sticky;top:88px;
+  max-height:calc(100vh - 108px);
+  overflow-y:auto;
+  margin:28px 0 28px 28px;
+  padding:20px 18px;
+  background:#fff;border:1px solid var(--border);border-radius:14px;
+  box-shadow:0 4px 16px rgba(21,29,99,.05);
+}
+.sidebar .toc-title{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 12px;padding:0 12px}
+.sidebar a{display:block;padding:8px 12px;margin-bottom:2px;border-radius:8px;font-size:.88rem;font-weight:500;color:var(--text);border-bottom:none;border-left:3px solid transparent;line-height:1.4}
+.sidebar a:hover{background:#eef2ff;color:#1e2a78}
+.sidebar a.active{background:#eef2ff;color:#1735ad;font-weight:700;border-left-color:var(--primary)}
+
 /* ===== Site-wide Cross Navigation ===== */
 .site-nav{
   position:sticky;top:0;z-index:1000;
@@ -99,11 +115,15 @@ strong{color:var(--primary);font-weight:700}
   .grid3{grid-template-columns:1fr}
   h1{font-size:2.3rem}
   .page{padding:16px}
+  .sidebar{display:none}
+  .layout{display:block}
 }
 @media print{
   .site-nav{display:none}
   body{background:#fff}
   .page{padding:0}
+  .sidebar{display:none}
+  .layout{display:block}
 }
 </style>
 </head>
@@ -144,6 +164,17 @@ strong{color:var(--primary);font-weight:700}
   </details>
 </nav>
 <div class="layout">
+  <aside class="sidebar">
+    <div class="toc-title">On This Page</div>
+    <a href="#modules">Modules</a>
+    <a href="#module-00">00 — Prerequisites</a>
+    <a href="#module-01">01 — Identity &amp; Governance</a>
+    <a href="#module-02">02 — Storage</a>
+    <a href="#module-03">03 — Compute</a>
+    <a href="#module-04">04 — Networking</a>
+    <a href="#module-05">05 — Monitor &amp; Maintain</a>
+    <a href="#cost-tip">Cost Tip</a>
+  </aside>
   <div class="page">
 
   <h1>AZ-104 Learning Hub</h1>
@@ -161,11 +192,11 @@ strong{color:var(--primary);font-weight:700}
   </div>
 
   <!-- Modules -->
-  <div class="section full">
+  <div class="section full" id="modules">
     <h2>Modules</h2>
     <div class="grid3">
 
-      <div class="module-card">
+      <div class="module-card" id="module-00">
         <span class="module-tag">Foundations</span>
         <h3>00 — Prerequisites</h3>
         <p class="weight">Not exam-weighted — read before Module 01</p>
@@ -178,7 +209,7 @@ strong{color:var(--primary);font-weight:700}
         </ul>
       </div>
 
-      <div class="module-card">
+      <div class="module-card" id="module-01">
         <span class="module-tag">20–25% of exam</span>
         <h3>01 — Identity &amp; Governance</h3>
         <p class="weight">Manage Azure identities and governance</p>
@@ -192,7 +223,7 @@ strong{color:var(--primary);font-weight:700}
         </ul>
       </div>
 
-      <div class="module-card coming-soon">
+      <div class="module-card coming-soon" id="module-02">
         <span class="module-tag">15–20% of exam</span>
         <h3>02 — Storage</h3>
         <p class="weight">Implement and manage storage</p>
@@ -200,7 +231,7 @@ strong{color:var(--primary);font-weight:700}
         <p class="soon">📝 Documentation in progress</p>
       </div>
 
-      <div class="module-card coming-soon">
+      <div class="module-card coming-soon" id="module-03">
         <span class="module-tag">20–25% of exam</span>
         <h3>03 — Compute</h3>
         <p class="weight">Deploy and manage Azure compute resources</p>
@@ -208,7 +239,7 @@ strong{color:var(--primary);font-weight:700}
         <p class="soon">📝 Documentation in progress</p>
       </div>
 
-      <div class="module-card">
+      <div class="module-card" id="module-04">
         <span class="module-tag">15–20% of exam</span>
         <h3>04 — Networking</h3>
         <p class="weight">Implement and manage virtual networking</p>
@@ -225,7 +256,7 @@ strong{color:var(--primary);font-weight:700}
         </ul>
       </div>
 
-      <div class="module-card coming-soon">
+      <div class="module-card coming-soon" id="module-05">
         <span class="module-tag">10–15% of exam</span>
         <h3>05 — Monitor &amp; Maintain</h3>
         <p class="weight">Monitor and maintain Azure resources</p>
@@ -237,7 +268,7 @@ strong{color:var(--primary);font-weight:700}
   </div>
 
   <!-- Tips -->
-  <div class="section full">
+  <div class="section full" id="cost-tip">
     <div class="tip">
       <strong>💡 Cost Tip</strong>
       <p style="margin-top:6px">Every lab is Portal-only and ends with a <strong>Cleanup</strong> step — always run it (delete the resource group) to keep a free/trial Azure subscription's spend near zero.</p>
@@ -265,5 +296,26 @@ strong{color:var(--primary);font-weight:700}
 
   </div>
 </div>
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.sidebar a'));
+  var sections = [];
+  links.forEach(function(a){
+    var el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) sections.push({link:a, el:el});
+  });
+  if (!sections.length || !('IntersectionObserver' in window)) return;
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (!entry.isIntersecting) return;
+      var match = sections.find(function(s){ return s.el === entry.target; });
+      if (!match) return;
+      links.forEach(function(a){ a.classList.remove('active'); });
+      match.link.classList.add('active');
+    });
+  }, { rootMargin: '-100px 0px -70% 0px', threshold: 0 });
+  sections.forEach(function(s){ observer.observe(s.el); });
+})();
+</script>
 </body>
 </html>
