@@ -20,3 +20,6 @@ module, numbered topic modules (each with `README.md`, `concepts/`,
 
 - [_templates/](_templates/) — module README, concept doc, and draw.io
   naming conventions reused across all courses
+- [DEPLOYMENT.md](DEPLOYMENT.md) — how this Learning Hub is hosted as a free
+  Azure Static Web App via GitHub Actions, including custom domain setup and
+  troubleshooting
