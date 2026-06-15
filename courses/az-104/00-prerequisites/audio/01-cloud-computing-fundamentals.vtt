@@ -1,0 +1,266 @@
+WEBVTT
+
+1
+00:00:00.100 --> 00:00:04.800
+Cloud Computing Fundamentals - AZ-104 Prerequisites
+
+2
+00:00:04.750 --> 00:00:07.387
+Cloud Computing Fundamentals.
+
+3
+00:00:07.387 --> 00:00:16.075
+The shared vocabulary behind every AZ-104 topic - service models, regions, and how Azure organizes resources
+
+4
+00:00:16.075 --> 00:00:17.575
+Beginner
+
+5
+00:00:17.575 --> 00:00:19.312
+10 Minutes
+
+6
+00:00:19.312 --> 00:00:22.325
+AZ-104 · Prerequisites
+
+7
+00:00:22.325 --> 00:00:24.325
+Why This Matters
+
+8
+00:00:24.325 --> 00:00:33.537
+AZ-104 assumes you understand the basic vocabulary of cloud computing - service models, regions, and who is responsible for what.
+
+9
+00:00:33.537 --> 00:00:41.925
+This shows up throughout the exam, especially in questions about availability, disaster recovery, and choosing between services.
+
+10
+00:00:41.925 --> 00:00:45.550
+Service Models: IaaS, PaaS, SaaS.
+
+11
+00:00:45.550 --> 00:00:49.937
+Model What the provider manages What you manage Azure examples .
+
+12
+00:00:49.937 --> 00:01:00.412
+IaaS (Infrastructure as a Service) Physical hardware, virtualization, networking OS, runtime, apps, data Virtual Machines, Virtual Networks .
+
+13
+00:01:00.412 --> 00:01:08.962
+PaaS (Platform as a Service) Infrastructure + OS + runtime Apps and data App Service, Azure SQL Database .
+
+14
+00:01:08.962 --> 00:01:19.387
+SaaS (Software as a Service) Everything, including the application Your data/config only Microsoft 365, Dynamics 365 .
+
+15
+00:01:19.387 --> 00:01:27.850
+Example: Running a web app on a VM you configure yourself (install IIS or nginx, patch the OS) is IaaS .
+
+16
+00:01:27.850 --> 00:01:33.862
+Deploying the same app to App Service - where Azure handles the OS and runtime - is PaaS .
+
+17
+00:01:33.862 --> 00:01:40.587
+AZ-104 covers both (Module 03 - Compute includes VMs and App Service).
+
+18
+00:01:40.587 --> 00:01:43.312
+The Shared Responsibility Model.
+
+19
+00:01:43.312 --> 00:01:50.212
+As you move from IaaS to PaaS to SaaS, Microsoft takes on more responsibility and you take on less.
+
+20
+00:01:50.212 --> 00:01:57.912
+But security of your data, identities, and access management is always your responsibility , regardless of model.
+
+21
+00:01:57.912 --> 00:02:05.887
+This is why Identity & Governance (Module 01) is weighted so heavily on the exam - it's the part you always own.
+
+22
+00:02:05.887 --> 00:02:09.862
+Regions, Region Pairs & Availability Zones.
+
+23
+00:02:09.862 --> 00:02:16.487
+A region is a set of Microsoft datacenters in a geographic area (e.g., East US ).
+
+24
+00:02:16.487 --> 00:02:20.300
+Most resources are deployed to a specific region.
+
+25
+00:02:20.300 --> 00:02:28.875
+An availability zone (AZ) is a physically separate datacenter (with independent power, cooling, networking) within a region.
+
+26
+00:02:28.875 --> 00:02:32.562
+Regions that support AZs typically have 3.
+
+27
+00:02:32.562 --> 00:02:47.037
+A region pair is a pre-defined pairing of two regions in the same geography (e.g., East US and West US ) used for disaster recovery - services like geo-redundant storage (GRS) replicate to the paired region.
+
+28
+00:02:47.037 --> 00:02:57.550
+Example: Deploying VMs across 3 availability zones in East US protects against a datacenter-level failure (power/cooling outage in one building).
+
+29
+00:02:57.550 --> 00:03:06.287
+Enabling GRS on a storage account in East US additionally protects against a regional disaster by replicating data to West US .
+
+30
+00:03:06.287 --> 00:03:18.500
+You'll see AZs again in Module 03 (VM availability) and region pairs again in Module 02 (storage redundancy) and Module 05 (Azure Site Recovery).
+
+31
+00:03:18.500 --> 00:03:20.762
+East US (Region)
+
+32
+00:03:20.762 --> 00:03:24.162
+Availability Zone 1 (Datacenter A)
+
+33
+00:03:24.162 --> 00:03:27.625
+Availability Zone 2 (Datacenter B)
+
+34
+00:03:27.625 --> 00:03:31.212
+Availability Zone 3 (Datacenter C)
+
+35
+00:03:31.212 --> 00:03:34.187
+Protects against datacenter failure
+
+36
+00:03:34.187 --> 00:03:35.962
+Region Pair
+
+37
+00:03:35.962 --> 00:03:38.675
+East US and West US
+
+38
+00:03:38.675 --> 00:03:41.537
+GRS replication target
+
+39
+00:03:41.537 --> 00:03:44.425
+Protects against regional disaster
+
+40
+00:03:44.425 --> 00:03:47.262
+Resource Hierarchy (Preview).
+
+41
+00:03:47.262 --> 00:03:50.925
+Azure organizes everything under a hierarchy:.
+
+42
+00:03:50.925 --> 00:03:52.900
+Management Group
+
+43
+00:03:52.900 --> 00:03:54.687
+Subscription
+
+44
+00:03:54.687 --> 00:03:56.562
+Resource Group
+
+45
+00:03:56.562 --> 00:04:00.462
+Resource (VM, storage account, VNet, ...
+
+46
+00:04:00.462 --> 00:04:10.812
+Module 01 covers this hierarchy in depth (management groups, subscriptions, resource groups, and how policies/RBAC apply at each level).
+
+47
+00:04:10.812 --> 00:04:20.162
+For now, just know that every resource you create in these labs lives inside a resource group - which is why every lab's cleanup step is "delete the resource group.
+
+48
+00:04:20.162 --> 00:04:22.962
+How This Connects to Other Topics.
+
+49
+00:04:22.962 --> 00:04:24.550
+Glossary.
+
+50
+00:04:24.550 --> 00:04:26.512
+Unfamiliar term?
+
+51
+00:04:26.512 --> 00:04:32.962
+Check the AZ-104 Glossary for quick definitions of every concept used across these docs.
+
+52
+00:04:32.962 --> 00:04:36.537
+Module 01 - Identity & Governance.
+
+53
+00:04:36.537 --> 00:04:45.750
+The resource hierarchy above (management groups to subscriptions to resource groups) is covered in depth in Management Groups & Azure Policy .
+
+54
+00:04:45.750 --> 00:04:47.737
+Key Takeaways.
+
+55
+00:04:47.737 --> 00:04:49.300
+Summary
+
+56
+00:04:49.300 --> 00:04:54.700
+IaaS / PaaS / SaaS = how much Microsoft manages vs. you.
+
+57
+00:04:54.700 --> 00:05:00.437
+Shared responsibility = security of data & identity is always yours.
+
+58
+00:05:00.437 --> 00:05:04.437
+Region = a geographic area of datacenters.
+
+59
+00:05:04.437 --> 00:05:09.350
+Availability Zone = a physically separate datacenter within a region.
+
+60
+00:05:09.350 --> 00:05:15.800
+Region pair = two regions used together for disaster recovery (e.g., GRS).
+
+61
+00:05:15.800 --> 00:05:21.675
+Resource hierarchy = Management Group to Subscription to Resource Group to Resource.
+
+62
+00:05:21.675 --> 00:05:23.587
+Next Steps.
+
+63
+00:05:23.740 --> 00:05:26.765
+Learn: Read this doc (you're here).
+
+64
+00:05:26.715 --> 00:05:34.102
+Continue: Read Networking Basics (IP addressing, subnets, DNS - needed for Module 04).
+
+65
+00:05:34.102 --> 00:05:41.527
+Continue: Read Identity & Access Fundamentals (AuthN vs. AuthZ - needed for Module 01).
+
+66
+00:05:41.527 --> 00:05:47.127
+Begin: Module 01: Entra ID Overview - the first hands-on module.
+
