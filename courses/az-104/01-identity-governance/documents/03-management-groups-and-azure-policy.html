@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Management Groups &amp; Azure Policy - Governance at Scale</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f8fc;--card:#fff;--border:#d9e0ef;--text:#1f2937;--muted:#5b6678;
+  --primary:#151d63;--panel:#00004C;--panel-shadow:rgba(0,0,76,.18);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:Inter,-apple-system,'Segoe UI',sans-serif;color:var(--text)}
+.page{flex:1;min-width:0;padding:28px}
+
+h1{font-size:3.2rem;line-height:1.15;margin:0;color:var(--primary);font-weight:800;letter-spacing:-1px}
+.subtitle{font-size:1.4rem;font-weight:600;color:#2d3b77;margin-top:10px}
+
+.badges{display:flex;gap:12px;margin:20px 0 26px;flex-wrap:wrap}
+.badge{background:#eef2ff;border:1px solid #d8def7;color:#1e2a78;padding:10px 18px;border-radius:999px;font-weight:600;font-size:.95rem}
+
+.section{display:grid;grid-template-columns:42% 58%;gap:28px;padding:26px 0;border-top:1px solid var(--border)}
+.section.full{display:block;padding:26px 0;border-top:1px solid var(--border)}
+.section:first-of-type, .section.full:first-of-type{border-top:none}
+
+h2{font-size:2rem;margin:0 0 14px;color:var(--primary);font-weight:800}
+h3{font-size:1.4rem;margin:22px 0 10px;color:var(--primary);font-weight:700}
+h3:first-child{margin-top:0}
+h4{font-size:1.1rem;margin:16px 0 8px;color:#2d3b77;font-weight:700}
+
+p{font-size:1.05rem;line-height:1.65;margin:.5rem 0;color:var(--text)}
+
+ul, ol{margin:.6rem 0;padding-left:1.4rem}
+li{margin-bottom:6px;line-height:1.6;font-size:1.02rem}
+
+a{color:#1e2a78;text-decoration:none;border-bottom:1px solid transparent;font-weight:600}
+a:hover{border-bottom-color:#1e2a78}
+
+strong{color:var(--primary);font-weight:700}
+
+.callout{margin-top:20px;background:#f3f7ff;border:1px solid #bfd0ff;border-radius:14px;padding:18px 22px}
+.callout strong{color:#1735ad}
+.callout p{margin:0}
+.callout p + p{margin-top:8px}
+
+.panel{
+  background:var(--panel);
+  color:#fff;border-radius:18px;padding:22px 26px;
+  box-shadow:0 12px 28px var(--panel-shadow);
+  font:15px/1.65 'SF Mono',Consolas,'Courier New',monospace;
+  white-space:pre-wrap;
+  overflow:auto;
+}
+.panel.small{font-size:13.5px;line-height:1.6}
+.panel + .panel{margin-top:18px}
+
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:14px 0}
+th,td{padding:14px;border:1px solid var(--border);text-align:left;font-size:.98rem}
+th{background:#eef2ff;color:var(--primary);font-weight:700}
+tr:hover td{background:#fafbff}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+
+.mistake-card{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:14px 0 8px}
+.mistake-card h4{margin-top:0}
+
+.tip{margin-top:20px;background:#eef4ff;border:1px solid #c8d5ff;border-radius:12px;padding:16px 20px;font-size:1.02rem}
+.tip strong{color:#1735ad}
+
+hr.divider{border:none;height:0;margin:0}
+
+.footer{margin-top:48px;padding-top:24px;border-top:1px solid var(--border);font-size:.9rem;color:var(--muted)}
+.footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px}
+.footer-item strong{display:block;color:var(--primary);margin-bottom:6px;font-size:.95rem}
+.footer-meta{margin-top:24px;padding-top:16px;border-top:1px solid var(--border);text-align:center;font-size:.85rem}
+
+@media (max-width:1000px){
+  .section,.grid2,.grid3,.grid4,.mistake-card{grid-template-columns:1fr}
+  h1{font-size:2.3rem}
+  .page{padding:16px}
+  .panel{font-size:13px}
+  .sidebar{display:none}
+  .layout{display:block}
+}
+
+/* ===== Site-wide Cross Navigation ===== */
+.site-nav{
+  position:sticky;top:0;z-index:1000;
+  background:var(--primary);color:#fff;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:12px 28px;font-size:.92rem;
+  box-shadow:0 2px 10px rgba(0,0,76,.18);
+  font-family:Inter,-apple-system,'Segoe UI',sans-serif;
+}
+.site-nav .nav-brand{font-weight:800;font-size:1.05rem;margin-right:auto;color:#fff}
+.site-nav details{position:relative}
+.site-nav summary{cursor:pointer;list-style:none;padding:7px 16px;border-radius:8px;background:rgba(255,255,255,.12);font-weight:600;color:#fff;user-select:none}
+.site-nav summary::-webkit-details-marker,.site-nav summary::marker{display:none;content:''}
+.site-nav details[open] summary{background:rgba(255,255,255,.24)}
+.site-nav .nav-menu{
+  position:absolute;top:calc(100% + 8px);left:0;
+  background:#fff;color:var(--text);
+  border:1px solid var(--border);border-radius:12px;
+  padding:8px;min-width:300px;box-shadow:0 16px 32px rgba(0,0,76,.22);
+  display:flex;flex-direction:column;gap:2px;z-index:1001;
+}
+.site-nav .nav-menu a{
+  display:block;padding:9px 14px;border-radius:8px;border-bottom:none;
+  color:var(--text);font-weight:500;font-size:.95rem;
+}
+.site-nav .nav-menu a:hover{background:#eef2ff;color:#1e2a78}
+.site-nav .nav-menu a.active{background:#eef2ff;color:#1735ad;font-weight:700}
+@media (max-width:768px){
+  .site-nav{padding:10px 16px}
+  .site-nav .nav-brand{font-size:.95rem}
+}
+/* ===== Page Sidebar (On This Page) ===== */
+.layout{max-width:1400px;margin:auto;display:flex;align-items:flex-start}
+.sidebar{
+  flex:0 0 260px;
+  position:sticky;top:88px;
+  max-height:calc(100vh - 108px);
+  overflow-y:auto;
+  margin:28px 0 28px 28px;
+  padding:20px 18px;
+  background:#fff;border:1px solid var(--border);border-radius:14px;
+  box-shadow:0 4px 16px rgba(21,29,99,.05);
+}
+.sidebar .toc-title{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 12px;padding:0 12px}
+.sidebar a{display:block;padding:8px 12px;margin-bottom:2px;border-radius:8px;font-size:.88rem;font-weight:500;color:var(--text);border-bottom:none;border-left:3px solid transparent;line-height:1.4}
+.sidebar a:hover{background:#eef2ff;color:#1e2a78}
+.sidebar a.active{background:#eef2ff;color:#1735ad;font-weight:700;border-left-color:var(--primary)}
+@media print{
+  .site-nav{display:none}
+  body{background:#fff}
+  .page{padding:0}
+  .panel{box-shadow:none}
+  .sidebar{display:none}
+  .layout{display:block}
+}
+</style>
+</head>
+<body>
+<nav class="site-nav">
+  <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
+  <details class="nav-group">
+    <summary>Module 00 - Prerequisites</summary>
+    <div class="nav-menu">
+      <a href="../../00-prerequisites/documents/01-cloud-computing-fundamentals.html">01 - Cloud Computing Fundamentals</a>
+      <a href="../../00-prerequisites/documents/02-networking-basics.html">02 - Networking Basics</a>
+      <a href="../../00-prerequisites/documents/03-identity-and-access-fundamentals.html">03 - Identity &amp; Access Fundamentals</a>
+      <a href="../../00-prerequisites/documents/04-azure-portal-navigation.html">04 - Azure Portal Navigation</a>
+    </div>
+  </details>
+  <details class="nav-group">
+    <summary>Module 01 - Identity &amp; Governance</summary>
+    <div class="nav-menu">
+      <a href="01-entra-id-overview.html">01 - Entra ID Overview</a>
+      <a href="02-rbac-fundamentals.html">02 - RBAC Fundamentals</a>
+      <a href="03-management-groups-and-azure-policy.html" class="active">03 - Management Groups &amp; Azure Policy</a>
+      <a href="04-access-control-scenarios.html">04 - Access Control Scenarios</a>
+      <a href="05-identity-best-practices.html">05 - Identity Best Practices</a>
+    </div>
+  </details>
+  <details class="nav-group">
+    <summary>Module 04 - Networking</summary>
+    <div class="nav-menu">
+      <a href="../../04-networking/documents/01-hub-spoke-topology.html">01 - Hub-Spoke Topology</a>
+      <a href="../../04-networking/documents/01-vnets-and-subnets.html">01 - VNets &amp; Subnets</a>
+      <a href="../../04-networking/documents/02-network-security-groups.html">02 - Network Security Groups</a>
+      <a href="../../04-networking/documents/03-routing-fundamentals.html">03 - Routing Fundamentals</a>
+      <a href="../../04-networking/documents/04-vnet-peering.html">04 - VNet Peering</a>
+      <a href="../../04-networking/documents/05-vpn-and-expressroute.html">05 - VPN &amp; ExpressRoute</a>
+      <a href="../../04-networking/documents/07-private-endpoints-service-endpoints.html">07 - Private &amp; Service Endpoints</a>
+      <a href="../../04-networking/documents/08-network-security-advanced.html">08 - Advanced Network Security</a>
+    </div>
+  </details>
+</nav>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="toc-title">On This Page</div>
+    <a href="#before-you-start">Before You Start</a>
+    <a href="#management-groups-vs-resource-groups-vs-subscriptions">Management Groups vs. Resource Groups vs. Subscriptions</a>
+    <a href="#what-is-a-management-group">What Is a Management Group?</a>
+    <a href="#the-hierarchy-azure-s-organizational-structure">The Hierarchy: Azure's Organizational Structure</a>
+    <a href="#how-management-groups-work">How Management Groups Work</a>
+    <a href="#how-azure-policy-works">How Azure Policy Works</a>
+    <a href="#policy-actions-deny-vs-audit">Policy Actions: Deny vs. Audit</a>
+    <a href="#mental-model-policy-as-a-gatekeeper">Mental Model: Policy as a Gatekeeper</a>
+    <a href="#worked-example-real-scenario">Worked Example: Real Scenario</a>
+    <a href="#common-mistakes-what-not-to-do">Common Mistakes (What NOT to Do)</a>
+    <a href="#summary-management-groups-vs-resource-groups">Summary: Management Groups vs. Resource Groups</a>
+    <a href="#how-this-connects-to-other-topics">How This Connects to Other Topics</a>
+    <a href="#see-it-in-action">See It In Action</a>
+    <a href="#key-takeaways">Key Takeaways</a>
+    <a href="#next-steps">Next Steps</a>
+  </aside>
+  <div class="page">
+
+  <h1>Management Groups &amp; Azure Policy: Governance at Scale</h1>
+  <div class="subtitle">Organize subscriptions and enforce compliance automatically across your entire organization</div>
+
+  <div class="badges">
+    <span class="badge">🟡 Intermediate</span>
+    <span class="badge">⏱ 15 Minutes</span>
+    <span class="badge">📘 AZ-104 · Module 01</span>
+  </div>
+
+  <div class="callout">
+    <strong>Why This Matters</strong>
+    <p>Imagine managing 50 subscriptions across multiple teams. Applying RBAC to each one individually would take forever. Management Groups let you apply policies and permissions to all subscriptions at once. Azure Policy then enforces rules automatically (e.g., "all VMs must be encrypted"). Together, they're how enterprises scale governance.</p>
+  </div>
+
+  <!-- Before You Start -->
+  <div class="section full" id="before-you-start">
+    <h2>Before You Start</h2>
+    <table>
+      <tr><th>Prerequisites</th><td><a href="02-rbac-fundamentals.md">02-RBAC Fundamentals</a> (must understand RBAC first)</td></tr>
+      <tr><th>Time to understand</th><td>15 minutes</td></tr>
+      <tr><th>Difficulty</th><td>🟡 Intermediate (builds on RBAC)</td></tr>
+      <tr><th>What you'll learn</th><td>How to organize subscriptions, enforce compliance at scale</td></tr>
+    </table>
+  </div>
+
+  <!-- The Simple Idea -->
+  <div class="section" id="management-groups-vs-resource-groups-vs-subscriptions">
+    <div>
+      <h2>Management Groups vs. Resource Groups vs. Subscriptions</h2>
+      <p>This is confusing for beginners, so let's clarify with an analogy.</p>
+      <p><strong>Building Hierarchy Analogy:</strong></p>
+      <p>Each <strong>subscription</strong> can contain multiple <strong>resource groups</strong>, and <strong>resource groups</strong> contain actual resources (VMs, storage, etc.).</p>
+    </div>
+    <div class="panel">Company (Management Group)
+  ├── Finance Department (Management Group)
+  │   ├── Accounting Subscription
+  │   └── Billing Subscription
+  ├── Engineering Department (Management Group)
+  │   ├── Dev Subscription
+  │   ├── QA Subscription
+  │   └── Prod Subscription
+  └── Operations (Management Group)
+      ├── Ops Subscription
+      └── Backup Subscription</div>
+  </div>
+
+  <!-- What Is a Management Group / Azure Policy -->
+  <div class="section full" id="what-is-a-management-group">
+    <h2>What Is a Management Group?</h2>
+    <p>A <strong>Management Group</strong> is a <strong>container for subscriptions</strong>. It lets you:</p>
+    <ul>
+      <li>Apply the same RBAC roles to multiple subscriptions at once</li>
+      <li>Apply the same policies to multiple subscriptions at once</li>
+      <li>Organize subscriptions by department, business unit, or environment</li>
+    </ul>
+
+    <h2 style="margin-top:24px">What Is Azure Policy?</h2>
+    <p><strong>Azure Policy</strong> = Automated compliance rules that run continuously.</p>
+    <p><strong>Example policy:</strong></p>
+    <div class="panel small">"All virtual machines must have encryption enabled"</div>
+    <p style="margin-top:14px"><strong>What happens:</strong></p>
+    <ul>
+      <li>If someone creates a VM WITHOUT encryption → Policy blocks it</li>
+      <li>If someone removes encryption from a VM → Policy marks it as non-compliant</li>
+      <li>Admin gets audit trail showing who violated the policy and when</li>
+    </ul>
+  </div>
+
+  <!-- The Hierarchy -->
+  <div class="section" id="the-hierarchy-azure-s-organizational-structure">
+    <div>
+      <h2>The Hierarchy: Azure's Organizational Structure</h2>
+      <h3>The Full Chain (Top to Bottom)</h3>
+      <p><strong>Key insight:</strong> Permissions and policies flow <strong>downward</strong>. If you set a policy on a management group, it applies to all subscriptions below it.</p>
+    </div>
+    <div class="panel">┌─────────────────────────────────┐
+│    Tenant (Entra Directory)     │  (Your entire Azure organization)
+├─────────────────────────────────┤
+│ Root Management Group            │  (All subscriptions in your org)
+├─────────────────────────────────┤
+│ Management Groups (optional)     │  (Finance, Engineering, Ops, etc.)
+├─────────────────────────────────┤
+│ Subscriptions                    │  (Individual billing units)
+├─────────────────────────────────┤
+│ Resource Groups                  │  (Logical containers of resources)
+├─────────────────────────────────┤
+│ Resources                        │  (VMs, Storage, Databases, etc.)
+└─────────────────────────────────┘</div>
+  </div>
+
+  <!-- How Management Groups Work -->
+  <div class="section full" id="how-management-groups-work">
+    <h2>How Management Groups Work</h2>
+    <h3>Real Scenario: TechCorp Organization</h3>
+    <p><strong>TechCorp has:</strong></p>
+    <ul>
+      <li>Finance team: 2 subscriptions (Accounting, Billing)</li>
+      <li>Engineering: 3 subscriptions (Dev, QA, Prod)</li>
+      <li>Operations: 2 subscriptions (Ops, Backup)</li>
+    </ul>
+    <p><strong>Without management groups:</strong> Admin must set policies individually on 7 subscriptions (tedious, error-prone).</p>
+    <p><strong>With management groups:</strong></p>
+    <div class="panel">Root Management Group (TechCorp)
+├── Finance MG
+│   ├── Accounting Sub (Policy applies automatically)
+│   └── Billing Sub (Policy applies automatically)
+├── Engineering MG
+│   ├── Dev Sub (Policy applies automatically)
+│   ├── QA Sub (Policy applies automatically)
+│   └── Prod Sub (Policy applies automatically)
+└── Operations MG
+    ├── Ops Sub (Policy applies automatically)
+    └── Backup Sub (Policy applies automatically)</div>
+    <p style="margin-top:14px"><strong>Admin applies one policy at the root level → All 7 subscriptions inherit it automatically.</strong></p>
+  </div>
+
+  <!-- How Azure Policy Works -->
+  <div class="section" id="how-azure-policy-works">
+    <div>
+      <h2>How Azure Policy Works</h2>
+      <h3>Policy = Automated Compliance Rule</h3>
+      <p><strong>Example Policy:</strong> "All virtual machines must have encryption enabled"</p>
+    </div>
+    <div class="panel small">┌─────────────────────────────────────────────────┐
+│         Azure Policy: VM Encryption Required    │
+├─────────────────────────────────────────────────┤
+│ IF:   Someone creates a VM                      │
+│ AND:  Encryption is NOT enabled                 │
+│ THEN: Block the VM creation (deny)              │
+│                                                 │
+│ OR (depending on policy):                       │
+│ THEN: Create the VM but mark as non-compliant   │
+└─────────────────────────────────────────────────┘</div>
+  </div>
+
+  <!-- Policy Actions and Common Policies -->
+  <div class="section full" id="policy-actions-deny-vs-audit">
+    <h2>Policy Actions: Deny vs. Audit</h2>
+    <table>
+      <tr><th>Action</th><th>What Happens</th><th>Use Case</th></tr>
+      <tr><td><strong>Deny</strong></td><td>Block non-compliant action</td><td>Critical security rules (encryption, firewall)</td></tr>
+      <tr><td><strong>Audit</strong></td><td>Allow action, but log it as non-compliant</td><td>Monitor violations before enforcing</td></tr>
+      <tr><td><strong>Modify</strong></td><td>Automatically fix it</td><td>Add tags, enable monitoring, etc.</td></tr>
+    </table>
+
+    <h2 style="margin-top:24px">Common Azure Policies</h2>
+    <table>
+      <tr><th>Policy</th><th>What It Enforces</th><th>Example</th></tr>
+      <tr><td><strong>Encryption Required</strong></td><td>All storage must use encryption</td><td>Block unencrypted storage accounts</td></tr>
+      <tr><td><strong>Tag Enforcement</strong></td><td>All resources must have specific tags</td><td>Require "Owner" and "CostCenter" tags</td></tr>
+      <tr><td><strong>Allowed Locations</strong></td><td>Resources can only be created in certain regions</td><td>Only allow East US and West US</td></tr>
+      <tr><td><strong>SKU Restrictions</strong></td><td>Resources can only use approved sizes</td><td>Only allow Standard_B1s or larger VMs</td></tr>
+      <tr><td><strong>HTTPS Required</strong></td><td>All web apps must use HTTPS</td><td>Block HTTP-only apps</td></tr>
+    </table>
+  </div>
+
+  <!-- Mental Model -->
+  <div class="section full" id="mental-model-policy-as-a-gatekeeper">
+    <h2>Mental Model: Policy as a Gatekeeper</h2>
+    <div class="panel">     Developer wants to create VM
+              ↓
+     [Azure Policy Check]
+     Is encryption enabled?
+              ↓
+         ┌────┴────┐
+         │          │
+        YES        NO
+         │          │
+      Create     [Deny]
+       VM      Not allowed
+               (unless audit mode)</div>
+  </div>
+
+  <!-- Worked Example -->
+  <div class="section full" id="worked-example-real-scenario">
+    <h2>Worked Example: Real Scenario</h2>
+    <h3>The Scenario</h3>
+    <p><strong>Company Goal:</strong></p>
+    <ul>
+      <li>All VMs must have backup enabled (compliance requirement)</li>
+      <li>All resources must be tagged with Department and CostCenter (for billing)</li>
+      <li>Only approved VM sizes to control costs</li>
+    </ul>
+
+    <div class="grid2" style="margin-top:14px">
+      <div>
+        <h4>Without Policy</h4>
+        <ul>
+          <li>Admin must manually check each VM (error-prone)</li>
+          <li>Some VMs get overlooked</li>
+          <li>Billing tags missing on some resources</li>
+          <li>Result: Compliance violations and unclear costs</li>
+        </ul>
+      </div>
+      <div>
+        <h4>With Policy</h4>
+        <ul>
+          <li>Policies automatically enforce these rules</li>
+          <li>Violations are immediately visible</li>
+          <li>Non-compliant resources are highlighted</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 style="margin-top:24px">Implementation</h3>
+    <div class="grid2">
+      <div>
+        <h4>Step 1: Create Management Group Structure</h4>
+        <div class="panel small">Root (TechCorp)
+├── Finance MG
+├── Engineering MG
+└── Operations MG</div>
+      </div>
+      <div>
+        <h4>Step 2: Apply Policies at Root Level</h4>
+        <div class="panel small">Policy 1: "All VMs must have backup enabled"
+    - Action: Deny non-compliant VM creation
+    - Scope: Root (applies to all subscriptions)
+
+Policy 2: "All resources must have tags"
+    - Action: Audit first, then Deny after 30 days
+    - Required tags: Department, CostCenter
+    - Scope: Root (applies to all subscriptions)
+
+Policy 3: "Only Standard_B2s or larger VMs allowed"
+    - Action: Deny small VM creation (too costly)
+    - Scope: Root (applies to all subscriptions)</div>
+      </div>
+      <div>
+        <h4>Step 3: Result</h4>
+        <div class="panel small">Developer tries to create:
+├── VM without backup → Policy DENIES (backup required)
+├── VM without tags → Policy DENIES (tags required)
+├── VM size: Standard_B1s → Policy DENIES (too small)
+└── VM with everything correct → VM is created ✓</div>
+      </div>
+      <div>
+        <h4>Step 4: Compliance Dashboard</h4>
+        <div class="panel small">Management Group: Engineering
+├── Dev Subscription: 2 non-compliant resources
+│   └── web-app-1 (missing CostCenter tag)
+├── QA Subscription: Compliant
+├── Prod Subscription: 1 non-compliant resource
+    └── db-server-1 (backup not enabled)</div>
+        <p style="margin-top:10px">Admin can see at a glance what needs fixing.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Common Mistakes -->
+  <div class="section full" id="common-mistakes-what-not-to-do">
+    <h2>Common Mistakes (What NOT to Do)</h2>
+
+    <h3>❌ Mistake 1: Overly Strict Policy (Deny Everything)</h3>
+    <div class="mistake-card">
+      <div>
+        <h4>Wrong</h4>
+        <div class="panel small">Policy: "Deny all VM creation"
+↓
+No one can create VMs (including legitimate business needs)
+↓
+Team stuck, can't deploy applications</div>
+      </div>
+      <div>
+        <h4>Fix</h4>
+        <div class="panel small">Use audit mode first:
+• Set policy to "Audit" (log violations, don't deny)
+• Review violations for 2-4 weeks
+• See what legitimate use cases exist
+• Adjust policy to allow legitimate actions
+• Switch to "Deny" mode once tuned</div>
+      </div>
+    </div>
+    <p><strong>Why it fails:</strong> Policies that are too strict block legitimate work.</p>
+
+    <h3>❌ Mistake 2: Inconsistent Management Group Structure</h3>
+    <div class="mistake-card">
+      <div>
+        <h4>Wrong</h4>
+        <div class="panel small">Some subscriptions organized by department
+Other subscriptions organized by environment
+Some subscriptions not in any management group
+
+Result: Policies apply inconsistently</div>
+      </div>
+      <div>
+        <h4>Fix</h4>
+        <div class="panel small">Plan structure carefully:
+• All subscriptions must be in a management group
+• Use consistent structure (by department,
+  by environment, or both)
+• Document the structure so others understand it</div>
+      </div>
+    </div>
+    <p><strong>Why it fails:</strong> Inconsistent structure = inconsistent governance.</p>
+
+    <h3>❌ Mistake 3: Creating Policy But Never Reviewing It</h3>
+    <div class="mistake-card">
+      <div>
+        <h4>Wrong</h4>
+        <div class="panel small">Set policy, forget about it
+↓
+6 months later, policy blocks legitimate business need
+↓
+Team calls admin: "This policy is breaking our work!"</div>
+      </div>
+      <div>
+        <h4>Fix</h4>
+        <div class="panel small">Set up regular reviews (quarterly):
+• Check policy compliance reports
+• Review denied/blocked requests
+• Adjust policies if they're too strict
+• Document changes</div>
+      </div>
+    </div>
+    <p><strong>Why it fails:</strong> Policies need maintenance.</p>
+  </div>
+
+  <!-- Summary -->
+  <div class="section full" id="summary-management-groups-vs-resource-groups">
+    <h2>Summary: Management Groups vs. Resource Groups</h2>
+    <table>
+      <tr><th>Aspect</th><th>Management Group</th><th>Resource Group</th></tr>
+      <tr><td><strong>Purpose</strong></td><td>Organize subscriptions</td><td>Organize resources</td></tr>
+      <tr><td><strong>Contains</strong></td><td>Subscriptions</td><td>Resources (VMs, storage, etc.)</td></tr>
+      <tr><td><strong>Policies</strong></td><td>Policies apply to all subscriptions within it</td><td>N/A (policies apply via management groups)</td></tr>
+      <tr><td><strong>RBAC</strong></td><td>Assign roles to all subscriptions at once</td><td>Assign roles to specific resources</td></tr>
+      <tr><td><strong>Use Case</strong></td><td>Governance across company</td><td>Organization within a subscription</td></tr>
+    </table>
+  </div>
+
+  <!-- Connections -->
+  <div class="section full" id="how-this-connects-to-other-topics">
+    <h2>How This Connects to Other Topics</h2>
+    <div class="grid2">
+      <div>
+        <h3>Related to Module 01 (Identity)</h3>
+        <ul>
+          <li><strong>RBAC + Management Groups:</strong> Assign roles at management group level, inherit across all subscriptions</li>
+          <li><strong>Example:</strong> "Finance team gets Contributor role on Finance management group" → applies to all Finance subscriptions</li>
+        </ul>
+        <h3>Related to Module 02 (Storage)</h3>
+        <ul>
+          <li><strong>Storage Encryption Policy:</strong> Enforce encryption on all storage accounts via policy</li>
+          <li><strong>Storage Access:</strong> Combine policy with RBAC for complete control</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Related to Module 04 (Networking)</h3>
+        <ul>
+          <li><strong>NSG Policy:</strong> Enforce security groups on all resources</li>
+          <li><strong>Allowed Regions:</strong> Use policy to limit resources to specific regions</li>
+        </ul>
+        <h3>Related to Module 05 (Monitor)</h3>
+        <ul>
+          <li><strong>Audit Logging:</strong> See when policies block actions</li>
+          <li><strong>Compliance Reports:</strong> Track which subscriptions violate which policies</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- See It In Action -->
+  <div class="section full" id="see-it-in-action">
+    <h2>See It In Action</h2>
+    <p><strong>Associated lab:</strong> <a href="../labs/lab03-management-groups-subscriptions.md">Lab 03: Management Groups &amp; Azure Policy</a></p>
+    <p><strong>Suggested learning sequence:</strong></p>
+    <ol>
+      <li>✅ Read <a href="02-rbac-fundamentals.md">RBAC Fundamentals</a> first</li>
+      <li>✅ Read this doc (Management Groups &amp; Policy)</li>
+      <li>✅ Work through Lab 03 (hands-on governance setup)</li>
+      <li>✅ Read <a href="04-access-control-scenarios.md">Access Control Scenarios</a> (enterprise patterns)</li>
+    </ol>
+  </div>
+
+  <!-- Key Takeaways -->
+  <div class="section full" id="key-takeaways">
+    <h2>Key Takeaways</h2>
+    <div class="tip">
+      <strong>💡 Summary</strong>
+      <ul style="margin-top:8px">
+        <li><strong>Management Groups organize subscriptions</strong> (similar to folders for files)</li>
+        <li><strong>Policies enforce rules automatically</strong> (gates, not manual checks)</li>
+        <li><strong>Policies flow downward</strong> (set at root, applies to all subscriptions)</li>
+        <li><strong>Audit before Deny</strong> (test policies before blocking users)</li>
+        <li><strong>Regular reviews necessary</strong> (adjust policies as business needs change)</li>
+        <li><strong>Structure matters</strong> (consistent organization = consistent governance)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Next Steps -->
+  <div class="section full" id="next-steps">
+    <h2>Next Steps</h2>
+    <ol>
+      <li><strong>Understand:</strong> Read <a href="02-rbac-fundamentals.md">RBAC Fundamentals</a> (prerequisite)</li>
+      <li><strong>Learn:</strong> Read this doc (you're here)</li>
+      <li><strong>Practice:</strong> <a href="../labs/lab03-management-groups-subscriptions.md">Lab 03: Management Groups &amp; Azure Policy</a></li>
+      <li><strong>Apply:</strong> <a href="04-access-control-scenarios.md">Access Control Scenarios</a> (enterprise patterns)</li>
+      <li><strong>Advance:</strong> Optional—Azure Blueprints (pre-packaged governance templates)</li>
+    </ol>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-grid">
+      <div class="footer-item">
+        <strong>Azure AZ-104</strong>
+        Professional Concept Documentation
+      </div>
+      <div class="footer-item">
+        <strong>Module</strong>
+        01 — Identity &amp; Governance
+      </div>
+      <div class="footer-item">
+        <strong>Generated</strong>
+        June 15, 2026
+      </div>
+    </div>
+    <div class="footer-meta">&copy; 2026 — AZ-104 Learning Hub. For study purposes only.</div>
+  </div>
+
+</div>
+</div>
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.sidebar a'));
+  var sections = [];
+  links.forEach(function(a){
+    var el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) sections.push({link:a, el:el});
+  });
+  if (!sections.length || !('IntersectionObserver' in window)) return;
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (!entry.isIntersecting) return;
+      var match = sections.find(function(s){ return s.el === entry.target; });
+      if (!match) return;
+      links.forEach(function(a){ a.classList.remove('active'); });
+      match.link.classList.add('active');
+    });
+  }, { rootMargin: '-100px 0px -70% 0px', threshold: 0 });
+  sections.forEach(function(s){ observer.observe(s.el); });
+})();
+</script>
+</body>
+</html>

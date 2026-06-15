@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Entra ID Overview - Overview &amp; Core Concepts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f8fc;--card:#fff;--border:#d9e0ef;--text:#1f2937;--muted:#5b6678;
+  --primary:#151d63;--panel:#00004C;--panel-shadow:rgba(0,0,76,.18);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:Inter,-apple-system,'Segoe UI',sans-serif;color:var(--text)}
+.page{flex:1;min-width:0;padding:28px}
+
+h1{font-size:3.2rem;line-height:1.15;margin:0;color:var(--primary);font-weight:800;letter-spacing:-1px}
+.subtitle{font-size:1.4rem;font-weight:600;color:#2d3b77;margin-top:10px}
+
+.badges{display:flex;gap:12px;margin:20px 0 26px;flex-wrap:wrap}
+.badge{background:#eef2ff;border:1px solid #d8def7;color:#1e2a78;padding:10px 18px;border-radius:999px;font-weight:600;font-size:.95rem}
+
+.section{display:grid;grid-template-columns:42% 58%;gap:28px;padding:26px 0;border-top:1px solid var(--border)}
+.section.full{display:block;padding:26px 0;border-top:1px solid var(--border)}
+.section:first-of-type, .section.full:first-of-type{border-top:none}
+
+h2{font-size:2rem;margin:0 0 14px;color:var(--primary);font-weight:800}
+h3{font-size:1.4rem;margin:22px 0 10px;color:var(--primary);font-weight:700}
+h3:first-child{margin-top:0}
+h4{font-size:1.1rem;margin:16px 0 8px;color:#2d3b77;font-weight:700}
+
+p{font-size:1.05rem;line-height:1.65;margin:.5rem 0;color:var(--text)}
+
+ul, ol{margin:.6rem 0;padding-left:1.4rem}
+li{margin-bottom:6px;line-height:1.6;font-size:1.02rem}
+
+a{color:#1e2a78;text-decoration:none;border-bottom:1px solid transparent;font-weight:600}
+a:hover{border-bottom-color:#1e2a78}
+
+strong{color:var(--primary);font-weight:700}
+
+.callout{margin-top:20px;background:#f3f7ff;border:1px solid #bfd0ff;border-radius:14px;padding:18px 22px}
+.callout strong{color:#1735ad}
+.callout p{margin:0}
+.callout p + p{margin-top:8px}
+
+.panel{
+  background:var(--panel);
+  color:#fff;border-radius:18px;padding:22px 26px;
+  box-shadow:0 12px 28px var(--panel-shadow);
+  font:15px/1.65 'SF Mono',Consolas,'Courier New',monospace;
+  white-space:pre-wrap;
+  overflow:auto;
+}
+.panel.small{font-size:13.5px;line-height:1.6}
+.panel + .panel{margin-top:18px}
+
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:14px 0}
+th,td{padding:14px;border:1px solid var(--border);text-align:left;font-size:.98rem}
+th{background:#eef2ff;color:var(--primary);font-weight:700}
+tr:hover td{background:#fafbff}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+
+.mistake-card{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:14px 0 8px}
+.mistake-card h4{margin-top:0}
+
+.tip{margin-top:20px;background:#eef4ff;border:1px solid #c8d5ff;border-radius:12px;padding:16px 20px;font-size:1.02rem}
+.tip strong{color:#1735ad}
+
+hr.divider{border:none;height:0;margin:0}
+
+.footer{margin-top:48px;padding-top:24px;border-top:1px solid var(--border);font-size:.9rem;color:var(--muted)}
+.footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px}
+.footer-item strong{display:block;color:var(--primary);margin-bottom:6px;font-size:.95rem}
+.footer-meta{margin-top:24px;padding-top:16px;border-top:1px solid var(--border);text-align:center;font-size:.85rem}
+
+@media (max-width:1000px){
+  .section,.grid2,.grid3,.grid4,.mistake-card{grid-template-columns:1fr}
+  h1{font-size:2.3rem}
+  .page{padding:16px}
+  .panel{font-size:13px}
+  .sidebar{display:none}
+  .layout{display:block}
+}
+
+/* ===== Site-wide Cross Navigation ===== */
+.site-nav{
+  position:sticky;top:0;z-index:1000;
+  background:var(--primary);color:#fff;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:12px 28px;font-size:.92rem;
+  box-shadow:0 2px 10px rgba(0,0,76,.18);
+  font-family:Inter,-apple-system,'Segoe UI',sans-serif;
+}
+.site-nav .nav-brand{font-weight:800;font-size:1.05rem;margin-right:auto;color:#fff}
+.site-nav details{position:relative}
+.site-nav summary{cursor:pointer;list-style:none;padding:7px 16px;border-radius:8px;background:rgba(255,255,255,.12);font-weight:600;color:#fff;user-select:none}
+.site-nav summary::-webkit-details-marker,.site-nav summary::marker{display:none;content:''}
+.site-nav details[open] summary{background:rgba(255,255,255,.24)}
+.site-nav .nav-menu{
+  position:absolute;top:calc(100% + 8px);left:0;
+  background:#fff;color:var(--text);
+  border:1px solid var(--border);border-radius:12px;
+  padding:8px;min-width:300px;box-shadow:0 16px 32px rgba(0,0,76,.22);
+  display:flex;flex-direction:column;gap:2px;z-index:1001;
+}
+.site-nav .nav-menu a{
+  display:block;padding:9px 14px;border-radius:8px;border-bottom:none;
+  color:var(--text);font-weight:500;font-size:.95rem;
+}
+.site-nav .nav-menu a:hover{background:#eef2ff;color:#1e2a78}
+.site-nav .nav-menu a.active{background:#eef2ff;color:#1735ad;font-weight:700}
+@media (max-width:768px){
+  .site-nav{padding:10px 16px}
+  .site-nav .nav-brand{font-size:.95rem}
+}
+/* ===== Page Sidebar (On This Page) ===== */
+.layout{max-width:1400px;margin:auto;display:flex;align-items:flex-start}
+.sidebar{
+  flex:0 0 260px;
+  position:sticky;top:88px;
+  max-height:calc(100vh - 108px);
+  overflow-y:auto;
+  margin:28px 0 28px 28px;
+  padding:20px 18px;
+  background:#fff;border:1px solid var(--border);border-radius:14px;
+  box-shadow:0 4px 16px rgba(21,29,99,.05);
+}
+.sidebar .toc-title{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 12px;padding:0 12px}
+.sidebar a{display:block;padding:8px 12px;margin-bottom:2px;border-radius:8px;font-size:.88rem;font-weight:500;color:var(--text);border-bottom:none;border-left:3px solid transparent;line-height:1.4}
+.sidebar a:hover{background:#eef2ff;color:#1e2a78}
+.sidebar a.active{background:#eef2ff;color:#1735ad;font-weight:700;border-left-color:var(--primary)}
+@media print{
+  .site-nav{display:none}
+  body{background:#fff}
+  .page{padding:0}
+  .panel{box-shadow:none}
+  .sidebar{display:none}
+  .layout{display:block}
+}
+</style>
+</head>
+<body>
+<nav class="site-nav">
+  <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
+  <details class="nav-group">
+    <summary>Module 00 - Prerequisites</summary>
+    <div class="nav-menu">
+      <a href="../../00-prerequisites/documents/01-cloud-computing-fundamentals.html">01 - Cloud Computing Fundamentals</a>
+      <a href="../../00-prerequisites/documents/02-networking-basics.html">02 - Networking Basics</a>
+      <a href="../../00-prerequisites/documents/03-identity-and-access-fundamentals.html">03 - Identity &amp; Access Fundamentals</a>
+      <a href="../../00-prerequisites/documents/04-azure-portal-navigation.html">04 - Azure Portal Navigation</a>
+    </div>
+  </details>
+  <details class="nav-group">
+    <summary>Module 01 - Identity &amp; Governance</summary>
+    <div class="nav-menu">
+      <a href="01-entra-id-overview.html" class="active">01 - Entra ID Overview</a>
+      <a href="02-rbac-fundamentals.html">02 - RBAC Fundamentals</a>
+      <a href="03-management-groups-and-azure-policy.html">03 - Management Groups &amp; Azure Policy</a>
+      <a href="04-access-control-scenarios.html">04 - Access Control Scenarios</a>
+      <a href="05-identity-best-practices.html">05 - Identity Best Practices</a>
+    </div>
+  </details>
+  <details class="nav-group">
+    <summary>Module 04 - Networking</summary>
+    <div class="nav-menu">
+      <a href="../../04-networking/documents/01-hub-spoke-topology.html">01 - Hub-Spoke Topology</a>
+      <a href="../../04-networking/documents/01-vnets-and-subnets.html">01 - VNets &amp; Subnets</a>
+      <a href="../../04-networking/documents/02-network-security-groups.html">02 - Network Security Groups</a>
+      <a href="../../04-networking/documents/03-routing-fundamentals.html">03 - Routing Fundamentals</a>
+      <a href="../../04-networking/documents/04-vnet-peering.html">04 - VNet Peering</a>
+      <a href="../../04-networking/documents/05-vpn-and-expressroute.html">05 - VPN &amp; ExpressRoute</a>
+      <a href="../../04-networking/documents/07-private-endpoints-service-endpoints.html">07 - Private &amp; Service Endpoints</a>
+      <a href="../../04-networking/documents/08-network-security-advanced.html">08 - Advanced Network Security</a>
+    </div>
+  </details>
+</nav>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="toc-title">On This Page</div>
+    <a href="#before-you-start">Before You Start</a>
+    <a href="#the-simple-idea">The Simple Idea</a>
+    <a href="#real-world-analogy-company-directory">Real-World Analogy: Company Directory</a>
+    <a href="#what-s-a-tenant">What's a Tenant?</a>
+    <a href="#key-identity-objects">Key Identity Objects</a>
+    <a href="#how-it-actually-works">How It Actually Works</a>
+    <a href="#mental-model-entra-id-as-organization-chart-hr-system">Mental Model: Entra ID as Organization Chart + HR System</a>
+    <a href="#worked-example-real-scenario">Worked Example: Real Scenario</a>
+    <a href="#common-mistakes-what-not-to-do">Common Mistakes (What NOT to Do)</a>
+    <a href="#how-this-connects-to-other-topics">How This Connects to Other Topics</a>
+    <a href="#see-it-in-action">See It In Action</a>
+    <a href="#key-takeaways">Key Takeaways</a>
+    <a href="#next-steps">Next Steps</a>
+  </aside>
+  <div class="page">
+
+  <h1>Entra ID Overview: The Identity Foundation</h1>
+  <div class="subtitle">Master Microsoft's cloud identity service — the foundation for all Azure access control</div>
+
+  <div class="badges">
+    <span class="badge">🟢 Beginner</span>
+    <span class="badge">⏱ 15 Minutes</span>
+    <span class="badge">📘 AZ-104 · Module 01</span>
+  </div>
+
+  <div class="callout">
+    <strong>Why This Matters</strong>
+    <p>Before you can grant any Azure permission, you need identities to grant them to. Microsoft Entra ID is Azure's identity service — it's how you manage who your users are, organize them into groups, and control who gets licenses. Every single RBAC role assignment starts here. Without understanding Entra ID, you can't understand identity governance.</p>
+  </div>
+
+  <!-- Before You Start -->
+  <div class="section full" id="before-you-start">
+    <h2>Before You Start</h2>
+    <table>
+      <tr><th>Prerequisites</th><td><a href="../../../00-prerequisites/03-identity-and-access-fundamentals.md">00-Prerequisites: Identity &amp; Access Fundamentals</a></td></tr>
+      <tr><th>Time to understand</th><td>15 minutes</td></tr>
+      <tr><th>Difficulty</th><td>🟢 Beginner (foundational, no identity experience needed)</td></tr>
+      <tr><th>What you'll learn</th><td>What Entra ID is, core identity objects, how groups work, administrative units</td></tr>
+    </table>
+  </div>
+
+  <!-- The Simple Idea -->
+  <div class="section full" id="the-simple-idea">
+    <h2>The Simple Idea</h2>
+    <h3>What Is Entra ID?</h3>
+    <p><strong>Entra ID</strong> = Microsoft's <strong>cloud identity service</strong> where you manage:</p>
+    <ul>
+      <li><strong>Who</strong> your users are</li>
+      <li><strong>What groups</strong> they belong to</li>
+      <li><strong>What licenses</strong> they have</li>
+      <li><strong>What roles</strong> can manage them</li>
+    </ul>
+    <p>Think of it like <strong>HR records for cloud applications</strong> — it's the central registry of all identities in your organization.</p>
+  </div>
+
+  <!-- Real-World Analogy -->
+  <div class="section" id="real-world-analogy-company-directory">
+    <div>
+      <h2>Real-World Analogy: Company Directory</h2>
+      <p>Entra ID is the <strong>single source of truth</strong> for identity in your Azure organization. Just like HR is the authoritative record of every employee, team, and permission level inside a company, Entra ID is the authoritative record of every user, group, and access level inside your tenant.</p>
+    </div>
+    <div class="panel">Company (Your Organization)
+│
+├── HR Department (Entra ID)
+│   ├── Database: All employees (Users)
+│   ├── Teams: Sales team, Dev team, Finance (Groups)
+│   ├── Permissions: "Who reports to whom" (Administrative Units)
+│   └── Licenses: "Who gets Office 365?" (Group-based licensing)
+│
+└── Finance Department (Azure Services)
+    └── Uses Entra ID to know "who is John?"
+        and "what permissions does he have?"</div>
+  </div>
+
+  <!-- What's a Tenant -->
+  <div class="section" id="what-s-a-tenant">
+    <div>
+      <h2>What's a Tenant?</h2>
+      <p>A <strong>tenant</strong> is your organization's <strong>dedicated, isolated instance</strong> of Entra ID.</p>
+      <p>Each company is <strong>completely isolated</strong>. Users in TechCorp can't see AnotherCompany's data.</p>
+    </div>
+    <div class="panel">Microsoft Entra ID (the service)
+├── TechCorp Tenant (company A)
+│   ├── Users: sara@techcorp.com, mike@techcorp.com
+│   └── Groups: Sales Team, Dev Team
+├── AnotherCompany Tenant (company B)
+│   ├── Users: john@anothercompany.com
+│   └── Groups: Different teams
+└── YetAnotherCompany Tenant (company C)
+    └── Completely isolated from A and B</div>
+  </div>
+
+  <!-- Key Identity Objects -->
+  <div class="section full" id="key-identity-objects">
+    <h2>Key Identity Objects</h2>
+    <table>
+      <tr><th>Object</th><th>What It Is</th><th>Example</th><th>Why It Matters</th></tr>
+      <tr><td><strong>User</strong></td><td>Individual identity that can sign in</td><td>sara@company.com</td><td>RBAC role assigned to individuals</td></tr>
+      <tr><td><strong>Group</strong></td><td>Collection of users</td><td>grp-sales (50 people)</td><td>Assign permissions to many at once</td></tr>
+      <tr><td><strong>Admin Unit</strong></td><td>Scoped container for delegation</td><td>au-sales (Sales dept only)</td><td>Delegate admin over subset (not all users)</td></tr>
+      <tr><td><strong>App Registration</strong></td><td>Identity for applications/services</td><td>myapp-service</td><td>Apps authenticate to Azure securely</td></tr>
+      <tr><td><strong>Tenant</strong></td><td>Your org's isolated Entra instance</td><td>contoso.onmicrosoft.com</td><td>Isolation boundary</td></tr>
+    </table>
+  </div>
+
+  <!-- How It Actually Works -->
+  <div class="section full" id="how-it-actually-works">
+    <h2>How It Actually Works</h2>
+    <div class="grid2">
+      <div>
+        <h3>Step 1: Create a User</h3>
+        <div class="panel small">Admin creates user: sara@company.com
+↓
+Entra ID now knows:
+"Sara is a person in our organization"</div>
+      </div>
+      <div>
+        <h3>Step 2: Add User to Groups</h3>
+        <div class="panel small">Sara joins groups:
+├── grp-sales (all sales people)
+├── grp-salesadmins (sales team leads)
+└── grp-microsoft365 (Office 365 users)
+
+Result: Sara inherits permissions
+from each group</div>
+      </div>
+      <div>
+        <h3>Step 3: Assign Licenses to Groups</h3>
+        <div class="panel small">License assignment:
+Office 365 → grp-microsoft365
+↓
+Sara (member of grp-microsoft365)
+automatically gets Office 365 ✓
+Mike (also in the group)
+automatically gets it ✓</div>
+      </div>
+      <div>
+        <h3>Step 4: Create Admin Scope (Administrative Units)</h3>
+        <div class="panel small">Admin creates: au-sales
+(Sales department scope)
+│
+├── Members: Everyone in Sales department
+│
+└── Purpose: "Sales team lead can reset
+    passwords, but ONLY for Sales dept"</div>
+      </div>
+    </div>
+    <h3 style="margin-top:24px">Step 5: Delegate Admin Role (Scoped)</h3>
+    <div class="panel">Assign role: User Administrator
+To: John (Sales team lead)
+Scoped to: au-sales (Sales dept only)
+
+Result:
+├── John can reset passwords → ONLY for Sales users ✓
+├── John CANNOT reset passwords → for Finance users ✗
+├── John CANNOT add users → to other departments ✗
+└── Delegation achieved without tenant-wide admin access ✓</div>
+  </div>
+
+  <!-- Mental Model -->
+  <div class="section full" id="mental-model-entra-id-as-organization-chart-hr-system">
+    <h2>Mental Model: Entra ID as Organization Chart + HR System</h2>
+    <div class="panel">CEO (Global Administrator — can do anything)
+│
+├─ VP Sales (User Administrator for Sales unit)
+│  └─ Can manage Sales users only
+│  └─ Cannot see Finance users
+│
+├─ VP Finance (User Administrator for Finance unit)
+│  └─ Can manage Finance users only
+│  └─ Cannot see Sales users
+│
+└─ VP IT (Global Admin)
+   └─ Can manage all users and settings</div>
+    <p style="margin-top:14px">Each VP has power only in their area (scoped), yet all use the same Entra ID tenant.</p>
+  </div>
+
+  <!-- Worked Example -->
+  <div class="section full" id="worked-example-real-scenario">
+    <h2>Worked Example: Real Scenario</h2>
+    <h3>The Scenario</h3>
+    <p><strong>Contoso has 100 employees:</strong></p>
+    <ul>
+      <li>Sales: 50 people</li>
+      <li>Finance: 30 people</li>
+      <li>IT: 20 people</li>
+    </ul>
+    <p><strong>Goal:</strong> Manage identities efficiently, delegate admin duties, assign licenses automatically.</p>
+
+    <h3>Solution Using Groups + Admin Units</h3>
+
+    <h4>Step 1: Create Groups</h4>
+    <div class="panel small">Group: grp-sales
+├── Members: All Sales employees (50 people)
+└── Membership: Dynamic rule — "department eq Sales"
+
+Group: grp-finance
+├── Members: All Finance employees (30 people)
+└── Membership: Dynamic rule — "department eq Finance"
+
+Group: grp-allemployees-office365
+├── Members: Everyone (100 people)
+└── Membership: Dynamic rule — "user.accountEnabled eq true"</div>
+
+    <div class="grid2" style="margin-top:18px">
+      <div>
+        <h4>Step 2: Assign Licenses to Groups</h4>
+        <div class="panel small">Office 365 license → grp-allemployees-office365
+└─ All 100 employees automatically
+   get Office 365 ✓
+
+Teams license → grp-sales + grp-finance
+└─ 80 employees automatically
+   get Teams ✓</div>
+      </div>
+      <div>
+        <h4>Step 3: Create Administrative Units</h4>
+        <div class="panel small">Admin Unit: au-sales
+├── Members: Everyone in Sales department
+└── Purpose: Scope admin roles to Sales only
+
+Admin Unit: au-finance
+├── Members: Everyone in Finance department
+└── Purpose: Scope admin roles to Finance only</div>
+      </div>
+    </div>
+
+    <h4 style="margin-top:18px">Step 4: Delegate Admin Roles</h4>
+    <div class="panel small">Assignment 1:
+  Role: User Administrator
+  Person: Sarah (Sales team lead)
+  Scope: au-sales
+  Result: Sarah can reset passwords for Sales only ✓
+
+Assignment 2:
+  Role: User Administrator
+  Person: Bob (Finance team lead)
+  Scope: au-finance
+  Result: Bob can reset passwords for Finance only ✓
+
+Assignment 3:
+  Role: Global Administrator
+  Person: Alice (IT director)
+  Scope: Tenant-wide
+  Result: Alice can do anything, manage all departments ✓</div>
+
+    <h3 style="margin-top:24px">Benefit</h3>
+    <div class="panel">When new Sales employee joins:
+└─ HR enters their info
+└─ Dynamic group rule matches them to grp-sales
+└─ Automatically added to grp-allemployees-office365
+└─ Automatically gets Office 365 + Teams licenses
+└─ Falls under Sarah's admin scope (au-sales)
+└─ Sarah can manage their password without IT intervention
+└─ ZERO manual steps! ✓</div>
+  </div>
+
+  <!-- Common Mistakes -->
+  <div class="section full" id="common-mistakes-what-not-to-do">
+    <h2>Common Mistakes (What NOT to Do)</h2>
+
+    <h3>❌ Mistake 1: Confusing Entra Roles with Azure RBAC</h3>
+    <div class="mistake-card">
+      <div>
+        <h4>Wrong</h4>
+        <div class="panel small">Admin is Global Administrator in Entra ID
+├─ Can create users, reset passwords, manage licenses
+├─ Makes them THINK they can delete Azure resources
+└─ They can't! (Completely different permission system) ✗</div>
+      </div>
+      <div>
+        <h4>Fix</h4>
+        <div class="panel small">Understand they're separate:
+├─ Global Administrator (Entra) ≠ Owner (Azure RBAC)
+├─ User Administrator (Entra) ≠ Contributor (Azure RBAC)
+└─ To manage both, you need roles in BOTH systems</div>
+      </div>
+    </div>
+    <p><strong>Why it fails:</strong> Two separate permission systems — <strong>Entra Roles</strong> manage identities, while <strong>Azure RBAC</strong> manages Azure services/resources.</p>
+
+    <h3>❌ Mistake 2: Using Assigned Groups for Dynamic Needs</h3>
+    <div class="mistake-card">
+      <div>
+        <h4>Wrong</h4>
+        <div class="panel small">Create group: grp-salesreps
+├─ Manually add 50 people
+├─ When someone new joins Sales → admin must
+│  manually add them
+├─ When someone leaves → admin must
+│  manually remove them
+└─ Result: Manual overhead, human error ✗</div>
+      </div>
+      <div>
+        <h4>Fix</h4>
+        <div class="panel small">Use dynamic groups:
+└─ grp-salesreps
+   ├─ Membership rule: "department eq Sales"
+   ├─ When new Sales employee joins
+   │  → automatically added ✓
+   ├─ When they leave Sales
+   │  → automatically removed ✓
+   └─ Zero manual work ✓</div>
+      </div>
+    </div>
+    <p><strong>Why it fails:</strong> Doesn't scale. Manual processes are error-prone.</p>
+    <div class="callout">
+      <strong>⚠️ Watch Out</strong>
+      <p>Dynamic groups require Entra ID P1/P2 licensing!</p>
+    </div>
+
+    <h3>❌ Mistake 3: Assigning Licenses Individually</h3>
+    <div class="mistake-card">
+      <div>
+        <h4>Wrong</h4>
+        <div class="panel small">Admin assigns Office 365 license to:
+├─ User 1 (manually)
+├─ User 2 (manually)
+├─ User 3 (manually)
+└─ ... (50 more times, error-prone, tedious) ✗</div>
+      </div>
+      <div>
+        <h4>Fix</h4>
+        <div class="panel small">Use group-based licensing:
+└─ Create grp-office365-users (dynamic group)
+└─ Assign Office 365 to the GROUP
+└─ All members automatically get license ✓
+└─ New members get it automatically ✓</div>
+      </div>
+    </div>
+    <p><strong>Why it fails:</strong> Doesn't scale. Easy to forget someone.</p>
+  </div>
+
+  <!-- Connections -->
+  <div class="section full" id="how-this-connects-to-other-topics">
+    <h2>How This Connects to Other Topics</h2>
+    <div class="grid2">
+      <div>
+        <h3>Related to Module 01 (Identity &amp; Governance)</h3>
+        <ul>
+          <li><strong>Entra ID</strong> = Create identities (users, groups)</li>
+          <li><strong>RBAC</strong> = Grant permissions TO those identities</li>
+          <li><strong>Management Groups &amp; Policy</strong> = Enforce policies across subscriptions that Entra users access</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Related to Module 02, 03, 04, 05</h3>
+        <ul>
+          <li><strong>All modules</strong> rely on Entra ID identities</li>
+          <li>Every RBAC role assignment requires an Entra identity</li>
+          <li>Every Azure access is authenticated through Entra ID</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- See It In Action -->
+  <div class="section full" id="see-it-in-action">
+    <h2>See It In Action</h2>
+    <p><strong>Associated lab:</strong> <a href="../labs/lab01-entra-users-groups.md">Lab 01: Entra ID — Users, Groups &amp; Admin Units</a></p>
+    <p><strong>Suggested learning sequence:</strong></p>
+    <ol>
+      <li>✅ Read this doc (Entra ID Overview — foundational)</li>
+      <li>✅ Read <a href="02-rbac-fundamentals.md">RBAC Fundamentals</a> (use Entra identities for role assignment)</li>
+      <li>✅ Read <a href="03-management-groups-and-azure-policy.md">Management Groups &amp; Policy</a> (govern Entra users at scale)</li>
+      <li>✅ Work through Lab 01 (create users, groups, admin units)</li>
+    </ol>
+  </div>
+
+  <!-- Key Takeaways -->
+  <div class="section full" id="key-takeaways">
+    <h2>Key Takeaways</h2>
+    <div class="tip">
+      <strong>💡 Summary</strong>
+      <ul style="margin-top:8px">
+        <li><strong>Entra ID = cloud identity system</strong> (who your users are)</li>
+        <li><strong>Tenant = isolated org instance</strong> (separate from other companies)</li>
+        <li><strong>Users</strong> are individual identities</li>
+        <li><strong>Groups</strong> are collections (use for permissions and licenses)</li>
+        <li><strong>Dynamic groups</strong> auto-add/remove members (requires P1/P2)</li>
+        <li><strong>Group-based licensing</strong> = auto-license thousands</li>
+        <li><strong>Admin Units</strong> scope admin roles (VP of Sales manages only Sales)</li>
+        <li><strong>Entra roles ≠ Azure RBAC</strong> (different systems, both needed)</li>
+        <li><strong>Delegation = admin scope</strong> (let managers handle their own people)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Next Steps -->
+  <div class="section full" id="next-steps">
+    <h2>Next Steps</h2>
+    <ol>
+      <li><strong>Learn:</strong> Read this doc (you're here)</li>
+      <li><strong>Understand:</strong> Read <a href="02-rbac-fundamentals.md">RBAC Fundamentals</a> (Entra identities get Azure permissions)</li>
+      <li><strong>Govern:</strong> Read <a href="03-management-groups-and-azure-policy.md">Management Groups &amp; Policy</a> (scale governance)</li>
+      <li><strong>Practice:</strong> <a href="../labs/lab01-entra-users-groups.md">Lab 01: Entra ID Users, Groups &amp; Admin Units</a></li>
+      <li><strong>Secure:</strong> Read <a href="04-access-control-scenarios.md">Access Control Scenarios</a> (real-world patterns)</li>
+    </ol>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-grid">
+      <div class="footer-item">
+        <strong>Azure AZ-104</strong>
+        Professional Concept Documentation
+      </div>
+      <div class="footer-item">
+        <strong>Module</strong>
+        01 — Identity &amp; Governance
+      </div>
+      <div class="footer-item">
+        <strong>Generated</strong>
+        June 15, 2026
+      </div>
+    </div>
+    <div class="footer-meta">&copy; 2026 — AZ-104 Learning Hub. For study purposes only.</div>
+  </div>
+
+</div>
+</div>
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.sidebar a'));
+  var sections = [];
+  links.forEach(function(a){
+    var el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) sections.push({link:a, el:el});
+  });
+  if (!sections.length || !('IntersectionObserver' in window)) return;
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (!entry.isIntersecting) return;
+      var match = sections.find(function(s){ return s.el === entry.target; });
+      if (!match) return;
+      links.forEach(function(a){ a.classList.remove('active'); });
+      match.link.classList.add('active');
+    });
+  }, { rootMargin: '-100px 0px -70% 0px', threshold: 0 });
+  sections.forEach(function(s){ observer.observe(s.el); });
+})();
+</script>
+</body>
+</html>

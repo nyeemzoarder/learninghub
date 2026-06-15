@@ -1,0 +1,13 @@
+# Claude Code local config / memory (not for public repo)
+.claude/
+
+# Azure Static Web Apps local runtime state
+.swa/
+
+# OS junk files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+*.swp

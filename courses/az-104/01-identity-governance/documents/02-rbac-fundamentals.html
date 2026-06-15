@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RBAC Fundamentals - Who Can Do What, Where?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f8fc;--card:#fff;--border:#d9e0ef;--text:#1f2937;--muted:#5b6678;
+  --primary:#151d63;--panel:#00004C;--panel-shadow:rgba(0,0,76,.18);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:Inter,-apple-system,'Segoe UI',sans-serif;color:var(--text)}
+.page{flex:1;min-width:0;padding:28px}
+
+h1{font-size:3.2rem;line-height:1.15;margin:0;color:var(--primary);font-weight:800;letter-spacing:-1px}
+.subtitle{font-size:1.4rem;font-weight:600;color:#2d3b77;margin-top:10px}
+
+.badges{display:flex;gap:12px;margin:20px 0 26px;flex-wrap:wrap}
+.badge{background:#eef2ff;border:1px solid #d8def7;color:#1e2a78;padding:10px 18px;border-radius:999px;font-weight:600;font-size:.95rem}
+
+.section{display:grid;grid-template-columns:42% 58%;gap:28px;padding:26px 0;border-top:1px solid var(--border)}
+.section.full{display:block;padding:26px 0;border-top:1px solid var(--border)}
+.section:first-of-type, .section.full:first-of-type{border-top:none}
+
+h2{font-size:2rem;margin:0 0 14px;color:var(--primary);font-weight:800}
+h3{font-size:1.4rem;margin:22px 0 10px;color:var(--primary);font-weight:700}
+h3:first-child{margin-top:0}
+h4{font-size:1.1rem;margin:16px 0 8px;color:#2d3b77;font-weight:700}
+
+p{font-size:1.05rem;line-height:1.65;margin:.5rem 0;color:var(--text)}
+
+ul, ol{margin:.6rem 0;padding-left:1.4rem}
+li{margin-bottom:6px;line-height:1.6;font-size:1.02rem}
+
+a{color:#1e2a78;text-decoration:none;border-bottom:1px solid transparent;font-weight:600}
+a:hover{border-bottom-color:#1e2a78}
+
+strong{color:var(--primary);font-weight:700}
+
+.callout{margin-top:20px;background:#f3f7ff;border:1px solid #bfd0ff;border-radius:14px;padding:18px 22px}
+.callout strong{color:#1735ad}
+.callout p{margin:0}
+.callout p + p{margin-top:8px}
+
+.panel{
+  background:var(--panel);
+  color:#fff;border-radius:18px;padding:22px 26px;
+  box-shadow:0 12px 28px var(--panel-shadow);
+  font:15px/1.65 'SF Mono',Consolas,'Courier New',monospace;
+  white-space:pre-wrap;
+  overflow:auto;
+}
+.panel.small{font-size:13.5px;line-height:1.6}
+.panel + .panel{margin-top:18px}
+
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:14px 0}
+th,td{padding:14px;border:1px solid var(--border);text-align:left;font-size:.98rem}
+th{background:#eef2ff;color:var(--primary);font-weight:700}
+tr:hover td{background:#fafbff}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+
+.mistake-card{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:14px 0 8px}
+.mistake-card h4{margin-top:0}
+
+.tip{margin-top:20px;background:#eef4ff;border:1px solid #c8d5ff;border-radius:12px;padding:16px 20px;font-size:1.02rem}
+.tip strong{color:#1735ad}
+
+hr.divider{border:none;height:0;margin:0}
+
+.footer{margin-top:48px;padding-top:24px;border-top:1px solid var(--border);font-size:.9rem;color:var(--muted)}
+.footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px}
+.footer-item strong{display:block;color:var(--primary);margin-bottom:6px;font-size:.95rem}
+.footer-meta{margin-top:24px;padding-top:16px;border-top:1px solid var(--border);text-align:center;font-size:.85rem}
+
+@media (max-width:1000px){
+  .section,.grid2,.grid3,.grid4,.mistake-card{grid-template-columns:1fr}
+  h1{font-size:2.3rem}
+  .page{padding:16px}
+  .panel{font-size:13px}
+  .sidebar{display:none}
+  .layout{display:block}
+}
+
+/* ===== Site-wide Cross Navigation ===== */
+.site-nav{
+  position:sticky;top:0;z-index:1000;
+  background:var(--primary);color:#fff;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:12px 28px;font-size:.92rem;
+  box-shadow:0 2px 10px rgba(0,0,76,.18);
+  font-family:Inter,-apple-system,'Segoe UI',sans-serif;
+}
+.site-nav .nav-brand{font-weight:800;font-size:1.05rem;margin-right:auto;color:#fff}
+.site-nav details{position:relative}
+.site-nav summary{cursor:pointer;list-style:none;padding:7px 16px;border-radius:8px;background:rgba(255,255,255,.12);font-weight:600;color:#fff;user-select:none}
+.site-nav summary::-webkit-details-marker,.site-nav summary::marker{display:none;content:''}
+.site-nav details[open] summary{background:rgba(255,255,255,.24)}
+.site-nav .nav-menu{
+  position:absolute;top:calc(100% + 8px);left:0;
+  background:#fff;color:var(--text);
+  border:1px solid var(--border);border-radius:12px;
+  padding:8px;min-width:300px;box-shadow:0 16px 32px rgba(0,0,76,.22);
+  display:flex;flex-direction:column;gap:2px;z-index:1001;
+}
+.site-nav .nav-menu a{
+  display:block;padding:9px 14px;border-radius:8px;border-bottom:none;
+  color:var(--text);font-weight:500;font-size:.95rem;
+}
+.site-nav .nav-menu a:hover{background:#eef2ff;color:#1e2a78}
+.site-nav .nav-menu a.active{background:#eef2ff;color:#1735ad;font-weight:700}
+@media (max-width:768px){
+  .site-nav{padding:10px 16px}
+  .site-nav .nav-brand{font-size:.95rem}
+}
+/* ===== Page Sidebar (On This Page) ===== */
+.layout{max-width:1400px;margin:auto;display:flex;align-items:flex-start}
+.sidebar{
+  flex:0 0 260px;
+  position:sticky;top:88px;
+  max-height:calc(100vh - 108px);
+  overflow-y:auto;
+  margin:28px 0 28px 28px;
+  padding:20px 18px;
+  background:#fff;border:1px solid var(--border);border-radius:14px;
+  box-shadow:0 4px 16px rgba(21,29,99,.05);
+}
+.sidebar .toc-title{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 12px;padding:0 12px}
+.sidebar a{display:block;padding:8px 12px;margin-bottom:2px;border-radius:8px;font-size:.88rem;font-weight:500;color:var(--text);border-bottom:none;border-left:3px solid transparent;line-height:1.4}
+.sidebar a:hover{background:#eef2ff;color:#1e2a78}
+.sidebar a.active{background:#eef2ff;color:#1735ad;font-weight:700;border-left-color:var(--primary)}
+@media print{
+  .site-nav{display:none}
+  body{background:#fff}
+  .page{padding:0}
+  .panel{box-shadow:none}
+  .sidebar{display:none}
+  .layout{display:block}
+}
+</style>
+</head>
+<body>
+<nav class="site-nav">
+  <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
+  <details class="nav-group">
+    <summary>Module 00 - Prerequisites</summary>
+    <div class="nav-menu">
+      <a href="../../00-prerequisites/documents/01-cloud-computing-fundamentals.html">01 - Cloud Computing Fundamentals</a>
+      <a href="../../00-prerequisites/documents/02-networking-basics.html">02 - Networking Basics</a>
+      <a href="../../00-prerequisites/documents/03-identity-and-access-fundamentals.html">03 - Identity &amp; Access Fundamentals</a>
+      <a href="../../00-prerequisites/documents/04-azure-portal-navigation.html">04 - Azure Portal Navigation</a>
+    </div>
+  </details>
+  <details class="nav-group">
+    <summary>Module 01 - Identity &amp; Governance</summary>
+    <div class="nav-menu">
+      <a href="01-entra-id-overview.html">01 - Entra ID Overview</a>
+      <a href="02-rbac-fundamentals.html" class="active">02 - RBAC Fundamentals</a>
+      <a href="03-management-groups-and-azure-policy.html">03 - Management Groups &amp; Azure Policy</a>
+      <a href="04-access-control-scenarios.html">04 - Access Control Scenarios</a>
+      <a href="05-identity-best-practices.html">05 - Identity Best Practices</a>
+    </div>
+  </details>
+  <details class="nav-group">
+    <summary>Module 04 - Networking</summary>
+    <div class="nav-menu">
+      <a href="../../04-networking/documents/01-hub-spoke-topology.html">01 - Hub-Spoke Topology</a>
+      <a href="../../04-networking/documents/01-vnets-and-subnets.html">01 - VNets &amp; Subnets</a>
+      <a href="../../04-networking/documents/02-network-security-groups.html">02 - Network Security Groups</a>
+      <a href="../../04-networking/documents/03-routing-fundamentals.html">03 - Routing Fundamentals</a>
+      <a href="../../04-networking/documents/04-vnet-peering.html">04 - VNet Peering</a>
+      <a href="../../04-networking/documents/05-vpn-and-expressroute.html">05 - VPN &amp; ExpressRoute</a>
+      <a href="../../04-networking/documents/07-private-endpoints-service-endpoints.html">07 - Private &amp; Service Endpoints</a>
+      <a href="../../04-networking/documents/08-network-security-advanced.html">08 - Advanced Network Security</a>
+    </div>
+  </details>
+</nav>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="toc-title">On This Page</div>
+    <a href="#before-you-start">Before You Start</a>
+    <a href="#the-simple-idea">The Simple Idea</a>
+    <a href="#a-hotel-key-card-analogy">A Hotel Key Card Analogy</a>
+    <a href="#the-three-rbac-questions">The Three RBAC Questions</a>
+    <a href="#how-it-actually-works">How It Actually Works</a>
+    <a href="#key-rbac-components">Key RBAC Components</a>
+    <a href="#mental-model-the-permission-pyramid">Mental Model: The Permission Pyramid</a>
+    <a href="#worked-example-real-scenario">Worked Example: Real Scenario</a>
+    <a href="#common-mistakes-what-not-to-do">Common Mistakes (What NOT to Do)</a>
+    <a href="#summary-table-rbac-roles-at-a-glance">Summary Table: RBAC Roles at a Glance</a>
+    <a href="#how-this-connects-to-other-topics">How This Connects to Other Topics</a>
+    <a href="#see-it-in-action">See It In Action</a>
+    <a href="#key-takeaways">Key Takeaways</a>
+    <a href="#next-steps">Next Steps</a>
+  </aside>
+  <div class="page">
+
+  <h1>RBAC Fundamentals: Who Can Do What, Where?</h1>
+  <div class="subtitle">Master Azure's Role-Based Access Control — the permission system behind every resource</div>
+
+  <div class="badges">
+    <span class="badge">🟢 Beginner</span>
+    <span class="badge">⏱ 15 Minutes</span>
+    <span class="badge">📘 AZ-104 · Module 01</span>
+  </div>
+
+  <div class="callout">
+    <strong>Why This Matters</strong>
+    <p>Every Azure action requires permission. Without understanding RBAC (Role-Based Access Control), you might accidentally give a junior developer the ability to delete your entire production environment—or prevent them from doing their job. RBAC is Azure's permission system that keeps your resources secure.</p>
+  </div>
+
+  <!-- Before You Start -->
+  <div class="section full" id="before-you-start">
+    <h2>Before You Start</h2>
+    <table>
+      <tr><th>Prerequisites</th><td><a href="../../../00-prerequisites/03-identity-and-access-fundamentals.md">00-Prerequisites: Identity &amp; Access Fundamentals</a></td></tr>
+      <tr><th>Time to understand</th><td>15 minutes</td></tr>
+      <tr><th>Difficulty</th><td>🟢 Beginner (foundational, no experience needed)</td></tr>
+      <tr><th>What you'll learn</th><td>What RBAC is, how it works, why it matters</td></tr>
+    </table>
+  </div>
+
+  <!-- The Simple Idea -->
+  <div class="section full" id="the-simple-idea">
+    <h2>The Simple Idea</h2>
+    <h3>What Is RBAC?</h3>
+    <p><strong>RBAC = Role-Based Access Control.</strong> It answers one question: <strong>"Who can do what, where?"</strong></p>
+  </div>
+
+  <!-- Hotel Key Card Analogy -->
+  <div class="section" id="a-hotel-key-card-analogy">
+    <div>
+      <h2>A Hotel Key Card Analogy</h2>
+      <p>Imagine a hotel:</p>
+      <ul>
+        <li><strong>A guest</strong> gets a key card that opens only their room</li>
+        <li><strong>A manager</strong> gets a card that opens all guest rooms AND the office</li>
+        <li><strong>A janitor</strong> gets access to cleaning closets only</li>
+      </ul>
+      <p>Nobody gets a "master key to everything." Everyone gets exactly what they need.</p>
+      <p><strong>In Azure, the same idea:</strong></p>
+      <ul>
+        <li>A <strong>role</strong> = permission level (like a key card)</li>
+        <li>A <strong>user</strong> = person using the card (like a hotel guest)</li>
+        <li>A <strong>scope</strong> = where the card works (guest rooms, office, etc.)</li>
+      </ul>
+    </div>
+    <div class="panel">Hotel
+│
+├── Guest   → key card opens only their room
+│
+├── Manager → key card opens all guest rooms + office
+│
+└── Janitor → key card opens cleaning closets only
+
+Azure equivalent
+│
+├── Role  = permission level   (the key card)
+├── User  = person using it    (the guest)
+└── Scope = where it works     (guest rooms, office, etc.)
+
+Nobody gets a "master key to everything."</div>
+  </div>
+
+  <!-- The Three RBAC Questions -->
+  <div class="section full" id="the-three-rbac-questions">
+    <h2>The Three RBAC Questions</h2>
+    <p>Every permission in Azure answers these three questions:</p>
+    <table>
+      <tr><th>Question</th><th>Answer</th><th>Example</th></tr>
+      <tr><td><strong>WHO?</strong></td><td>Which user/service needs access?</td><td>Sara.Johnson@company.com</td></tr>
+      <tr><td><strong>WHAT?</strong></td><td>What can they do?</td><td>Create and modify VMs (but not delete)</td></tr>
+      <tr><td><strong>WHERE?</strong></td><td>On which resource/scope?</td><td>Only the "Development" resource group</td></tr>
+    </table>
+  </div>
+
+  <!-- How It Actually Works -->
+  <div class="section full" id="how-it-actually-works">
+    <h2>How It Actually Works</h2>
+    <h3>The 3-Step Permission Flow</h3>
+    <div class="grid3">
+      <div>
+        <h3>Step 1: Identity exists in Entra ID</h3>
+        <div class="panel small">Sara Johnson creates a user account in Entra ID
+↓
+Now Azure knows "who" Sara is</div>
+      </div>
+      <div>
+        <h3>Step 2: Assign a role</h3>
+        <div class="panel small">Admin assigns Sara the role:
+"Virtual Machine Contributor"
+↓
+This role includes permission to:
+create VMs, start VMs, modify VMs</div>
+      </div>
+      <div>
+        <h3>Step 3: Scope the assignment</h3>
+        <div class="panel small">Admin limits this role to the
+"Dev" resource group only
+↓
+Result: Sara can create VMs in "Dev"
+but NOT in "Production"</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Key RBAC Components -->
+  <div class="section full" id="key-rbac-components">
+    <h2>Key RBAC Components</h2>
+    <table>
+      <tr><th>Component</th><th>What It Does</th><th>Example</th></tr>
+      <tr><td><strong>Identity</strong></td><td>The "who" — person or service</td><td>User: sara@company.com, Service: Data Factory</td></tr>
+      <tr><td><strong>Role</strong></td><td>The "what" — list of allowed actions</td><td>Contributor, Reader, Custom Role</td></tr>
+      <tr><td><strong>Scope</strong></td><td>The "where" — which resources apply to</td><td>Resource Group, Subscription, Single Resource</td></tr>
+      <tr><td><strong>Assignment</strong></td><td>The connection tying them together</td><td>Sara = Contributor on "Dev" RG</td></tr>
+    </table>
+  </div>
+
+  <!-- Mental Model -->
+  <div class="section full" id="mental-model-the-permission-pyramid">
+    <h2>Mental Model: The Permission Pyramid</h2>
+    <p>Think of Azure permissions like a pyramid:</p>
+    <div class="panel">                    ┌─────────────┐
+                    │    Owner    │  (Everything, including delete RGs)
+                    └─────────────┘
+                           △
+                    ┌─────────────┐
+                    │ Contributor │  (Create/modify, but not delete RGs)
+                    └─────────────┘
+                           △
+                    ┌─────────────┐
+                    │   Reader    │  (Read-only, no changes)
+                    └─────────────┘</div>
+    <p style="margin-top:14px"><strong>Each role is more limited than the one above.</strong> Least privilege = more security.</p>
+  </div>
+
+  <!-- Worked Example -->
+  <div class="section full" id="worked-example-real-scenario">
+    <h2>Worked Example: Real Scenario</h2>
+    <h3>The Scenario</h3>
+    <p><strong>Situation:</strong> You're the Azure Admin at TechCorp. You hired three people:</p>
+    <ul>
+      <li><strong>Sara:</strong> Junior Developer (needs to deploy VMs in Dev)</li>
+      <li><strong>Mike:</strong> Senior Developer (needs everything Sara has + access to Production)</li>
+      <li><strong>Bob:</strong> Database Admin (only needs SQL Server access)</li>
+    </ul>
+    <p>Your goal: Give each person <strong>exactly</strong> what they need, nothing more.</p>
+
+    <h3>Step-by-Step Solution</h3>
+    <div class="grid3">
+      <div>
+        <h4>Sara's Setup (Least Privilege)</h4>
+        <div class="panel small">1. Create user: sara@techcorp.com in Entra ID
+2. Assign role: "Virtual Machine Contributor"
+   (allows: create, modify, start/stop VMs)
+3. Scope: "Dev" resource group ONLY
+4. Result: Sara can work on Dev VMs,
+   can't touch Production</div>
+        <p style="margin-top:10px"><strong>Why this role?</strong> She needs to create/modify VMs but NOT delete resource groups.</p>
+      </div>
+      <div>
+        <h4>Mike's Setup (More Permissions)</h4>
+        <div class="panel small">1. Create user: mike@techcorp.com in Entra ID
+2. Assign role: "Contributor"
+   (allows: create, modify, delete
+   everything EXCEPT RGs)
+3. Scope: Both "Dev" AND "Production"
+   resource groups
+4. Result: Mike has full control in
+   both Dev and Production</div>
+        <p style="margin-top:10px"><strong>Why this role?</strong> Senior dev needs more access across environments.</p>
+      </div>
+      <div>
+        <h4>Bob's Setup (Specific to Service)</h4>
+        <div class="panel small">1. Create user: bob@techcorp.com in Entra ID
+2. Assign role: "SQL Server Contributor"
+   (allows: only SQL-related actions)
+3. Scope: "Production" SQL Server
+   resource only
+4. Result: Bob can manage SQL, can't
+   see VMs or other resources</div>
+        <p style="margin-top:10px"><strong>Why this role?</strong> Database admin doesn't need VM access—just SQL.</p>
+      </div>
+    </div>
+
+    <h3 style="margin-top:24px">Assignment Table</h3>
+    <table>
+      <tr><th>User</th><th>Role</th><th>Scope</th><th>Can Do</th><th>Cannot Do</th></tr>
+      <tr><td>Sara</td><td>Virtual Machine Contributor</td><td>Dev RG</td><td>Create/modify VMs</td><td>Delete anything, touch Production</td></tr>
+      <tr><td>Mike</td><td>Contributor</td><td>Dev + Prod RGs</td><td>Create/modify/delete resources</td><td>Delete resource groups</td></tr>
+      <tr><td>Bob</td><td>SQL Server Contributor</td><td>Prod SQL Server</td><td>Manage SQL database</td><td>Access VMs, change network settings</td></tr>
+    </table>
+  </div>
+
+  <!-- Common Mistakes -->
+  <div class="section full" id="common-mistakes-what-not-to-do">
+    <h2>Common Mistakes (What NOT to Do)</h2>
+
+    <h3>❌ Mistake 1: Everyone Gets Owner Role</h3>
+    <div class="mistake-card">
+      <div>
+        <h4>Wrong</h4>
+        <div class="panel small">Admin assigns Owner role to all 50 team members
+↓
+Any person can delete the entire subscription accidentally
+↓
+Disaster: Entire production environment deleted</div>
+      </div>
+      <div>
+        <h4>Fix</h4>
+        <div class="panel small">Use least privilege:
+• Give most people: Contributor or specific roles
+• Give only senior admins: Owner role
+• Review periodically to remove unnecessary permissions</div>
+      </div>
+    </div>
+    <p><strong>Why it fails:</strong> Owner = complete access including destructive actions. One mistake = catastrophe.</p>
+
+    <h3>❌ Mistake 2: Assignment at Subscription Level for Developers</h3>
+    <div class="mistake-card">
+      <div>
+        <h4>Wrong</h4>
+        <div class="panel small">Dev gets Contributor role at Subscription level
+↓
+Dev can access ALL resource groups (Dev, QA, Production)
+↓
+Dev accidentally modifies Production database</div>
+      </div>
+      <div>
+        <h4>Fix</h4>
+        <div class="panel small">Scope role assignments to the minimum needed:
+• Dev → Assign to "Dev" resource group only,
+  NOT subscription
+• Limits blast radius if credentials are compromised
+• Prevents accidental access to production</div>
+      </div>
+    </div>
+    <p><strong>Why it fails:</strong> Subscription-level scope = access to everything.</p>
+
+    <h3>❌ Mistake 3: Creating Custom Roles for Everything</h3>
+    <div class="mistake-card">
+      <div>
+        <h4>Wrong</h4>
+        <div class="panel small">Admin creates 20 custom roles instead of using built-in ones
+↓
+Difficult to maintain and audit
+↓
+Inconsistent permissions across teams</div>
+      </div>
+      <div>
+        <h4>Fix</h4>
+        <div class="panel small">Start with built-in roles:
+• Use "Virtual Machine Contributor" instead of
+  custom VM role
+• Use "SQL Server Contributor" for database work
+• Only create custom roles when no built-in role
+  fits (rare)</div>
+      </div>
+    </div>
+    <p><strong>Why it fails:</strong> Complexity = security gaps. Built-in roles are tested and documented.</p>
+
+    <h3>❌ Mistake 4: Permanent High-Privilege Access</h3>
+    <div class="mistake-card">
+      <div>
+        <h4>Wrong</h4>
+        <div class="panel small">Junior dev gets Owner role "temporarily"
+↓
+6 months later, still has Owner role
+(nobody revoked it)
+↓
+Security breach: Compromised credentials
+= full access</div>
+      </div>
+      <div>
+        <h4>Fix</h4>
+        <div class="panel small">Use Privileged Identity Management (PIM):
+• Users request temporary access when needed
+• Auto-revoke after time limit expires
+• Full audit trail of who accessed what and when</div>
+      </div>
+    </div>
+    <p><strong>Why it fails:</strong> "Temporary" becomes permanent. Accounts grow more permissions over time.</p>
+  </div>
+
+  <!-- Summary Table -->
+  <div class="section full" id="summary-table-rbac-roles-at-a-glance">
+    <h2>Summary Table: RBAC Roles at a Glance</h2>
+    <table>
+      <tr><th>Role</th><th>Permissions</th><th>Best For</th><th>Caution</th></tr>
+      <tr><td><strong>Owner</strong></td><td>Everything including delete RGs</td><td>Azure admins only</td><td>Too much power—restrict access</td></tr>
+      <tr><td><strong>Contributor</strong></td><td>Create/modify/delete resources (not RGs)</td><td>Senior devs, operators</td><td>Not for juniors</td></tr>
+      <tr><td><strong>Reader</strong></td><td>Read-only, no changes</td><td>Auditors, viewers</td><td>Good for "look but don't touch"</td></tr>
+      <tr><td><strong>Specific roles</strong></td><td>Limited to one service (VM Contributor, SQL Contributor)</td><td>Developers, DBAs</td><td>Recommended—least privilege</td></tr>
+      <tr><td><strong>Custom roles</strong></td><td>User-defined permissions</td><td>When no built-in role fits</td><td>Rare; use built-ins first</td></tr>
+    </table>
+  </div>
+
+  <!-- Connections -->
+  <div class="section full" id="how-this-connects-to-other-topics">
+    <h2>How This Connects to Other Topics</h2>
+    <div class="grid2">
+      <div>
+        <h3>Related to Module 02 (Storage)</h3>
+        <ul>
+          <li><strong>Private Endpoints</strong>: Combined with RBAC, they provide end-to-end security for storage</li>
+          <li><strong>Storage Access</strong>: Use RBAC roles like "Storage Blob Data Contributor" to control who accesses storage</li>
+        </ul>
+        <h3>Related to Module 03 (Compute)</h3>
+        <ul>
+          <li><strong>VM Access</strong>: Use RBAC to control who can create/delete VMs</li>
+          <li><strong>Managed Identities</strong>: VMs use RBAC to access other resources securely</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Related to Module 04 (Networking)</h3>
+        <ul>
+          <li><strong>NSGs vs RBAC</strong>: NSGs control <em>network</em> access (which IP can reach which port)</li>
+          <li><strong>RBAC</strong> controls <em>Azure service</em> access (who can modify network settings)</li>
+          <li><strong>Combined</strong>: NSG (network boundary) + RBAC (who controls it) = complete security</li>
+        </ul>
+        <h3>Related to Module 05 (Monitor)</h3>
+        <ul>
+          <li><strong>Audit logs</strong>: See who made changes and when (linked to RBAC assignments)</li>
+          <li><strong>Diagnostics</strong>: Only certain roles can enable monitoring</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- See It In Action -->
+  <div class="section full" id="see-it-in-action">
+    <h2>See It In Action</h2>
+    <p><strong>Associated lab:</strong> <a href="../labs/lab02-rbac-azure-policy.md">Lab 02: RBAC &amp; Azure Policy</a></p>
+    <p><strong>Suggested learning sequence:</strong></p>
+    <ol>
+      <li>✅ Read this doc (RBAC Fundamentals)</li>
+      <li>✅ Read <a href="01-entra-id-overview.md">Entra ID Overview</a> (identities come first)</li>
+      <li>✅ Read <a href="03-management-groups-azure-policy.md">Management Groups &amp; Policy</a> (policy enforces RBAC)</li>
+      <li>✅ Work through Lab 02 (hands-on assignment)</li>
+      <li>✅ Read <a href="04-access-control-scenarios.md">Access Control Scenarios</a> (real-world patterns)</li>
+    </ol>
+  </div>
+
+  <!-- Key Takeaways -->
+  <div class="section full" id="key-takeaways">
+    <h2>Key Takeaways</h2>
+    <div class="tip">
+      <strong>💡 Summary</strong>
+      <ul style="margin-top:8px">
+        <li><strong>RBAC = WHO + WHAT + WHERE:</strong> The three components of every permission</li>
+        <li><strong>Least Privilege:</strong> Give people only the minimum access they need</li>
+        <li><strong>Scope Matters:</strong> Resource group-level access is better than subscription-level</li>
+        <li><strong>Built-in Roles First:</strong> Use Azure's tested roles before creating custom ones</li>
+        <li><strong>Review Regularly:</strong> Remove unused permissions to stay secure</li>
+        <li><strong>RBAC ≠ NSG:</strong> RBAC controls who uses Azure services; NSGs control network traffic</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Next Steps -->
+  <div class="section full" id="next-steps">
+    <h2>Next Steps</h2>
+    <ol>
+      <li><strong>Read first:</strong> <a href="01-entra-id-overview.md">Entra ID Overview</a> (understand identities)</li>
+      <li><strong>Then read:</strong> <a href="03-management-groups-azure-policy.md">Management Groups &amp; Policy</a> (policy + RBAC together)</li>
+      <li><strong>Practice:</strong> <a href="../labs/lab02-rbac-azure-policy.md">Lab 02: RBAC &amp; Azure Policy</a></li>
+      <li><strong>Apply:</strong> <a href="04-access-control-scenarios.md">Access Control Scenarios</a> (patterns for your org)</li>
+    </ol>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-grid">
+      <div class="footer-item">
+        <strong>Azure AZ-104</strong>
+        Professional Concept Documentation
+      </div>
+      <div class="footer-item">
+        <strong>Module</strong>
+        01 — Identity &amp; Governance
+      </div>
+      <div class="footer-item">
+        <strong>Generated</strong>
+        June 15, 2026
+      </div>
+    </div>
+    <div class="footer-meta">&copy; 2026 — AZ-104 Learning Hub. For study purposes only.</div>
+  </div>
+
+</div>
+</div>
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.sidebar a'));
+  var sections = [];
+  links.forEach(function(a){
+    var el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) sections.push({link:a, el:el});
+  });
+  if (!sections.length || !('IntersectionObserver' in window)) return;
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (!entry.isIntersecting) return;
+      var match = sections.find(function(s){ return s.el === entry.target; });
+      if (!match) return;
+      links.forEach(function(a){ a.classList.remove('active'); });
+      match.link.classList.add('active');
+    });
+  }, { rootMargin: '-100px 0px -70% 0px', threshold: 0 });
+  sections.forEach(function(s){ observer.observe(s.el); });
+})();
+</script>
+</body>
+</html>

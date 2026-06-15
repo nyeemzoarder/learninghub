@@ -1,0 +1,63 @@
+<mxfile host="app.diagrams.net" version="24.0.0">
+  <diagram name="Entra ID &amp; RBAC Hierarchy" id="entra-rbac-hierarchy">
+    <mxGraphModel dx="900" dy="700" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="900" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Entra ID tenant box -->
+        <mxCell id="tenant" value="Microsoft Entra ID Tenant&#10;(contoso.com)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="220" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="users" value="Users" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="40" y="140" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="groups" value="Groups" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="160" y="140" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" parent="1" source="tenant" target="users">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" parent="1" source="tenant" target="groups">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Azure resource scope hierarchy -->
+        <mxCell id="mg" value="Management Group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="420" y="40" width="220" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="sub" value="Subscription" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="420" y="130" width="220" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="rg" value="Resource Group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="420" y="220" width="220" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="res" value="Resource (VM, storage, VNet...)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="420" y="310" width="220" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;html=1;startArrow=none;endArrow=block;" edge="1" parent="1" source="mg" target="sub">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;html=1;startArrow=none;endArrow=block;" edge="1" parent="1" source="sub" target="rg">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;html=1;startArrow=none;endArrow=block;" edge="1" parent="1" source="rg" target="res">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- RBAC role assignment -->
+        <mxCell id="rbac" value="RBAC role assignment&#10;(e.g., Contributor)&#10;assigned to a user/group,&#10;scoped to MG / Sub / RG / Resource&#10;— inherited downward" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="160" y="240" width="220" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;html=1;dashed=1;endArrow=open;" edge="1" parent="1" source="groups" target="rbac">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;html=1;dashed=1;endArrow=open;" edge="1" parent="1" source="rbac" target="rg">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

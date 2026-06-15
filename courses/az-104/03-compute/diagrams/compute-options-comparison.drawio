@@ -1,0 +1,50 @@
+<mxfile host="app.diagrams.net" version="24.0.0">
+  <diagram name="Compute Options Comparison" id="compute-options">
+    <mxGraphModel dx="1000" dy="700" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1000" pageHeight="500" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Spectrum arrow -->
+        <mxCell id="spectrum" value="" style="endArrow=open;html=1;strokeWidth=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="60" y="60" as="sourcePoint" />
+            <mxPoint x="900" y="60" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="iaasLabel" value="IaaS (you manage more)" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="60" y="30" width="220" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="paasLabel" value="PaaS (Azure manages more)" style="text;html=1;align=right;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="680" y="30" width="220" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- VM -->
+        <mxCell id="vm" value="Virtual Machine&#10;(Lab 08)&#10;Full OS control,&#10;manual scaling" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="60" y="100" width="180" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- VMSS -->
+        <mxCell id="vmss" value="VM Scale Set&#10;(Lab 09)&#10;Identical VMs,&#10;autoscale rules" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="290" y="100" width="180" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- ACI -->
+        <mxCell id="aci" value="Container Instances&#10;(Lab 10)&#10;Single container,&#10;per-second billing,&#10;no built-in autoscale" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="520" y="100" width="180" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- App Service -->
+        <mxCell id="appsvc" value="App Service&#10;(Lab 11)&#10;Managed runtime,&#10;deployment slots,&#10;autoscale" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="750" y="100" width="180" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- Note about AKS -->
+        <mxCell id="aksNote" value="AKS: not deployed in this course, but know it as the&#10;step up from ACI for multi-container orchestration at scale." style="text;html=1;align=left;verticalAlign=middle;fontStyle=2" vertex="1" parent="1">
+          <mxGeometry x="60" y="260" width="700" height="40" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

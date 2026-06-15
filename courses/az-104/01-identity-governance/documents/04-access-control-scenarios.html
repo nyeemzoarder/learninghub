@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Access Control Scenarios - Real-World Patterns</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f8fc;--card:#fff;--border:#d9e0ef;--text:#1f2937;--muted:#5b6678;
+  --primary:#151d63;--panel:#00004C;--panel-shadow:rgba(0,0,76,.18);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:Inter,-apple-system,'Segoe UI',sans-serif;color:var(--text)}
+.page{flex:1;min-width:0;padding:28px}
+
+h1{font-size:3.2rem;line-height:1.15;margin:0;color:var(--primary);font-weight:800;letter-spacing:-1px}
+.subtitle{font-size:1.4rem;font-weight:600;color:#2d3b77;margin-top:10px}
+
+.badges{display:flex;gap:12px;margin:20px 0 26px;flex-wrap:wrap}
+.badge{background:#eef2ff;border:1px solid #d8def7;color:#1e2a78;padding:10px 18px;border-radius:999px;font-weight:600;font-size:.95rem}
+
+.section{display:grid;grid-template-columns:42% 58%;gap:28px;padding:26px 0;border-top:1px solid var(--border)}
+.section.full{display:block;padding:26px 0;border-top:1px solid var(--border)}
+.section:first-of-type, .section.full:first-of-type{border-top:none}
+
+h2{font-size:2rem;margin:0 0 14px;color:var(--primary);font-weight:800}
+h3{font-size:1.4rem;margin:22px 0 10px;color:var(--primary);font-weight:700}
+h3:first-child{margin-top:0}
+h4{font-size:1.1rem;margin:16px 0 8px;color:#2d3b77;font-weight:700}
+
+p{font-size:1.05rem;line-height:1.65;margin:.5rem 0;color:var(--text)}
+
+ul, ol{margin:.6rem 0;padding-left:1.4rem}
+li{margin-bottom:6px;line-height:1.6;font-size:1.02rem}
+
+a{color:#1e2a78;text-decoration:none;border-bottom:1px solid transparent;font-weight:600}
+a:hover{border-bottom-color:#1e2a78}
+
+strong{color:var(--primary);font-weight:700}
+
+.callout{margin-top:20px;background:#f3f7ff;border:1px solid #bfd0ff;border-radius:14px;padding:18px 22px}
+.callout strong{color:#1735ad}
+.callout p{margin:0}
+.callout p + p{margin-top:8px}
+
+.panel{
+  background:var(--panel);
+  color:#fff;border-radius:18px;padding:22px 26px;
+  box-shadow:0 12px 28px var(--panel-shadow);
+  font:15px/1.65 'SF Mono',Consolas,'Courier New',monospace;
+  white-space:pre-wrap;
+  overflow:auto;
+}
+.panel.small{font-size:13.5px;line-height:1.6}
+.panel + .panel{margin-top:18px}
+
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:14px 0}
+th,td{padding:14px;border:1px solid var(--border);text-align:left;font-size:.98rem}
+th{background:#eef2ff;color:var(--primary);font-weight:700}
+tr:hover td{background:#fafbff}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+
+.mistake-card{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:14px 0 8px}
+.mistake-card h4{margin-top:0}
+
+.tip{margin-top:20px;background:#eef4ff;border:1px solid #c8d5ff;border-radius:12px;padding:16px 20px;font-size:1.02rem}
+.tip strong{color:#1735ad}
+
+hr.divider{border:none;height:0;margin:0}
+
+.footer{margin-top:48px;padding-top:24px;border-top:1px solid var(--border);font-size:.9rem;color:var(--muted)}
+.footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px}
+.footer-item strong{display:block;color:var(--primary);margin-bottom:6px;font-size:.95rem}
+.footer-meta{margin-top:24px;padding-top:16px;border-top:1px solid var(--border);text-align:center;font-size:.85rem}
+
+@media (max-width:1000px){
+  .section,.grid2,.grid3,.grid4,.mistake-card{grid-template-columns:1fr}
+  h1{font-size:2.3rem}
+  .page{padding:16px}
+  .panel{font-size:13px}
+  .sidebar{display:none}
+  .layout{display:block}
+}
+
+/* ===== Site-wide Cross Navigation ===== */
+.site-nav{
+  position:sticky;top:0;z-index:1000;
+  background:var(--primary);color:#fff;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:12px 28px;font-size:.92rem;
+  box-shadow:0 2px 10px rgba(0,0,76,.18);
+  font-family:Inter,-apple-system,'Segoe UI',sans-serif;
+}
+.site-nav .nav-brand{font-weight:800;font-size:1.05rem;margin-right:auto;color:#fff}
+.site-nav details{position:relative}
+.site-nav summary{cursor:pointer;list-style:none;padding:7px 16px;border-radius:8px;background:rgba(255,255,255,.12);font-weight:600;color:#fff;user-select:none}
+.site-nav summary::-webkit-details-marker,.site-nav summary::marker{display:none;content:''}
+.site-nav details[open] summary{background:rgba(255,255,255,.24)}
+.site-nav .nav-menu{
+  position:absolute;top:calc(100% + 8px);left:0;
+  background:#fff;color:var(--text);
+  border:1px solid var(--border);border-radius:12px;
+  padding:8px;min-width:300px;box-shadow:0 16px 32px rgba(0,0,76,.22);
+  display:flex;flex-direction:column;gap:2px;z-index:1001;
+}
+.site-nav .nav-menu a{
+  display:block;padding:9px 14px;border-radius:8px;border-bottom:none;
+  color:var(--text);font-weight:500;font-size:.95rem;
+}
+.site-nav .nav-menu a:hover{background:#eef2ff;color:#1e2a78}
+.site-nav .nav-menu a.active{background:#eef2ff;color:#1735ad;font-weight:700}
+@media (max-width:768px){
+  .site-nav{padding:10px 16px}
+  .site-nav .nav-brand{font-size:.95rem}
+}
+/* ===== Page Sidebar (On This Page) ===== */
+.layout{max-width:1400px;margin:auto;display:flex;align-items:flex-start}
+.sidebar{
+  flex:0 0 260px;
+  position:sticky;top:88px;
+  max-height:calc(100vh - 108px);
+  overflow-y:auto;
+  margin:28px 0 28px 28px;
+  padding:20px 18px;
+  background:#fff;border:1px solid var(--border);border-radius:14px;
+  box-shadow:0 4px 16px rgba(21,29,99,.05);
+}
+.sidebar .toc-title{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 12px;padding:0 12px}
+.sidebar a{display:block;padding:8px 12px;margin-bottom:2px;border-radius:8px;font-size:.88rem;font-weight:500;color:var(--text);border-bottom:none;border-left:3px solid transparent;line-height:1.4}
+.sidebar a:hover{background:#eef2ff;color:#1e2a78}
+.sidebar a.active{background:#eef2ff;color:#1735ad;font-weight:700;border-left-color:var(--primary)}
+@media print{
+  .site-nav{display:none}
+  body{background:#fff}
+  .page{padding:0}
+  .panel{box-shadow:none}
+  .sidebar{display:none}
+  .layout{display:block}
+}
+</style>
+</head>
+<body>
+<nav class="site-nav">
+  <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
+  <details class="nav-group">
+    <summary>Module 00 - Prerequisites</summary>
+    <div class="nav-menu">
+      <a href="../../00-prerequisites/documents/01-cloud-computing-fundamentals.html">01 - Cloud Computing Fundamentals</a>
+      <a href="../../00-prerequisites/documents/02-networking-basics.html">02 - Networking Basics</a>
+      <a href="../../00-prerequisites/documents/03-identity-and-access-fundamentals.html">03 - Identity &amp; Access Fundamentals</a>
+      <a href="../../00-prerequisites/documents/04-azure-portal-navigation.html">04 - Azure Portal Navigation</a>
+    </div>
+  </details>
+  <details class="nav-group">
+    <summary>Module 01 - Identity &amp; Governance</summary>
+    <div class="nav-menu">
+      <a href="01-entra-id-overview.html">01 - Entra ID Overview</a>
+      <a href="02-rbac-fundamentals.html">02 - RBAC Fundamentals</a>
+      <a href="03-management-groups-and-azure-policy.html">03 - Management Groups &amp; Azure Policy</a>
+      <a href="04-access-control-scenarios.html" class="active">04 - Access Control Scenarios</a>
+      <a href="05-identity-best-practices.html">05 - Identity Best Practices</a>
+    </div>
+  </details>
+  <details class="nav-group">
+    <summary>Module 04 - Networking</summary>
+    <div class="nav-menu">
+      <a href="../../04-networking/documents/01-hub-spoke-topology.html">01 - Hub-Spoke Topology</a>
+      <a href="../../04-networking/documents/01-vnets-and-subnets.html">01 - VNets &amp; Subnets</a>
+      <a href="../../04-networking/documents/02-network-security-groups.html">02 - Network Security Groups</a>
+      <a href="../../04-networking/documents/03-routing-fundamentals.html">03 - Routing Fundamentals</a>
+      <a href="../../04-networking/documents/04-vnet-peering.html">04 - VNet Peering</a>
+      <a href="../../04-networking/documents/05-vpn-and-expressroute.html">05 - VPN &amp; ExpressRoute</a>
+      <a href="../../04-networking/documents/07-private-endpoints-service-endpoints.html">07 - Private &amp; Service Endpoints</a>
+      <a href="../../04-networking/documents/08-network-security-advanced.html">08 - Advanced Network Security</a>
+    </div>
+  </details>
+</nav>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="toc-title">On This Page</div>
+    <a href="#before-you-start">Before You Start</a>
+    <a href="#scenario-1-delegating-department-admin-duties">Scenario 1: Delegating Department Admin Duties</a>
+    <a href="#scenario-2-securing-development-vs-production">Scenario 2: Securing Development vs. Production</a>
+    <a href="#scenario-3-cost-control-and-chargeback">Scenario 3: Cost Control &amp; Chargeback</a>
+    <a href="#scenario-4-compliance-and-audit-requirements">Scenario 4: Compliance &amp; Audit Requirements</a>
+    <a href="#key-patterns">Key Patterns</a>
+    <a href="#how-this-connects-to-other-topics">How This Connects to Other Topics</a>
+    <a href="#see-it-in-action">See It In Action</a>
+    <a href="#key-takeaways">Key Takeaways</a>
+    <a href="#next-steps">Next Steps</a>
+  </aside>
+  <div class="page">
+
+  <h1>Access Control Scenarios: Real-World Patterns</h1>
+  <div class="subtitle">Combine Entra ID, RBAC, and Azure Policy to solve real enterprise access problems</div>
+
+  <div class="badges">
+    <span class="badge">🟡 Intermediate</span>
+    <span class="badge">⏱ 20 Minutes</span>
+    <span class="badge">📘 AZ-104 · Module 01</span>
+  </div>
+
+  <div class="callout">
+    <strong>Why This Matters</strong>
+    <p>Understanding RBAC, Entra ID, and Policy in theory is one thing. Knowing how to combine them to solve real business problems is another. This doc walks through enterprise scenarios you'll actually encounter: delegating admin duties, securing development environments, controlling costs, enforcing compliance.</p>
+  </div>
+
+  <!-- Before You Start -->
+  <div class="section full" id="before-you-start">
+    <h2>Before You Start</h2>
+    <table>
+      <tr><th>Prerequisites</th><td><a href="01-entra-id-overview.md">Entra ID Overview</a>, <a href="02-rbac-fundamentals.md">RBAC Fundamentals</a>, <a href="03-management-groups-and-azure-policy.md">Management Groups &amp; Policy</a></td></tr>
+      <tr><th>Time to understand</th><td>20 minutes</td></tr>
+      <tr><th>Difficulty</th><td>🟡 Intermediate (combines multiple identity concepts)</td></tr>
+      <tr><th>What you'll learn</th><td>How to architect identity/access for real organizations</td></tr>
+    </table>
+  </div>
+
+  <!-- Scenario 1 -->
+  <div class="section full" id="scenario-1-delegating-department-admin-duties">
+    <h2>Scenario 1: Delegating Department Admin Duties</h2>
+    <h3>The Problem</h3>
+    <p><strong>TechCorp has:</strong></p>
+    <ul>
+      <li>Finance department (30 people, their own subscriptions)</li>
+      <li>Engineering department (50 people, their own subscriptions)</li>
+      <li>Operations (20 people, shared infrastructure)</li>
+    </ul>
+    <p><strong>Goal:</strong> Finance VP can manage Finance Azure, but NOT see Engineering. Vice versa. Central IT keeps overall control.</p>
+
+    <h3>Architecture Solution</h3>
+    <div class="grid2">
+      <div>
+        <h4>Step 1: Create Management Groups by Department</h4>
+        <div class="panel small">Root (TechCorp)
+├── Finance Department (MG)
+│   ├── Finance-Prod (Subscription)
+│   ├── Finance-Dev (Subscription)
+│   └── Finance-Backup (Subscription)
+├── Engineering Department (MG)
+│   ├── Eng-Prod (Subscription)
+│   ├── Eng-Dev (Subscription)
+│   └── Eng-Test (Subscription)
+└── Operations (MG)
+    ├── Ops-Infra (Subscription)
+    └── Ops-Network (Subscription)</div>
+      </div>
+      <div>
+        <h4>Step 2: Create Entra Groups</h4>
+        <div class="panel small">grp-finance-admins
+├── Members: Finance VP, Finance team leads
+└── Purpose: Finance management
+
+grp-engineering-admins
+├── Members: Engineering VP, Engineering team leads
+└── Purpose: Engineering management
+
+grp-operations-admins
+├── Members: Ops director, senior ops engineers
+└── Purpose: Infrastructure management</div>
+      </div>
+    </div>
+
+    <h4 style="margin-top:18px">Step 3: Assign RBAC Roles by Management Group</h4>
+    <div class="panel small">Finance Management Group:
+  Role: Contributor
+  Assigned to: grp-finance-admins
+  Scope: Finance Management Group (applies to all Finance subscriptions)
+  Result: Finance team can create/modify resources in Finance only
+
+Engineering Management Group:
+  Role: Contributor
+  Assigned to: grp-engineering-admins
+  Scope: Engineering Management Group
+  Result: Engineering team can create/modify in Engineering only
+
+Root Level:
+  Role: Owner
+  Assigned to: grp-operations-admins
+  Scope: Root (all subscriptions)
+  Result: IT has full control everywhere</div>
+
+    <h3 style="margin-top:24px">Result</h3>
+    <div class="grid3">
+      <div>
+        <h4>Finance VP logs in</h4>
+        <div class="panel small">├─ Can see Finance subscriptions ✓
+├─ Can create/modify Finance resources ✓
+├─ Cannot see Engineering subscriptions ✗
+├─ Cannot access Operations ✗
+└─ Billing isolated by department ✓</div>
+      </div>
+      <div>
+        <h4>Engineering VP</h4>
+        <div class="panel small">├─ Can see Engineering subscriptions ✓
+├─ Can create/modify Engineering resources ✓
+├─ Cannot see Finance subscriptions ✗
+└─ Complete isolation achieved ✓</div>
+      </div>
+      <div>
+        <h4>IT Director</h4>
+        <div class="panel small">├─ Can see ALL subscriptions ✓
+├─ Can manage everything ✓
+└─ Central oversight maintained ✓</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scenario 2 -->
+  <div class="section full" id="scenario-2-securing-development-vs-production">
+    <h2>Scenario 2: Securing Development vs. Production</h2>
+    <h3>The Problem</h3>
+    <p><strong>TechCorp's DevOps team:</strong></p>
+    <ul>
+      <li>10 junior developers (low trust, learning)</li>
+      <li>5 senior developers (high trust, ship code)</li>
+      <li>Need to prevent accidents: "Don't delete prod database by mistake"</li>
+    </ul>
+    <p><strong>Goal:</strong> Juniors can experiment in Dev, not touch Production.</p>
+
+    <h3>Architecture Solution</h3>
+    <div class="grid2">
+      <div>
+        <h4>Step 1: Create Subscriptions by Environment</h4>
+        <div class="panel small">Subscriptions:
+├── Dev (dev-team can play here)
+├── Staging (vetted changes only)
+└── Prod (locked down, seniors only)</div>
+      </div>
+      <div>
+        <h4>Step 2: Create Entra Groups</h4>
+        <div class="panel small">grp-junior-developers
+├── Members: 10 junior devs
+└── Purpose: Dev environment learning
+
+grp-senior-developers
+├── Members: 5 senior devs
+└── Purpose: All environments, ship code
+
+grp-devops-engineers
+├── Members: 2 DevOps engineers
+└── Purpose: Deployment and infrastructure</div>
+      </div>
+    </div>
+
+    <h4 style="margin-top:18px">Step 3: Create Resource Groups with Scoped Access</h4>
+    <div class="panel small">DEV Subscription:
+  Resource Groups: rg-web-dev, rg-api-dev, rg-db-dev
+  Role: Contributor
+  Assigned to: grp-junior-developers
+  Result: Juniors can create/delete freely in Dev ✓
+
+STAGING Subscription:
+  Role: Contributor
+  Assigned to: grp-senior-developers + grp-devops-engineers
+  Result: Only seniors/DevOps can touch staging ✓
+
+PROD Subscription:
+  Role: Reader
+  Assigned to: grp-senior-developers + grp-junior-developers
+  Result: Everyone can VIEW prod, but only DevOps can modify ✓
+
+  Role: Contributor
+  Assigned to: grp-devops-engineers
+  Result: Only DevOps can change production ✓</div>
+
+    <h4 style="margin-top:18px">Step 4: Add Policies to Production</h4>
+    <div class="panel small">Policy 1: "All PROD resources must have 'backup' tag set to 'enabled'"
+  Action: Deny resources without tag
+  Result: No backup-less prod resource can be created ✓
+
+Policy 2: "Prevent deletion of production databases"
+  Action: Deny delete operations on SQL databases in PROD
+  Result: Even DevOps must explicitly override this (audit trail) ✓
+
+Policy 3: "All PROD VMs must use premium disks"
+  Action: Deny VM creation with standard disks
+  Result: Enforce performance standards ✓</div>
+
+    <h3 style="margin-top:24px">Result</h3>
+    <div class="grid3">
+      <div>
+        <h4>Junior Developer</h4>
+        <div class="panel small">├─ Dev: Full access (create, modify, delete) ✓
+├─ Staging: Read-only ✓
+├─ Prod: Read-only, can't change anything ✓
+└─ Safe to experiment without breaking prod ✓</div>
+      </div>
+      <div>
+        <h4>Senior Developer</h4>
+        <div class="panel small">├─ Dev: Full access ✓
+├─ Staging: Full access ✓
+├─ Prod: Read-only (change via DevOps) ✓
+└─ Peer review forced before prod changes ✓</div>
+      </div>
+      <div>
+        <h4>DevOps Engineer</h4>
+        <div class="panel small">├─ All subscriptions: Full access ✓
+├─ Prod changes: Recorded in audit logs ✓
+├─ Prod safety policies: Can override but traced ✓
+└─ Full control with full accountability ✓</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scenario 3 -->
+  <div class="section full" id="scenario-3-cost-control-and-chargeback">
+    <h2>Scenario 3: Cost Control &amp; Chargeback</h2>
+    <h3>The Problem</h3>
+    <p><strong>TechCorp's CFO says:</strong></p>
+    <ul>
+      <li>"We're spending $50K/month on Azure, but we don't know who's spending what"</li>
+      <li>"Engineering says they need expensive VM types, but are they really using them?"</li>
+      <li>"We need to prevent runaway spending"</li>
+    </ul>
+    <p><strong>Goal:</strong> Enforce cost controls, track spending by department, prevent expensive mistakes.</p>
+
+    <h3>Architecture Solution</h3>
+    <div class="grid2">
+      <div>
+        <h4>Step 1: Use Tags for Cost Allocation</h4>
+        <div class="panel small">All resources must have tags:
+├── CostCenter: Finance, Engineering, Operations
+├── Environment: Dev, Staging, Prod
+├── Owner: Department head email
+└── Project: Name of the project/app</div>
+      </div>
+      <div>
+        <h4>Step 2: Enforce Tags with Policy</h4>
+        <div class="panel small">Policy: "All resources must have CostCenter tag"
+  Action: Deny resources without CostCenter
+  Result: Can't spin up resources without charging them ✓
+
+Policy: "All resources must have Owner tag"
+  Action: Deny resources without Owner
+  Result: Know who to ask about each resource ✓</div>
+      </div>
+    </div>
+
+    <h4 style="margin-top:18px">Step 3: Use Azure Policies to Prevent Expensive Choices</h4>
+    <div class="panel small">Policy: "Only allow Standard_B and Standard_D VM sizes"
+  Action: Deny Premium VM creation
+  Result: Prevent expensive mistakes, force justification for exceptions ✓
+
+Policy: "Limit storage redundancy to LRS/ZRS only"
+  Action: Deny GRS/RA-GRS unless explicitly approved
+  Result: Prevent unintended expensive replication ✓
+
+Policy: "Only allow certain regions (cost optimization)"
+  Action: Deny resources in expensive regions
+  Result: "Tier 1" regions only unless justified ✓</div>
+
+    <h4 style="margin-top:18px">Step 4: Create Cost Anomaly Alert</h4>
+    <div class="panel small">Azure Cost Management Alert:
+├── Alert when: Cost exceeds budget by 10% in any subscription
+├── Owner: Finance team
+└── Action: Auto-investigate, notify department head</div>
+
+    <h3 style="margin-top:24px">Result</h3>
+    <div class="grid3">
+      <div>
+        <h4>Monthly spending tracking</h4>
+        <div class="panel small">├── Finance Department: $5K (Dev/Prod accounted for)
+├── Engineering Department: $30K (broken down by project)
+├── Operations: $15K (infrastructure/shared)
+└── Total: $50K with full visibility ✓</div>
+      </div>
+      <div>
+        <h4>Developer tries to create expensive VM</h4>
+        <div class="panel small">├─ Selects Premium_D64s_v3
+├─ Policy blocks: "Not in allowed list"
+├─ Must request exception (creates audit trail)
+├─ Finance reviews justification
+├─ If approved, cost charged to project/department ✓</div>
+      </div>
+      <div>
+        <h4>Month-end</h4>
+        <div class="panel small">├── CFO sees exact spend per department ✓
+├── Can show Finance: "You used $5K on these 12 resources"
+├── Can challenge Engineering: "Why did you spin up
+│   expensive VMs?"
+└── Full accountability achieved ✓</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scenario 4 -->
+  <div class="section full" id="scenario-4-compliance-and-audit-requirements">
+    <h2>Scenario 4: Compliance &amp; Audit Requirements</h2>
+    <h3>The Problem</h3>
+    <p><strong>TechCorp's compliance officer says:</strong></p>
+    <ul>
+      <li>"We need audit trail of who accessed what"</li>
+      <li>"All data must be encrypted at rest"</li>
+      <li>"All data must only exist in US regions"</li>
+      <li>"We need SOC 2 compliance"</li>
+    </ul>
+    <p><strong>Goal:</strong> Enforce compliance automatically, not through human checking.</p>
+
+    <h3>Architecture Solution</h3>
+    <div class="grid2">
+      <div>
+        <h4>Step 1: Create Compliance-Focused Policies</h4>
+        <div class="panel small">Policy: "All storage accounts must use encryption"
+  Action: Modify (auto-enable encryption if missing)
+  Result: Zero unencrypted storage ✓
+
+Policy: "Only allow US regions"
+  Action: Deny non-US regions
+  Result: Data residency requirement met ✓
+
+Policy: "All databases must have backup enabled"
+  Action: Deny DB creation without backups
+  Result: Recovery guaranteed ✓
+
+Policy: "All VMs must have disk encryption"
+  Action: Modify (auto-enable if missing)
+  Result: Encrypted disks everywhere ✓</div>
+      </div>
+      <div>
+        <h4>Step 2: Enable Auditing &amp; Logging</h4>
+        <div class="panel small">All subscriptions:
+  ├── Enable Activity Logs (who did what)
+  ├── Enable Diagnostic Settings (resource logs)
+  ├── Forward to Log Analytics Workspace
+  └── Set retention to 90 days (compliance requirement)</div>
+      </div>
+    </div>
+
+    <h4 style="margin-top:18px">Step 3: Create Audit Role with Read-Only Access</h4>
+    <div class="panel small">Entra Group: grp-auditors
+├── Members: Internal auditors, compliance team
+└── Role: Reader (read-only across all subscriptions)
+
+Result:
+├─ Auditors can VIEW resources ✓
+├─ Auditors cannot MODIFY anything ✓
+├─ Auditors can query logs for investigation ✓
+└─ Separate audit trail of who audited what ✓</div>
+
+    <h3 style="margin-top:24px">Result</h3>
+    <div class="panel">At audit time:
+├── Query: "Show me all resources created in Jan-Jun"
+├── Result: Complete list with who created them, when ✓
+├── Query: "Show me all failed login attempts"
+├── Result: Security events visible in Activity Logs ✓
+├── Query: "Confirm all storage is encrypted"
+├── Result: Policy compliance report shows 100% ✓
+├── Query: "Verify all data is in US regions"
+├── Result: No resources found outside US ✓
+└── SOC 2 audit passes with evidence ✓</div>
+  </div>
+
+  <!-- Key Patterns -->
+  <div class="section full" id="key-patterns">
+    <h2>Key Patterns</h2>
+    <table>
+      <tr><th>Scenario</th><th>Management Group</th><th>RBAC</th><th>Policy</th><th>Audit</th></tr>
+      <tr><td><strong>Delegate by Dept</strong></td><td>By department</td><td>Scoped roles per MG</td><td>None</td><td>Standard logs</td></tr>
+      <tr><td><strong>Dev vs Prod</strong></td><td>By environment</td><td>Different roles per sub</td><td>Prod-specific rules</td><td>Activity logs</td></tr>
+      <tr><td><strong>Cost Control</strong></td><td>By department</td><td>Same across depts</td><td>Tag enforcement, VM limits</td><td>Cost mgmt alerts</td></tr>
+      <tr><td><strong>Compliance</strong></td><td>Central control</td><td>Auditors read-only</td><td>Encryption, region, backup</td><td>Enhanced logging, 90d retention</td></tr>
+    </table>
+  </div>
+
+  <!-- Connections -->
+  <div class="section full" id="how-this-connects-to-other-topics">
+    <h2>How This Connects to Other Topics</h2>
+    <div class="grid2">
+      <div>
+        <h3>Related to Module 02-05</h3>
+        <ul>
+          <li><strong>Identity controls everything</strong>: Every module's security starts with identity/access</li>
+          <li><strong>Policies prevent misconfigurations</strong>: Compliance requirements cascade into policies</li>
+          <li><strong>Audit trails hold people accountable</strong>: Logging enables oversight</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Related Labs</h3>
+        <ul>
+          <li><a href="../labs/lab02-rbac-azure-policy.md">Lab 02: RBAC &amp; Azure Policy</a></li>
+          <li><a href="../labs/lab03-management-groups-subscriptions.md">Lab 03: Management Groups</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- See It In Action -->
+  <div class="section full" id="see-it-in-action">
+    <h2>See It In Action</h2>
+    <p><strong>Related labs:</strong></p>
+    <ol>
+      <li><a href="../labs/lab02-rbac-azure-policy.md">Lab 02: RBAC &amp; Azure Policy</a></li>
+      <li><a href="../labs/lab03-management-groups-subscriptions.md">Lab 03: Management Groups</a></li>
+    </ol>
+  </div>
+
+  <!-- Key Takeaways -->
+  <div class="section full" id="key-takeaways">
+    <h2>Key Takeaways</h2>
+    <div class="tip">
+      <strong>💡 Summary</strong>
+      <ul style="margin-top:8px">
+        <li><strong>Delegate strategically</strong> with management groups + scoped RBAC</li>
+        <li><strong>Separate environments</strong> (Dev/Staging/Prod) with different permissions</li>
+        <li><strong>Enforce with policy</strong> (cost, compliance, standards)</li>
+        <li><strong>Audit everything</strong> (who did what, when, why)</li>
+        <li><strong>Tag for accountability</strong> (cost center, owner, project, environment)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Next Steps -->
+  <div class="section full" id="next-steps">
+    <h2>Next Steps</h2>
+    <ol>
+      <li><strong>Review:</strong> Read this doc (you're here)</li>
+      <li><strong>Practice:</strong> Apply scenarios in Labs 02-03</li>
+      <li><strong>Secure:</strong> Read <a href="05-identity-best-practices.md">Identity Best Practices</a> (hardening tactics)</li>
+    </ol>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-grid">
+      <div class="footer-item">
+        <strong>Azure AZ-104</strong>
+        Professional Concept Documentation
+      </div>
+      <div class="footer-item">
+        <strong>Module</strong>
+        01 — Identity &amp; Governance
+      </div>
+      <div class="footer-item">
+        <strong>Generated</strong>
+        June 15, 2026
+      </div>
+    </div>
+    <div class="footer-meta">&copy; 2026 — AZ-104 Learning Hub. For study purposes only.</div>
+  </div>
+
+</div>
+</div>
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.sidebar a'));
+  var sections = [];
+  links.forEach(function(a){
+    var el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) sections.push({link:a, el:el});
+  });
+  if (!sections.length || !('IntersectionObserver' in window)) return;
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (!entry.isIntersecting) return;
+      var match = sections.find(function(s){ return s.el === entry.target; });
+      if (!match) return;
+      links.forEach(function(a){ a.classList.remove('active'); });
+      match.link.classList.add('active');
+    });
+  }, { rootMargin: '-100px 0px -70% 0px', threshold: 0 });
+  sections.forEach(function(s){ observer.observe(s.el); });
+})();
+</script>
+</body>
+</html>

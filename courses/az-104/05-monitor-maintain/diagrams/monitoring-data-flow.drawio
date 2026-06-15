@@ -1,0 +1,62 @@
+<mxfile host="app.diagrams.net" version="24.0.0">
+  <diagram name="Monitoring Data Flow" id="monitoring-data-flow">
+    <mxGraphModel dx="1000" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="900" pageHeight="700" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Top path: metric alert -->
+        <mxCell id="vm" value="vm-monitor01&#10;(platform CPU metric)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="metricAlert" value="Metric alert&#10;alert-high-cpu&#10;(CPU > 80% for 5 min)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="320" y="40" width="220" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=open;" edge="1" parent="1" source="vm" target="metricAlert">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Bottom path: log alert -->
+        <mxCell id="storage" value="stoaz104lab17&lt;unique&gt;&#10;(StorageRead/Write logs)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="40" y="180" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="diag" value="Diagnostic setting&#10;diag-storage17" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="320" y="180" width="160" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="law" value="Log Analytics workspace&#10;law-az104lab17" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="540" y="180" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="logAlert" value="Log alert&#10;alert-failed-ops&#10;(KQL: count Failed &gt; 5 / 15 min)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="540" y="300" width="200" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=open;" edge="1" parent="1" source="storage" target="diag">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=open;" edge="1" parent="1" source="diag" target="law">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=open;" edge="1" parent="1" source="law" target="logAlert">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- VM Insights also feeds Log Analytics -->
+        <mxCell id="e5" value="VM Insights / AMA + DCR" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=open;dashed=1;" edge="1" parent="1" source="vm" target="law">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Action group -->
+        <mxCell id="actionGroup" value="Action group&#10;ag-az104lab17&#10;(email notification)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="320" y="420" width="220" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=open;" edge="1" parent="1" source="metricAlert" target="actionGroup">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=open;" edge="1" parent="1" source="logAlert" target="actionGroup">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

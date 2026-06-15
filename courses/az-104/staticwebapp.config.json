@@ -1,0 +1,16 @@
+{
+  "mimeTypes": {
+    ".md": "text/markdown",
+    ".pdf": "application/pdf"
+  },
+  "navigationFallback": {
+    "rewrite": "/index.html",
+    "exclude": ["/*.{html,css,js,json,png,jpg,jpeg,svg,pdf,md,ico}"]
+  },
+  "responseOverrides": {
+    "404": {
+      "rewrite": "/index.html",
+      "statusCode": 404
+    }
+  }
+}

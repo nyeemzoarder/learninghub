@@ -1,0 +1,51 @@
+<mxfile host="app.diagrams.net" version="24.0.0">
+  <diagram name="Storage Redundancy Options" id="storage-redundancy">
+    <mxGraphModel dx="900" dy="700" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="900" pageHeight="700" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Primary region -->
+        <mxCell id="primaryRegion" value="Primary Region" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="380" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="az1" value="AZ 1&#10;(3 copies - LRS)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="60" y="80" width="100" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="az2" value="AZ 2&#10;(ZRS copy)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="180" y="80" width="100" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="az3" value="AZ 3&#10;(ZRS copy)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="300" y="80" width="100" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="lrsNote" value="LRS: 3 copies in AZ 1 only" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="60" y="180" width="320" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="zrsNote" value="ZRS: 3 copies spread across AZ 1, 2, 3" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="60" y="210" width="320" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Secondary region -->
+        <mxCell id="secondaryRegion" value="Paired (Secondary) Region" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="480" y="40" width="320" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="secCopy" value="LRS copy&#10;(async replicated)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="500" y="80" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="raNote" value="GRS/GZRS: replicates here async.&#10;RA-GRS/RA-GZRS: adds a&#10;read-only endpoint to this copy." style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="500" y="180" width="280" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="repArrow" value="GRS / GZRS replication" style="edgeStyle=orthogonalEdgeStyle;html=1;dashed=1;endArrow=open;" edge="1" parent="1" source="az1" target="secCopy">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Legend table -->
+        <mxCell id="legend" value="LRS = 3 copies, 1 datacenter&#10;ZRS = 3 copies across 3 AZs in region&#10;GRS = LRS + async copy in paired region&#10;GZRS = ZRS + async copy in paired region&#10;RA- prefix = adds read access to secondary" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="40" y="360" width="760" height="120" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

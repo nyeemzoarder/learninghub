@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Identity Best Practices - Security Hardening</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f8fc;--card:#fff;--border:#d9e0ef;--text:#1f2937;--muted:#5b6678;
+  --primary:#151d63;--panel:#00004C;--panel-shadow:rgba(0,0,76,.18);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:Inter,-apple-system,'Segoe UI',sans-serif;color:var(--text)}
+.page{flex:1;min-width:0;padding:28px}
+
+h1{font-size:3.2rem;line-height:1.15;margin:0;color:var(--primary);font-weight:800;letter-spacing:-1px}
+.subtitle{font-size:1.4rem;font-weight:600;color:#2d3b77;margin-top:10px}
+
+.badges{display:flex;gap:12px;margin:20px 0 26px;flex-wrap:wrap}
+.badge{background:#eef2ff;border:1px solid #d8def7;color:#1e2a78;padding:10px 18px;border-radius:999px;font-weight:600;font-size:.95rem}
+
+.section{display:grid;grid-template-columns:42% 58%;gap:28px;padding:26px 0;border-top:1px solid var(--border)}
+.section.full{display:block;padding:26px 0;border-top:1px solid var(--border)}
+.section:first-of-type, .section.full:first-of-type{border-top:none}
+
+h2{font-size:2rem;margin:0 0 14px;color:var(--primary);font-weight:800}
+h3{font-size:1.4rem;margin:22px 0 10px;color:var(--primary);font-weight:700}
+h3:first-child{margin-top:0}
+h4{font-size:1.1rem;margin:16px 0 8px;color:#2d3b77;font-weight:700}
+
+p{font-size:1.05rem;line-height:1.65;margin:.5rem 0;color:var(--text)}
+
+ul, ol{margin:.6rem 0;padding-left:1.4rem}
+li{margin-bottom:6px;line-height:1.6;font-size:1.02rem}
+
+a{color:#1e2a78;text-decoration:none;border-bottom:1px solid transparent;font-weight:600}
+a:hover{border-bottom-color:#1e2a78}
+
+strong{color:var(--primary);font-weight:700}
+
+.callout{margin-top:20px;background:#f3f7ff;border:1px solid #bfd0ff;border-radius:14px;padding:18px 22px}
+.callout strong{color:#1735ad}
+.callout p{margin:0}
+.callout p + p{margin-top:8px}
+
+.panel{
+  background:var(--panel);
+  color:#fff;border-radius:18px;padding:22px 26px;
+  box-shadow:0 12px 28px var(--panel-shadow);
+  font:15px/1.65 'SF Mono',Consolas,'Courier New',monospace;
+  white-space:pre-wrap;
+  overflow:auto;
+}
+.panel.small{font-size:13.5px;line-height:1.6}
+.panel + .panel{margin-top:18px}
+
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:14px 0}
+th,td{padding:14px;border:1px solid var(--border);text-align:left;font-size:.98rem}
+th{background:#eef2ff;color:var(--primary);font-weight:700}
+tr:hover td{background:#fafbff}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+
+.mistake-card{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:14px 0 8px}
+.mistake-card h4{margin-top:0}
+
+.tip{margin-top:20px;background:#eef4ff;border:1px solid #c8d5ff;border-radius:12px;padding:16px 20px;font-size:1.02rem}
+.tip strong{color:#1735ad}
+
+hr.divider{border:none;height:0;margin:0}
+
+.footer{margin-top:48px;padding-top:24px;border-top:1px solid var(--border);font-size:.9rem;color:var(--muted)}
+.footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px}
+.footer-item strong{display:block;color:var(--primary);margin-bottom:6px;font-size:.95rem}
+.footer-meta{margin-top:24px;padding-top:16px;border-top:1px solid var(--border);text-align:center;font-size:.85rem}
+
+@media (max-width:1000px){
+  .section,.grid2,.grid3,.grid4,.mistake-card{grid-template-columns:1fr}
+  h1{font-size:2.3rem}
+  .page{padding:16px}
+  .panel{font-size:13px}
+  .sidebar{display:none}
+  .layout{display:block}
+}
+
+/* ===== Site-wide Cross Navigation ===== */
+.site-nav{
+  position:sticky;top:0;z-index:1000;
+  background:var(--primary);color:#fff;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:12px 28px;font-size:.92rem;
+  box-shadow:0 2px 10px rgba(0,0,76,.18);
+  font-family:Inter,-apple-system,'Segoe UI',sans-serif;
+}
+.site-nav .nav-brand{font-weight:800;font-size:1.05rem;margin-right:auto;color:#fff}
+.site-nav details{position:relative}
+.site-nav summary{cursor:pointer;list-style:none;padding:7px 16px;border-radius:8px;background:rgba(255,255,255,.12);font-weight:600;color:#fff;user-select:none}
+.site-nav summary::-webkit-details-marker,.site-nav summary::marker{display:none;content:''}
+.site-nav details[open] summary{background:rgba(255,255,255,.24)}
+.site-nav .nav-menu{
+  position:absolute;top:calc(100% + 8px);left:0;
+  background:#fff;color:var(--text);
+  border:1px solid var(--border);border-radius:12px;
+  padding:8px;min-width:300px;box-shadow:0 16px 32px rgba(0,0,76,.22);
+  display:flex;flex-direction:column;gap:2px;z-index:1001;
+}
+.site-nav .nav-menu a{
+  display:block;padding:9px 14px;border-radius:8px;border-bottom:none;
+  color:var(--text);font-weight:500;font-size:.95rem;
+}
+.site-nav .nav-menu a:hover{background:#eef2ff;color:#1e2a78}
+.site-nav .nav-menu a.active{background:#eef2ff;color:#1735ad;font-weight:700}
+@media (max-width:768px){
+  .site-nav{padding:10px 16px}
+  .site-nav .nav-brand{font-size:.95rem}
+}
+/* ===== Page Sidebar (On This Page) ===== */
+.layout{max-width:1400px;margin:auto;display:flex;align-items:flex-start}
+.sidebar{
+  flex:0 0 260px;
+  position:sticky;top:88px;
+  max-height:calc(100vh - 108px);
+  overflow-y:auto;
+  margin:28px 0 28px 28px;
+  padding:20px 18px;
+  background:#fff;border:1px solid var(--border);border-radius:14px;
+  box-shadow:0 4px 16px rgba(21,29,99,.05);
+}
+.sidebar .toc-title{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 12px;padding:0 12px}
+.sidebar a{display:block;padding:8px 12px;margin-bottom:2px;border-radius:8px;font-size:.88rem;font-weight:500;color:var(--text);border-bottom:none;border-left:3px solid transparent;line-height:1.4}
+.sidebar a:hover{background:#eef2ff;color:#1e2a78}
+.sidebar a.active{background:#eef2ff;color:#1735ad;font-weight:700;border-left-color:var(--primary)}
+@media print{
+  .site-nav{display:none}
+  body{background:#fff}
+  .page{padding:0}
+  .panel{box-shadow:none}
+  .sidebar{display:none}
+  .layout{display:block}
+}
+</style>
+</head>
+<body>
+<nav class="site-nav">
+  <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
+  <details class="nav-group">
+    <summary>Module 00 - Prerequisites</summary>
+    <div class="nav-menu">
+      <a href="../../00-prerequisites/documents/01-cloud-computing-fundamentals.html">01 - Cloud Computing Fundamentals</a>
+      <a href="../../00-prerequisites/documents/02-networking-basics.html">02 - Networking Basics</a>
+      <a href="../../00-prerequisites/documents/03-identity-and-access-fundamentals.html">03 - Identity &amp; Access Fundamentals</a>
+      <a href="../../00-prerequisites/documents/04-azure-portal-navigation.html">04 - Azure Portal Navigation</a>
+    </div>
+  </details>
+  <details class="nav-group">
+    <summary>Module 01 - Identity &amp; Governance</summary>
+    <div class="nav-menu">
+      <a href="01-entra-id-overview.html">01 - Entra ID Overview</a>
+      <a href="02-rbac-fundamentals.html">02 - RBAC Fundamentals</a>
+      <a href="03-management-groups-and-azure-policy.html">03 - Management Groups &amp; Azure Policy</a>
+      <a href="04-access-control-scenarios.html">04 - Access Control Scenarios</a>
+      <a href="05-identity-best-practices.html" class="active">05 - Identity Best Practices</a>
+    </div>
+  </details>
+  <details class="nav-group">
+    <summary>Module 04 - Networking</summary>
+    <div class="nav-menu">
+      <a href="../../04-networking/documents/01-hub-spoke-topology.html">01 - Hub-Spoke Topology</a>
+      <a href="../../04-networking/documents/01-vnets-and-subnets.html">01 - VNets &amp; Subnets</a>
+      <a href="../../04-networking/documents/02-network-security-groups.html">02 - Network Security Groups</a>
+      <a href="../../04-networking/documents/03-routing-fundamentals.html">03 - Routing Fundamentals</a>
+      <a href="../../04-networking/documents/04-vnet-peering.html">04 - VNet Peering</a>
+      <a href="../../04-networking/documents/05-vpn-and-expressroute.html">05 - VPN &amp; ExpressRoute</a>
+      <a href="../../04-networking/documents/07-private-endpoints-service-endpoints.html">07 - Private &amp; Service Endpoints</a>
+      <a href="../../04-networking/documents/08-network-security-advanced.html">08 - Advanced Network Security</a>
+    </div>
+  </details>
+</nav>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="toc-title">On This Page</div>
+    <a href="#before-you-start">Before You Start</a>
+    <a href="#best-practice-1-least-privilege-access">Best Practice 1: Least Privilege Access</a>
+    <a href="#best-practice-2-regular-access-reviews">Best Practice 2: Regular Access Reviews</a>
+    <a href="#best-practice-3-enable-multi-factor-authentication-mfa">Best Practice 3: Enable Multi-Factor Authentication (MFA)</a>
+    <a href="#best-practice-4-monitor-sign-in-activity">Best Practice 4: Monitor Sign-in Activity</a>
+    <a href="#best-practice-5-use-groups-not-individual-assignments">Best Practice 5: Use Groups, Not Individual Assignments</a>
+    <a href="#best-practice-6-separate-duty-approval-required">Best Practice 6: Separate Duty / Approval Required</a>
+    <a href="#best-practice-7-disable-unused-accounts-quickly">Best Practice 7: Disable Unused Accounts Quickly</a>
+    <a href="#best-practice-8-use-service-principals-with-passwords-only-when-necessary">Best Practice 8: Use Service Principals with Passwords Only When Necessary</a>
+    <a href="#best-practice-checklist">Best Practice Checklist</a>
+    <a href="#how-this-connects-to-other-topics">How This Connects to Other Topics</a>
+    <a href="#see-it-in-action">See It In Action</a>
+    <a href="#key-takeaways">Key Takeaways</a>
+    <a href="#next-steps">Next Steps</a>
+  </aside>
+  <div class="page">
+
+  <h1>Identity Best Practices: Security Hardening</h1>
+  <div class="subtitle">The practices that keep your Azure identity secure — least privilege, reviews, MFA, and proper delegation</div>
+
+  <div class="badges">
+    <span class="badge">🟡 Intermediate</span>
+    <span class="badge">⏱ 15 Minutes</span>
+    <span class="badge">📘 AZ-104 · Module 01</span>
+  </div>
+
+  <div class="callout">
+    <strong>Why This Matters</strong>
+    <p>Bad identity practices are how breaches happen. Weak passwords, unused accounts, overly permissive roles, missing audit trails — these are the exploits hackers use. This doc covers the practices that keep your Azure identity secure: least privilege, regular reviews, MFA, and proper delegation.</p>
+  </div>
+
+  <!-- Before You Start -->
+  <div class="section full" id="before-you-start">
+    <h2>Before You Start</h2>
+    <table>
+      <tr><th>Prerequisites</th><td><a href="01-entra-id-overview.html">Entra ID Overview</a>, <a href="02-rbac-fundamentals.html">RBAC Fundamentals</a>, <a href="04-access-control-scenarios.html">Access Control Scenarios</a></td></tr>
+      <tr><th>Time to understand</th><td>15 minutes</td></tr>
+      <tr><th>Difficulty</th><td>🟡 Intermediate (security mindset helpful)</td></tr>
+      <tr><th>What you'll learn</th><td>How to secure identity and access in Azure</td></tr>
+    </table>
+  </div>
+
+  <!-- Best Practice 1 -->
+  <div class="section full" id="best-practice-1-least-privilege-access">
+    <h2>Best Practice 1: Least Privilege Access</h2>
+    <h3>The Principle</h3>
+    <p><strong>Least Privilege = Give people only the minimum access they need, nothing more.</strong></p>
+
+    <div class="mistake-card">
+      <div>
+        <h4>Wrong (Excessive Access)</h4>
+        <div class="panel small">Employee: "I need to deploy code"
+Manager: "Okay, I'll give you Owner role on the subscription"
+Result: Employee can delete EVERYTHING, including databases ✗</div>
+      </div>
+      <div>
+        <h4>Right (Least Privilege)</h4>
+        <div class="panel small">Employee: "I need to deploy code"
+Manager: "Okay, I'll give you Container Registry Contributor (push images only)"
+Result: Employee can only push to registry, can't delete other resources ✓</div>
+      </div>
+    </div>
+
+    <h3>Implementation</h3>
+    <div class="panel">Step 1: Determine minimum needed
+  "What is the smallest role that lets them do their job?"
+
+Step 2: Start with Reader
+  If you don't know, start with read-only, expand only if needed
+
+Step 3: Remove over time
+  At end of project: "Do you still need Contributor?" → Remove if not ✓
+
+Step 4: Review quarterly
+  Question every role: "Is this still necessary?"</div>
+
+    <h3>Roles Ranked by Privilege (Most to Least)</h3>
+    <div class="panel">1. Owner (everything, delete RGs)
+   └─ Give to: IT directors, cloud architects only
+
+2. Contributor (create/modify, NOT delete RGs)
+   └─ Give to: Senior engineers, ops teams
+
+3. Operator roles (specific operations like "start VMs")
+   └─ Give to: Support staff, automation accounts
+
+4. Reader (read-only, no changes)
+   └─ Give to: Auditors, consultants, everyone else by default
+
+5. Custom roles (exact permissions needed)
+   └─ Use when no built-in role fits</div>
+  </div>
+
+  <!-- Best Practice 2 -->
+  <div class="section full" id="best-practice-2-regular-access-reviews">
+    <h2>Best Practice 2: Regular Access Reviews</h2>
+    <h3>The Problem</h3>
+    <p><strong>Access Creep (Permissions grow over time):</strong></p>
+    <div class="panel">Year 1: Employee hired → assigned Contributor role
+Year 2: Moves to different project → keeps old Contributor role
+Year 3: Gets promoted → gets new role, doesn't lose old ones
+Year 4: Employee leaves → access not revoked for 6 months
+Result: Former employee still has access ✗</div>
+
+    <div class="grid2" style="margin-top:18px">
+      <div>
+        <h3>Implementation</h3>
+        <div class="panel small">Quarterly Access Review Checklist:
+├─ Question 1: "Are they still in the role's group?"
+├─ Question 2: "Does the job still require this role?"
+├─ Question 3: "When was this role last used?"
+├─ Question 4: "Has their responsibility changed?"
+└─ Question 5: "Any unusual activity from this account?"
+
+For YES answers → Keep
+For NO answers → Remove (audit the removal)</div>
+      </div>
+      <div>
+        <h3>Azure Policy to Help</h3>
+        <div class="panel small">Policy: "Inactive accounts get read-only access after 90 days"
+  Logic:
+  ├─ If no sign-in in 90 days
+  ├─ Remove Contributor role
+  ├─ Keep Reader role (if absolutely needed)
+  └─ Send email asking "Can we disable this account?"
+
+Result:
+├─ Inactive accounts can't cause damage
+├─ Budget impact reduced
+└─ Security surface shrinks</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Best Practice 3 -->
+  <div class="section full" id="best-practice-3-enable-multi-factor-authentication-mfa">
+    <h2>Best Practice 3: Enable Multi-Factor Authentication (MFA)</h2>
+    <h3>The Problem</h3>
+    <p><strong>Weak Passwords Get Hacked:</strong></p>
+    <div class="panel small">Attacker gets password: P@ssw0rd123
+├─ Without MFA: Logs in immediately ✗
+├─ With MFA: Can't log in (no phone/app) ✓</div>
+
+    <h3 style="margin-top:24px">Implementation</h3>
+    <div class="grid3">
+      <div>
+        <h4>Option 1: Require for Admin Roles Only</h4>
+        <div class="panel small">└─ Conditional Access Policy
+   └─ If role is Global Admin → Require MFA
+   └─ Balance: Moderate security + usability</div>
+      </div>
+      <div>
+        <h4>Option 2: Require for All Users</h4>
+        <div class="panel small">└─ All users must register MFA method
+└─ Highest security, impacts user experience</div>
+      </div>
+      <div>
+        <h4>Option 3: Risk-Based (Conditional Access)</h4>
+        <div class="panel small">└─ Require MFA if:
+   ├─ Sign-in from unusual location ✓
+   ├─ Sign-in from unfamiliar device ✓
+   ├─ Multiple failed login attempts ✓
+   └─ Normal sign-in from known location → No MFA needed ✓
+└─ Best balance of security + usability</div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:24px">MFA Methods (Order by Security)</h3>
+    <div class="panel">1. Windows Hello / Biometric
+   └─ Most secure, works only on configured device
+
+2. Microsoft Authenticator app
+   └─ Very secure, phone required
+
+3. FIDO2 security key
+   └─ High security, requires special hardware
+
+4. SMS/Text message
+   └─ Least secure (vulnerable to sim-jacking)
+   └─ Better than nothing, but don't use alone</div>
+
+    <div class="callout">
+      <strong>Recommendation</strong>
+      <p>Require Authenticator app or Windows Hello for admins.</p>
+    </div>
+  </div>
+
+  <!-- Best Practice 4 -->
+  <div class="section full" id="best-practice-4-monitor-sign-in-activity">
+    <h2>Best Practice 4: Monitor Sign-in Activity</h2>
+    <h3>The Problem</h3>
+    <p><strong>Suspicious Activity = Breach in Progress:</strong></p>
+    <div class="panel small">Attacker steals password
+├─ Signs in from China (your company is in US)
+├─ Accesses data
+├─ Deletes resources
+└─ You don't notice for weeks ✗</div>
+
+    <h3 style="margin-top:24px">Implementation</h3>
+    <div class="panel">Entra ID → Monitoring → Sign-in logs
+
+What to Look For:
+├─ Sign-in from unusual country
+├─ Sign-in from unknown device
+├─ Multiple failed sign-in attempts (password guessing)
+├─ Sign-in outside business hours
+├─ Bulk changes (deleting users, roles) by one person
+└─ Access to sensitive data by unusual users</div>
+
+    <h3 style="margin-top:24px">Set Up Alerts</h3>
+    <div class="grid3">
+      <div>
+        <h4>Alert 1: Failed sign-in attempts</h4>
+        <div class="panel small">├─ If > 5 failed attempts in 5 minutes
+├─ Email IT immediately
+└─ Lock account for 15 minutes (Entra feature)</div>
+      </div>
+      <div>
+        <h4>Alert 2: Sign-in from unusual location</h4>
+        <div class="panel small">├─ If user signed in from new country
+├─ Require MFA re-verification
+└─ Send notification to user</div>
+      </div>
+      <div>
+        <h4>Alert 3: Unusual resource access</h4>
+        <div class="panel small">├─ If deleted users / roles changed by unusual person
+├─ Flag for immediate investigation
+└─ Require approval for such operations</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Best Practice 5 -->
+  <div class="section full" id="best-practice-5-use-groups-not-individual-assignments">
+    <h2>Best Practice 5: Use Groups, Not Individual Assignments</h2>
+    <h3>The Problem</h3>
+    <p><strong>Individual Assignments Don't Scale:</strong></p>
+    <div class="panel small">Assign role to 50 individuals
+├─ "sara@company.com" → Contributor
+├─ "mike@company.com" → Contributor
+├─ ... (48 more times)
+├─ Someone leaves → Did you remove all 12 of their roles?
+└─ New person joins → Did you add them to all required roles? ✗</div>
+
+    <h3 style="margin-top:24px">Implementation</h3>
+    <div class="panel">Use groups instead:
+├─ Create grp-engineering-contributors
+├─ Add 50 people to the group
+├─ Assign Contributor to the GROUP (once)
+├─ Someone leaves → remove from group, they lose all roles ✓
+├─ New person → add to group, they get all roles ✓
+
+Policy: "All role assignments must be to groups, not individuals"
+  └─ Exception: Service principals can have individual roles
+  └─ Result: All human access is via groups, trackable, scalable</div>
+  </div>
+
+  <!-- Best Practice 6 -->
+  <div class="section full" id="best-practice-6-separate-duty-approval-required">
+    <h2>Best Practice 6: Separate Duty / Approval Required</h2>
+    <h3>The Problem</h3>
+    <p><strong>One Person Can Approve Themselves:</strong></p>
+    <div class="panel small">Alice wants Contributor role on Production
+├─ Alice submits request
+├─ Alice's manager approves (she IS the manager!)
+├─ Alice approves her own request
+└─ No one else reviews → potential security risk ✗</div>
+
+    <div class="grid2" style="margin-top:18px">
+      <div>
+        <h3>Implementation: Approval Chain</h3>
+        <div class="panel small">├─ Request: Employee submits (I need role X on resource Y)
+├─ Approval 1: Manager (does this make sense for their job?)
+├─ Approval 2: Security team (is the resource sensitive?)
+├─ Approval 3: Resource owner (do you want this person?)
+└─ Execution: IT provisions role only after all approvals ✓
+
+Exception: Same person cannot approve their own request</div>
+      </div>
+      <div>
+        <h3>Azure Entitlement Management</h3>
+        <div class="panel small">Azure AD → Identity Governance → Entitlement Management
+
+Setup:
+├─ Create access package (e.g., "Production-Contributor")
+├─ Define who can request (all employees)
+├─ Define approval workflow (manager + security)
+├─ Set expiration (roles auto-expire after 90 days)
+└─ Auto-review (request approval before expiration)
+
+Benefit:
+├─ Formal audit trail ✓
+├─ Proper separation of duty ✓
+├─ Auto-cleanup (no orphaned roles) ✓
+└─ Full compliance evidence ✓</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Best Practice 7 -->
+  <div class="section full" id="best-practice-7-disable-unused-accounts-quickly">
+    <h2>Best Practice 7: Disable Unused Accounts Quickly</h2>
+    <h3>The Problem</h3>
+    <p><strong>Orphaned Accounts = Security Risk:</strong></p>
+    <div class="panel small">Employee leaves on Friday
+├─ Managers forget to disable account
+├─ Account still active Monday
+├─ Credentials stolen/sold on dark web Tuesday
+├─ Attacker has access Wednesday (nobody notices yet)
+└─ Breach discovered 6 months later ✗</div>
+
+    <h3 style="margin-top:24px">Implementation</h3>
+    <div class="grid2">
+      <div>
+        <h4>Offboarding Process</h4>
+        <div class="panel small">├─ Step 1: Day of departure → Disable account in Entra ID
+├─ Step 2: Revoke all role assignments
+├─ Step 3: Remove from all groups
+├─ Step 4: If not needed in 30 days → Delete account
+├─ Step 5: Audit: Search for old accounts, disable any orphaned ones</div>
+      </div>
+      <div>
+        <h4>Automation &amp; Verification</h4>
+        <div class="panel small">Automation:
+  ├─ HR system → Email IT when employee terminates
+  ├─ IT runs script to:
+  │   ├─ Disable account
+  │   ├─ Remove from groups
+  │   └─ Send notification
+  └─ Manager confirms cleanup complete
+
+Verification:
+  └─ Quarterly: Check for disabled accounts >90 days old, delete them</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Best Practice 8 -->
+  <div class="section full" id="best-practice-8-use-service-principals-with-passwords-only-when-necessary">
+    <h2>Best Practice 8: Use Service Principals with Passwords Only When Necessary</h2>
+    <h3>The Problem</h3>
+    <p><strong>Service Principals with Passwords = Shared Secrets:</strong></p>
+    <div class="panel small">App uses hardcoded password
+├─ Password stored in code (bad!)
+├─ Password stored in config files (bad!)
+├─ Password rotated slowly/never (bad!)
+├─ Password exposure = app compromise ✗</div>
+
+    <h3 style="margin-top:24px">Implementation</h3>
+    <div class="panel">Bad: Service principal with password
+  app → connects to Azure → authenticates with password
+  └─ Password shared everywhere
+
+Good: Service principal with certificate
+  app → connects to Azure → authenticates with certificate
+  └─ Certificate renewed automatically, harder to steal
+
+Best: Managed Identity
+  app → runs on Azure → auto-authenticated (no credentials needed!)
+  └─ Azure manages all credential rotation internally ✓</div>
+
+    <h3 style="margin-top:24px">When Each Applies</h3>
+    <div class="grid3">
+      <div>
+        <h4>Managed Identity (PREFERRED)</h4>
+        <div class="panel small">└─ Use when: App runs on Azure VM, App Service, Container, Function
+└─ Benefit: Zero secrets to manage ✓</div>
+      </div>
+      <div>
+        <h4>Service Principal + Certificate</h4>
+        <div class="panel small">└─ Use when: App runs outside Azure, certificate can be renewed
+└─ Benefit: More secure than passwords</div>
+      </div>
+      <div>
+        <h4>Service Principal + Password (AVOID)</h4>
+        <div class="panel small">└─ Use only if: Certificate isn't possible (rare)
+└─ Caveat: Must rotate password every 90 days minimum</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Best Practice Checklist -->
+  <div class="section full" id="best-practice-checklist">
+    <h2>Best Practice Checklist</h2>
+    <div class="grid2">
+      <div>
+        <h4>☐ Implement Least Privilege</h4>
+        <div class="panel small">└─ Audit: Are your lowest roles even lower than they need to be?</div>
+        <h4>☐ Quarterly Access Reviews</h4>
+        <div class="panel small">└─ Schedule: First Monday of each quarter
+└─ Owner: IT security team</div>
+        <h4>☐ Require MFA for Admins</h4>
+        <div class="panel small">└─ Minimum: All roles with "Admin" in the name
+└─ Better: Risk-based MFA for all users</div>
+        <h4>☐ Monitor Sign-in Logs</h4>
+        <div class="panel small">└─ Tool: Entra Sign-in logs
+└─ Alert: Unusual geography, failed attempts, bulk changes</div>
+      </div>
+      <div>
+        <h4>☐ Use Groups Exclusively</h4>
+        <div class="panel small">└─ Audit: Do any role assignments exist to individual users?
+└─ Policy: Enforce group-based assignments</div>
+        <h4>☐ Require Approval for Sensitive Roles</h4>
+        <div class="panel small">└─ Setup: Entitlement Management with approval workflow
+└─ Sensitive roles: Owner, User Administrator, Global Admin</div>
+        <h4>☐ Offboard Quickly</h4>
+        <div class="panel small">└─ SLA: Disable account within 24 hours of departure
+└─ Verify: Monthly audit of disabled accounts</div>
+        <h4>☐ Use Managed Identities</h4>
+        <div class="panel small">└─ Apps on Azure → Managed Identity
+└─ Apps off Azure → Certificate or (rarely) password</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Connections -->
+  <div class="section full" id="how-this-connects-to-other-topics">
+    <h2>How This Connects to Other Topics</h2>
+    <div class="grid2">
+      <div>
+        <h3>Related to All Modules</h3>
+        <ul>
+          <li><strong>Every Azure operation</strong> goes through identity</li>
+          <li><strong>Policies enforce best practices</strong> (MFA, encryption, etc.)</li>
+          <li><strong>Audit logs</strong> prove compliance</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Related Labs</h3>
+        <ul>
+          <li><a href="../labs/lab02-rbac-azure-policy.md">Lab 02: RBAC &amp; Azure Policy</a></li>
+          <li>Lab exercises: Set up MFA, review access, configure alerts</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- See It In Action -->
+  <div class="section full" id="see-it-in-action">
+    <h2>See It In Action</h2>
+    <p><strong>Related labs:</strong></p>
+    <ul>
+      <li><a href="../labs/lab02-rbac-azure-policy.md">Lab 02: RBAC &amp; Azure Policy</a></li>
+      <li>Lab exercises: Set up MFA, review access, configure alerts</li>
+    </ul>
+  </div>
+
+  <!-- Key Takeaways -->
+  <div class="section full" id="key-takeaways">
+    <h2>Key Takeaways</h2>
+    <div class="tip">
+      <strong>💡 Summary</strong>
+      <ul style="margin-top:8px">
+        <li><strong>Least privilege</strong> = minimal access needed, nothing more</li>
+        <li><strong>Regular reviews</strong> = catch permission creep before it becomes a breach</li>
+        <li><strong>MFA</strong> = makes password theft much less valuable</li>
+        <li><strong>Groups</strong> = easier to manage than individual assignments</li>
+        <li><strong>Audit logs</strong> = prove who did what, when, for compliance</li>
+        <li><strong>Approval workflows</strong> = prevent unilateral access grants</li>
+        <li><strong>Quick offboarding</strong> = disable accounts before they become liabilities</li>
+        <li><strong>Managed identities</strong> = best-practice app authentication on Azure</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Next Steps -->
+  <div class="section full" id="next-steps">
+    <h2>Next Steps</h2>
+    <ol>
+      <li><strong>Review:</strong> Read this doc (you're here)</li>
+      <li><strong>Implement:</strong> Start with MFA and quarterly reviews</li>
+      <li><strong>Monitor:</strong> Set up sign-in alerts</li>
+      <li><strong>Audit:</strong> Migrate individual assignments to groups</li>
+    </ol>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-grid">
+      <div class="footer-item">
+        <strong>Azure AZ-104</strong>
+        Professional Concept Documentation
+      </div>
+      <div class="footer-item">
+        <strong>Module</strong>
+        01 — Identity &amp; Governance
+      </div>
+      <div class="footer-item">
+        <strong>Generated</strong>
+        June 15, 2026
+      </div>
+    </div>
+    <div class="footer-meta">&copy; 2026 — AZ-104 Learning Hub. For study purposes only.</div>
+  </div>
+
+</div>
+</div>
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.sidebar a'));
+  var sections = [];
+  links.forEach(function(a){
+    var el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) sections.push({link:a, el:el});
+  });
+  if (!sections.length || !('IntersectionObserver' in window)) return;
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (!entry.isIntersecting) return;
+      var match = sections.find(function(s){ return s.el === entry.target; });
+      if (!match) return;
+      links.forEach(function(a){ a.classList.remove('active'); });
+      match.link.classList.add('active');
+    });
+  }, { rootMargin: '-100px 0px -70% 0px', threshold: 0 });
+  sections.forEach(function(s){ observer.observe(s.el); });
+})();
+</script>
+</body>
+</html>
