@@ -132,6 +132,8 @@ hr.divider{border:none;height:0;margin:0}
   box-shadow:0 4px 16px rgba(21,29,99,.05);
 }
 .sidebar .toc-title{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 12px;padding:0 12px}
+.sidebar hr.sidebar-divider{border:none;border-top:1px solid var(--border);margin:14px 0}
+.sidebar .toc-title.module-title{margin-top:0}
 .sidebar a{display:block;padding:8px 12px;margin-bottom:2px;border-radius:8px;font-size:.88rem;font-weight:500;color:var(--text);border-bottom:none;border-left:3px solid transparent;line-height:1.4}
 .sidebar a:hover{background:#eef2ff;color:#1e2a78}
 .sidebar a.active{background:#eef2ff;color:#1735ad;font-weight:700;border-left-color:var(--primary)}
@@ -183,6 +185,13 @@ hr.divider{border:none;height:0;margin:0}
 </nav>
 <div class="layout">
   <aside class="sidebar">
+    <div class="toc-title module-title">Module 01 - Identity &amp; Governance</div>
+    <a href="01-entra-id-overview.html">01 - Entra ID Overview</a>
+    <a href="02-rbac-fundamentals.html">02 - RBAC Fundamentals</a>
+    <a href="03-management-groups-and-azure-policy.html">03 - Management Groups &amp; Azure Policy</a>
+    <a href="04-access-control-scenarios.html">04 - Access Control Scenarios</a>
+    <a href="05-identity-best-practices.html" class="active">05 - Identity Best Practices</a>
+    <hr class="sidebar-divider">
     <div class="toc-title">On This Page</div>
     <a href="#before-you-start">Before You Start</a>
     <a href="#best-practice-1-least-privilege-access">Best Practice 1: Least Privilege Access</a>
