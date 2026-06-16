@@ -171,15 +171,18 @@ hr.divider{border:none;height:0;margin:0}
       <a href="../../01-identity-governance/documents/03-management-groups-and-azure-policy.html">03 - Management Groups &amp; Policy</a>
       <a href="../../01-identity-governance/documents/04-access-control-scenarios.html">04 - Access Control Scenarios</a>
       <a href="../../01-identity-governance/documents/05-identity-best-practices.html">05 - Identity Best Practices</a>
-      <a href="../../01-identity-governance/documents/lab01-entra-users-groups.html">Lab 01 - Entra ID Users</a>
-      <a href="../../01-identity-governance/documents/lab02-rbac-azure-policy.html">Lab 02 - RBAC &amp; Policy</a>
+      <a href="../../01-identity-governance/documents/labs-index.html">Labs</a>
     </div>
   </details>
 </nav>
 <div class="layout">
   <aside class="sidebar">
     <div class="toc-title module-title">Module 04 - Networking</div>
-    <a href="#objectives">Objectives</a>
+    <hr class="sidebar-divider">
+<div class="toc-title">Labs</div>
+<hr class="sidebar-divider">
+<div class="toc-title">On This Page</div>
+<a href="#objectives">Objectives</a>
 <a href="#prerequisites">Prerequisites</a>
 <a href="#estimated-time">Estimated time</a>
 <a href="#part-1-public-dns-zone">Part 1 – Public DNS zone</a>
@@ -190,30 +193,28 @@ hr.divider{border:none;height:0;margin:0}
 <a href="#validation">Validation</a>
 <a href="#cleanup">Cleanup</a>
 <a href="#exam-tips">Exam Tips</a>
-<hr class="sidebar-divider">
-<div class="toc-title">On This Page</div>
   </aside>
   <div class="page">
   <h1>Lab 16 – DNS & Name Resolution</h1>
 
-<h2 id="$(Convert-TitleToId Objectives)">Objectives</h2>
-<ul><ol><li>Create an Azure DNS public zone and records</li></ol></ul>
-<ul><ol><li>Create a Private DNS zone and link it to a VNet with autoregistration</li></ol></ul>
-<ul><ol><li>Configure custom DNS servers for a VNet and understand Azure-provided DNS</li></ol></ul>
+<h2 id="objectives">Objectives</h2>
+<ul><ol><li>Create an Azure DNS public zone and records</li>
+<li>Create a Private DNS zone and link it to a VNet with autoregistration</li>
+<li>Configure custom DNS servers for a VNet and understand Azure-provided DNS</li></ol></ul>
 
-<h2 id="$(Convert-TitleToId Prerequisites)">Prerequisites</h2>
-<ul><ol><li>None (a real registered domain is NOT required for the public zone exercise — you just won't be able to delegate it)</li></ol></ul>
-<ul><ol><li>Signed in at <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul><ol><li>None (a real registered domain is NOT required for the public zone exercise — you just won't be able to delegate it)</li>
+<li>Signed in at <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
 
-<h2 id="$(Convert-TitleToId Estimated time)">Estimated time</h2>
+<h2 id="estimated-time">Estimated time</h2>
 <p>30 minutes</p>
 
 <hr class="divider">
 
-<h2 id="$(Convert-TitleToId Part 1 – Public DNS zone)">Part 1 – Public DNS zone</h2>
+<h2 id="part-1-public-dns-zone">Part 1 – Public DNS zone</h2>
 
-<ol><li>Search for <strong>DNS zones</strong> > <strong>Create</strong>.</li></ol>
-<ol><li><strong>Basics</strong>:</li></ol>
+<ol><li>Search for <strong>DNS zones</strong> > <strong>Create</strong>.</li>
+<li><strong>Basics</strong>:</li></ol>
 <p>- <strong>Resource group</strong>: <strong>Create new</strong> <code>rg-az104-lab16</code></p>
 <p>- <strong>Name</strong>: <code>contoso-az104lab.com</code> (doesn't need to be a real domain)</p>
 <p>- <strong>Create</strong>.</p>
@@ -240,16 +241,16 @@ hr.divider{border:none;height:0;margin:0}
 <p>- <strong>Preference</strong>: 10</p>
 <p>- <strong>Create</strong>.</p>
 
-<h3 id="$(Convert-TitleToId View nameservers)">View nameservers</h3>
+<h3 id="view-nameservers">View nameservers</h3>
 <ol><li>Go to <strong>contoso-az104lab.com</strong> > <strong>Overview</strong> — the <strong>Nameservers</strong> are</li></ol>
 <p>listed (e.g., <code>ns1-07.azure-dns.com</code>, etc.). In a real scenario, you'd</p>
 <p>update these NS records at your domain registrar to delegate the domain to</p>
 <p>Azure DNS.</p>
 
-<h2 id="$(Convert-TitleToId Part 2 – Private DNS zone)">Part 2 – Private DNS zone</h2>
+<h2 id="part-2-private-dns-zone">Part 2 – Private DNS zone</h2>
 
-<ol><li>Search for <strong>Private DNS zones</strong> > <strong>Create</strong>.</li></ol>
-<ol><li><strong>Basics</strong>:</li></ol>
+<ol><li>Search for <strong>Private DNS zones</strong> > <strong>Create</strong>.</li>
+<li><strong>Basics</strong>:</li></ol>
 <p>- <strong>Resource group</strong>: <code>rg-az104-lab16</code></p>
 <p>- <strong>Name</strong>: <code>contoso.internal</code></p>
 <p>- <strong>Create</strong>.</p>
@@ -267,7 +268,7 @@ hr.divider{border:none;height:0;margin:0}
 <p>- <strong>Enable autoregistration</strong>: <strong>Checked</strong></p>
 <p>- <strong>Create</strong>.</p>
 
-<h2 id="$(Convert-TitleToId Part 3 – Test autoregistration)">Part 3 – Test autoregistration</h2>
+<h2 id="part-3-test-autoregistration">Part 3 – Test autoregistration</h2>
 
 <ol><li>Create a VM:</li></ol>
 <p>- <strong>Virtual machines</strong> > <strong>Create</strong> > <code>vm-dns01</code>, <strong>Ubuntu 22.04 LTS</strong>,</p>
@@ -277,7 +278,7 @@ hr.divider{border:none;height:0;margin:0}
 <p>should automatically appear as <code>vm-dns01</code> with an <strong>A</strong> record pointing to</p>
 <p>its private IP (e.g., <code>10.90.1.4</code>).</p>
 
-<h2 id="$(Convert-TitleToId Part 4 – Custom/manual A record in private zone)">Part 4 – Custom/manual A record in private zone</h2>
+<h2 id="part-4-custommanual-a-record-in-private-zone">Part 4 – Custom/manual A record in private zone</h2>
 
 <ol><li>Go to <strong>contoso.internal</strong> > <strong>Record sets</strong> > <strong>+ Record set</strong>:</li></ol>
 <p>- <strong>Name</strong>: <code>db01</code></p>
@@ -286,11 +287,11 @@ hr.divider{border:none;height:0;margin:0}
 <p>- <strong>IP Address</strong>: <code>10.90.1.50</code> (a custom IP for a database server)</p>
 <p>- <strong>Create</strong>.</p>
 
-<h2 id="$(Convert-TitleToId Part 5 – Custom DNS servers for a VNet (overview))">Part 5 – Custom DNS servers for a VNet (overview)</h2>
+<h2 id="part-5-custom-dns-servers-for-a-vnet-overview">Part 5 – Custom DNS servers for a VNet (overview)</h2>
 
-<ol><li>Go to <strong>vnet-dns16</strong> > <strong>DNS servers</strong> (under <strong>Settings</strong>).</li></ol>
-<ol><li>Default is <strong>Inherited from Azure</strong> (uses Azure-provided DNS <code>168.63.129.16</code>).</li></ol>
-<ol><li>To use custom DNS:</li></ol>
+<ol><li>Go to <strong>vnet-dns16</strong> > <strong>DNS servers</strong> (under <strong>Settings</strong>).</li>
+<li>Default is <strong>Inherited from Azure</strong> (uses Azure-provided DNS <code>168.63.129.16</code>).</li>
+<li>To use custom DNS:</li></ol>
 <p>- Set to <strong>Custom</strong>.</p>
 <p>- Add custom DNS server IPs (e.g., <code>10.90.1.4</code>, <code>168.63.129.16</code> for failover).</p>
 <p>- <strong>Save</strong>.</p>
@@ -298,21 +299,21 @@ hr.divider{border:none;height:0;margin:0}
 <div class="callout"><p>Note: Changing DNS servers requires VMs to restart to pick up new settings — discuss,</p></div>
 <div class="callout"><p>no need to apply for this lab.</p></div>
 
-<h2 id="$(Convert-TitleToId Validation)">Validation</h2>
-<ul><ol><li>[ ] Public zone <code>contoso-az104lab.com</code> has A, CNAME, and MX records</li></ol></ul>
-<ul><ol><li>[ ] Private zone <code>contoso.internal</code> linked to <code>vnet-dns16</code> with autoregistration enabled</li></ol></ul>
-<ul><ol><li>[ ] <code>vm-dns01</code> automatically appears as an A record in the private zone</li></ol></ul>
-<ul><ol><li>[ ] Manual A record <code>db01.contoso.internal</code> resolves to <code>10.90.1.50</code></li></ol></ul>
-<ul><ol><li>[ ] Can explain why <code>168.63.129.16</code> matters when using custom DNS servers</li></ol></ul>
+<h2 id="validation">Validation</h2>
+<ul><ol><li>[ ] Public zone <code>contoso-az104lab.com</code> has A, CNAME, and MX records</li>
+<li>[ ] Private zone <code>contoso.internal</code> linked to <code>vnet-dns16</code> with autoregistration enabled</li>
+<li>[ ] <code>vm-dns01</code> automatically appears as an A record in the private zone</li>
+<li>[ ] Manual A record <code>db01.contoso.internal</code> resolves to <code>10.90.1.50</code></li>
+<li>[ ] Can explain why <code>168.63.129.16</code> matters when using custom DNS servers</li></ol></ul>
 
-<h2 id="$(Convert-TitleToId Cleanup)">Cleanup</h2>
+<h2 id="cleanup">Cleanup</h2>
 <ol><li><strong>Resource groups</strong> > select <code>rg-az104-lab16</code> > <strong>Delete resource group</strong>.</li></ol>
 
-<h2 id="$(Convert-TitleToId Exam Tips)">Exam Tips</h2>
-<ul><ol><li>Azure Private DNS zones provide name resolution <strong>within and across VNets</strong> (via virtual network links) without managing your own DNS servers.</li></ol></ul>
-<ul><ol><li><strong>Autoregistration</strong> only works for VMs (registers A and PTR records) and only one zone per VNet can have autoregistration enabled.</li></ol></ul>
-<ul><ol><li><code>168.63.129.16</code> is a special, platform-wide virtual IP used for communication with Azure platform resources (DNS, health probes, license checks) — keep it in custom DNS configs.</li></ol></ul>
-<ul><ol><li>Public DNS zones in Azure host your zone's records; you still need to update NS records at your domain registrar to delegate the domain to Azure DNS.</li></ol></ul>
+<h2 id="exam-tips">Exam Tips</h2>
+<ul><ol><li>Azure Private DNS zones provide name resolution <strong>within and across VNets</strong> (via virtual network links) without managing your own DNS servers.</li>
+<li><strong>Autoregistration</strong> only works for VMs (registers A and PTR records) and only one zone per VNet can have autoregistration enabled.</li>
+<li><code>168.63.129.16</code> is a special, platform-wide virtual IP used for communication with Azure platform resources (DNS, health probes, license checks) — keep it in custom DNS configs.</li>
+<li>Public DNS zones in Azure host your zone's records; you still need to update NS records at your domain registrar to delegate the domain to Azure DNS.</li></ol></ul>
 
   </div>
 </div>

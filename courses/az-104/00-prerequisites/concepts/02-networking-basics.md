@@ -1,6 +1,6 @@
 # Networking Basics
 
-> [Prerequisites](README.md) for the [AZ-104 course](../README.md)
+> [Prerequisites](../README.md) for the [AZ-104 course](../../README.md)
 
 ## Why this matters
 
@@ -71,5 +71,5 @@ tool to inspect which route a packet would take.
 
 ## See also
 
-- [Glossary](../resources/glossary.md)
-- [Module 04 – Networking](../04-networking/README.md)
+- [Glossary](../../resources/glossary.md)
+- [Module 04 – Networking](../../04-networking/README.md)

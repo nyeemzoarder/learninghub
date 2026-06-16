@@ -49,6 +49,8 @@ depends on it.
 - [Glossary](resources/glossary.md) — cross-module term reference
 - [Exam blueprint](resources/exam-blueprint.md) — domain weights and lab map
 - [Cheat sheets](resources/cheat-sheets/README.md) — quick-reference tables
+- [Documents guide](DOCUMENTS-README.md) — how each module's `documents/`
+  folder (HTML/PDF versions of the concept docs) is structured and generated
 
 ## Naming conventions used throughout
 

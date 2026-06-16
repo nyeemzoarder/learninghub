@@ -171,15 +171,18 @@ hr.divider{border:none;height:0;margin:0}
       <a href="../../01-identity-governance/documents/03-management-groups-and-azure-policy.html">03 - Management Groups &amp; Policy</a>
       <a href="../../01-identity-governance/documents/04-access-control-scenarios.html">04 - Access Control Scenarios</a>
       <a href="../../01-identity-governance/documents/05-identity-best-practices.html">05 - Identity Best Practices</a>
-      <a href="../../01-identity-governance/documents/lab01-entra-users-groups.html">Lab 01 - Entra ID Users</a>
-      <a href="../../01-identity-governance/documents/lab02-rbac-azure-policy.html">Lab 02 - RBAC &amp; Policy</a>
+      <a href="../../01-identity-governance/documents/labs-index.html">Labs</a>
     </div>
   </details>
 </nav>
 <div class="layout">
   <aside class="sidebar">
     <div class="toc-title module-title">Module 03 - Compute</div>
-    <a href="#objectives">Objectives</a>
+    <hr class="sidebar-divider">
+<div class="toc-title">Labs</div>
+<hr class="sidebar-divider">
+<div class="toc-title">On This Page</div>
+<a href="#objectives">Objectives</a>
 <a href="#prerequisites">Prerequisites</a>
 <a href="#estimated-time">Estimated time</a>
 <a href="#part-1-resource-group-and-network">Part 1 – Resource group and network</a>
@@ -191,27 +194,25 @@ hr.divider{border:none;height:0;margin:0}
 <a href="#validation">Validation</a>
 <a href="#cleanup">Cleanup</a>
 <a href="#exam-tips">Exam Tips</a>
-<hr class="sidebar-divider">
-<div class="toc-title">On This Page</div>
   </aside>
   <div class="page">
   <h1>Lab 09 – VM Availability & Scaling</h1>
 
-<h2 id="$(Convert-TitleToId Objectives)">Objectives</h2>
-<ul><ol><li>Deploy VMs into an Availability Set and across Availability Zones</li></ol></ul>
-<ul><ol><li>Create a Virtual Machine Scale Set (VMSS) with autoscale rules</li></ol></ul>
-<ul><ol><li>Configure VM uptime/availability options and understand SLAs</li></ol></ul>
+<h2 id="objectives">Objectives</h2>
+<ul><ol><li>Deploy VMs into an Availability Set and across Availability Zones</li>
+<li>Create a Virtual Machine Scale Set (VMSS) with autoscale rules</li>
+<li>Configure VM uptime/availability options and understand SLAs</li></ol></ul>
 
-<h2 id="$(Convert-TitleToId Prerequisites)">Prerequisites</h2>
-<ul><ol><li>None (creates its own RG/VNet)</li></ol></ul>
-<ul><ol><li>Signed in at <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul><ol><li>None (creates its own RG/VNet)</li>
+<li>Signed in at <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
 
-<h2 id="$(Convert-TitleToId Estimated time)">Estimated time</h2>
+<h2 id="estimated-time">Estimated time</h2>
 <p>40 minutes</p>
 
 <hr class="divider">
 
-<h2 id="$(Convert-TitleToId Part 1 – Resource group and network)">Part 1 – Resource group and network</h2>
+<h2 id="part-1-resource-group-and-network">Part 1 – Resource group and network</h2>
 
 <ol><li>Search for <strong>Resource groups</strong> > <strong>Create</strong>. Name: <code>rg-az104-lab09</code>,</li></ol>
 <p>region: <code>East US</code>. <strong>Review + create</strong> > <strong>Create</strong>.</p>
@@ -219,7 +220,7 @@ hr.divider{border:none;height:0;margin:0}
 <p><code>rg-az104-lab09</code>, <strong>Name</strong>: <code>vnet-lab09</code>, <strong>Address space</strong>: <code>10.40.0.0/16</code>.</p>
 <p><strong>Subnets</strong> tab: <strong>subnet-vms</strong> with range <code>10.40.1.0/24</code>. <strong>Create</strong>.</p>
 
-<h2 id="$(Convert-TitleToId Part 2 – Availability Set)">Part 2 – Availability Set</h2>
+<h2 id="part-2-availability-set">Part 2 – Availability Set</h2>
 
 <ol><li>Search for <strong>Availability sets</strong> > <strong>Create</strong>. <strong>Resource group</strong>:</li></ol>
 <p><code>rg-az104-lab09</code>, <strong>Name</strong>: <code>avset-lab09</code>,</p>
@@ -232,7 +233,7 @@ hr.divider{border:none;height:0;margin:0}
 <ol><li>Both VMs are now automatically distributed across fault/update domains for</li></ol>
 <p>maintenance window and power outage protection within the same datacenter.</p>
 
-<h2 id="$(Convert-TitleToId Part 3 – Availability Zones)">Part 3 – Availability Zones</h2>
+<h2 id="part-3-availability-zones">Part 3 – Availability Zones</h2>
 
 <ol><li>Create two more Linux VMs, each in a different availability zone:</li></ol>
 <p>- <strong>Virtual machines</strong> > <strong>Create</strong> > <strong>Basics</strong>: <code>vm-zone1</code>, image <strong>Ubuntu</p>
@@ -243,10 +244,10 @@ hr.divider{border:none;height:0;margin:0}
 <div class="callout"><p>Note: VMs cannot be in both an Availability Set and an Availability Zone —</p></div>
 <div class="callout"><p>they're mutually exclusive. Not all regions/sizes support zones.</p></div>
 
-<h2 id="$(Convert-TitleToId Part 4 – Virtual Machine Scale Set)">Part 4 – Virtual Machine Scale Set</h2>
+<h2 id="part-4-virtual-machine-scale-set">Part 4 – Virtual Machine Scale Set</h2>
 
-<ol><li>Search for <strong>Virtual machine scale sets</strong> > <strong>Create</strong>.</li></ol>
-<ol><li><strong>Basics</strong> tab:</li></ol>
+<ol><li>Search for <strong>Virtual machine scale sets</strong> > <strong>Create</strong>.</li>
+<li><strong>Basics</strong> tab:</li></ol>
 <p>- <strong>Resource group</strong>: <code>rg-az104-lab09</code></p>
 <p>- <strong>Name</strong>: <code>vmss-lab09</code></p>
 <p>- <strong>Region</strong>: <code>East US</code></p>
@@ -258,17 +259,17 @@ hr.divider{border:none;height:0;margin:0}
 <ol><li><strong>Networking</strong> tab: <strong>Virtual network</strong>: <code>vnet-lab09</code>, <strong>Subnet</strong>:</li></ol>
 <p><code>subnet-vms</code>, <strong>Public IP per instance</strong>: disabled (or keep default),</p>
 <p><strong>Load balancer</strong>: create new (e.g., <code>lb-vmss09</code>).</p>
-<ol><li><strong>Scaling</strong> tab: <strong>Initial instance count</strong>: 2.</li></ol>
-<ol><li><strong>Management</strong> tab: <strong>Upgrade policy</strong>: <strong>Automatic</strong>.</li></ol>
-<ol><li><strong>Review + create</strong> > <strong>Create</strong>.</li></ol>
+<ol><li><strong>Scaling</strong> tab: <strong>Initial instance count</strong>: 2.</li>
+<li><strong>Management</strong> tab: <strong>Upgrade policy</strong>: <strong>Automatic</strong>.</li>
+<li><strong>Review + create</strong> > <strong>Create</strong>.</li></ol>
 
-<h2 id="$(Convert-TitleToId Part 5 – Autoscale rules)">Part 5 – Autoscale rules</h2>
+<h2 id="part-5-autoscale-rules">Part 5 – Autoscale rules</h2>
 
 <ol><li>Go to <strong>vmss-lab09</strong> > <strong>Scaling</strong> (under <strong>Settings</strong>) > <strong>Configure</li></ol>
 <p>autoscale</strong> (or go to <strong>Monitor</strong> > <strong>Autoscale settings</strong> for the VMSS</p>
 <p>resource).</p>
-<ol><li>Set <strong>Minimum number of instances</strong>: 2, <strong>Maximum</strong>: 5, <strong>Default</strong>: 2.</li></ol>
-<ol><li>Create a rule: <strong>Scale out when CPU > 70%</strong></li></ol>
+<ol><li>Set <strong>Minimum number of instances</strong>: 2, <strong>Maximum</strong>: 5, <strong>Default</strong>: 2.</li>
+<li>Create a rule: <strong>Scale out when CPU > 70%</strong></li></ol>
 <p>- <strong>Metric</strong>: CPU Percentage</p>
 <p>- <strong>Operator</strong>: Greater than</p>
 <p>- <strong>Threshold</strong>: 70</p>
@@ -282,16 +283,16 @@ hr.divider{border:none;height:0;margin:0}
 <p>- <strong>Action</strong>: Decrease instance count by 1</p>
 <ol><li><strong>Save</strong>.</li></ol>
 
-<h2 id="$(Convert-TitleToId Part 6 – Manual scale & instance management)">Part 6 – Manual scale & instance management</h2>
+<h2 id="part-6-manual-scale-instance-management">Part 6 – Manual scale & instance management</h2>
 
 <ol><li>Go to <strong>vmss-lab09</strong> > <strong>Scaling</strong> > set <strong>Custom autoscale</strong> to <strong>Off</strong></li></ol>
 <p>(to control manually), then set <strong>Instance count</strong> to 3 > <strong>Save</strong>.</p>
-<ol><li>Go to <strong>Instances</strong> to view all VMSS instances — the count should now show 3.</li></ol>
-<ol><li>To upgrade all instances with a new image/config: go to <strong>Instances</strong> ></li></ol>
+<ol><li>Go to <strong>Instances</strong> to view all VMSS instances — the count should now show 3.</li>
+<li>To upgrade all instances with a new image/config: go to <strong>Instances</strong> ></li></ol>
 <p>select all checkboxes > <strong>Upgrade</strong> (rolls out the new model progressively</p>
 <p>based on the upgrade policy).</p>
 
-<h2 id="$(Convert-TitleToId Validation)">Validation</h2>
+<h2 id="validation">Validation</h2>
 <ul><ol><li>[ ] <code>avset-lab09</code> contains <code>vm-av1</code> and <code>vm-av2</code> (check <strong>Availability sets</strong></li></ol></ul>
 <p>> select the set > <strong>Instances</strong>)</p>
 <ul><ol><li>[ ] <code>vm-zone1</code> in Zone 1, <code>vm-zone2</code> in Zone 2 (check each VM's <strong>Overview</strong></li></ol></ul>
@@ -302,14 +303,14 @@ hr.divider{border:none;height:0;margin:0}
 <p>(<strong>vmss-lab09</strong> > <strong>Scaling</strong>)</p>
 <ul><ol><li>[ ] Manual scale to 3 instances succeeds</li></ol></ul>
 
-<h2 id="$(Convert-TitleToId Cleanup)">Cleanup</h2>
+<h2 id="cleanup">Cleanup</h2>
 <ol><li><strong>Resource groups</strong> > select <code>rg-az104-lab09</code> > <strong>Delete resource group</strong>.</li></ol>
 
-<h2 id="$(Convert-TitleToId Exam Tips)">Exam Tips</h2>
-<ul><ol><li><strong>Availability Set</strong>: fault domains (separate power/network) and update domains (separate maintenance reboots) within one datacenter — protects against rack-level failure. SLA ~99.95%.</li></ol></ul>
-<ul><ol><li><strong>Availability Zones</strong>: physically separate datacenters within a region, each with independent power/cooling/network — protects against datacenter-level failure. SLA ~99.99% when spanning 2+ zones.</li></ol></ul>
-<ul><ol><li>VMSS supports up to 1,000 instances (100 with custom images), and autoscale is based on Azure Monitor metrics (CPU, memory, custom metrics, schedules).</li></ol></ul>
-<ul><ol><li>Upgrade policy modes for VMSS: <strong>Manual</strong>, <strong>Automatic</strong>, <strong>Rolling</strong>.</li></ol></ul>
+<h2 id="exam-tips">Exam Tips</h2>
+<ul><ol><li><strong>Availability Set</strong>: fault domains (separate power/network) and update domains (separate maintenance reboots) within one datacenter — protects against rack-level failure. SLA ~99.95%.</li>
+<li><strong>Availability Zones</strong>: physically separate datacenters within a region, each with independent power/cooling/network — protects against datacenter-level failure. SLA ~99.99% when spanning 2+ zones.</li>
+<li>VMSS supports up to 1,000 instances (100 with custom images), and autoscale is based on Azure Monitor metrics (CPU, memory, custom metrics, schedules).</li>
+<li>Upgrade policy modes for VMSS: <strong>Manual</strong>, <strong>Automatic</strong>, <strong>Rolling</strong>.</li></ol></ul>
 
   </div>
 </div>

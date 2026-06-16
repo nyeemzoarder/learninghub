@@ -14,15 +14,15 @@ you can always jump back here later.
 
 ## Contents
 
-1. [Cloud Computing Fundamentals](01-cloud-computing-fundamentals.md) —
+1. [Cloud Computing Fundamentals](concepts/01-cloud-computing-fundamentals.md) —
    IaaS/PaaS/SaaS, regions and availability zones, the shared responsibility
    model
-2. [Networking Basics](02-networking-basics.md) — IP addressing, CIDR
+2. [Networking Basics](concepts/02-networking-basics.md) — IP addressing, CIDR
    notation, subnets, DNS, routing — needed before Module 04 (Networking)
-3. [Identity & Access Fundamentals](03-identity-and-access-fundamentals.md) —
+3. [Identity & Access Fundamentals](concepts/03-identity-and-access-fundamentals.md) —
    authentication vs. authorization, directories, roles — needed before
    Module 01 (Identity & Governance)
-4. [Azure Portal Navigation](04-azure-portal-navigation.md) — blades,
+4. [Azure Portal Navigation](concepts/04-azure-portal-navigation.md) — blades,
    resource groups, search, and the scope of this course (Portal-only)
 
 ## How these labs are scoped

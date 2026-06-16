@@ -435,7 +435,7 @@ function Generate-Navigation {
       <a href="../../00-prerequisites/documents/02-networking-basics.html">02 - Networking Basics</a>
       <a href="../../00-prerequisites/documents/03-identity-and-access-fundamentals.html">03 - Identity &amp; Access Fundamentals</a>
       <a href="../../00-prerequisites/documents/04-azure-portal-navigation.html">04 - Azure Portal Navigation</a>
-      <a href="../../00-prerequisites/documents/lab00-azure-portal-navigation.html">Lab 00 - Portal Navigation</a>
+      <a href="../../00-prerequisites/documents/labs-index.html">Labs</a>
     </div>
   </details>
   <details class="nav-group">

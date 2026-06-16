@@ -4,7 +4,7 @@
 
 ## Before you start
 
-- [Networking Basics](../00-prerequisites/02-networking-basics.md) — IP
+- [Networking Basics](../00-prerequisites/concepts/02-networking-basics.md) — IP
   addressing, CIDR notation, subnets, DNS, and routing. This module assumes
   you're comfortable with all of it.
 
@@ -23,7 +23,7 @@ By the end of this module you should be able to:
 
 ## Concepts
 
-- [Hub-Spoke Topology](concepts/01-hub-spoke-topology.md) — the standard
+- [Hub-Spoke Topology](concepts/06-hub-spoke-topology.md) — the standard
   Azure network architecture pattern
 - NSG Rule Evaluation — *TODO*
 - Load Balancer vs. Application Gateway — *TODO*

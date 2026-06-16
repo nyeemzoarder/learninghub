@@ -4,10 +4,10 @@
 
 ## Before you start
 
-- [Identity & Access Fundamentals](../00-prerequisites/03-identity-and-access-fundamentals.md) —
+- [Identity & Access Fundamentals](../00-prerequisites/concepts/03-identity-and-access-fundamentals.md) —
   authentication vs. authorization, tenants, and how Entra ID roles differ
   from Azure RBAC roles
-- [Cloud Computing Fundamentals](../00-prerequisites/01-cloud-computing-fundamentals.md) —
+- [Cloud Computing Fundamentals](../00-prerequisites/concepts/01-cloud-computing-fundamentals.md) —
   the resource hierarchy (management group → subscription → resource group)
 
 ## Learning objectives

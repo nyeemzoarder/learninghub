@@ -171,15 +171,18 @@ hr.divider{border:none;height:0;margin:0}
       <a href="../../01-identity-governance/documents/03-management-groups-and-azure-policy.html">03 - Management Groups &amp; Policy</a>
       <a href="../../01-identity-governance/documents/04-access-control-scenarios.html">04 - Access Control Scenarios</a>
       <a href="../../01-identity-governance/documents/05-identity-best-practices.html">05 - Identity Best Practices</a>
-      <a href="../../01-identity-governance/documents/lab01-entra-users-groups.html">Lab 01 - Entra ID Users</a>
-      <a href="../../01-identity-governance/documents/lab02-rbac-azure-policy.html">Lab 02 - RBAC &amp; Policy</a>
+      <a href="../../01-identity-governance/documents/labs-index.html">Labs</a>
     </div>
   </details>
 </nav>
 <div class="layout">
   <aside class="sidebar">
     <div class="toc-title module-title">Module 04 - Networking</div>
-    <a href="#objectives">Objectives</a>
+    <hr class="sidebar-divider">
+<div class="toc-title">Labs</div>
+<hr class="sidebar-divider">
+<div class="toc-title">On This Page</div>
+<a href="#objectives">Objectives</a>
 <a href="#prerequisites">Prerequisites</a>
 <a href="#estimated-time">Estimated time</a>
 <a href="#part-1-setup">Part 1 – Setup</a>
@@ -191,28 +194,26 @@ hr.divider{border:none;height:0;margin:0}
 <a href="#validation">Validation</a>
 <a href="#cleanup">Cleanup</a>
 <a href="#exam-tips">Exam Tips</a>
-<hr class="sidebar-divider">
-<div class="toc-title">On This Page</div>
   </aside>
   <div class="page">
   <h1>Lab 13 – Network Security Groups & Application Security Groups</h1>
 
-<h2 id="$(Convert-TitleToId Objectives)">Objectives</h2>
-<ul><ol><li>Create and associate NSGs at subnet and NIC level</li></ol></ul>
-<ul><ol><li>Understand rule priority, evaluation order, and default rules</li></ol></ul>
-<ul><ol><li>Use Application Security Groups (ASGs) to group VMs for rule targeting</li></ol></ul>
-<ul><ol><li>Use network diagnostics tools: effective security rules, IP flow verify</li></ol></ul>
+<h2 id="objectives">Objectives</h2>
+<ul><ol><li>Create and associate NSGs at subnet and NIC level</li>
+<li>Understand rule priority, evaluation order, and default rules</li>
+<li>Use Application Security Groups (ASGs) to group VMs for rule targeting</li>
+<li>Use network diagnostics tools: effective security rules, IP flow verify</li></ol></ul>
 
-<h2 id="$(Convert-TitleToId Prerequisites)">Prerequisites</h2>
-<ul><ol><li>A VNet with at least one subnet (reuse Lab 12's <code>vnet-hub</code>, or create new)</li></ol></ul>
-<ul><ol><li>Signed in at <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul><ol><li>A VNet with at least one subnet (reuse Lab 12's <code>vnet-hub</code>, or create new)</li>
+<li>Signed in at <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
 
-<h2 id="$(Convert-TitleToId Estimated time)">Estimated time</h2>
+<h2 id="estimated-time">Estimated time</h2>
 <p>35 minutes</p>
 
 <hr class="divider">
 
-<h2 id="$(Convert-TitleToId Part 1 – Setup)">Part 1 – Setup</h2>
+<h2 id="part-1-setup">Part 1 – Setup</h2>
 
 <ol><li>Search for <strong>Resource groups</strong> > <strong>Create</strong>. Name: <code>rg-az104-lab13</code>,</li></ol>
 <p>region: <code>East US</code>. <strong>Review + create</strong> > <strong>Create</strong>.</p>
@@ -224,7 +225,7 @@ hr.divider{border:none;height:0;margin:0}
 <p><strong>Standard_B1s</strong>, <code>vnet-lab13</code>/<code>subnet-web</code>. <strong>Create</strong>.</p>
 <p>- Repeat for <code>vm-web02</code>.</p>
 
-<h2 id="$(Convert-TitleToId Part 2 – Create an NSG and rules)">Part 2 – Create an NSG and rules</h2>
+<h2 id="part-2-create-an-nsg-and-rules">Part 2 – Create an NSG and rules</h2>
 
 <ol><li>Search for <strong>Network security groups</strong> > <strong>Create</strong>.</li></ol>
 <p>- <strong>Resource group</strong>: <code>rg-az104-lab13</code></p>
@@ -232,8 +233,8 @@ hr.divider{border:none;height:0;margin:0}
 <p>- <strong>Region</strong>: <code>East US</code></p>
 <p>- <strong>Create</strong>.</p>
 
-<ol><li>Go to <strong>nsg-web</strong> > <strong>Inbound security rules</strong> > <strong>+ Add</strong>.</li></ol>
-<ol><li>Create rule 1: <strong>Allow SSH from your IP only</strong></li></ol>
+<ol><li>Go to <strong>nsg-web</strong> > <strong>Inbound security rules</strong> > <strong>+ Add</strong>.</li>
+<li>Create rule 1: <strong>Allow SSH from your IP only</strong></li></ol>
 <p>- <strong>Source</strong>: <strong>IP addresses</strong>, enter your public IP (e.g., <code>203.0.113.0/32</code>)</p>
 <p>- <strong>Source port ranges</strong>: <code><em></code></p>
 <p>- <strong>Destination</strong>: <strong>Any</strong></p>
@@ -260,14 +261,14 @@ hr.divider{border:none;height:0;margin:0}
 <p>- <strong>Name</strong>: <code>Deny-All-Inbound</code></p>
 <p>- <strong>Add</strong></p>
 
-<h2 id="$(Convert-TitleToId Part 3 – Associate NSG to subnet)">Part 3 – Associate NSG to subnet</h2>
+<h2 id="part-3-associate-nsg-to-subnet">Part 3 – Associate NSG to subnet</h2>
 
-<ol><li>Go to <strong>nsg-web</strong> > <strong>Subnets</strong> > <strong>+ Associate</strong>.</li></ol>
-<ol><li>Select <code>vnet-lab13</code> / <code>subnet-web</code> > <strong>OK</strong>.</li></ol>
+<ol><li>Go to <strong>nsg-web</strong> > <strong>Subnets</strong> > <strong>+ Associate</strong>.</li>
+<li>Select <code>vnet-lab13</code> / <code>subnet-web</code> > <strong>OK</strong>.</li></ol>
 
 <p>The NSG is now applied at the subnet level, affecting all VMs in that subnet.</p>
 
-<h2 id="$(Convert-TitleToId Part 4 – Application Security Groups)">Part 4 – Application Security Groups</h2>
+<h2 id="part-4-application-security-groups">Part 4 – Application Security Groups</h2>
 
 <ol><li>Search for <strong>Application security groups</strong> > <strong>Create</strong>.</li></ol>
 <p>- <strong>Resource group</strong>: <code>rg-az104-lab13</code></p>
@@ -294,7 +295,7 @@ hr.divider{border:none;height:0;margin:0}
 <p>This rule allows HTTPS traffic between members of the <code>asg-webservers</code> group</p>
 <p>without needing to hardcode IP addresses.</p>
 
-<h2 id="$(Convert-TitleToId Part 5 – Effective security rules & IP flow verify)">Part 5 – Effective security rules & IP flow verify</h2>
+<h2 id="part-5-effective-security-rules-ip-flow-verify">Part 5 – Effective security rules & IP flow verify</h2>
 
 <ol><li>Go to </strong>vm-web01<strong> > </strong>Networking<strong> > select the NIC > </strong>Network Watcher<strong></li></ol>
 <p>(or search </strong>Network Watcher<strong>) > </strong>Effective security rules<strong> to see the</p>
@@ -310,7 +311,7 @@ hr.divider{border:none;height:0;margin:0}
 
 <ol><li>Repeat with port 22 from a non-allowed source IP — expect </strong>Deny<strong>.</li></ol>
 
-<h2 id="$(Convert-TitleToId Part 6 – Rule priority & evaluation order)">Part 6 – Rule priority & evaluation order</h2>
+<h2 id="part-6-rule-priority-evaluation-order">Part 6 – Rule priority & evaluation order</h2>
 
 <p>Discuss (no need to execute):</p>
 <ul><ol><li>Rules evaluated in </strong>priority order<strong> (100–4096, lower number = higher</li></ol></ul>
@@ -321,21 +322,21 @@ hr.divider{border:none;height:0;margin:0}
 <ul><ol><li>NSGs can apply at </strong>subnet<strong> and/or </strong>NIC<strong> level — traffic must pass both</li></ol></ul>
 <p>if both exist.</p>
 
-<h2 id="$(Convert-TitleToId Validation)">Validation</h2>
-<ul><ol><li>[ ] NSG <code>nsg-web</code> associated with <code>subnet-web</code></li></ol></ul>
-<ul><ol><li>[ ] SSH allowed only from your IP; HTTP allowed from any source</li></ol></ul>
-<ul><ol><li>[ ] ASG <code>asg-webservers</code> contains both VM NICs and is referenced by an NSG rule</li></ol></ul>
-<ul><ol><li>[ ] </strong>Effective security rules<strong> shows merged subnet + NIC rules</li></ol></ul>
-<ul><ol><li>[ ] </strong>IP flow verify<strong> confirms expected allow/deny for sample traffic</li></ol></ul>
+<h2 id="validation">Validation</h2>
+<ul><ol><li>[ ] NSG <code>nsg-web</code> associated with <code>subnet-web</code></li>
+<li>[ ] SSH allowed only from your IP; HTTP allowed from any source</li>
+<li>[ ] ASG <code>asg-webservers</code> contains both VM NICs and is referenced by an NSG rule</li>
+<li>[ ] </strong>Effective security rules<strong> shows merged subnet + NIC rules</li>
+<li>[ ] </strong>IP flow verify<strong> confirms expected allow/deny for sample traffic</li></ol></ul>
 
-<h2 id="$(Convert-TitleToId Cleanup)">Cleanup</h2>
+<h2 id="cleanup">Cleanup</h2>
 <ol><li></strong>Resource groups<strong> > select <code>rg-az104-lab13</code> > </strong>Delete resource group**.</li></ol>
 
-<h2 id="$(Convert-TitleToId Exam Tips)">Exam Tips</h2>
-<ul><ol><li>Lowest priority number wins (evaluated first); once a rule matches, evaluation stops.</li></ol></ul>
-<ul><ol><li>NSGs are stateful — an allowed inbound flow's response traffic is automatically allowed outbound (and vice versa).</li></ol></ul>
-<ul><ol><li>ASGs let you write NSG rules based on application roles (e.g., "WebServers") instead of hardcoded IPs — simplifies rule management as VMs scale.</li></ol></ul>
-<ul><ol><li>"Effective security rules" merges subnet-level + NIC-level NSGs — exam scenarios often ask which rule "wins" when both exist.</li></ol></ul>
+<h2 id="exam-tips">Exam Tips</h2>
+<ul><ol><li>Lowest priority number wins (evaluated first); once a rule matches, evaluation stops.</li>
+<li>NSGs are stateful — an allowed inbound flow's response traffic is automatically allowed outbound (and vice versa).</li>
+<li>ASGs let you write NSG rules based on application roles (e.g., "WebServers") instead of hardcoded IPs — simplifies rule management as VMs scale.</li>
+<li>"Effective security rules" merges subnet-level + NIC-level NSGs — exam scenarios often ask which rule "wins" when both exist.</li></ol></ul>
 
   </div>
 </div>

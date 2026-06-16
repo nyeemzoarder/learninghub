@@ -6,7 +6,8 @@
 # without opening the top-nav dropdown.
 # ============================================================
 
-$root = Split-Path -Parent $MyInvocation.MyCommand.Path
+$root = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) "..\courses\az-104"
+$root = Resolve-Path $root
 
 $titleMap = @{ '00'='Module 00 - Prerequisites'; '01'='Module 01 - Identity &amp; Governance'; '04'='Module 04 - Networking' }
 
@@ -24,7 +25,7 @@ $module01 = @(
     @{file='05-identity-best-practices.html';                 title='05 - Identity Best Practices'}
 )
 $module04 = @(
-    @{file='01-hub-spoke-topology.html';                      title='01 - Hub-Spoke Topology'},
+    @{file='06-hub-spoke-topology.html';                      title='06 - Hub-Spoke Topology'},
     @{file='01-vnets-and-subnets.html';                       title='01 - VNets &amp; Subnets'},
     @{file='02-network-security-groups.html';                 title='02 - Network Security Groups'},
     @{file='03-routing-fundamentals.html';                    title='03 - Routing Fundamentals'},

@@ -171,15 +171,18 @@ hr.divider{border:none;height:0;margin:0}
       <a href="../../01-identity-governance/documents/03-management-groups-and-azure-policy.html">03 - Management Groups &amp; Policy</a>
       <a href="../../01-identity-governance/documents/04-access-control-scenarios.html">04 - Access Control Scenarios</a>
       <a href="../../01-identity-governance/documents/05-identity-best-practices.html">05 - Identity Best Practices</a>
-      <a href="../../01-identity-governance/documents/lab01-entra-users-groups.html">Lab 01 - Entra ID Users</a>
-      <a href="../../01-identity-governance/documents/lab02-rbac-azure-policy.html">Lab 02 - RBAC &amp; Policy</a>
+      <a href="../../01-identity-governance/documents/labs-index.html">Labs</a>
     </div>
   </details>
 </nav>
 <div class="layout">
   <aside class="sidebar">
     <div class="toc-title module-title">Module 02 - Storage</div>
-    <a href="#objectives">Objectives</a>
+    <hr class="sidebar-divider">
+<div class="toc-title">Labs</div>
+<hr class="sidebar-divider">
+<div class="toc-title">On This Page</div>
+<a href="#objectives">Objectives</a>
 <a href="#prerequisites">Prerequisites</a>
 <a href="#estimated-time">Estimated time</a>
 <a href="#part-1-create-a-file-share">Part 1 – Create a file share</a>
@@ -190,29 +193,27 @@ hr.divider{border:none;height:0;margin:0}
 <a href="#validation">Validation</a>
 <a href="#cleanup">Cleanup</a>
 <a href="#exam-tips">Exam Tips</a>
-<hr class="sidebar-divider">
-<div class="toc-title">On This Page</div>
   </aside>
   <div class="page">
   <h1>Lab 06 – Azure Files & Azure File Sync</h1>
 
-<h2 id="$(Convert-TitleToId Objectives)">Objectives</h2>
-<ul><ol><li>Create an Azure file share and mount it from a VM</li></ol></ul>
-<ul><ol><li>Configure share-level and directory-level permissions (Entra Kerberos overview)</li></ol></ul>
-<ul><ol><li>Set up Azure File Sync between an on-prem-style server and Azure file share (conceptual + portal walkthrough)</li></ol></ul>
-<ul><ol><li>Configure file share snapshots</li></ol></ul>
+<h2 id="objectives">Objectives</h2>
+<ul><ol><li>Create an Azure file share and mount it from a VM</li>
+<li>Configure share-level and directory-level permissions (Entra Kerberos overview)</li>
+<li>Set up Azure File Sync between an on-prem-style server and Azure file share (conceptual + portal walkthrough)</li>
+<li>Configure file share snapshots</li></ol></ul>
 
-<h2 id="$(Convert-TitleToId Prerequisites)">Prerequisites</h2>
-<ul><ol><li>Storage account (from Lab 04/05 or new)</li></ol></ul>
-<ul><ol><li>A Windows VM for mounting (can reuse Lab 08's VM, or skip mounting if no VM yet)</li></ol></ul>
-<ul><ol><li>Signed in at <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul><ol><li>Storage account (from Lab 04/05 or new)</li>
+<li>A Windows VM for mounting (can reuse Lab 08's VM, or skip mounting if no VM yet)</li>
+<li>Signed in at <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
 
-<h2 id="$(Convert-TitleToId Estimated time)">Estimated time</h2>
+<h2 id="estimated-time">Estimated time</h2>
 <p>30 minutes</p>
 
 <hr class="divider">
 
-<h2 id="$(Convert-TitleToId Part 1 – Create a file share)">Part 1 – Create a file share</h2>
+<h2 id="part-1-create-a-file-share">Part 1 – Create a file share</h2>
 
 <ol><li>Search for <strong>Resource groups</strong> > <strong>Create</strong>. Name: <code>rg-az104-lab06</code>,</li></ol>
 <p>region: <code>East US</code>. <strong>Review + create</strong> > <strong>Create</strong>.</p>
@@ -224,10 +225,10 @@ hr.divider{border:none;height:0;margin:0}
 <p><strong>+ File share</strong>. Name: <code>teamshare</code>, <strong>Quota</strong>: 10 GiB,</p>
 <p><strong>Tier</strong>: Transaction optimized. <strong>Create</strong>.</p>
 
-<h2 id="$(Convert-TitleToId Part 2 – Mount the share from a Windows machine)">Part 2 – Mount the share from a Windows machine</h2>
+<h2 id="part-2-mount-the-share-from-a-windows-machine">Part 2 – Mount the share from a Windows machine</h2>
 
-<ol><li>Open <strong>File shares</strong> > <code>teamshare</code> > <strong>Connect</strong> (top toolbar).</li></ol>
-<ol><li>Select the drive letter (e.g., <code>Z:</code>), choose <strong>Windows</strong>, and the Portal</li></ol>
+<ol><li>Open <strong>File shares</strong> > <code>teamshare</code> > <strong>Connect</strong> (top toolbar).</li>
+<li>Select the drive letter (e.g., <code>Z:</code>), choose <strong>Windows</strong>, and the Portal</li></ol>
 <p>generates a ready-to-use <code>net use</code> command containing the share path,</p>
 <p>storage account name, and a storage key — for example:</p>
 <p>``<code></p>
@@ -240,7 +241,7 @@ hr.divider{border:none;height:0;margin:0}
 <div class="callout"><p>Port 445 (SMB) must be allowed outbound — many corporate/ISP networks block it.</p></div>
 <div class="callout"><p>Use Azure VPN/ExpressRoute or Azure File Sync to avoid relying on port 445 over the internet.</p></div>
 
-<h2 id="$(Convert-TitleToId Part 3 – Snapshots)">Part 3 – Snapshots</h2>
+<h2 id="part-3-snapshots">Part 3 – Snapshots</h2>
 
 <ol><li>Open <strong>File shares</strong> > </code>teamshare<code> > <strong>Snapshots</strong> (left-hand menu) ></li></ol>
 <p><strong>+ Add snapshot</strong>.</p>
@@ -253,7 +254,7 @@ hr.divider{border:none;height:0;margin:0}
 <ol><li>The <strong>Snapshots</strong> list also shows each snapshot's creation time, equivalent</li></ol>
 <p>to listing share snapshots.</p>
 
-<h2 id="$(Convert-TitleToId Part 4 – Identity-based access (Entra Kerberos) — overview)">Part 4 – Identity-based access (Entra Kerberos) — overview</h2>
+<h2 id="part-4-identity-based-access-entra-kerberos-overview">Part 4 – Identity-based access (Entra Kerberos) — overview</h2>
 
 <ol><li>Open the storage account > <strong>File shares</strong> > <strong>Configuration</strong> (or</li></ol>
 <p>account-level <strong>Data storage</strong> > <strong>File shares</strong> > <strong>Active directory</strong>).</p>
@@ -267,7 +268,7 @@ hr.divider{border:none;height:0;margin:0}
 <p>granular control.</p>
 <ol><li><em>(Full AD DS setup is out of scope for this lab — understand the concept and where it's configured.)</em></li></ol>
 
-<h2 id="$(Convert-TitleToId Part 5 – Azure File Sync (conceptual walkthrough))">Part 5 – Azure File Sync (conceptual walkthrough)</h2>
+<h2 id="part-5-azure-file-sync-conceptual-walkthrough">Part 5 – Azure File Sync (conceptual walkthrough)</h2>
 
 <p>Azure File Sync requires a Windows Server VM registered as a "server endpoint" —</p>
 <p>deploying a full sync topology is heavy for a quick lab, so walk through the</p>
@@ -288,23 +289,23 @@ hr.divider{border:none;height:0;margin:0}
 <p>frequently-accessed files stay on local server disk, infrequently-used</p>
 <p>files become tiered placeholders pointing to the cloud copy.</p>
 
-<h2 id="$(Convert-TitleToId Validation)">Validation</h2>
-<ul><ol><li>[ ] File share </code>teamshare<code> created with 10 GiB quota</li></ol></ul>
-<ul><ol><li>[ ] A snapshot exists and can be browsed under <strong>Snapshots</strong></li></ol></ul>
-<ul><ol><li>[ ] You can explain identity-based access options for Azure Files (AD DS vs Entra Kerberos vs storage account key)</li></ol></ul>
-<ul><ol><li>[ ] You can explain the role of cloud endpoint, server endpoint, and cloud tiering in Azure File Sync</li></ol></ul>
+<h2 id="validation">Validation</h2>
+<ul><ol><li>[ ] File share </code>teamshare<code> created with 10 GiB quota</li>
+<li>[ ] A snapshot exists and can be browsed under <strong>Snapshots</strong></li>
+<li>[ ] You can explain identity-based access options for Azure Files (AD DS vs Entra Kerberos vs storage account key)</li>
+<li>[ ] You can explain the role of cloud endpoint, server endpoint, and cloud tiering in Azure File Sync</li></ol></ul>
 
-<h2 id="$(Convert-TitleToId Cleanup)">Cleanup</h2>
+<h2 id="cleanup">Cleanup</h2>
 <ol><li>Search for <strong>Resource groups</strong> > select </code>rg-az104-lab06<code> > <strong>Delete resource</li></ol>
 <p>group</strong> (type the name to confirm).</p>
 <ol><li>On the Windows VM, remove the mapped drive: open <strong>This PC</strong>, right-click</li></ol>
 <p>the </code>Z:<code> drive > <strong>Disconnect</strong>, or run </code>net use Z: /delete` in Command</p>
 <p>Prompt.</p>
 
-<h2 id="$(Convert-TitleToId Exam Tips)">Exam Tips</h2>
-<ul><ol><li>SMB requires TCP 445 outbound — a common reason "mount fails" in exam scenarios. NFS shares (premium file shares only) avoid this but require VNet connectivity (no public endpoint).</li></ol></ul>
-<ul><ol><li>Azure File Sync keeps an Azure file share as the central source of truth, syncing to one or more Windows Server endpoints, with optional cloud tiering for capacity savings.</li></ol></ul>
-<ul><ol><li>Snapshots are read-only, point-in-time, incremental copies of a share — used for quick recovery of individual files.</li></ol></ul>
+<h2 id="exam-tips">Exam Tips</h2>
+<ul><ol><li>SMB requires TCP 445 outbound — a common reason "mount fails" in exam scenarios. NFS shares (premium file shares only) avoid this but require VNet connectivity (no public endpoint).</li>
+<li>Azure File Sync keeps an Azure file share as the central source of truth, syncing to one or more Windows Server endpoints, with optional cloud tiering for capacity savings.</li>
+<li>Snapshots are read-only, point-in-time, incremental copies of a share — used for quick recovery of individual files.</li></ol></ul>
 
   </div>
 </div>

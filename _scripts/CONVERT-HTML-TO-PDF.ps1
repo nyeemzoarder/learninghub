@@ -18,7 +18,8 @@ param(
 )
 
 # Detect script location
-$scriptPath = Split-Path -Parent $MyInvocation.MyCommand.Path
+$scriptPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) "..\courses\az-104"
+$scriptPath = Resolve-Path $scriptPath
 Write-Host "📍 Script location: $scriptPath" -ForegroundColor Gray
 
 # Find all HTML files in documents folders

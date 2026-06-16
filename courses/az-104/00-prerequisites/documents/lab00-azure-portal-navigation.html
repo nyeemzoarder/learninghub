@@ -171,15 +171,23 @@ hr.divider{border:none;height:0;margin:0}
       <a href="../../01-identity-governance/documents/03-management-groups-and-azure-policy.html">03 - Management Groups &amp; Policy</a>
       <a href="../../01-identity-governance/documents/04-access-control-scenarios.html">04 - Access Control Scenarios</a>
       <a href="../../01-identity-governance/documents/05-identity-best-practices.html">05 - Identity Best Practices</a>
-      <a href="../../01-identity-governance/documents/lab01-entra-users-groups.html">Lab 01 - Entra ID Users</a>
-      <a href="../../01-identity-governance/documents/lab02-rbac-azure-policy.html">Lab 02 - RBAC &amp; Policy</a>
+      <a href="../../01-identity-governance/documents/labs-index.html">Labs</a>
     </div>
   </details>
 </nav>
 <div class="layout">
   <aside class="sidebar">
     <div class="toc-title module-title">Module 00 - Prerequisites</div>
-    <a href="#real-life-scenario">Real-Life Scenario</a>
+    <a href="01-cloud-computing-fundamentals.html">01 - Cloud Computing Fundamentals</a>
+<a href="02-networking-basics.html">02 - Networking Basics</a>
+<a href="03-identity-and-access-fundamentals.html">03 - Identity &amp; Access Fundamentals</a>
+<a href="04-azure-portal-navigation.html">04 - Azure Portal Navigation</a>
+<hr class="sidebar-divider">
+<div class="toc-title">Labs</div>
+<a href="lab00-azure-portal-navigation.html">Lab 00 - Portal Navigation</a>
+<hr class="sidebar-divider">
+<div class="toc-title">On This Page</div>
+<a href="#real-life-scenario">Real-Life Scenario</a>
 <a href="#objectives">Objectives</a>
 <a href="#prerequisites">Prerequisites</a>
 <a href="#estimated-time">Estimated Time</a>
@@ -201,13 +209,11 @@ hr.divider{border:none;height:0;margin:0}
 <a href="#key-takeaways">Key Takeaways</a>
 <a href="#troubleshooting">Troubleshooting</a>
 <a href="#related-concepts">Related Concepts</a>
-<hr class="sidebar-divider">
-<div class="toc-title">On This Page</div>
   </aside>
   <div class="page">
   <h1>Lab 00 – Azure Portal Navigation: Hands-On Exploration</h1>
 
-<h2 id="$(Convert-TitleToId Real-Life Scenario)">Real-Life Scenario</h2>
+<h2 id="real-life-scenario">Real-Life Scenario</h2>
 
 <p><strong>Company: Contoso Ltd</strong></p>
 
@@ -217,93 +223,93 @@ hr.divider{border:none;height:0;margin:0}
 
 <hr class="divider">
 
-<h2 id="$(Convert-TitleToId Objectives)">Objectives</h2>
+<h2 id="objectives">Objectives</h2>
 
-<ul><ol><li>Create a Resource Group (the logical container for all lab resources)</li></ol></ul>
-<ul><ol><li>Navigate the Azure Portal using search, favorites, and the menu</li></ol></ul>
-<ul><ol><li>Understand subscriptions, scopes, and resource organization</li></ol></ul>
-<ul><ol><li>Explore Azure services by category</li></ol></ul>
-<ul><ol><li>Use the Cloud Shell and portal help features</li></ol></ul>
-<ul><ol><li>Apply resource tagging for cost tracking</li></ol></ul>
-<ul><ol><li>Understand the relationship between Resource Groups and resources</li></ol></ul>
+<ul><ol><li>Create a Resource Group (the logical container for all lab resources)</li>
+<li>Navigate the Azure Portal using search, favorites, and the menu</li>
+<li>Understand subscriptions, scopes, and resource organization</li>
+<li>Explore Azure services by category</li>
+<li>Use the Cloud Shell and portal help features</li>
+<li>Apply resource tagging for cost tracking</li>
+<li>Understand the relationship between Resource Groups and resources</li></ol></ul>
 
-<h2 id="$(Convert-TitleToId Prerequisites)">Prerequisites</h2>
+<h2 id="prerequisites">Prerequisites</h2>
 
-<ul><ol><li>An Azure subscription (free trial, MSDN, or pay-as-you-go)</li></ol></ul>
-<ul><ol><li>Signed in to <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
-<ul><ol><li>Modern web browser (Chrome, Edge, Firefox, Safari)</li></ol></ul>
+<ul><ol><li>An Azure subscription (free trial, MSDN, or pay-as-you-go)</li>
+<li>Signed in to <a href="https://portal.azure.com">portal.azure.com</a></li>
+<li>Modern web browser (Chrome, Edge, Firefox, Safari)</li></ol></ul>
 
-<h2 id="$(Convert-TitleToId Estimated Time)">Estimated Time</h2>
+<h2 id="estimated-time">Estimated Time</h2>
 
 <p>45-60 minutes</p>
 
 <hr class="divider">
 
-<h2 id="$(Convert-TitleToId Part 1 – Create a Resource Group)">Part 1 – Create a Resource Group</h2>
+<h2 id="part-1-create-a-resource-group">Part 1 – Create a Resource Group</h2>
 
 <p>A <strong>Resource Group</strong> is a logical container that holds related Azure resources. Nearly every lab in this course starts by creating one. In this case, we'll create <code>rg-az104-lab00</code> to hold our lab resources.</p>
 
-<h3 id="$(Convert-TitleToId Step 1: Start Creating a Resource Group)">Step 1: Start Creating a Resource Group</h3>
+<h3 id="step-1-start-creating-a-resource-group">Step 1: Start Creating a Resource Group</h3>
 
-<ol><li>Go to <a href="https://portal.azure.com">portal.azure.com</a>.</li></ol>
-<ol><li>In the <strong>Search bar</strong> (at the top of every page), type <code>resource groups</code>.</li></ol>
-<ol><li>Select <strong>Resource groups</strong> from the dropdown results.</li></ol>
-<ol><li>Click <strong>+ Create</strong>.</li></ol>
+<ol><li>Go to <a href="https://portal.azure.com">portal.azure.com</a>.</li>
+<li>In the <strong>Search bar</strong> (at the top of every page), type <code>resource groups</code>.</li>
+<li>Select <strong>Resource groups</strong> from the dropdown results.</li>
+<li>Click <strong>+ Create</strong>.</li></ol>
 
-<h3 id="$(Convert-TitleToId Step 2: Fill in the Basics)">Step 2: Fill in the Basics</h3>
+<h3 id="step-2-fill-in-the-basics">Step 2: Fill in the Basics</h3>
 
-<ol><li><strong>Subscription</strong>: select your subscription (e.g., "Azure subscription 1").</li></ol>
-<ol><li><strong>Resource group name</strong>: <code>rg-az104-lab00</code></li></ol>
-<ol><li><strong>Region</strong>: <code>East US</code> (or your preferred region — this is where the RG metadata is stored).</li></ol>
-<ol><li>Click <strong>Review + create</strong>.</li></ol>
+<ol><li><strong>Subscription</strong>: select your subscription (e.g., "Azure subscription 1").</li>
+<li><strong>Resource group name</strong>: <code>rg-az104-lab00</code></li>
+<li><strong>Region</strong>: <code>East US</code> (or your preferred region — this is where the RG metadata is stored).</li>
+<li>Click <strong>Review + create</strong>.</li></ol>
 
-<h3 id="$(Convert-TitleToId Step 3: Review and Create)">Step 3: Review and Create</h3>
+<h3 id="step-3-review-and-create">Step 3: Review and Create</h3>
 
-<ol><li>Confirm the settings look correct.</li></ol>
-<ol><li>Click <strong>Create</strong>.</li></ol>
-<ol><li>You'll see a notification: "Deployment is in progress" → "Your deployment is complete."</li></ol>
+<ol><li>Confirm the settings look correct.</li>
+<li>Click <strong>Create</strong>.</li>
+<li>You'll see a notification: "Deployment is in progress" → "Your deployment is complete."</li></ol>
 
 <p><strong>Verification:</strong> Go to <strong>Home</strong> > <strong>Resource groups</strong> (or search for Resource groups again). You should see <code>rg-az104-lab00</code> listed with status "Succeeded".</p>
 
 <hr class="divider">
 
-<h2 id="$(Convert-TitleToId Part 2 – Explore the Azure Portal Layout)">Part 2 – Explore the Azure Portal Layout</h2>
+<h2 id="part-2-explore-the-azure-portal-layout">Part 2 – Explore the Azure Portal Layout</h2>
 
 <p>Now that we have a Resource Group, let's explore the portal's key features.</p>
 
-<h3 id="$(Convert-TitleToId The Portal Home Page)">The Portal Home Page</h3>
+<h3 id="the-portal-home-page">The Portal Home Page</h3>
 
-<ol><li>Click <strong>Home</strong> in the left sidebar (or the <strong>AZ-104 Learning Hub</strong> logo at the top).</li></ol>
-<ol><li>Observe:</li></ol>
+<ol><li>Click <strong>Home</strong> in the left sidebar (or the <strong>AZ-104 Learning Hub</strong> logo at the top).</li>
+<li>Observe:</li></ol>
 <p>- <strong>Favorites</strong> section (top left) — add services here for quick access</p>
 <p>- <strong>Create a resource</strong> button</p>
 <p>- <strong>Recently accessed resources</strong></p>
 <p>- <strong>Resource groups</strong> card</p>
 
-<h3 id="$(Convert-TitleToId The Search Bar (Your Most Powerful Tool))">The Search Bar (Your Most Powerful Tool)</h3>
+<h3 id="the-search-bar-your-most-powerful-tool">The Search Bar (Your Most Powerful Tool)</h3>
 
 <p>The <strong>Search bar</strong> (at the very top) is the fastest way to get anywhere in the Azure Portal.</p>
 
-<ol><li>Click the search bar and type <code>virtual machines</code>.</li></ol>
-<ol><li>See the dropdown with:</li></ol>
+<ol><li>Click the search bar and type <code>virtual machines</code>.</li>
+<li>See the dropdown with:</li></ol>
 <p>- <strong>Virtual machines</strong> (the service)</p>
 <p>- Suggestions for related content</p>
 <ol><li>Don't click — just observe. The search bar knows about services, resources, documentation, and settings.</li></ol>
 
 <p><strong>Key tip for exams and labs:</strong> Every lab instruction that says "Go to <strong>\<service name\></strong>" means "use the Search bar to find that service."</p>
 
-<h3 id="$(Convert-TitleToId Adding to Favorites)">Adding to Favorites</h3>
+<h3 id="adding-to-favorites">Adding to Favorites</h3>
 
-<ol><li>Search for <code>virtual machines</code> and select it from the dropdown.</li></ol>
-<ol><li>You're now on the <strong>Virtual machines</strong> page. On the left sidebar, find the <strong>Virtual machines</strong> menu item.</li></ol>
-<ol><li><strong>Hover over it</strong> and click the <strong>star icon</strong> to add it to Favorites.</li></ol>
-<ol><li>Go <strong>Home</strong>. You should now see <strong>Virtual machines</strong> in your Favorites section at the top.</li></ol>
+<ol><li>Search for <code>virtual machines</code> and select it from the dropdown.</li>
+<li>You're now on the <strong>Virtual machines</strong> page. On the left sidebar, find the <strong>Virtual machines</strong> menu item.</li>
+<li><strong>Hover over it</strong> and click the <strong>star icon</strong> to add it to Favorites.</li>
+<li>Go <strong>Home</strong>. You should now see <strong>Virtual machines</strong> in your Favorites section at the top.</li></ol>
 
 <p><strong>Why Favorites?</strong> Frequently-used services appear in the left sidebar without having to search.</p>
 
 <hr class="divider">
 
-<h2 id="$(Convert-TitleToId Part 3 – Understand Subscriptions and Scopes)">Part 3 – Understand Subscriptions and Scopes</h2>
+<h2 id="part-3-understand-subscriptions-and-scopes">Part 3 – Understand Subscriptions and Scopes</h2>
 
 <p><strong>Scope</strong> is a foundational concept in Azure. Resources exist within a hierarchy:</p>
 
@@ -319,12 +325,12 @@ hr.divider{border:none;height:0;margin:0}
 <p>Resource (VMs, storage accounts, databases, etc.)</p>
 <p></code>`<code></p>
 
-<h3 id="$(Convert-TitleToId View Your Subscription)">View Your Subscription</h3>
+<h3 id="view-your-subscription">View Your Subscription</h3>
 
-<ol><li>Search for </code>subscriptions<code>.</li></ol>
-<ol><li>Click <strong>Subscriptions</strong> from the results.</li></ol>
-<ol><li>You should see your subscription listed. Click on it.</li></ol>
-<ol><li>Observe:</li></ol>
+<ol><li>Search for </code>subscriptions<code>.</li>
+<li>Click <strong>Subscriptions</strong> from the results.</li>
+<li>You should see your subscription listed. Click on it.</li>
+<li>Observe:</li></ol>
 <p>- <strong>Subscription ID</strong> (a unique identifier)</p>
 <p>- <strong>State</strong> (should be "Enabled")</p>
 <p>- <strong>Cost Management</strong> tile (shows your spending)</p>
@@ -332,89 +338,89 @@ hr.divider{border:none;height:0;margin:0}
 <p>- <strong>Cost Analysis</strong> — see your spending over time</p>
 <p>- <strong>Budgets</strong> — set alerts if you exceed a threshold (useful for managing free trial spend)</p>
 
-<h3 id="$(Convert-TitleToId Understand Scopes in the Portal)">Understand Scopes in the Portal</h3>
+<h3 id="understand-scopes-in-the-portal">Understand Scopes in the Portal</h3>
 
 <p><strong>Scopes</strong> determine what resources you can see and manage. RBAC (Role-Based Access Control) is also scoped — an admin role at the subscription level grants different permissions than at the resource group level.</p>
 
-<ol><li>Navigate to your </code>rg-az104-lab00<code> resource group.</li></ol>
-<ol><li>Click <strong>Access control (IAM)</strong> on the left sidebar.</li></ol>
-<ol><li>Click <strong>Role assignments</strong>.</li></ol>
-<ol><li>You should see at least one role assignment (yourself, with Owner or similar role).</li></ol>
-<ol><li>Note the <strong>Scope</strong> column — it shows the resource group scope (</code>/subscriptions/.../resourceGroups/rg-az104-lab00<code>).</li></ol>
+<ol><li>Navigate to your </code>rg-az104-lab00<code> resource group.</li>
+<li>Click <strong>Access control (IAM)</strong> on the left sidebar.</li>
+<li>Click <strong>Role assignments</strong>.</li>
+<li>You should see at least one role assignment (yourself, with Owner or similar role).</li>
+<li>Note the <strong>Scope</strong> column — it shows the resource group scope (</code>/subscriptions/.../resourceGroups/rg-az104-lab00<code>).</li></ol>
 
 <p><strong>Key concept:</strong> The same user can have different roles at different scopes. For example:</p>
-<ul><ol><li>You might be "Owner" of </code>rg-az104-lab00<code> (can do anything in that RG)</li></ol></ul>
-<ul><ol><li>But only "Reader" at the subscription level (can view everything, but not change anything outside the RG)</li></ol></ul>
+<ul><ol><li>You might be "Owner" of </code>rg-az104-lab00<code> (can do anything in that RG)</li>
+<li>But only "Reader" at the subscription level (can view everything, but not change anything outside the RG)</li></ol></ul>
 
 <hr class="divider">
 
-<h2 id="$(Convert-TitleToId Part 4 – Find Azure Services by Category)">Part 4 – Find Azure Services by Category</h2>
+<h2 id="part-4-find-azure-services-by-category">Part 4 – Find Azure Services by Category</h2>
 
 <p>Azure has 200+ services. The portal organizes them by category. Let's explore.</p>
 
-<h3 id="$(Convert-TitleToId Browse Services by Category)">Browse Services by Category</h3>
+<h3 id="browse-services-by-category">Browse Services by Category</h3>
 
-<ol><li>Click <strong>Create a resource</strong> on the Home page (or search for </code>create a resource<code>).</li></ol>
-<ol><li>You'll see a page with categories on the left:</li></ol>
+<ol><li>Click <strong>Create a resource</strong> on the Home page (or search for </code>create a resource<code>).</li>
+<li>You'll see a page with categories on the left:</li></ol>
 <p>- <strong>Compute</strong> (VMs, containers, serverless)</p>
 <p>- <strong>Storage</strong> (disks, blob storage, queues)</p>
 <p>- <strong>Networking</strong> (VNets, load balancers, firewalls)</p>
 <p>- <strong>Databases</strong> (SQL, Cosmos DB, MySQL)</p>
 <p>- <strong>Analytics</strong> (big data, machine learning)</p>
 <p>- And more...</p>
-<ol><li>Click <strong>Compute</strong>.</li></ol>
-<ol><li>You'll see resources like:</li></ol>
+<ol><li>Click <strong>Compute</strong>.</li>
+<li>You'll see resources like:</li></ol>
 <p>- Virtual Machines</p>
 <p>- App Service</p>
 <p>- Azure Container Registry</p>
 <p>- Azure Kubernetes Service (AKS)</p>
 <ol><li>Each one has a description. This is useful for exam prep — spend time understanding what each service does.</li></ol>
 
-<h3 id="$(Convert-TitleToId Find a Specific Service)">Find a Specific Service</h3>
+<h3 id="find-a-specific-service">Find a Specific Service</h3>
 
-<ol><li>On the <strong>Create a resource</strong> page, search for </code>storage account<code> in the top search box.</li></ol>
-<ol><li>You'll see <strong>Storage account</strong> listed.</li></ol>
-<ol><li>Click on it (but don't create one yet).</li></ol>
-<ol><li>You'll see a description: "Create a cloud storage account..."</li></ol>
-<ol><li>Click <strong>Create</strong> to see the creation wizard (we'll use this in Part 5).</li></ol>
+<ol><li>On the <strong>Create a resource</strong> page, search for </code>storage account<code> in the top search box.</li>
+<li>You'll see <strong>Storage account</strong> listed.</li>
+<li>Click on it (but don't create one yet).</li>
+<li>You'll see a description: "Create a cloud storage account..."</li>
+<li>Click <strong>Create</strong> to see the creation wizard (we'll use this in Part 5).</li></ol>
 
 <hr class="divider">
 
-<h2 id="$(Convert-TitleToId Part 5 – Create a Storage Account (Understanding Blades and Tabs))">Part 5 – Create a Storage Account (Understanding Blades and Tabs)</h2>
+<h2 id="part-5-create-a-storage-account-understanding-blades-and-tabs">Part 5 – Create a Storage Account (Understanding Blades and Tabs)</h2>
 
 <p>A "<strong>blade</strong>" is the portal's term for a panel/page that slides in or opens. Most creation wizards have multiple tabs: <strong>Basics</strong>, <strong>Networking</strong>, <strong>Advanced</strong>, <strong>Tags</strong>, <strong>Review + create</strong>.</p>
 
-<h3 id="$(Convert-TitleToId Create a Storage Account)">Create a Storage Account</h3>
+<h3 id="create-a-storage-account">Create a Storage Account</h3>
 
-<ol><li>Search for </code>storage account<code> > <strong>Create</strong>.</li></ol>
-<ol><li><strong>Basics</strong> tab:</li></ol>
+<ol><li>Search for </code>storage account<code> > <strong>Create</strong>.</li>
+<li><strong>Basics</strong> tab:</li></ol>
 <p>- <strong>Subscription</strong>: your subscription</p>
 <p>- <strong>Resource group</strong>: select </code>rg-az104-lab00<code></p>
 <p>- <strong>Storage account name</strong>: </code>stcontoso<YYMMDD><code> (e.g., </code>stcontoso260615<code> for 2026-06-15; storage account names must be globally unique and lowercase)</p>
 <p>- <strong>Region</strong>: </code>East US<code></p>
 <p>- <strong>Performance</strong>: Standard</p>
 <p>- <strong>Redundancy</strong>: Locally-redundant storage (LRS)</p>
-<ol><li>Click <strong>Next: Networking</strong> (or click <strong>Next ></strong> to skip to the next tab).</li></ol>
-<ol><li><strong>Networking</strong> tab:</li></ol>
+<ol><li>Click <strong>Next: Networking</strong> (or click <strong>Next ></strong> to skip to the next tab).</li>
+<li><strong>Networking</strong> tab:</li></ol>
 <p>- Leave defaults for now (we'll cover networking in Module 04).</p>
-<ol><li>Click <strong>Next: Advanced</strong>.</li></ol>
-<ol><li><strong>Advanced</strong> tab:</li></ol>
+<ol><li>Click <strong>Next: Advanced</strong>.</li>
+<li><strong>Advanced</strong> tab:</li></ol>
 <p>- Leave defaults.</p>
 <ol><li>Click <strong>Next: Tags</strong>.</li></ol>
 
 <hr class="divider">
 
-<h2 id="$(Convert-TitleToId Part 6 – Apply Resource Tags)">Part 6 – Apply Resource Tags</h2>
+<h2 id="part-6-apply-resource-tags">Part 6 – Apply Resource Tags</h2>
 
 <p><strong>Tags</strong> are key-value pairs that help organize and track resources. At Contoso, you might tag resources with:</p>
-<ul><ol><li></code>Environment: Development<code> or </code>Production<code></li></ol></ul>
-<ul><ol><li></code>CostCenter: Finance<code> or </code>Sales<code></li></ol></ul>
-<ul><ol><li></code>Owner: alice.lee@contoso.com<code></li></ol></ul>
+<ul><ol><li></code>Environment: Development<code> or </code>Production<code></li>
+<li></code>CostCenter: Finance<code> or </code>Sales<code></li>
+<li></code>Owner: alice.lee@contoso.com<code></li></ol></ul>
 
-<h3 id="$(Convert-TitleToId Add Tags to the Storage Account)">Add Tags to the Storage Account</h3>
+<h3 id="add-tags-to-the-storage-account">Add Tags to the Storage Account</h3>
 
-<ol><li>You're now on the <strong>Tags</strong> tab.</li></ol>
-<ol><li>Add the following tags:</li></ol>
+<ol><li>You're now on the <strong>Tags</strong> tab.</li>
+<li>Add the following tags:</li></ol>
 <p>- <strong>Key</strong>: </code>Environment<code> | <strong>Value</strong>: </code>Development<code></p>
 <p>- <strong>Key</strong>: </code>CostCenter<code> | <strong>Value</strong>: </code>Lab<code></p>
 <p>- <strong>Key</strong>: </code>Owner<code> | <strong>Value</strong>: </code><Your name><code></p>
@@ -422,24 +428,24 @@ hr.divider{border:none;height:0;margin:0}
 
 <hr class="divider">
 
-<h2 id="$(Convert-TitleToId Part 7 – Review and Create)">Part 7 – Review and Create</h2>
+<h2 id="part-7-review-and-create">Part 7 – Review and Create</h2>
 
 <p>The <strong>Review + create</strong> tab is your last chance to verify everything before Azure provisions the resource.</p>
 
-<ol><li>You're on the <strong>Review + create</strong> tab.</li></ol>
-<ol><li>Review:</li></ol>
+<ol><li>You're on the <strong>Review + create</strong> tab.</li>
+<li>Review:</li></ol>
 <p>- Storage account name</p>
 <p>- Resource group: </code>rg-az104-lab00<code></p>
 <p>- Region: </code>East US<code></p>
 <p>- Tags (scroll down to see them)</p>
-<ol><li>Click <strong>Create</strong>.</li></ol>
-<ol><li>You'll see "Deployment is in progress" → "Your deployment is complete."</li></ol>
-<ol><li>Click <strong>Go to resource</strong> to open the storage account.</li></ol>
+<ol><li>Click <strong>Create</strong>.</li>
+<li>You'll see "Deployment is in progress" → "Your deployment is complete."</li>
+<li>Click <strong>Go to resource</strong> to open the storage account.</li></ol>
 
-<h3 id="$(Convert-TitleToId Explore the Storage Account Blade)">Explore the Storage Account Blade</h3>
+<h3 id="explore-the-storage-account-blade">Explore the Storage Account Blade</h3>
 
-<ol><li>You're now viewing the storage account's <strong>Overview</strong> blade.</li></ol>
-<ol><li>On the left sidebar, click different sections:</li></ol>
+<ol><li>You're now viewing the storage account's <strong>Overview</strong> blade.</li>
+<li>On the left sidebar, click different sections:</li></ol>
 <p>- <strong>Overview</strong>: summary of the resource</p>
 <p>- <strong>Access keys</strong>: credentials to access the storage account (keep these secret!)</p>
 <p>- <strong>Configuration</strong>: settings like HTTPS requirement</p>
@@ -449,17 +455,17 @@ hr.divider{border:none;height:0;margin:0}
 
 <hr class="divider">
 
-<h2 id="$(Convert-TitleToId Part 8 – Use the Cloud Shell and Portal Help)">Part 8 – Use the Cloud Shell and Portal Help</h2>
+<h2 id="part-8-use-the-cloud-shell-and-portal-help">Part 8 – Use the Cloud Shell and Portal Help</h2>
 
-<h3 id="$(Convert-TitleToId Open the Cloud Shell)">Open the Cloud Shell</h3>
+<h3 id="open-the-cloud-shell">Open the Cloud Shell</h3>
 
-<ol><li>At the top right of the portal, find the <strong>terminal icon</strong> (</code>>_<code>).</li></ol>
-<ol><li>Click it. A terminal panel slides up from the bottom of your browser.</li></ol>
-<ol><li>Select <strong>Bash</strong> (or <strong>PowerShell</strong> if you prefer).</li></ol>
-<ol><li>First time? You'll be prompted to create a storage account for Cloud Shell. Click <strong>Create storage</strong>.</li></ol>
-<ol><li>Wait a few moments for the terminal to initialize. You'll see </code>user@cloudshell:~$<code>.</li></ol>
+<ol><li>At the top right of the portal, find the <strong>terminal icon</strong> (</code>>_<code>).</li>
+<li>Click it. A terminal panel slides up from the bottom of your browser.</li>
+<li>Select <strong>Bash</strong> (or <strong>PowerShell</strong> if you prefer).</li>
+<li>First time? You'll be prompted to create a storage account for Cloud Shell. Click <strong>Create storage</strong>.</li>
+<li>Wait a few moments for the terminal to initialize. You'll see </code>user@cloudshell:~$<code>.</li></ol>
 
-<h3 id="$(Convert-TitleToId Run a Command in Cloud Shell)">Run a Command in Cloud Shell</h3>
+<h3 id="run-a-command-in-cloud-shell">Run a Command in Cloud Shell</h3>
 
 <ol><li>Type:</li></ol>
 <p></code>`<code>bash</p>
@@ -469,10 +475,10 @@ hr.divider{border:none;height:0;margin:0}
 
 <p><strong>Note:</strong> Cloud Shell is useful for automation, but this course uses the Portal only. Just know it exists and how to open it.</p>
 
-<h3 id="$(Convert-TitleToId Access Portal Help and Support)">Access Portal Help and Support</h3>
+<h3 id="access-portal-help-and-support">Access Portal Help and Support</h3>
 
-<ol><li>Click the <strong>?</strong> icon (top right).</li></ol>
-<ol><li>You'll see:</li></ol>
+<ol><li>Click the <strong>?</strong> icon (top right).</li>
+<li>You'll see:</li></ol>
 <p>- <strong>Help center</strong>: documentation links</p>
 <p>- <strong>Keyboard shortcuts</strong>: e.g., </code>G<code> + </code>H<code> = go to Home</p>
 <p>- <strong>Contact support</strong>: file an Azure support ticket (useful for production issues)</p>
@@ -486,14 +492,14 @@ hr.divider{border:none;height:0;margin:0}
 
 <hr class="divider">
 
-<h2 id="$(Convert-TitleToId Part 9 – Explore All Resources)">Part 9 – Explore All Resources</h2>
+<h2 id="part-9-explore-all-resources">Part 9 – Explore All Resources</h2>
 
 <p>A useful portal feature is <strong>All resources</strong> — a flat view of everything you own across all subscriptions (if you have access to multiple).</p>
 
-<h3 id="$(Convert-TitleToId View All Resources)">View All Resources</h3>
+<h3 id="view-all-resources">View All Resources</h3>
 
-<ol><li>Click <strong>All resources</strong> (or search for it).</li></ol>
-<ol><li>You should see:</li></ol>
+<ol><li>Click <strong>All resources</strong> (or search for it).</li>
+<li>You should see:</li></ol>
 <p>- </code>rg-az104-lab00<code> (your resource group)</p>
 <p>- </code>stcontoso<YYMMDD><code> (your storage account)</p>
 <ol><li>Filter by:</li></ol>
@@ -503,93 +509,93 @@ hr.divider{border:none;height:0;margin:0}
 
 <hr class="divider">
 
-<h2 id="$(Convert-TitleToId Part 10 – Understanding Resource Groups and Resource Organization)">Part 10 – Understanding Resource Groups and Resource Organization</h2>
+<h2 id="part-10-understanding-resource-groups-and-resource-organization">Part 10 – Understanding Resource Groups and Resource Organization</h2>
 
 <p>Now let's solidify why Resource Groups matter.</p>
 
-<h3 id="$(Convert-TitleToId View Resources in a Resource Group)">View Resources in a Resource Group</h3>
+<h3 id="view-resources-in-a-resource-group">View Resources in a Resource Group</h3>
 
-<ol><li>Search for <strong>Resource groups</strong> > select </code>rg-az104-lab00<code>.</li></ol>
-<ol><li>Click the <strong>Overview</strong> tab.</li></ol>
-<ol><li>You'll see:</li></ol>
+<ol><li>Search for <strong>Resource groups</strong> > select </code>rg-az104-lab00<code>.</li>
+<li>Click the <strong>Overview</strong> tab.</li>
+<li>You'll see:</li></ol>
 <p>- <strong>Resources</strong>: a list of all resources in this RG (currently just your storage account)</p>
 <p>- <strong>Deployments</strong>: a history of when resources were added (click to see details)</p>
 <ol><li>If you had more resources (VMs, databases, etc.), they'd all appear here.</li></ol>
 
-<h3 id="$(Convert-TitleToId Why Resource Groups Matter)">Why Resource Groups Matter</h3>
+<h3 id="why-resource-groups-matter">Why Resource Groups Matter</h3>
 
-<ul><ol><li><strong>Cost tracking</strong>: All resources in a RG inherit the same tags, making it easy to track costs by department or project.</li></ol></ul>
-<ul><ol><li><strong>Cleanup</strong>: Deleting a RG deletes all resources inside it. This is crucial for keeping your subscription clean and costs low. (We'll do this in the Cleanup section.)</li></ol></ul>
-<ul><ol><li><strong>RBAC</strong>: You can grant someone admin access to a RG, and they can manage all resources inside it without needing individual permissions on each resource.</li></ol></ul>
-<ul><ol><li><strong>Organization</strong>: A company might have RGs like:</li></ol></ul>
+<ul><ol><li><strong>Cost tracking</strong>: All resources in a RG inherit the same tags, making it easy to track costs by department or project.</li>
+<li><strong>Cleanup</strong>: Deleting a RG deletes all resources inside it. This is crucial for keeping your subscription clean and costs low. (We'll do this in the Cleanup section.)</li>
+<li><strong>RBAC</strong>: You can grant someone admin access to a RG, and they can manage all resources inside it without needing individual permissions on each resource.</li>
+<li><strong>Organization</strong>: A company might have RGs like:</li></ol></ul>
 <p>- </code>rg-prod-webservices<code> (production environment)</p>
 <p>- </code>rg-dev-databases<code> (development environment)</p>
 <p>- </code>rg-shared-networking<code> (shared resources like VNets)</p>
 
 <hr class="divider">
 
-<h2 id="$(Convert-TitleToId Validation Checklist)">Validation Checklist</h2>
+<h2 id="validation-checklist">Validation Checklist</h2>
 
 <p>Before moving on, verify you can do the following:</p>
 
-<ul><ol><li>[ ] Created resource group </code>rg-az104-lab00<code> in East US</li></ol></ul>
-<ul><ol><li>[ ] Located services using the Search bar</li></ol></ul>
-<ul><ol><li>[ ] Added a service to Favorites</li></ol></ul>
-<ul><ol><li>[ ] Viewed your subscription details in <strong>Subscriptions</strong></li></ol></ul>
-<ul><ol><li>[ ] Accessed <strong>Access control (IAM)</strong> and understood the scope concept</li></ol></ul>
-<ul><ol><li>[ ] Browsed Azure services by category in <strong>Create a resource</strong></li></ol></ul>
-<ul><ol><li>[ ] Created a storage account with tags</li></ol></ul>
-<ul><ol><li>[ ] Opened and navigated the Cloud Shell (Bash or PowerShell)</li></ol></ul>
-<ul><ol><li>[ ] Used the <strong>?</strong> help menu and keyboard shortcuts</li></ol></ul>
-<ul><ol><li>[ ] Found your storage account in <strong>All resources</strong></li></ol></ul>
-<ul><ol><li>[ ] Viewed resources in your Resource Group via <strong>Overview</strong></li></ol></ul>
+<ul><ol><li>[ ] Created resource group </code>rg-az104-lab00<code> in East US</li>
+<li>[ ] Located services using the Search bar</li>
+<li>[ ] Added a service to Favorites</li>
+<li>[ ] Viewed your subscription details in <strong>Subscriptions</strong></li>
+<li>[ ] Accessed <strong>Access control (IAM)</strong> and understood the scope concept</li>
+<li>[ ] Browsed Azure services by category in <strong>Create a resource</strong></li>
+<li>[ ] Created a storage account with tags</li>
+<li>[ ] Opened and navigated the Cloud Shell (Bash or PowerShell)</li>
+<li>[ ] Used the <strong>?</strong> help menu and keyboard shortcuts</li>
+<li>[ ] Found your storage account in <strong>All resources</strong></li>
+<li>[ ] Viewed resources in your Resource Group via <strong>Overview</strong></li></ol></ul>
 
 <hr class="divider">
 
-<h2 id="$(Convert-TitleToId Cleanup)">Cleanup</h2>
+<h2 id="cleanup">Cleanup</h2>
 
 <p><strong>Important:</strong> Azure charges for running resources. While a storage account is cheap (~$1-2/month), it's a good habit to clean up after every lab.</p>
 
-<h3 id="$(Convert-TitleToId Delete the Resource Group (and Everything Inside))">Delete the Resource Group (and Everything Inside)</h3>
+<h3 id="delete-the-resource-group-and-everything-inside">Delete the Resource Group (and Everything Inside)</h3>
 
-<ol><li>Search for <strong>Resource groups</strong> > select </code>rg-az104-lab00<code>.</li></ol>
-<ol><li>Click <strong>Delete resource group</strong>.</li></ol>
-<ol><li>Confirm by typing the name: </code>rg-az104-lab00<code>.</li></ol>
-<ol><li>Click <strong>Delete</strong>.</li></ol>
-<ol><li>You'll see "Deployment is in progress" → "Your deployment is complete."</li></ol>
+<ol><li>Search for <strong>Resource groups</strong> > select </code>rg-az104-lab00<code>.</li>
+<li>Click <strong>Delete resource group</strong>.</li>
+<li>Confirm by typing the name: </code>rg-az104-lab00<code>.</li>
+<li>Click <strong>Delete</strong>.</li>
+<li>You'll see "Deployment is in progress" → "Your deployment is complete."</li></ol>
 
 <p><strong>Verification:</strong> Go to <strong>Resource groups</strong>. You should no longer see </code>rg-az104-lab00<code>.</p>
 
 <hr class="divider">
 
-<h2 id="$(Convert-TitleToId Exam Tips)">Exam Tips</h2>
+<h2 id="exam-tips">Exam Tips</h2>
 
-<ul><ol><li><strong>Search is your friend</strong>: Every "Go to <strong>\<service name\></strong>" instruction is a Search bar query.</li></ol></ul>
-<ul><ol><li><strong>Scope matters</strong>: Resources, RBAC roles, and policies are all scoped to a level in the hierarchy (subscription, RG, or resource).</li></ol></ul>
-<ul><ol><li><strong>Resource Groups = logical organization</strong>: They don't cost money and have no performance impact. Use them liberally.</li></ol></ul>
-<ul><ol><li><strong>Tags = cost tracking</strong>: Tag everything by department, project, or environment so you can analyze costs later.</li></ol></ul>
-<ul><ol><li><strong>Cloud Shell vs. Portal</strong>: Cloud Shell is a CLI tool; the Portal is the UI. This course uses the Portal, but both are ways to manage Azure.</li></ol></ul>
+<ul><ol><li><strong>Search is your friend</strong>: Every "Go to <strong>\<service name\></strong>" instruction is a Search bar query.</li>
+<li><strong>Scope matters</strong>: Resources, RBAC roles, and policies are all scoped to a level in the hierarchy (subscription, RG, or resource).</li>
+<li><strong>Resource Groups = logical organization</strong>: They don't cost money and have no performance impact. Use them liberally.</li>
+<li><strong>Tags = cost tracking</strong>: Tag everything by department, project, or environment so you can analyze costs later.</li>
+<li><strong>Cloud Shell vs. Portal</strong>: Cloud Shell is a CLI tool; the Portal is the UI. This course uses the Portal, but both are ways to manage Azure.</li></ol></ul>
 
 <hr class="divider">
 
-<h2 id="$(Convert-TitleToId See It In Action)">See It In Action</h2>
+<h2 id="see-it-in-action">See It In Action</h2>
 
 <p>Once you understand the Portal, subsequent labs will feel natural:</p>
-<ol><li>Each lab starts with "Create a Resource Group named </code>rg-az104-labXX<code>" — you'll know exactly how to do this.</li></ol>
-<ol><li>Each service (VMs, databases, networking) has a similar structure: Overview, Configuration, Monitoring, etc.</li></ol>
-<ol><li>Every resource can be tagged, has access control, and belongs to a Resource Group.</li></ol>
+<ol><li>Each lab starts with "Create a Resource Group named </code>rg-az104-labXX<code>" — you'll know exactly how to do this.</li>
+<li>Each service (VMs, databases, networking) has a similar structure: Overview, Configuration, Monitoring, etc.</li>
+<li>Every resource can be tagged, has access control, and belongs to a Resource Group.</li></ol>
 
 <hr class="divider">
 
-<h2 id="$(Convert-TitleToId Next Steps)">Next Steps</h2>
+<h2 id="next-steps">Next Steps</h2>
 
-<ul><ol><li><strong>Lab 01</strong> (Module 01 – Identity & Governance): Use the Portal to manage users and groups in Microsoft Entra ID.</li></ol></ul>
-<ul><ol><li><strong>Lab 02</strong> (Module 01): Use the Portal to assign RBAC roles and Azure Policies.</li></ol></ul>
-<ul><ol><li>Subsequent labs: Build real infrastructure (networking, VMs, storage, databases) using the same Portal skills you learned here.</li></ol></ul>
+<ul><ol><li><strong>Lab 01</strong> (Module 01 – Identity & Governance): Use the Portal to manage users and groups in Microsoft Entra ID.</li>
+<li><strong>Lab 02</strong> (Module 01): Use the Portal to assign RBAC roles and Azure Policies.</li>
+<li>Subsequent labs: Build real infrastructure (networking, VMs, storage, databases) using the same Portal skills you learned here.</li></ol></ul>
 
 <hr class="divider">
 
-<h2 id="$(Convert-TitleToId Key Takeaways)">Key Takeaways</h2>
+<h2 id="key-takeaways">Key Takeaways</h2>
 
 <table>
 <p><tr></p>
@@ -642,7 +648,7 @@ hr.divider{border:none;height:0;margin:0}
 
 <hr class="divider">
 
-<h2 id="$(Convert-TitleToId Troubleshooting)">Troubleshooting</h2>
+<h2 id="troubleshooting">Troubleshooting</h2>
 
 <table>
 <p><tr></p>
@@ -670,10 +676,10 @@ hr.divider{border:none;height:0;margin:0}
 
 <hr class="divider">
 
-<h2 id="$(Convert-TitleToId Related Concepts)">Related Concepts</h2>
+<h2 id="related-concepts">Related Concepts</h2>
 
-<ul><ol><li><a href="../concepts/04-azure-portal-navigation.md">Module 00 Concepts: Azure Portal Navigation</a></li></ol></ul>
-<ul><ol><li><a href="../../01-identity-governance/README.md">Module 01 – Identity & Governance</a></li></ol></ul>
+<ul><ol><li><a href="../concepts/04-azure-portal-navigation.md">Module 00 Concepts: Azure Portal Navigation</a></li>
+<li><a href="../../01-identity-governance/README.md">Module 01 – Identity & Governance</a></li></ol></ul>
 
   </div>
 </div>

@@ -8,7 +8,7 @@
 
 ## Before You Start
 
-- **Prerequisites:** [00-Prerequisites: Identity & Access Fundamentals](../../../00-prerequisites/03-identity-and-access-fundamentals.md)
+- **Prerequisites:** [00-Prerequisites: Identity & Access Fundamentals](../../../00-prerequisites/concepts/03-identity-and-access-fundamentals.md)
 - **Time to understand:** 15 minutes
 - **Difficulty:** 🟢 **Beginner** (foundational, no experience needed)
 - **What you'll learn:** What RBAC is, how it works, why it matters

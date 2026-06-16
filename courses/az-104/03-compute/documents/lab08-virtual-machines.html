@@ -171,15 +171,18 @@ hr.divider{border:none;height:0;margin:0}
       <a href="../../01-identity-governance/documents/03-management-groups-and-azure-policy.html">03 - Management Groups &amp; Policy</a>
       <a href="../../01-identity-governance/documents/04-access-control-scenarios.html">04 - Access Control Scenarios</a>
       <a href="../../01-identity-governance/documents/05-identity-best-practices.html">05 - Identity Best Practices</a>
-      <a href="../../01-identity-governance/documents/lab01-entra-users-groups.html">Lab 01 - Entra ID Users</a>
-      <a href="../../01-identity-governance/documents/lab02-rbac-azure-policy.html">Lab 02 - RBAC &amp; Policy</a>
+      <a href="../../01-identity-governance/documents/labs-index.html">Labs</a>
     </div>
   </details>
 </nav>
 <div class="layout">
   <aside class="sidebar">
     <div class="toc-title module-title">Module 03 - Compute</div>
-    <a href="#objectives">Objectives</a>
+    <hr class="sidebar-divider">
+<div class="toc-title">Labs</div>
+<hr class="sidebar-divider">
+<div class="toc-title">On This Page</div>
+<a href="#objectives">Objectives</a>
 <a href="#prerequisites">Prerequisites</a>
 <a href="#estimated-time">Estimated time</a>
 <a href="#part-1-resource-group-and-networking">Part 1 – Resource group and networking</a>
@@ -192,28 +195,26 @@ hr.divider{border:none;height:0;margin:0}
 <a href="#validation">Validation</a>
 <a href="#cleanup">Cleanup</a>
 <a href="#exam-tips">Exam Tips</a>
-<hr class="sidebar-divider">
-<div class="toc-title">On This Page</div>
   </aside>
   <div class="page">
   <h1>Lab 08 – Virtual Machines</h1>
 
-<h2 id="$(Convert-TitleToId Objectives)">Objectives</h2>
-<ul><ol><li>Deploy a Linux and a Windows VM</li></ol></ul>
-<ul><ol><li>Configure VM sizing, disks (OS + data disk), and extensions</li></ol></ul>
-<ul><ol><li>Connect via SSH/RDP and Azure Bastion</li></ol></ul>
-<ul><ol><li>Resize a VM and manage VM power states/costs</li></ol></ul>
+<h2 id="objectives">Objectives</h2>
+<ul><ol><li>Deploy a Linux and a Windows VM</li>
+<li>Configure VM sizing, disks (OS + data disk), and extensions</li>
+<li>Connect via SSH/RDP and Azure Bastion</li>
+<li>Resize a VM and manage VM power states/costs</li></ol></ul>
 
-<h2 id="$(Convert-TitleToId Prerequisites)">Prerequisites</h2>
-<ul><ol><li>None (creates its own RG/VNet)</li></ol></ul>
-<ul><ol><li>Signed in at <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul><ol><li>None (creates its own RG/VNet)</li>
+<li>Signed in at <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
 
-<h2 id="$(Convert-TitleToId Estimated time)">Estimated time</h2>
+<h2 id="estimated-time">Estimated time</h2>
 <p>50 minutes</p>
 
 <hr class="divider">
 
-<h2 id="$(Convert-TitleToId Part 1 – Resource group and networking)">Part 1 – Resource group and networking</h2>
+<h2 id="part-1-resource-group-and-networking">Part 1 – Resource group and networking</h2>
 
 <ol><li>Search for <strong>Resource groups</strong> > <strong>Create</strong>. Name: <code>rg-az104-lab08</code>,</li></ol>
 <p>region: <code>East US</code>. <strong>Review + create</strong> > <strong>Create</strong>.</p>
@@ -222,10 +223,10 @@ hr.divider{border:none;height:0;margin:0}
 <p><strong>Subnets</strong> tab: create subnet <strong>subnet-vms</strong> with address range <code>10.30.1.0/24</code>.</p>
 <p><strong>Review + create</strong> > <strong>Create</strong>.</p>
 
-<h2 id="$(Convert-TitleToId Part 2 – Deploy a Linux VM)">Part 2 – Deploy a Linux VM</h2>
+<h2 id="part-2-deploy-a-linux-vm">Part 2 – Deploy a Linux VM</h2>
 
-<ol><li>Search for <strong>Virtual machines</strong> > <strong>Create</strong> > <strong>Azure virtual machine</strong>.</li></ol>
-<ol><li><strong>Basics</strong> tab:</li></ol>
+<ol><li>Search for <strong>Virtual machines</strong> > <strong>Create</strong> > <strong>Azure virtual machine</strong>.</li>
+<li><strong>Basics</strong> tab:</li></ol>
 <p>- <strong>Resource group</strong>: <code>rg-az104-lab08</code></p>
 <p>- <strong>VM name</strong>: <code>vm-linux01</code></p>
 <p>- <strong>Region</strong>: <code>East US</code></p>
@@ -239,23 +240,23 @@ hr.divider{border:none;height:0;margin:0}
 <ol><li><strong>Networking</strong> tab: <strong>Virtual network</strong>: <code>vnet-lab08</code>, <strong>Subnet</strong>:</li></ol>
 <p><code>subnet-vms</code>, <strong>Public IP</strong>: create new (e.g., <code>pip-vm-linux01</code>),</p>
 <p><strong>Public inbound ports</strong>: allow <strong>SSH (22)</strong>.</p>
-<ol><li><strong>Disks</strong> tab: leave defaults (OS disk type Standard).</li></ol>
-<ol><li><strong>Management</strong> tab: review <strong>Monitoring</strong> options (optional).</li></ol>
-<ol><li><strong>Review + create</strong> > <strong>Create</strong>. When finished, <strong>Download private key</li></ol>
+<ol><li><strong>Disks</strong> tab: leave defaults (OS disk type Standard).</li>
+<li><strong>Management</strong> tab: review <strong>Monitoring</strong> options (optional).</li>
+<li><strong>Review + create</strong> > <strong>Create</strong>. When finished, <strong>Download private key</li></ol>
 <p>and create resource</strong> (or just <strong>Create</strong> if you want to generate the key</p>
 <p>pair separately).</p>
 
-<h3 id="$(Convert-TitleToId Connect via SSH)">Connect via SSH</h3>
-<ol><li>Go to <strong>vm-linux01</strong> > <strong>Overview</strong> > copy its <strong>Public IP address</strong>.</li></ol>
-<ol><li>Open a terminal/SSH client and run:</li></ol>
+<h3 id="connect-via-ssh">Connect via SSH</h3>
+<ol><li>Go to <strong>vm-linux01</strong> > <strong>Overview</strong> > copy its <strong>Public IP address</strong>.</li>
+<li>Open a terminal/SSH client and run:</li></ol>
 <p>``<code></p>
 <p>ssh -i <private-key-file> azureuser@<public-ip></p>
 <p></code>`<code></p>
 
-<h2 id="$(Convert-TitleToId Part 3 – Deploy a Windows VM)">Part 3 – Deploy a Windows VM</h2>
+<h2 id="part-3-deploy-a-windows-vm">Part 3 – Deploy a Windows VM</h2>
 
-<ol><li><strong>Virtual machines</strong> > <strong>Create</strong> > <strong>Azure virtual machine</strong>.</li></ol>
-<ol><li><strong>Basics</strong> tab:</li></ol>
+<ol><li><strong>Virtual machines</strong> > <strong>Create</strong> > <strong>Azure virtual machine</strong>.</li>
+<li><strong>Basics</strong> tab:</li></ol>
 <p>- <strong>Resource group</strong>: </code>rg-az104-lab08<code></p>
 <p>- <strong>VM name</strong>: </code>vm-win01<code></p>
 <p>- <strong>Region</strong>: </code>East US<code></p>
@@ -269,15 +270,15 @@ hr.divider{border:none;height:0;margin:0}
 <ol><li><strong>Networking</strong> tab: <strong>Virtual network</strong>: </code>vnet-lab08<code>, <strong>Subnet</strong>:</li></ol>
 <p></code>subnet-vms<code>, <strong>Public IP</strong>: create new, <strong>Public inbound ports</strong>:</p>
 <p>allow <strong>RDP (3389)</strong>.</p>
-<ol><li><strong>Disks</strong> and <strong>Management</strong> tabs: leave defaults.</li></ol>
-<ol><li><strong>Review + create</strong> > <strong>Create</strong>.</li></ol>
+<ol><li><strong>Disks</strong> and <strong>Management</strong> tabs: leave defaults.</li>
+<li><strong>Review + create</strong> > <strong>Create</strong>.</li></ol>
 
-<h3 id="$(Convert-TitleToId Connect via RDP)">Connect via RDP</h3>
-<ol><li>Go to <strong>vm-win01</strong> > <strong>Overview</strong> > click <strong>Connect</strong> (top menu) > <strong>RDP</strong>.</li></ol>
-<ol><li>Select <strong>Download RDP file</strong> > open the .rdp file > enter username</li></ol>
+<h3 id="connect-via-rdp">Connect via RDP</h3>
+<ol><li>Go to <strong>vm-win01</strong> > <strong>Overview</strong> > click <strong>Connect</strong> (top menu) > <strong>RDP</strong>.</li>
+<li>Select <strong>Download RDP file</strong> > open the .rdp file > enter username</li></ol>
 <p>(</code>azureuser<code>) and the password you set > <strong>Connect</strong>.</p>
 
-<h2 id="$(Convert-TitleToId Part 4 – Add a data disk)">Part 4 – Add a data disk</h2>
+<h2 id="part-4-add-a-data-disk">Part 4 – Add a data disk</h2>
 
 <ol><li>Go to <strong>vm-linux01</strong> > <strong>Disks</strong> > <strong>Create and attach a new disk</strong> (top</li></ol>
 <p>toolbar).</p>
@@ -295,12 +296,12 @@ hr.divider{border:none;height:0;margin:0}
 <p>sudo mount /dev/sdc1 /data</p>
 <p></code>`<code></p>
 
-<h2 id="$(Convert-TitleToId Part 5 – VM Extensions (Custom Script))">Part 5 – VM Extensions (Custom Script)</h2>
+<h2 id="part-5-vm-extensions-custom-script">Part 5 – VM Extensions (Custom Script)</h2>
 
 <ol><li>Go to <strong>vm-linux01</strong> > <strong>Extensions + applications</strong> (under <strong>Settings</strong>) ></li></ol>
 <p><strong>+ Add</strong>.</p>
-<ol><li>Search for <strong>Custom Script Extension</strong> > <strong>Create</strong>.</li></ol>
-<ol><li><strong>Script file</strong> tab: in the inline script box, enter:</li></ol>
+<ol><li>Search for <strong>Custom Script Extension</strong> > <strong>Create</strong>.</li>
+<li><strong>Script file</strong> tab: in the inline script box, enter:</li></ol>
 <p></code>`<code>bash</p>
 <p>apt-get update</p>
 <p>apt-get install -y nginx</p>
@@ -312,7 +313,7 @@ hr.divider{border:none;height:0;margin:0}
 <ol><li>In a browser, open </code>http://<public-ip><code> to confirm nginx serves the default</li></ol>
 <p>page.</p>
 
-<h2 id="$(Convert-TitleToId Part 6 – Azure Bastion (secure RDP/SSH without public IP))">Part 6 – Azure Bastion (secure RDP/SSH without public IP)</h2>
+<h2 id="part-6-azure-bastion-secure-rdpssh-without-public-ip">Part 6 – Azure Bastion (secure RDP/SSH without public IP)</h2>
 
 <ol><li><strong>Virtual networks</strong> > select </code>vnet-lab08<code> > <strong>Subnets</strong> > <strong>+ Subnet</strong>.</li></ol>
 <p>Create <strong>AzureBastionSubnet</strong> with address range </code>10.30.2.0/27<code>.</p>
@@ -320,18 +321,18 @@ hr.divider{border:none;height:0;margin:0}
 <p><strong>+ Add</strong>.</p>
 <ol><li><strong>Bastion host name</strong>: </code>bastion-lab08<code>. <strong>Public IP</strong>: create new</li></ol>
 <p>(e.g., </code>pip-bastion<code>). <strong>SKU</strong>: <strong>Basic</strong> (cheapest).</p>
-<ol><li><strong>Create</strong> (takes ~10 minutes). Once deployed:</li></ol>
-<ol><li>Go to <strong>vm-win01</strong> (or any VM without a public IP) > <strong>Connect</strong> > <strong>Bastion</strong> ></li></ol>
+<ol><li><strong>Create</strong> (takes ~10 minutes). Once deployed:</li>
+<li>Go to <strong>vm-win01</strong> (or any VM without a public IP) > <strong>Connect</strong> > <strong>Bastion</strong> ></li></ol>
 <p>enter <strong>Username</strong>/<strong>Password</strong> > <strong>Connect</strong> (opens an RDP/SSH session in</p>
 <p>the browser).</p>
 
 <div class="callout"><p><strong>Cost note:</strong> Bastion is billed hourly — delete it when done (step 5 under</p></div>
 <div class="callout"><p><strong>Cleanup</strong>) if cost is a concern.</p></div>
 
-<h2 id="$(Convert-TitleToId Part 7 – Resize and power states)">Part 7 – Resize and power states</h2>
+<h2 id="part-7-resize-and-power-states">Part 7 – Resize and power states</h2>
 
-<ol><li>Go to <strong>vm-linux01</strong> > <strong>Size</strong> (under <strong>Settings</strong>).</li></ol>
-<ol><li>Select a new size (e.g., <strong>Standard_B2s</strong>) > <strong>Resize</strong>.</li></ol>
+<ol><li>Go to <strong>vm-linux01</strong> > <strong>Size</strong> (under <strong>Settings</strong>).</li>
+<li>Select a new size (e.g., <strong>Standard_B2s</strong>) > <strong>Resize</strong>.</li></ol>
 <p>- The VM <strong>must be deallocated</strong> to resize — the Portal handles this</p>
 <p>automatically.</p>
 <ol><li>Once resized, the VM <strong>starts automatically</strong> (or select <strong>Start</strong> manually</li></ol>
@@ -339,30 +340,30 @@ hr.divider{border:none;height:0;margin:0}
 <ol><li>To manage power states without resizing, go to <strong>vm-linux01</strong> ></li></ol>
 <p><strong>Overview</strong> > <strong>Stop</strong> (deallocates, stops compute billing) or <strong>Start</strong>.</p>
 
-<h3 id="$(Convert-TitleToId Understanding VM states)">Understanding VM states</h3>
-<ul><ol><li><strong>Running</strong>: billable for compute, network, disk.</li></ol></ul>
-<ul><ol><li><strong>Stopped</strong> (deallocated): no compute billing, but storage/IP charges remain.</li></ol></ul>
-<ul><ol><li><strong>Deallocated</strong> is the only state that avoids hourly compute costs.</li></ol></ul>
+<h3 id="understanding-vm-states">Understanding VM states</h3>
+<ul><ol><li><strong>Running</strong>: billable for compute, network, disk.</li>
+<li><strong>Stopped</strong> (deallocated): no compute billing, but storage/IP charges remain.</li>
+<li><strong>Deallocated</strong> is the only state that avoids hourly compute costs.</li></ol></ul>
 
-<h2 id="$(Convert-TitleToId Validation)">Validation</h2>
-<ul><ol><li>[ ] </code>vm-linux01<code> reachable via SSH with public IP</li></ol></ul>
-<ul><ol><li>[ ] </code>vm-win01<code> reachable via RDP</li></ol></ul>
-<ul><ol><li>[ ] Data disk </code>/dev/sdc<code> attached and mounted on Linux VM</li></ol></ul>
-<ul><ol><li>[ ] nginx installed and reachable on port 80</li></ol></ul>
-<ul><ol><li>[ ] Bastion host deployed and can connect to </code>vm-win01<code> (or another VM)</li></ol></ul>
-<ul><ol><li>[ ] VM successfully resized while deallocated</li></ol></ul>
+<h2 id="validation">Validation</h2>
+<ul><ol><li>[ ] </code>vm-linux01<code> reachable via SSH with public IP</li>
+<li>[ ] </code>vm-win01<code> reachable via RDP</li>
+<li>[ ] Data disk </code>/dev/sdc<code> attached and mounted on Linux VM</li>
+<li>[ ] nginx installed and reachable on port 80</li>
+<li>[ ] Bastion host deployed and can connect to </code>vm-win01<code> (or another VM)</li>
+<li>[ ] VM successfully resized while deallocated</li></ol></ul>
 
-<h2 id="$(Convert-TitleToId Cleanup)">Cleanup</h2>
+<h2 id="cleanup">Cleanup</h2>
 <ol><li>If Bastion is deployed: <strong>Virtual networks</strong> > </code>vnet-lab08<code> > <strong>Bastion</strong> ></li></ol>
 <p>select the Bastion host > <strong>Delete</strong>.</p>
 <ol><li><strong>Resource groups</strong> > select </code>rg-az104-lab08` > <strong>Delete resource group</strong></li></ol>
 <p>(type the name to confirm). This deletes all VMs, disks, VNet, and public IPs.</p>
 
-<h2 id="$(Convert-TitleToId Exam Tips)">Exam Tips</h2>
-<ul><ol><li><strong>Stopped vs Deallocated</strong>: only <em>deallocated</em> VMs stop compute billing; storage/IP charges continue regardless.</li></ol></ul>
-<ul><ol><li>Resizing often requires the VM to be deallocated, and the target size must be available in the current hardware cluster/availability set.</li></ol></ul>
-<ul><ol><li>Azure Bastion provides RDP/SSH over TLS via the Portal — no public IP needed on the VM NIC, reducing attack surface.</li></ol></ul>
-<ul><ol><li>VM extensions (Custom Script, DSC, etc.) run post-deployment configuration — they're managed via the <strong>Extensions + applications</strong> blade.</li></ol></ul>
+<h2 id="exam-tips">Exam Tips</h2>
+<ul><ol><li><strong>Stopped vs Deallocated</strong>: only <em>deallocated</em> VMs stop compute billing; storage/IP charges continue regardless.</li>
+<li>Resizing often requires the VM to be deallocated, and the target size must be available in the current hardware cluster/availability set.</li>
+<li>Azure Bastion provides RDP/SSH over TLS via the Portal — no public IP needed on the VM NIC, reducing attack surface.</li>
+<li>VM extensions (Custom Script, DSC, etc.) run post-deployment configuration — they're managed via the <strong>Extensions + applications</strong> blade.</li></ol></ul>
 
   </div>
 </div>

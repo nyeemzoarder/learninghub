@@ -1,6 +1,6 @@
 # Cloud Computing Fundamentals
 
-> [Prerequisites](README.md) for the [AZ-104 course](../README.md)
+> [Prerequisites](../README.md) for the [AZ-104 course](../../README.md)
 
 ## Why this matters
 
@@ -68,5 +68,5 @@ resource group."
 
 ## See also
 
-- [Glossary](../resources/glossary.md)
-- [Module 01 – Identity & Governance](../01-identity-governance/README.md)
+- [Glossary](../../resources/glossary.md)
+- [Module 01 – Identity & Governance](../../01-identity-governance/README.md)

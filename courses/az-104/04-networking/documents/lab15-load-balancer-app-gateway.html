@@ -171,15 +171,18 @@ hr.divider{border:none;height:0;margin:0}
       <a href="../../01-identity-governance/documents/03-management-groups-and-azure-policy.html">03 - Management Groups &amp; Policy</a>
       <a href="../../01-identity-governance/documents/04-access-control-scenarios.html">04 - Access Control Scenarios</a>
       <a href="../../01-identity-governance/documents/05-identity-best-practices.html">05 - Identity Best Practices</a>
-      <a href="../../01-identity-governance/documents/lab01-entra-users-groups.html">Lab 01 - Entra ID Users</a>
-      <a href="../../01-identity-governance/documents/lab02-rbac-azure-policy.html">Lab 02 - RBAC &amp; Policy</a>
+      <a href="../../01-identity-governance/documents/labs-index.html">Labs</a>
     </div>
   </details>
 </nav>
 <div class="layout">
   <aside class="sidebar">
     <div class="toc-title module-title">Module 04 - Networking</div>
-    <a href="#objectives">Objectives</a>
+    <hr class="sidebar-divider">
+<div class="toc-title">Labs</div>
+<hr class="sidebar-divider">
+<div class="toc-title">On This Page</div>
+<a href="#objectives">Objectives</a>
 <a href="#prerequisites">Prerequisites</a>
 <a href="#estimated-time">Estimated time</a>
 <a href="#part-1-setup-vnet-and-two-web-vms">Part 1 – Setup: VNet and two web VMs</a>
@@ -189,27 +192,25 @@ hr.divider{border:none;height:0;margin:0}
 <a href="#validation">Validation</a>
 <a href="#cleanup">Cleanup</a>
 <a href="#exam-tips">Exam Tips</a>
-<hr class="sidebar-divider">
-<div class="toc-title">On This Page</div>
   </aside>
   <div class="page">
   <h1>Lab 15 – Load Balancer & Application Gateway</h1>
 
-<h2 id="$(Convert-TitleToId Objectives)">Objectives</h2>
-<ul><ol><li>Deploy an Azure Load Balancer (Layer 4) with a backend pool and health probe</li></ol></ul>
-<ul><ol><li>Deploy an Application Gateway (Layer 7) with path-based routing</li></ol></ul>
-<ul><ol><li>Compare LB SKUs (Basic vs Standard) and understand when to use each service</li></ol></ul>
+<h2 id="objectives">Objectives</h2>
+<ul><ol><li>Deploy an Azure Load Balancer (Layer 4) with a backend pool and health probe</li>
+<li>Deploy an Application Gateway (Layer 7) with path-based routing</li>
+<li>Compare LB SKUs (Basic vs Standard) and understand when to use each service</li></ol></ul>
 
-<h2 id="$(Convert-TitleToId Prerequisites)">Prerequisites</h2>
-<ul><ol><li>None</li></ol></ul>
-<ul><ol><li>Signed in at <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul><ol><li>None</li>
+<li>Signed in at <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
 
-<h2 id="$(Convert-TitleToId Estimated time)">Estimated time</h2>
+<h2 id="estimated-time">Estimated time</h2>
 <p>45 minutes</p>
 
 <hr class="divider">
 
-<h2 id="$(Convert-TitleToId Part 1 – Setup: VNet and two web VMs)">Part 1 – Setup: VNet and two web VMs</h2>
+<h2 id="part-1-setup-vnet-and-two-web-vms">Part 1 – Setup: VNet and two web VMs</h2>
 
 <ol><li>Search for <strong>Resource groups</strong> > <strong>Create</strong>. Name: <code>rg-az104-lab15</code>,</li></ol>
 <p>region: <code>East US</code>. <strong>Create</strong>.</p>
@@ -227,10 +228,10 @@ hr.divider{border:none;height:0;margin:0}
 <p></code>`<code></p>
 <p>- SSH into </code>vm-web02<code> and repeat (changing "Server 1" to "Server 2").</p>
 
-<h2 id="$(Convert-TitleToId Part 2 – Standard Load Balancer)">Part 2 – Standard Load Balancer</h2>
+<h2 id="part-2-standard-load-balancer">Part 2 – Standard Load Balancer</h2>
 
-<ol><li>Search for <strong>Load balancers</strong> > <strong>Create</strong>.</li></ol>
-<ol><li><strong>Basics</strong>:</li></ol>
+<ol><li>Search for <strong>Load balancers</strong> > <strong>Create</strong>.</li>
+<li><strong>Basics</strong>:</li></ol>
 <p>- <strong>Name</strong>: </code>lb-lab15<code></p>
 <p>- <strong>Type</strong>: <strong>Public</strong></p>
 <p>- <strong>SKU</strong>: <strong>Standard</strong></p>
@@ -242,14 +243,14 @@ hr.divider{border:none;height:0;margin:0}
 <ol><li><strong>Backend pools</strong>: <strong>Create new</strong></li></ol>
 <p>- <strong>Name</strong>: </code>beLB<code></p>
 <p>- <strong>Subnet</strong>: select </code>vnet-lab15<code>/</code>subnet-backend<code></p>
-<ol><li><strong>Inbound rules</strong> (configure after creation).</li></ol>
-<ol><li><strong>Review + create</strong> > <strong>Create</strong>.</li></ol>
+<ol><li><strong>Inbound rules</strong> (configure after creation).</li>
+<li><strong>Review + create</strong> > <strong>Create</strong>.</li></ol>
 
-<h3 id="$(Convert-TitleToId Add VMs to backend pool)">Add VMs to backend pool</h3>
-<ol><li>Go to <strong>lb-lab15</strong> > <strong>Backend pools</strong> > select </code>beLB<code> > <strong>+ Add</strong>.</li></ol>
-<ol><li>Select </code>vm-web01<code> and </code>vm-web02<code> > <strong>Add</strong>.</li></ol>
+<h3 id="add-vms-to-backend-pool">Add VMs to backend pool</h3>
+<ol><li>Go to <strong>lb-lab15</strong> > <strong>Backend pools</strong> > select </code>beLB<code> > <strong>+ Add</strong>.</li>
+<li>Select </code>vm-web01<code> and </code>vm-web02<code> > <strong>Add</strong>.</li></ol>
 
-<h3 id="$(Convert-TitleToId Configure health probe & load-balancing rule)">Configure health probe & load-balancing rule</h3>
+<h3 id="configure-health-probe-load-balancing-rule">Configure health probe & load-balancing rule</h3>
 <ol><li><strong>lb-lab15</strong> > <strong>Health probes</strong> > <strong>+ Add</strong>:</li></ol>
 <p>- <strong>Name</strong>: </code>probe-http<code></p>
 <p>- <strong>Protocol</strong>: <strong>TCP</strong></p>
@@ -267,15 +268,15 @@ hr.divider{border:none;height:0;margin:0}
 <p>- <strong>Session persistence</strong>: <strong>None</strong></p>
 <p>- <strong>Add</strong>.</p>
 
-<h3 id="$(Convert-TitleToId Test load balancing)">Test load balancing</h3>
-<ol><li>Go to <strong>lb-lab15</strong> > <strong>Overview</strong> > copy the <strong>Public IP address</strong>.</li></ol>
-<ol><li>Open </code>http://<lb-ip><code> in a browser multiple times — should see alternating</li></ol>
+<h3 id="test-load-balancing">Test load balancing</h3>
+<ol><li>Go to <strong>lb-lab15</strong> > <strong>Overview</strong> > copy the <strong>Public IP address</strong>.</li>
+<li>Open </code>http://<lb-ip><code> in a browser multiple times — should see alternating</li></ol>
 <p>"Server 1" / "Server 2" responses.</p>
 
-<h2 id="$(Convert-TitleToId Part 3 – Application Gateway with path-based routing)">Part 3 – Application Gateway with path-based routing</h2>
+<h2 id="part-3-application-gateway-with-path-based-routing">Part 3 – Application Gateway with path-based routing</h2>
 
-<ol><li>Search for <strong>Application gateways</strong> > <strong>Create</strong>.</li></ol>
-<ol><li><strong>Basics</strong>:</li></ol>
+<ol><li>Search for <strong>Application gateways</strong> > <strong>Create</strong>.</li>
+<li><strong>Basics</strong>:</li></ol>
 <p>- <strong>Name</strong>: </code>appgw-lab15<code></p>
 <p>- <strong>Tier</strong>: <strong>Standard v2</strong></p>
 <p>- <strong>Capacity</strong>: 1 instance</p>
@@ -292,10 +293,10 @@ hr.divider{border:none;height:0;margin:0}
 <p>(see Part 4).</p>
 <ol><li><strong>Review + create</strong> > <strong>Create</strong>.</li></ol>
 
-<h3 id="$(Convert-TitleToId Configure path-based routing)">Configure path-based routing</h3>
-<ol><li>Go to <strong>appgw-lab15</strong> > <strong>Rules</strong> (under <strong>Settings</strong>) > <strong>+ Add rule</strong>.</li></ol>
-<ol><li><strong>Rule name</strong>: </code>rule-path<code></li></ol>
-<ol><li><strong>Listener</strong> tab:</li></ol>
+<h3 id="configure-path-based-routing">Configure path-based routing</h3>
+<ol><li>Go to <strong>appgw-lab15</strong> > <strong>Rules</strong> (under <strong>Settings</strong>) > <strong>+ Add rule</strong>.</li>
+<li><strong>Rule name</strong>: </code>rule-path<code></li>
+<li><strong>Listener</strong> tab:</li></ol>
 <p>- <strong>Listener name</strong>: </code>listener-http<code></p>
 <p>- <strong>Frontend IP</strong>: select public IP</p>
 <p>- <strong>Port</strong>: 80</p>
@@ -308,7 +309,7 @@ hr.divider{border:none;height:0;margin:0}
 <p>- Default path: </code>/<code> → backend pool </code>backendPool1<code></p>
 <ol><li><strong>Review + create</strong> > <strong>Create</strong>.</li></ol>
 
-<h2 id="$(Convert-TitleToId Part 4 – Compare LB SKUs)">Part 4 – Compare LB SKUs</h2>
+<h2 id="part-4-compare-lb-skus">Part 4 – Compare LB SKUs</h2>
 
 <table>
 <p><tr></p>
@@ -344,20 +345,20 @@ hr.divider{border:none;height:0;margin:0}
 <p></table></p>
 
 
-<h2 id="$(Convert-TitleToId Validation)">Validation</h2>
-<ul><ol><li>[ ] Load Balancer distributes traffic across both VMs (alternating responses)</li></ol></ul>
-<ul><ol><li>[ ] Health probe configured on port 80</li></ol></ul>
-<ul><ol><li>[ ] Application Gateway deployed with backend pool pointing at both VM IPs</li></ol></ul>
-<ul><ol><li>[ ] Can articulate Basic vs Standard LB differences and L4 vs L7 use cases</li></ol></ul>
+<h2 id="validation">Validation</h2>
+<ul><ol><li>[ ] Load Balancer distributes traffic across both VMs (alternating responses)</li>
+<li>[ ] Health probe configured on port 80</li>
+<li>[ ] Application Gateway deployed with backend pool pointing at both VM IPs</li>
+<li>[ ] Can articulate Basic vs Standard LB differences and L4 vs L7 use cases</li></ol></ul>
 
-<h2 id="$(Convert-TitleToId Cleanup)">Cleanup</h2>
+<h2 id="cleanup">Cleanup</h2>
 <ol><li><strong>Resource groups</strong> > select </code>rg-az104-lab15<code> > <strong>Delete resource group</strong>.</li></ol>
 
-<h2 id="$(Convert-TitleToId Exam Tips)">Exam Tips</h2>
-<ul><ol><li><strong>Load Balancer</strong> = Layer 4 (TCP/UDP), regional or global (cross-region) tier available in Standard SKU.</li></ol></ul>
-<ul><ol><li><strong>Application Gateway</strong> = Layer 7 (HTTP/HTTPS), supports path-based routing, SSL offload/termination, cookie-based session affinity, and integrates with WAF (Web Application Firewall) — WAF</em>v2 SKU.</li></ol></ul>
-<ul><ol><li>Standard LB requires explicit NSG rules to allow traffic (including </code>AzureLoadBalancer` tag for health probes); Basic LB does not.</li></ol></ul>
-<ul><ol><li>Public vs Internal LB: Internal (ILB) has a private frontend IP only, used for internal-facing tiers.</li></ol></ul>
+<h2 id="exam-tips">Exam Tips</h2>
+<ul><ol><li><strong>Load Balancer</strong> = Layer 4 (TCP/UDP), regional or global (cross-region) tier available in Standard SKU.</li>
+<li><strong>Application Gateway</strong> = Layer 7 (HTTP/HTTPS), supports path-based routing, SSL offload/termination, cookie-based session affinity, and integrates with WAF (Web Application Firewall) — WAF</em>v2 SKU.</li>
+<li>Standard LB requires explicit NSG rules to allow traffic (including </code>AzureLoadBalancer` tag for health probes); Basic LB does not.</li>
+<li>Public vs Internal LB: Internal (ILB) has a private frontend IP only, used for internal-facing tiers.</li></ol></ul>
 
   </div>
 </div>

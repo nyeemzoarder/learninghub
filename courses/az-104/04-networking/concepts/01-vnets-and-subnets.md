@@ -8,7 +8,7 @@
 
 ## Before You Start
 
-- **Prerequisites:** [00-Prerequisites: Networking Basics](../../../00-prerequisites/02-networking-basics.md) (CIDR, IP addresses, subnets)
+- **Prerequisites:** [00-Prerequisites: Networking Basics](../../../00-prerequisites/concepts/02-networking-basics.md) (CIDR, IP addresses, subnets)
 - **Time to understand:** 15 minutes
 - **Difficulty:** 🟢 **Beginner** (foundational, no prior network knowledge needed)
 - **What you'll learn:** What VNets are, how to create subnets, why they matter

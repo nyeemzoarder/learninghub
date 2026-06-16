@@ -171,15 +171,18 @@ hr.divider{border:none;height:0;margin:0}
       <a href="../../01-identity-governance/documents/03-management-groups-and-azure-policy.html">03 - Management Groups &amp; Policy</a>
       <a href="../../01-identity-governance/documents/04-access-control-scenarios.html">04 - Access Control Scenarios</a>
       <a href="../../01-identity-governance/documents/05-identity-best-practices.html">05 - Identity Best Practices</a>
-      <a href="../../01-identity-governance/documents/lab01-entra-users-groups.html">Lab 01 - Entra ID Users</a>
-      <a href="../../01-identity-governance/documents/lab02-rbac-azure-policy.html">Lab 02 - RBAC &amp; Policy</a>
+      <a href="../../01-identity-governance/documents/labs-index.html">Labs</a>
     </div>
   </details>
 </nav>
 <div class="layout">
   <aside class="sidebar">
     <div class="toc-title module-title">Module 05 - Monitor &amp; Maintain</div>
-    <a href="#objectives">Objectives</a>
+    <hr class="sidebar-divider">
+<div class="toc-title">Labs</div>
+<hr class="sidebar-divider">
+<div class="toc-title">On This Page</div>
+<a href="#objectives">Objectives</a>
 <a href="#prerequisites">Prerequisites</a>
 <a href="#estimated-time">Estimated time</a>
 <a href="#part-1-setup">Part 1 – Setup</a>
@@ -192,28 +195,26 @@ hr.divider{border:none;height:0;margin:0}
 <a href="#validation">Validation</a>
 <a href="#cleanup">Cleanup</a>
 <a href="#exam-tips">Exam Tips</a>
-<hr class="sidebar-divider">
-<div class="toc-title">On This Page</div>
   </aside>
   <div class="page">
   <h1>Lab 18 – Backup & Recovery</h1>
 
-<h2 id="$(Convert-TitleToId Objectives)">Objectives</h2>
-<ul><ol><li>Create a Recovery Services vault</li></ol></ul>
-<ul><ol><li>Configure and run a VM backup, then restore a file/disk</li></ol></ul>
-<ul><ol><li>Configure Azure Site Recovery (overview/concepts)</li></ol></ul>
-<ul><ol><li>Understand backup policies, retention, and soft delete for vaults</li></ol></ul>
+<h2 id="objectives">Objectives</h2>
+<ul><ol><li>Create a Recovery Services vault</li>
+<li>Configure and run a VM backup, then restore a file/disk</li>
+<li>Configure Azure Site Recovery (overview/concepts)</li>
+<li>Understand backup policies, retention, and soft delete for vaults</li></ol></ul>
 
-<h2 id="$(Convert-TitleToId Prerequisites)">Prerequisites</h2>
-<ul><ol><li>A VM (small size to minimize backup time/cost)</li></ol></ul>
-<ul><ol><li>Signed in at <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul><ol><li>A VM (small size to minimize backup time/cost)</li>
+<li>Signed in at <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
 
-<h2 id="$(Convert-TitleToId Estimated time)">Estimated time</h2>
+<h2 id="estimated-time">Estimated time</h2>
 <p>45 minutes (initial backup can take a while to complete — plan for waiting)</p>
 
 <hr class="divider">
 
-<h2 id="$(Convert-TitleToId Part 1 – Setup)">Part 1 – Setup</h2>
+<h2 id="part-1-setup">Part 1 – Setup</h2>
 
 <ol><li>Search for <strong>Resource groups</strong> > <strong>Create</strong>. Name: <code>rg-az104-lab18</code>,</li></ol>
 <p>region: <code>East US</code>. <strong>Create</strong>.</p>
@@ -226,26 +227,26 @@ hr.divider{border:none;height:0;margin:0}
 <p>- <strong>Region</strong>: <code>East US</code></p>
 <p>- <strong>Create</strong>.</p>
 
-<h2 id="$(Convert-TitleToId Part 2 – Enable backup with default policy)">Part 2 – Enable backup with default policy</h2>
+<h2 id="part-2-enable-backup-with-default-policy">Part 2 – Enable backup with default policy</h2>
 
-<ol><li>Go to <strong>rsv-az104lab18</strong> > <strong>Backup</strong> (under <strong>Getting started</strong>).</li></ol>
-<ol><li><strong>Where is your workload running?</strong>: <strong>Azure</strong></li></ol>
-<ol><li><strong>What do you want to backup?</strong>: <strong>Virtual machine</strong></li></ol>
-<ol><li><strong>Select VMs to backup</strong>: check <code>vm-backup01</code> > <strong>Enable backup</strong>.</li></ol>
+<ol><li>Go to <strong>rsv-az104lab18</strong> > <strong>Backup</strong> (under <strong>Getting started</strong>).</li>
+<li><strong>Where is your workload running?</strong>: <strong>Azure</strong></li>
+<li><strong>What do you want to backup?</strong>: <strong>Virtual machine</strong></li>
+<li><strong>Select VMs to backup</strong>: check <code>vm-backup01</code> > <strong>Enable backup</strong>.</li></ol>
 <p>- Uses the <strong>DefaultPolicy</strong> (daily backup at 10:00 AM, retention 30 days).</p>
 
-<h2 id="$(Convert-TitleToId Part 3 – Review/customize backup policy)">Part 3 – Review/customize backup policy</h2>
+<h2 id="part-3-reviewcustomize-backup-policy">Part 3 – Review/customize backup policy</h2>
 
-<ol><li>Go to <strong>rsv-az104lab18</strong> > <strong>Backup policies</strong> (under <strong>Manage</strong>).</li></ol>
-<ol><li>Select <strong>DefaultPolicy</strong> — review daily retention, weekly/monthly/yearly tiers.</li></ol>
-<ol><li>To create a custom policy:</li></ol>
+<ol><li>Go to <strong>rsv-az104lab18</strong> > <strong>Backup policies</strong> (under <strong>Manage</strong>).</li>
+<li>Select <strong>DefaultPolicy</strong> — review daily retention, weekly/monthly/yearly tiers.</li>
+<li>To create a custom policy:</li></ol>
 <p>- <strong>+ Add</strong> > <strong>VM backup policy</strong></p>
 <p>- <strong>Policy name</strong>: <code>custom-policy</code></p>
 <p>- <strong>Daily backup</strong>: enabled, time 11:00 PM</p>
 <p>- <strong>Retention</strong>: daily 30 days, weekly 12 weeks</p>
 <p>- <strong>Save</strong>.</p>
 
-<h2 id="$(Convert-TitleToId Part 4 – Trigger an on-demand backup)">Part 4 – Trigger an on-demand backup</h2>
+<h2 id="part-4-trigger-an-on-demand-backup">Part 4 – Trigger an on-demand backup</h2>
 
 <ol><li>Go to <strong>rsv-az104lab18</strong> > <strong>Backup items</strong> (under <strong>Protected items</strong>) ></li></ol>
 <p>select <code>vm-backup01</code>.</p>
@@ -256,33 +257,33 @@ hr.divider{border:none;height:0;margin:0}
 <p>The backup job begins. <strong>Backup jobs</strong> (under <strong>Manage</strong>) shows progress. This</p>
 <p>can take 15–30+ minutes for the first backup.</p>
 
-<h2 id="$(Convert-TitleToId Part 5 – Recovery Services vault settings: soft delete & redundancy)">Part 5 – Recovery Services vault settings: soft delete & redundancy</h2>
+<h2 id="part-5-recovery-services-vault-settings-soft-delete-redundancy">Part 5 – Recovery Services vault settings: soft delete & redundancy</h2>
 
-<ol><li>Go to <strong>rsv-az104lab18</strong> > <strong>Properties</strong> (under <strong>Settings</strong>).</li></ol>
-<ol><li><strong>Backup configuration</strong>:</li></ol>
+<ol><li>Go to <strong>rsv-az104lab18</strong> > <strong>Properties</strong> (under <strong>Settings</strong>).</li>
+<li><strong>Backup configuration</strong>:</li></ol>
 <p>- <strong>Storage replication type</strong>: <strong>Locally-redundant (LRS)</strong> or <strong>Geo-redundant (GRS)</strong> — GRS replicates to a secondary region for DR.</p>
 <p>- <strong>Soft delete</strong>: <strong>Enabled by default</strong> on new vaults — protects backup data for 14 days after accidental/malicious deletion.</p>
 
-<h2 id="$(Convert-TitleToId Part 6 – Azure Site Recovery (concepts, no full deployment))">Part 6 – Azure Site Recovery (concepts, no full deployment)</h2>
+<h2 id="part-6-azure-site-recovery-concepts-no-full-deployment">Part 6 – Azure Site Recovery (concepts, no full deployment)</h2>
 
 <p>ASR provides VM-level disaster recovery by continuously replicating VM disks</p>
 <p>to another region. Workflow:</p>
-<ol><li>Enable replication for a source VM to a target region/VNet.</li></ol>
-<ol><li>Configure replication policy (RPO threshold, retention of recovery points).</li></ol>
-<ol><li>Test failover (non-disruptive, isolated network) to validate DR readiness.</li></ol>
-<ol><li>Planned/unplanned failover moves the workload to the target region.</li></ol>
-<ol><li>Failback once the primary region is healthy.</li></ol>
+<ol><li>Enable replication for a source VM to a target region/VNet.</li>
+<li>Configure replication policy (RPO threshold, retention of recovery points).</li>
+<li>Test failover (non-disruptive, isolated network) to validate DR readiness.</li>
+<li>Planned/unplanned failover moves the workload to the target region.</li>
+<li>Failback once the primary region is healthy.</li></ol>
 
 <p>To explore in the Portal (without full setup):</p>
 <ul><ol><li><strong>rsv-az104lab18</strong> > <strong>Replicated items</strong> (under <strong>Protected items</strong>) — shows</li></ol></ul>
 <p>VMs being replicated via ASR (empty until configured).</p>
 
-<h2 id="$(Convert-TitleToId Part 7 – Restore (after backup completes))">Part 7 – Restore (after backup completes)</h2>
+<h2 id="part-7-restore-after-backup-completes">Part 7 – Restore (after backup completes)</h2>
 
 <p>Once the backup job finishes:</p>
 
-<ol><li>Go to <strong>rsv-az104lab18</strong> > <strong>Backup items</strong> > select <code>vm-backup01</code>.</li></ol>
-<ol><li><strong>Restore VM</strong> (top toolbar):</li></ol>
+<ol><li>Go to <strong>rsv-az104lab18</strong> > <strong>Backup items</strong> > select <code>vm-backup01</code>.</li>
+<li><strong>Restore VM</strong> (top toolbar):</li></ol>
 <p>- <strong>Restore point</strong>: select the latest recovery point</p>
 <p>- <strong>Restore configuration</strong>:</p>
 <p>- <strong>Restore type</strong>: <strong>Create new virtual machine</strong></p>
@@ -295,27 +296,27 @@ hr.divider{border:none;height:0;margin:0}
 <p>Alternative: <strong>Restore disks</strong> to restore individual disks to a storage</p>
 <p>account for file-level recovery.</p>
 
-<h2 id="$(Convert-TitleToId Validation)">Validation</h2>
-<ul><ol><li>[ ] Recovery Services vault created</li></ol></ul>
-<ul><ol><li>[ ] VM backup enabled with a backup policy</li></ol></ul>
-<ul><ol><li>[ ] On-demand backup job completes successfully (check <strong>Backup jobs</strong>)</li></ol></ul>
-<ul><ol><li>[ ] Recovery point listed in <code>vm-backup01</code>'s backup items</li></ol></ul>
-<ul><ol><li>[ ] Can describe ASR failover/failback workflow and RPO/RTO concepts</li></ol></ul>
+<h2 id="validation">Validation</h2>
+<ul><ol><li>[ ] Recovery Services vault created</li>
+<li>[ ] VM backup enabled with a backup policy</li>
+<li>[ ] On-demand backup job completes successfully (check <strong>Backup jobs</strong>)</li>
+<li>[ ] Recovery point listed in <code>vm-backup01</code>'s backup items</li>
+<li>[ ] Can describe ASR failover/failback workflow and RPO/RTO concepts</li></ol></ul>
 
-<h2 id="$(Convert-TitleToId Cleanup)">Cleanup</h2>
+<h2 id="cleanup">Cleanup</h2>
 <ol><li>Go to <strong>rsv-az104lab18</strong> > <strong>Backup items</strong> > select <code>vm-backup01</code> ></li></ol>
 <p><strong>Stop Backup</strong> (top toolbar).</p>
-<ol><li><strong>Delete Backup Data</strong>: <strong>Yes</strong> (delete retained backups) > <strong>Stop Backup</strong>.</li></ol>
-<ol><li><strong>Resource groups</strong> > select <code>rg-az104-lab18</code> > <strong>Delete resource group</strong>.</li></ol>
+<ol><li><strong>Delete Backup Data</strong>: <strong>Yes</strong> (delete retained backups) > <strong>Stop Backup</strong>.</li>
+<li><strong>Resource groups</strong> > select <code>rg-az104-lab18</code> > <strong>Delete resource group</strong>.</li></ol>
 
 <div class="callout"><p>A Recovery Services vault can't be deleted while it has protected items or</p></div>
 <div class="callout"><p>retained backup data — disable protection first.</p></div>
 
-<h2 id="$(Convert-TitleToId Exam Tips)">Exam Tips</h2>
-<ul><ol><li>Backup is <strong>item-level</strong> (VM, files, SQL, etc.) for operational recovery; <strong>ASR</strong> is <strong>DR-focused</strong>, replicating entire VMs to another region for failover.</li></ol></ul>
-<ul><ol><li>Vault soft delete retains deleted backup data for 14 days — protects against ransomware/accidental deletion.</li></ol></ul>
-<ul><ol><li>RPO (Recovery Point Objective) = acceptable data loss window; RTO (Recovery Time Objective) = acceptable downtime — ASR lets you configure/test against these.</li></ol></ul>
-<ul><ol><li>You must disable protection (and optionally delete backup data) before a vault can be deleted.</li></ol></ul>
+<h2 id="exam-tips">Exam Tips</h2>
+<ul><ol><li>Backup is <strong>item-level</strong> (VM, files, SQL, etc.) for operational recovery; <strong>ASR</strong> is <strong>DR-focused</strong>, replicating entire VMs to another region for failover.</li>
+<li>Vault soft delete retains deleted backup data for 14 days — protects against ransomware/accidental deletion.</li>
+<li>RPO (Recovery Point Objective) = acceptable data loss window; RTO (Recovery Time Objective) = acceptable downtime — ASR lets you configure/test against these.</li>
+<li>You must disable protection (and optionally delete backup data) before a vault can be deleted.</li></ol></ul>
 
   </div>
 </div>

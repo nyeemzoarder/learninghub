@@ -4,7 +4,8 @@
 # every document across both modules) to all HTML pages.
 # ============================================================
 
-$root = Split-Path -Parent $MyInvocation.MyCommand.Path
+$root = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) "..\courses\az-104"
+$root = Resolve-Path $root
 
 $navCss = @'
 
@@ -51,7 +52,7 @@ $module01 = @(
 )
 
 $module04 = @(
-    @{file='01-hub-spoke-topology.html';                      title='01 - Hub-Spoke Topology'},
+    @{file='06-hub-spoke-topology.html';                      title='06 - Hub-Spoke Topology'},
     @{file='01-vnets-and-subnets.html';                       title='01 - VNets &amp; Subnets'},
     @{file='02-network-security-groups.html';                 title='02 - Network Security Groups'},
     @{file='03-routing-fundamentals.html';                    title='03 - Routing Fundamentals'},

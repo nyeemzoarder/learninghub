@@ -171,15 +171,18 @@ hr.divider{border:none;height:0;margin:0}
       <a href="../../01-identity-governance/documents/03-management-groups-and-azure-policy.html">03 - Management Groups &amp; Policy</a>
       <a href="../../01-identity-governance/documents/04-access-control-scenarios.html">04 - Access Control Scenarios</a>
       <a href="../../01-identity-governance/documents/05-identity-best-practices.html">05 - Identity Best Practices</a>
-      <a href="../../01-identity-governance/documents/lab01-entra-users-groups.html">Lab 01 - Entra ID Users</a>
-      <a href="../../01-identity-governance/documents/lab02-rbac-azure-policy.html">Lab 02 - RBAC &amp; Policy</a>
+      <a href="../../01-identity-governance/documents/labs-index.html">Labs</a>
     </div>
   </details>
 </nav>
 <div class="layout">
   <aside class="sidebar">
     <div class="toc-title module-title">Module 02 - Storage</div>
-    <a href="#objectives">Objectives</a>
+    <hr class="sidebar-divider">
+<div class="toc-title">Labs</div>
+<hr class="sidebar-divider">
+<div class="toc-title">On This Page</div>
+<a href="#objectives">Objectives</a>
 <a href="#prerequisites">Prerequisites</a>
 <a href="#estimated-time">Estimated time</a>
 <a href="#part-1-create-the-resource-group-and-storage-account">Part 1 – Create the resource group and storage account</a>
@@ -191,43 +194,41 @@ hr.divider{border:none;height:0;margin:0}
 <a href="#validation">Validation</a>
 <a href="#cleanup">Cleanup</a>
 <a href="#exam-tips">Exam Tips</a>
-<hr class="sidebar-divider">
-<div class="toc-title">On This Page</div>
   </aside>
   <div class="page">
   <h1>Lab 04 – Storage Accounts</h1>
 
-<h2 id="$(Convert-TitleToId Objectives)">Objectives</h2>
-<ul><ol><li>Create storage accounts with different redundancy/performance tiers</li></ol></ul>
-<ul><ol><li>Configure access keys, SAS tokens, and network rules</li></ol></ul>
-<ul><ol><li>Work with blob containers, queues, tables, and file shares</li></ol></ul>
-<ul><ol><li>Move/copy data using the Portal's Storage browser</li></ol></ul>
+<h2 id="objectives">Objectives</h2>
+<ul><ol><li>Create storage accounts with different redundancy/performance tiers</li>
+<li>Configure access keys, SAS tokens, and network rules</li>
+<li>Work with blob containers, queues, tables, and file shares</li>
+<li>Move/copy data using the Portal's Storage browser</li></ol></ul>
 
-<h2 id="$(Convert-TitleToId Prerequisites)">Prerequisites</h2>
-<ul><ol><li>A resource group (we'll create one)</li></ol></ul>
-<ul><ol><li>Signed in at <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul><ol><li>A resource group (we'll create one)</li>
+<li>Signed in at <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
 
-<h2 id="$(Convert-TitleToId Estimated time)">Estimated time</h2>
+<h2 id="estimated-time">Estimated time</h2>
 <p>40 minutes</p>
 
 <hr class="divider">
 
-<h2 id="$(Convert-TitleToId Part 1 – Create the resource group and storage account)">Part 1 – Create the resource group and storage account</h2>
+<h2 id="part-1-create-the-resource-group-and-storage-account">Part 1 – Create the resource group and storage account</h2>
 
 <ol><li>Search for <strong>Resource groups</strong> > <strong>Create</strong>. Name: <code>rg-az104-lab04</code>,</li></ol>
 <p>region: <code>East US</code>. <strong>Review + create</strong> > <strong>Create</strong>.</p>
-<ol><li>Search for <strong>Storage accounts</strong> > <strong>Create</strong>.</li></ol>
-<ol><li><strong>Basics</strong> tab:</li></ol>
+<ol><li>Search for <strong>Storage accounts</strong> > <strong>Create</strong>.</li>
+<li><strong>Basics</strong> tab:</li></ol>
 <p>- <strong>Resource group</strong>: <code>rg-az104-lab04</code></p>
 <p>- <strong>Storage account name</strong>: <code>stoaz104lab<unique></code> (lowercase letters/numbers</p>
 <p>only, 3–24 chars, globally unique)</p>
 <p>- <strong>Region</strong>: <code>East US</code></p>
 <p>- <strong>Performance</strong>: <strong>Standard</strong></p>
 <p>- <strong>Redundancy</strong>: <strong>Locally-redundant storage (LRS)</strong></p>
-<ol><li>Leave <strong>Advanced</strong> defaults (Account kind <strong>StorageV2</strong>, <strong>Access tier: Hot</strong>).</li></ol>
-<ol><li><strong>Review + create</strong> > <strong>Create</strong>.</li></ol>
+<ol><li>Leave <strong>Advanced</strong> defaults (Account kind <strong>StorageV2</strong>, <strong>Access tier: Hot</strong>).</li>
+<li><strong>Review + create</strong> > <strong>Create</strong>.</li></ol>
 
-<h2 id="$(Convert-TitleToId Part 2 – Explore redundancy & performance options)">Part 2 – Explore redundancy & performance options</h2>
+<h2 id="part-2-explore-redundancy-performance-options">Part 2 – Explore redundancy & performance options</h2>
 
 <ol><li>Open the storage account > <strong>Redundancy</strong> (under <strong>Data management</strong>).</li></ol>
 <p>Note options: LRS, ZRS, GRS, GZRS, RA-GRS, RA-GZRS.</p>
@@ -237,18 +238,18 @@ hr.divider{border:none;height:0;margin:0}
 <ol><li><strong>Configuration</strong> > <strong>Access tier</strong> (Hot/Cool/Cold/Archive) — only applies</li></ol>
 <p>to Blob/StorageV2 accounts and can be changed in place.</p>
 
-<h2 id="$(Convert-TitleToId Part 3 – Containers, blobs, queues, tables, file shares)">Part 3 – Containers, blobs, queues, tables, file shares</h2>
+<h2 id="part-3-containers-blobs-queues-tables-file-shares">Part 3 – Containers, blobs, queues, tables, file shares</h2>
 
 <ol><li>Open the storage account > <strong>Containers</strong> (under <strong>Data storage</strong>) ></li></ol>
 <p><strong>+ Container</strong>. Name: <code>demo-container</code>. <strong>Public access level</strong>: <strong>Private</strong>.</p>
 <ol><li>Open <code>demo-container</code> > <strong>Upload</strong> > select or create a small text file</li></ol>
 <p>(e.g., <code>sample.txt</code> containing "hello az104") > <strong>Upload</strong>.</p>
-<ol><li><strong>Queues</strong> (under <strong>Data storage</strong>) > <strong>+ Queue</strong>. Name: <code>demo-queue</code>.</li></ol>
-<ol><li><strong>Tables</strong> (under <strong>Data storage</strong>) > <strong>+ Table</strong>. Name: <code>demotable</code>.</li></ol>
-<ol><li><strong>File shares</strong> (under <strong>Data storage</strong>) > <strong>+ File share</strong>. Name:</li></ol>
+<ol><li><strong>Queues</strong> (under <strong>Data storage</strong>) > <strong>+ Queue</strong>. Name: <code>demo-queue</code>.</li>
+<li><strong>Tables</strong> (under <strong>Data storage</strong>) > <strong>+ Table</strong>. Name: <code>demotable</code>.</li>
+<li><strong>File shares</strong> (under <strong>Data storage</strong>) > <strong>+ File share</strong>. Name:</li></ol>
 <p><code>demo-share</code>, <strong>Quota</strong>: 5 GiB, <strong>Tier</strong>: Transaction optimized.</p>
 
-<h2 id="$(Convert-TitleToId Part 4 – Access keys vs SAS vs Microsoft Entra authorization)">Part 4 – Access keys vs SAS vs Microsoft Entra authorization</h2>
+<h2 id="part-4-access-keys-vs-sas-vs-microsoft-entra-authorization">Part 4 – Access keys vs SAS vs Microsoft Entra authorization</h2>
 
 <ol><li><strong>Access keys</strong> (under <strong>Security + networking</strong>) — note there are two</li></ol>
 <p>keys (<code>key1</code>/<code>key2</code>) so you can rotate one while the other is still in use.</p>
@@ -271,7 +272,7 @@ hr.divider{border:none;height:0;margin:0}
 <p><strong>Access key</strong>) and confirm you can still list/view <code>sample.txt</code> — this</p>
 <p>uses your Entra identity + RBAC instead of the account key.</p>
 
-<h2 id="$(Convert-TitleToId Part 5 – Network rules)">Part 5 – Network rules</h2>
+<h2 id="part-5-network-rules">Part 5 – Network rules</h2>
 
 <ol><li><strong>Networking</strong> (under <strong>Security + networking</strong>) > <strong>Public network access</strong>:</li></ol>
 <p>select <strong>Enabled from selected virtual networks and IP addresses</strong>.</p>
@@ -282,36 +283,36 @@ hr.divider{border:none;height:0;margin:0}
 <p>no longer grants access once network rules are in effect.</p>
 <ol><li>Re-enable <strong>All networks</strong> for lab simplicity afterward.</li></ol>
 
-<h2 id="$(Convert-TitleToId Part 6 – Copying data with the Storage browser)">Part 6 – Copying data with the Storage browser</h2>
+<h2 id="part-6-copying-data-with-the-storage-browser">Part 6 – Copying data with the Storage browser</h2>
 
 <ol><li>Open the storage account > <strong>Storage browser</strong> > <strong>Blob containers</strong> ></li></ol>
 <p><code>demo-container</code>.</p>
-<ol><li>Select <code>sample.txt</code> > <strong>Copy</strong> (or right-click > <strong>Copy</strong>).</li></ol>
-<ol><li>Navigate into a new/empty container (or create one, <code>demo-container-2</code>) and</li></ol>
+<ol><li>Select <code>sample.txt</code> > <strong>Copy</strong> (or right-click > <strong>Copy</strong>).</li>
+<li>Navigate into a new/empty container (or create one, <code>demo-container-2</code>) and</li></ol>
 <p>select <strong>Paste</strong> to copy the blob — this is the Portal-native equivalent of</p>
 <p>an AzCopy copy operation.</p>
 <ol><li>Use <strong>Download</strong> on a blob to pull it to your local machine, and <strong>Upload</strong></li></ol>
 <p>to push local files back up — both available from the <strong>Storage browser</strong></p>
 <p>toolbar for blobs, file shares, queues, and tables.</p>
 
-<h2 id="$(Convert-TitleToId Validation)">Validation</h2>
-<ul><ol><li>[ ] Storage account created with StorageV2, LRS, Hot tier</li></ol></ul>
-<ul><ol><li>[ ] Container, queue, table, and file share all exist</li></ol></ul>
-<ul><ol><li>[ ] SAS URL grants time-limited read access to the blob</li></ol></ul>
-<ul><ol><li>[ ] Entra ID role-based access to blobs works when <strong>Authentication method</strong></li></ol></ul>
+<h2 id="validation">Validation</h2>
+<ul><ol><li>[ ] Storage account created with StorageV2, LRS, Hot tier</li>
+<li>[ ] Container, queue, table, and file share all exist</li>
+<li>[ ] SAS URL grants time-limited read access to the blob</li>
+<li>[ ] Entra ID role-based access to blobs works when <strong>Authentication method</strong></li></ol></ul>
 <p>is set to <strong>Microsoft Entra user account</strong> in the container browser</p>
-<ul><ol><li>[ ] Network rule restricts access to allow-listed IPs</li></ol></ul>
-<ul><ol><li>[ ] <code>sample.txt</code> copied to <code>demo-container-2</code> via <strong>Storage browser</strong></li></ol></ul>
+<ul><ol><li>[ ] Network rule restricts access to allow-listed IPs</li>
+<li>[ ] <code>sample.txt</code> copied to <code>demo-container-2</code> via <strong>Storage browser</strong></li></ol></ul>
 
-<h2 id="$(Convert-TitleToId Cleanup)">Cleanup</h2>
+<h2 id="cleanup">Cleanup</h2>
 <ol><li>Search for <strong>Resource groups</strong> > select <code>rg-az104-lab04</code> > <strong>Delete resource</li></ol>
 <p>group</strong> (type the name to confirm).</p>
 
-<h2 id="$(Convert-TitleToId Exam Tips)">Exam Tips</h2>
-<ul><ol><li><strong>LRS</strong> = 3 copies, 1 datacenter. <strong>ZRS</strong> = 3 AZs, 1 region. <strong>GRS/GZRS</strong> = paired secondary region (read-only unless failover, or RA- prefix for read access to secondary).</li></ol></ul>
-<ul><ol><li>SAS types: <strong>Account SAS</strong> (broad, multiple services), <strong>Service SAS</strong> (one service, e.g., Blob), <strong>User Delegation SAS</strong> (Entra ID-backed, most secure — recommended).</li></ol></ul>
-<ul><ol><li>Changing performance tier (Standard↔Premium) requires migration to a new account; access tier (Hot/Cool/Archive) can change in place (Archive has rehydration delay).</li></ol></ul>
-<ul><ol><li>Setting the container's <strong>Authentication method</strong> to <strong>Microsoft Entra user account</strong> uses your Entra identity + RBAC instead of account keys.</li></ol></ul>
+<h2 id="exam-tips">Exam Tips</h2>
+<ul><ol><li><strong>LRS</strong> = 3 copies, 1 datacenter. <strong>ZRS</strong> = 3 AZs, 1 region. <strong>GRS/GZRS</strong> = paired secondary region (read-only unless failover, or RA- prefix for read access to secondary).</li>
+<li>SAS types: <strong>Account SAS</strong> (broad, multiple services), <strong>Service SAS</strong> (one service, e.g., Blob), <strong>User Delegation SAS</strong> (Entra ID-backed, most secure — recommended).</li>
+<li>Changing performance tier (Standard↔Premium) requires migration to a new account; access tier (Hot/Cool/Archive) can change in place (Archive has rehydration delay).</li>
+<li>Setting the container's <strong>Authentication method</strong> to <strong>Microsoft Entra user account</strong> uses your Entra identity + RBAC instead of account keys.</li></ol></ul>
 
   </div>
 </div>

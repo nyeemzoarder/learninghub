@@ -171,15 +171,18 @@ hr.divider{border:none;height:0;margin:0}
       <a href="../../01-identity-governance/documents/03-management-groups-and-azure-policy.html">03 - Management Groups &amp; Policy</a>
       <a href="../../01-identity-governance/documents/04-access-control-scenarios.html">04 - Access Control Scenarios</a>
       <a href="../../01-identity-governance/documents/05-identity-best-practices.html">05 - Identity Best Practices</a>
-      <a href="../../01-identity-governance/documents/lab01-entra-users-groups.html">Lab 01 - Entra ID Users</a>
-      <a href="../../01-identity-governance/documents/lab02-rbac-azure-policy.html">Lab 02 - RBAC &amp; Policy</a>
+      <a href="../../01-identity-governance/documents/labs-index.html">Labs</a>
     </div>
   </details>
 </nav>
 <div class="layout">
   <aside class="sidebar">
     <div class="toc-title module-title">Module 05 - Monitor &amp; Maintain</div>
-    <a href="#objectives">Objectives</a>
+    <hr class="sidebar-divider">
+<div class="toc-title">Labs</div>
+<hr class="sidebar-divider">
+<div class="toc-title">On This Page</div>
+<a href="#objectives">Objectives</a>
 <a href="#prerequisites">Prerequisites</a>
 <a href="#estimated-time">Estimated time</a>
 <a href="#part-1-setup-log-analytics-workspace">Part 1 – Setup: Log Analytics workspace</a>
@@ -192,37 +195,35 @@ hr.divider{border:none;height:0;margin:0}
 <a href="#validation">Validation</a>
 <a href="#cleanup">Cleanup</a>
 <a href="#exam-tips">Exam Tips</a>
-<hr class="sidebar-divider">
-<div class="toc-title">On This Page</div>
   </aside>
   <div class="page">
   <h1>Lab 17 – Azure Monitor & Alerts</h1>
 
-<h2 id="$(Convert-TitleToId Objectives)">Objectives</h2>
-<ul><ol><li>Configure diagnostic settings to send logs/metrics to Log Analytics</li></ol></ul>
-<ul><ol><li>Write Kusto (KQL) queries against VM/activity logs</li></ol></ul>
-<ul><ol><li>Create metric and log-based alert rules with action groups</li></ol></ul>
-<ul><ol><li>Explore Azure Monitor Insights (VM insights)</li></ol></ul>
+<h2 id="objectives">Objectives</h2>
+<ul><ol><li>Configure diagnostic settings to send logs/metrics to Log Analytics</li>
+<li>Write Kusto (KQL) queries against VM/activity logs</li>
+<li>Create metric and log-based alert rules with action groups</li>
+<li>Explore Azure Monitor Insights (VM insights)</li></ol></ul>
 
-<h2 id="$(Convert-TitleToId Prerequisites)">Prerequisites</h2>
-<ul><ol><li>A VM (small size to minimize billing)</li></ol></ul>
-<ul><ol><li>Signed in at <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul><ol><li>A VM (small size to minimize billing)</li>
+<li>Signed in at <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
 
-<h2 id="$(Convert-TitleToId Estimated time)">Estimated time</h2>
+<h2 id="estimated-time">Estimated time</h2>
 <p>40 minutes</p>
 
 <hr class="divider">
 
-<h2 id="$(Convert-TitleToId Part 1 – Setup: Log Analytics workspace)">Part 1 – Setup: Log Analytics workspace</h2>
+<h2 id="part-1-setup-log-analytics-workspace">Part 1 – Setup: Log Analytics workspace</h2>
 
-<ol><li>Search for <strong>Log Analytics workspaces</strong> > <strong>Create</strong>.</li></ol>
-<ol><li><strong>Basics</strong>:</li></ol>
+<ol><li>Search for <strong>Log Analytics workspaces</strong> > <strong>Create</strong>.</li>
+<li><strong>Basics</strong>:</li></ol>
 <p>- <strong>Resource group</strong>: <strong>Create new</strong> <code>rg-az104-lab17</code></p>
 <p>- <strong>Name</strong>: <code>law-az104lab17</code></p>
 <p>- <strong>Region</strong>: <code>East US</code></p>
 <p>- <strong>Create</strong>.</p>
 
-<h2 id="$(Convert-TitleToId Part 2 – Diagnostic settings)">Part 2 – Diagnostic settings</h2>
+<h2 id="part-2-diagnostic-settings">Part 2 – Diagnostic settings</h2>
 
 <p>Send metrics/logs to the Log Analytics workspace:</p>
 
@@ -241,7 +242,7 @@ hr.divider{border:none;height:0;margin:0}
 
 <p>Diagnostic data now flows from the storage account to Log Analytics.</p>
 
-<h2 id="$(Convert-TitleToId Part 3 – VM Insights (monitoring on a VM))">Part 3 – VM Insights (monitoring on a VM)</h2>
+<h2 id="part-3-vm-insights-monitoring-on-a-vm">Part 3 – VM Insights (monitoring on a VM)</h2>
 
 <ol><li>Create a VM:</li></ol>
 <p>- <strong>Virtual machines</strong> > <strong>Create</strong> > <code>vm-monitor01</code>, <strong>Ubuntu 22.04 LTS</strong>,</p>
@@ -255,10 +256,10 @@ hr.divider{border:none;height:0;margin:0}
 
 <p>After a few minutes, performance data (CPU, memory, disk) flows into Log Analytics.</p>
 
-<h2 id="$(Convert-TitleToId Part 4 – KQL queries)">Part 4 – KQL queries</h2>
+<h2 id="part-4-kql-queries">Part 4 – KQL queries</h2>
 
-<ol><li>Go to <strong>law-az104lab17</strong> > <strong>Logs</strong> (under <strong>General</strong>).</li></ol>
-<ol><li>Run a query:</li></ol>
+<ol><li>Go to <strong>law-az104lab17</strong> > <strong>Logs</strong> (under <strong>General</strong>).</li>
+<li>Run a query:</li></ol>
 <p>``<code>kql</p>
 <p>AzureActivity</p>
 <p>| where ResourceGroup == "rg-az104-lab17"</p>
@@ -277,10 +278,10 @@ hr.divider{border:none;height:0;margin:0}
 <p></code>`<code></p>
 <p>This aggregates CPU usage by 5-minute bins.</p>
 
-<h2 id="$(Convert-TitleToId Part 5 – Action group)">Part 5 – Action group</h2>
+<h2 id="part-5-action-group">Part 5 – Action group</h2>
 
-<ol><li>Search for <strong>Action groups</strong> > <strong>Create</strong>.</li></ol>
-<ol><li><strong>Basics</strong>:</li></ol>
+<ol><li>Search for <strong>Action groups</strong> > <strong>Create</strong>.</li>
+<li><strong>Basics</strong>:</li></ol>
 <p>- <strong>Resource group</strong>: </code>rg-az104-lab17<code></p>
 <p>- <strong>Action group name</strong>: </code>ag-az104lab17<code></p>
 <p>- <strong>Display name</strong>: </code>AG Lab 17<code></p>
@@ -291,10 +292,10 @@ hr.divider{border:none;height:0;margin:0}
 <p>- <strong>Add</strong>.</p>
 <ol><li><strong>Review + create</strong> > <strong>Create</strong>.</li></ol>
 
-<h2 id="$(Convert-TitleToId Part 6 – Metric alert)">Part 6 – Metric alert</h2>
+<h2 id="part-6-metric-alert">Part 6 – Metric alert</h2>
 
-<ol><li>Search for <strong>Alert rules</strong> > <strong>Create</strong> > <strong>Alert rule</strong>.</li></ol>
-<ol><li><strong>Condition</strong>:</li></ol>
+<ol><li>Search for <strong>Alert rules</strong> > <strong>Create</strong> > <strong>Alert rule</strong>.</li>
+<li><strong>Condition</strong>:</li></ol>
 <p>- <strong>Resource</strong>: select </code>vm-monitor01<code></p>
 <p>- <strong>Signal name</strong>: <strong>Percentage CPU</strong></p>
 <p>- <strong>Operator</strong>: <strong>Greater than</strong></p>
@@ -311,10 +312,10 @@ hr.divider{border:none;height:0;margin:0}
 <p>Now, if the VM's CPU exceeds 80% for 5 minutes, an alert fires and sends an</p>
 <p>email/notification via the action group.</p>
 
-<h2 id="$(Convert-TitleToId Part 7 – Log alert (scheduled query))">Part 7 – Log alert (scheduled query)</h2>
+<h2 id="part-7-log-alert-scheduled-query">Part 7 – Log alert (scheduled query)</h2>
 
-<ol><li>Search for <strong>Alert rules</strong> > <strong>Create</strong> > <strong>Alert rule</strong>.</li></ol>
-<ol><li><strong>Condition</strong>:</li></ol>
+<ol><li>Search for <strong>Alert rules</strong> > <strong>Create</strong> > <strong>Alert rule</strong>.</li>
+<li><strong>Condition</strong>:</li></ol>
 <p>- <strong>Resource</strong>: select </code>law-az104lab17<code> (Log Analytics workspace)</p>
 <p>- <strong>Signal name</strong>: <strong>Custom log search</strong></p>
 <p>- <strong>Search query</strong>:</p>
@@ -335,21 +336,21 @@ hr.divider{border:none;height:0;margin:0}
 
 <p>This log alert fires if more than 5 failed operations occur in a 15-minute window.</p>
 
-<h2 id="$(Convert-TitleToId Validation)">Validation</h2>
-<ul><ol><li>[ ] Log Analytics workspace created and receiving diagnostic data</li></ol></ul>
-<ul><ol><li>[ ] AMA installed on </code>vm-monitor01<code> and sending performance metrics</li></ol></ul>
-<ul><ol><li>[ ] KQL query against </code>AzureActivity<code> returns results</li></ol></ul>
-<ul><ol><li>[ ] Action group </code>ag-az104lab17<code> created with email notification</li></ol></ul>
-<ul><ol><li>[ ] Metric alert on CPU > 80% and log-based alert both exist</li></ol></ul>
+<h2 id="validation">Validation</h2>
+<ul><ol><li>[ ] Log Analytics workspace created and receiving diagnostic data</li>
+<li>[ ] AMA installed on </code>vm-monitor01<code> and sending performance metrics</li>
+<li>[ ] KQL query against </code>AzureActivity<code> returns results</li>
+<li>[ ] Action group </code>ag-az104lab17<code> created with email notification</li>
+<li>[ ] Metric alert on CPU > 80% and log-based alert both exist</li></ol></ul>
 
-<h2 id="$(Convert-TitleToId Cleanup)">Cleanup</h2>
+<h2 id="cleanup">Cleanup</h2>
 <ol><li><strong>Resource groups</strong> > select </code>rg-az104-lab17` > <strong>Delete resource group</strong>.</li></ol>
 
-<h2 id="$(Convert-TitleToId Exam Tips)">Exam Tips</h2>
-<ul><ol><li><strong>Diagnostic settings</strong> route platform logs/metrics to Log Analytics, Storage (archival), or Event Hubs (streaming).</li></ol></ul>
-<ul><ol><li><strong>Metric alerts</strong> = near-real-time, based on platform metrics (CPU, disk, network). <strong>Log alerts</strong> = based on KQL queries against Log Analytics, evaluated on a schedule — more flexible but higher latency.</li></ol></ul>
-<ul><ol><li>Action groups are reusable across alerts and support email, SMS, voice, webhook, Azure Function, Logic App, ITSM, etc.</li></ol></ul>
-<ul><ol><li>VM insights requires the Azure Monitor Agent (AMA) + a Data Collection Rule (DCR) — replacing the older Log Analytics/MMA agent.</li></ol></ul>
+<h2 id="exam-tips">Exam Tips</h2>
+<ul><ol><li><strong>Diagnostic settings</strong> route platform logs/metrics to Log Analytics, Storage (archival), or Event Hubs (streaming).</li>
+<li><strong>Metric alerts</strong> = near-real-time, based on platform metrics (CPU, disk, network). <strong>Log alerts</strong> = based on KQL queries against Log Analytics, evaluated on a schedule — more flexible but higher latency.</li>
+<li>Action groups are reusable across alerts and support email, SMS, voice, webhook, Azure Function, Logic App, ITSM, etc.</li>
+<li>VM insights requires the Azure Monitor Agent (AMA) + a Data Collection Rule (DCR) — replacing the older Log Analytics/MMA agent.</li></ol></ul>
 
   </div>
 </div>

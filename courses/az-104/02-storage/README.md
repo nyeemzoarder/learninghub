@@ -4,7 +4,7 @@
 
 ## Before you start
 
-- [Cloud Computing Fundamentals](../00-prerequisites/01-cloud-computing-fundamentals.md) —
+- [Cloud Computing Fundamentals](../00-prerequisites/concepts/01-cloud-computing-fundamentals.md) —
   regions, region pairs, and availability zones (needed to understand storage
   redundancy options below)
 

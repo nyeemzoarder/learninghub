@@ -5,7 +5,8 @@
 # each top-level (h2) section on that page.
 # ============================================================
 
-$root = Split-Path -Parent $MyInvocation.MyCommand.Path
+$root = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) "..\courses\az-104"
+$root = Resolve-Path $root
 
 $sidebarCss = @'
 
@@ -67,7 +68,7 @@ $targets = @(
     @{dir='01-identity-governance'; file='03-management-groups-and-azure-policy.html'},
     @{dir='01-identity-governance'; file='04-access-control-scenarios.html'},
     @{dir='01-identity-governance'; file='05-identity-best-practices.html'},
-    @{dir='04-networking'; file='01-hub-spoke-topology.html'},
+    @{dir='04-networking'; file='06-hub-spoke-topology.html'},
     @{dir='04-networking'; file='01-vnets-and-subnets.html'},
     @{dir='04-networking'; file='02-network-security-groups.html'},
     @{dir='04-networking'; file='03-routing-fundamentals.html'},

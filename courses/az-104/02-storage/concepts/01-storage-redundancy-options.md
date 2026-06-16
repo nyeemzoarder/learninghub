@@ -28,7 +28,7 @@ geography (paired regions).
 | **GZRS** (Geo-zone-redundant storage) | ZRS in primary region + LRS copy in paired region | Datacenter failure *and* regional disaster | No (unless you fail over) |
 | **RA-GRS / RA-GZRS** | Same as GRS/GZRS | Same as GRS/GZRS | **Yes** — read-only endpoint to secondary region |
 
-This builds on [region pairs and availability zones](../../00-prerequisites/01-cloud-computing-fundamentals.md#regions-region-pairs-and-availability-zones)
+This builds on [region pairs and availability zones](../../00-prerequisites/concepts/01-cloud-computing-fundamentals.md#regions-region-pairs-and-availability-zones)
 from the prerequisites module: ZRS uses AZs *within* a region; GRS/GZRS
 replicate *across* a region pair.
 
@@ -69,5 +69,5 @@ for a visual comparison of LRS/ZRS/GRS/GZRS replication scopes.
 ## See also
 
 - [Lab 04 – Storage Accounts](../labs/lab04-storage-accounts.md)
-- [Cloud Computing Fundamentals](../../00-prerequisites/01-cloud-computing-fundamentals.md)
+- [Cloud Computing Fundamentals](../../00-prerequisites/concepts/01-cloud-computing-fundamentals.md)
 - [Glossary](../../resources/glossary.md)

@@ -1,6 +1,6 @@
 # Azure Portal Navigation
 
-> [Prerequisites](README.md) for the [AZ-104 course](../README.md)
+> [Prerequisites](../README.md) for the [AZ-104 course](../../README.md)
 
 ## Why this matters
 
@@ -28,7 +28,7 @@ instructions much faster to follow.
 
 A **resource group** is a logical container for related resources. Nearly
 every lab's first step is creating a resource group (named `rg-az104-labXX`
-by convention — see [Naming Conventions](../README.md#naming-conventions)),
+by convention — see [Naming Conventions](../../README.md#naming-conventions)),
 and the last step ("Cleanup") is deleting it — which deletes everything
 inside it in one action. This keeps costs predictable: if you forget
 anything else, deleting the resource group cleans it up.
@@ -55,4 +55,4 @@ enough to keep a free/trial subscription's spend near zero.
 ## See also
 
 - [Cloud Computing Fundamentals](01-cloud-computing-fundamentals.md)
-- [Module 01 – Identity & Governance](../01-identity-governance/README.md) (first hands-on module)
+- [Module 01 – Identity & Governance](../../01-identity-governance/README.md) (first hands-on module)

@@ -4,7 +4,7 @@
 
 ## Before you start
 
-- [Networking Basics](../00-prerequisites/02-networking-basics.md) — useful
+- [Networking Basics](../00-prerequisites/concepts/02-networking-basics.md) — useful
   for Lab 19 (Network Watcher tools build on routing/IP concepts)
 - [Module 04 – Networking](../04-networking/README.md) — Lab 19 reuses
   VNet/NSG concepts from this module

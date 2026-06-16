@@ -171,15 +171,18 @@ hr.divider{border:none;height:0;margin:0}
       <a href="../../01-identity-governance/documents/03-management-groups-and-azure-policy.html">03 - Management Groups &amp; Policy</a>
       <a href="../../01-identity-governance/documents/04-access-control-scenarios.html">04 - Access Control Scenarios</a>
       <a href="../../01-identity-governance/documents/05-identity-best-practices.html">05 - Identity Best Practices</a>
-      <a href="../../01-identity-governance/documents/lab01-entra-users-groups.html">Lab 01 - Entra ID Users</a>
-      <a href="../../01-identity-governance/documents/lab02-rbac-azure-policy.html">Lab 02 - RBAC &amp; Policy</a>
+      <a href="../../01-identity-governance/documents/labs-index.html">Labs</a>
     </div>
   </details>
 </nav>
 <div class="layout">
   <aside class="sidebar">
     <div class="toc-title module-title">Module 04 - Networking</div>
-    <a href="#objectives">Objectives</a>
+    <hr class="sidebar-divider">
+<div class="toc-title">Labs</div>
+<hr class="sidebar-divider">
+<div class="toc-title">On This Page</div>
+<a href="#objectives">Objectives</a>
 <a href="#prerequisites">Prerequisites</a>
 <a href="#estimated-time">Estimated time</a>
 <a href="#part-1-create-two-vnets-non-overlapping-address-spaces">Part 1 – Create two VNets (non-overlapping address spaces)</a>
@@ -190,27 +193,25 @@ hr.divider{border:none;height:0;margin:0}
 <a href="#validation">Validation</a>
 <a href="#cleanup">Cleanup</a>
 <a href="#exam-tips">Exam Tips</a>
-<hr class="sidebar-divider">
-<div class="toc-title">On This Page</div>
   </aside>
   <div class="page">
   <h1>Lab 14 – VNet Peering & VPN Gateway</h1>
 
-<h2 id="$(Convert-TitleToId Objectives)">Objectives</h2>
-<ul><ol><li>Peer two VNets and verify connectivity</li></ol></ul>
-<ul><ol><li>Configure peering options (gateway transit, forwarded traffic, access)</li></ol></ul>
-<ul><ol><li>(Overview + optional deploy) Create a Site-to-Site VPN gateway</li></ol></ul>
+<h2 id="objectives">Objectives</h2>
+<ul><ol><li>Peer two VNets and verify connectivity</li>
+<li>Configure peering options (gateway transit, forwarded traffic, access)</li>
+<li>(Overview + optional deploy) Create a Site-to-Site VPN gateway</li></ol></ul>
 
-<h2 id="$(Convert-TitleToId Prerequisites)">Prerequisites</h2>
-<ul><ol><li>None</li></ol></ul>
-<ul><ol><li>Signed in at <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul><ol><li>None</li>
+<li>Signed in at <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
 
-<h2 id="$(Convert-TitleToId Estimated time)">Estimated time</h2>
+<h2 id="estimated-time">Estimated time</h2>
 <p>40 minutes (VPN gateway provisioning alone can take ~30 min — plan accordingly)</p>
 
 <hr class="divider">
 
-<h2 id="$(Convert-TitleToId Part 1 – Create two VNets (non-overlapping address spaces))">Part 1 – Create two VNets (non-overlapping address spaces)</h2>
+<h2 id="part-1-create-two-vnets-non-overlapping-address-spaces">Part 1 – Create two VNets (non-overlapping address spaces)</h2>
 
 <ol><li>Search for <strong>Virtual networks</strong> > <strong>Create</strong>.</li></ol>
 <p>- <strong>Resource group</strong>: <strong>Create new</strong> <code>rg-az104-lab14</code></p>
@@ -224,18 +225,18 @@ hr.divider{border:none;height:0;margin:0}
 <p>- <strong>Subnets</strong>: <code>subnet-spoke</code> with <code>10.71.1.0/24</code></p>
 <p>- <strong>Create</strong>.</p>
 
-<h2 id="$(Convert-TitleToId Part 2 – Create VNet peering (both directions))">Part 2 – Create VNet peering (both directions)</h2>
+<h2 id="part-2-create-vnet-peering-both-directions">Part 2 – Create VNet peering (both directions)</h2>
 
-<ol><li>Go to <strong>vnet-hub14</strong> > <strong>Peerings</strong> (under <strong>Settings</strong>) > <strong>+ Add</strong>.</li></ol>
-<ol><li><strong>Add peering</strong>:</li></ol>
+<ol><li>Go to <strong>vnet-hub14</strong> > <strong>Peerings</strong> (under <strong>Settings</strong>) > <strong>+ Add</strong>.</li>
+<li><strong>Add peering</strong>:</li></ol>
 <p>- <strong>Peering link name</strong>: <code>hub-to-spoke</code></p>
 <p>- <strong>Remote virtual network</strong>:</p>
 <p>- <strong>Select by ID</strong> > choose <code>vnet-spoke14</code></p>
 <p>- <strong>Allow access between VNets</strong>: <strong>Checked</strong></p>
 <p>- <strong>Add</strong>.</p>
 
-<ol><li>Go to <strong>vnet-spoke14</strong> > <strong>Peerings</strong> > <strong>+ Add</strong>.</li></ol>
-<ol><li><strong>Add peering</strong>:</li></ol>
+<ol><li>Go to <strong>vnet-spoke14</strong> > <strong>Peerings</strong> > <strong>+ Add</strong>.</li>
+<li><strong>Add peering</strong>:</li></ol>
 <p>- <strong>Peering link name</strong>: <code>spoke-to-hub</code></p>
 <p>- <strong>Remote virtual network</strong>: select <code>vnet-hub14</code></p>
 <p>- <strong>Allow access between VNets</strong>: <strong>Checked</strong></p>
@@ -243,7 +244,7 @@ hr.divider{border:none;height:0;margin:0}
 
 <p>Both peerings should now show <strong>Connected</strong> status.</p>
 
-<h2 id="$(Convert-TitleToId Part 3 – Test connectivity)">Part 3 – Test connectivity</h2>
+<h2 id="part-3-test-connectivity">Part 3 – Test connectivity</h2>
 
 <ol><li>Create two VMs:</li></ol>
 <p>- <strong>Virtual machines</strong> > <strong>Create</strong> > <code>vm-hub</code>, <strong>Ubuntu 22.04 LTS</strong>,</p>
@@ -255,7 +256,7 @@ hr.divider{border:none;height:0;margin:0}
 <p>(e.g., </code>10.71.1.x<code>) — should succeed over the peering connection (private</p>
 <p>IPs, no public exposure needed).</p>
 
-<h2 id="$(Convert-TitleToId Part 4 – Peering options: gateway transit & forwarded traffic)">Part 4 – Peering options: gateway transit & forwarded traffic</h2>
+<h2 id="part-4-peering-options-gateway-transit-forwarded-traffic">Part 4 – Peering options: gateway transit & forwarded traffic</h2>
 
 <ol><li>Go to </strong>hub-to-spoke<strong> peering > </strong>Edit peering<strong>:</li></ol>
 <p>- </strong>Allow forwarded traffic<strong>: </strong>Checked<strong> (lets traffic NOT originating in</p>
@@ -270,7 +271,7 @@ hr.divider{border:none;height:0;margin:0}
 <div class="callout"><p>peers with spoke B, A cannot reach B unless explicitly peered (or via gateway</p></div>
 <div class="callout"><p>transit + an NVA).</p></div>
 
-<h2 id="$(Convert-TitleToId Part 5 – (Optional) Site-to-Site VPN Gateway)">Part 5 – (Optional) Site-to-Site VPN Gateway</h2>
+<h2 id="part-5-optional-site-to-site-vpn-gateway">Part 5 – (Optional) Site-to-Site VPN Gateway</h2>
 
 <p>This part provisions a real gateway — </strong>expensive and slow (~30 min)<strong>. Only</p>
 <p>do this if you want hands-on VPN experience; otherwise read through for concepts.</p>
@@ -307,21 +308,21 @@ hr.divider{border:none;height:0;margin:0}
 <p>- </strong>Shared key<strong>: </code>P@ssw0rd123!<code> (used for IPSec negotiation)</p>
 <p>- </strong>Create<strong>.</p>
 
-<h2 id="$(Convert-TitleToId Validation)">Validation</h2>
-<ul><ol><li>[ ] Both peerings (</code>hub-to-spoke<code> and </code>spoke-to-hub<code>) show </strong>Connected<strong> status</li></ol></ul>
-<ul><ol><li>[ ] </code>vm-hub<code> can reach </code>vm-spoke<code>'s private IP across the peering</li></ol></ul>
-<ul><ol><li>[ ] Can explain gateway transit vs forwarded traffic vs non-transitive peering</li></ol></ul>
-<ul><ol><li>[ ] (If completed) VPN gateway provisioned and connection created</li></ol></ul>
+<h2 id="validation">Validation</h2>
+<ul><ol><li>[ ] Both peerings (</code>hub-to-spoke<code> and </code>spoke-to-hub<code>) show </strong>Connected<strong> status</li>
+<li>[ ] </code>vm-hub<code> can reach </code>vm-spoke<code>'s private IP across the peering</li>
+<li>[ ] Can explain gateway transit vs forwarded traffic vs non-transitive peering</li>
+<li>[ ] (If completed) VPN gateway provisioned and connection created</li></ol></ul>
 
-<h2 id="$(Convert-TitleToId Cleanup)">Cleanup</h2>
+<h2 id="cleanup">Cleanup</h2>
 <ol><li></strong>Resource groups<strong> > select </code>rg-az104-lab14<code> > </strong>Delete resource group<strong>.</li></ol>
 <p>> If you deployed the VPN gateway, deletion can take 10-15+ minutes — that's normal.</p>
 
-<h2 id="$(Convert-TitleToId Exam Tips)">Exam Tips</h2>
-<ul><ol><li>VNet Peering is </strong>low-latency, private-backbone<strong> connectivity between VNets — can span regions (global peering) and subscriptions/tenants.</li></ol></ul>
-<ul><ol><li>Peering is </strong>not transitive<strong> — a common exam trap. Hub-spoke transitive routing needs gateway transit + NVA/route tables, or Azure Virtual WAN.</li></ol></ul>
-<ul><ol><li>VPN Gateway SKUs (VpnGw1-5) determine throughput/tunnel counts; </strong>Policy-based<strong> vs </strong>Route-based** VPN types — route-based is more flexible and required for most scenarios (P2S, multiple connections).</li></ol></ul>
-<ul><ol><li></code>GatewaySubnet` is a reserved name and must not have an NSG attached.</li></ol></ul>
+<h2 id="exam-tips">Exam Tips</h2>
+<ul><ol><li>VNet Peering is </strong>low-latency, private-backbone<strong> connectivity between VNets — can span regions (global peering) and subscriptions/tenants.</li>
+<li>Peering is </strong>not transitive<strong> — a common exam trap. Hub-spoke transitive routing needs gateway transit + NVA/route tables, or Azure Virtual WAN.</li>
+<li>VPN Gateway SKUs (VpnGw1-5) determine throughput/tunnel counts; </strong>Policy-based<strong> vs </strong>Route-based** VPN types — route-based is more flexible and required for most scenarios (P2S, multiple connections).</li>
+<li></code>GatewaySubnet` is a reserved name and must not have an NSG attached.</li></ol></ul>
 
   </div>
 </div>

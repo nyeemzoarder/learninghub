@@ -1,6 +1,6 @@
 # Identity & Access Fundamentals
 
-> [Prerequisites](README.md) for the [AZ-104 course](../README.md)
+> [Prerequisites](../README.md) for the [AZ-104 course](../../README.md)
 
 ## Why this matters
 
@@ -67,6 +67,6 @@ successfully* already proves authentication works. Knowing which layer
 
 ## See also
 
-- [Glossary](../resources/glossary.md)
-- [Module 01 – Identity & Governance](../01-identity-governance/README.md)
-- [RBAC Fundamentals](../01-identity-governance/concepts/02-rbac-fundamentals.md)
+- [Glossary](../../resources/glossary.md)
+- [Module 01 – Identity & Governance](../../01-identity-governance/README.md)
+- [RBAC Fundamentals](../../01-identity-governance/concepts/02-rbac-fundamentals.md)
