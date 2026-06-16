@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab 14 – VNet Peering & VPN Gateway - AZ-104 Labs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f8fc;--card:#fff;--border:#d9e0ef;--text:#1f2937;--muted:#5b6678;
+  --primary:#151d63;--panel:#00004C;--panel-shadow:rgba(0,0,76,.18);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:Inter,-apple-system,'Segoe UI',sans-serif;color:var(--text)}
+.page{flex:1;min-width:0;padding:28px}
+
+h1{font-size:3.2rem;line-height:1.15;margin:0;color:var(--primary);font-weight:800;letter-spacing:-1px}
+.subtitle{font-size:1.4rem;font-weight:600;color:#2d3b77;margin-top:10px}
+
+.badges{display:flex;gap:12px;margin:20px 0 26px;flex-wrap:wrap}
+.badge{background:#eef2ff;border:1px solid #d8def7;color:#1e2a78;padding:10px 18px;border-radius:999px;font-weight:600;font-size:.95rem}
+
+.section{display:grid;grid-template-columns:42% 58%;gap:28px;padding:26px 0;border-top:1px solid var(--border)}
+.section.full{display:block;padding:26px 0;border-top:1px solid var(--border)}
+.section:first-of-type, .section.full:first-of-type{border-top:none}
+
+h2{font-size:2rem;margin:0 0 14px;color:var(--primary);font-weight:800}
+h3{font-size:1.4rem;margin:22px 0 10px;color:var(--primary);font-weight:700}
+h3:first-child{margin-top:0}
+h4{font-size:1.1rem;margin:16px 0 8px;color:#2d3b77;font-weight:700}
+
+p{font-size:1.05rem;line-height:1.65;margin:.5rem 0;color:var(--text)}
+
+ul, ol{margin:.6rem 0;padding-left:1.4rem}
+li{margin-bottom:6px;line-height:1.6;font-size:1.02rem}
+
+a{color:#1e2a78;text-decoration:none;border-bottom:1px solid transparent;font-weight:600}
+a:hover{border-bottom-color:#1e2a78}
+
+strong{color:var(--primary);font-weight:700}
+
+code{background:#eef2ff;color:#1735ad;padding:2px 6px;border-radius:6px;font:13px/1.4 'SF Mono',Consolas,'Courier New',monospace}
+th code,td code{font-size:.92em}
+
+.callout{margin-top:20px;background:#f3f7ff;border:1px solid #bfd0ff;border-radius:14px;padding:18px 22px}
+.callout strong{color:#1735ad}
+.callout p{margin:0}
+.callout p + p{margin-top:8px}
+
+.panel{
+  background:var(--panel);
+  color:#fff;border-radius:18px;padding:22px 26px;
+  box-shadow:0 12px 28px var(--panel-shadow);
+  font:15px/1.65 'SF Mono',Consolas,'Courier New',monospace;
+  white-space:pre-wrap;
+  overflow:auto;
+}
+.panel.small{font-size:13.5px;line-height:1.6}
+.panel + .panel{margin-top:18px}
+
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:14px 0}
+th,td{padding:14px;border:1px solid var(--border);text-align:left;font-size:.98rem}
+th{background:#eef2ff;color:var(--primary);font-weight:700}
+tr:hover td{background:#fafbff}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+
+.mistake-card{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:14px 0 8px}
+.mistake-card h4{margin-top:0}
+
+.tip{margin-top:20px;background:#eef4ff;border:1px solid #c8d5ff;border-radius:12px;padding:16px 20px;font-size:1.02rem}
+.tip strong{color:#1735ad}
+
+hr.divider{border:none;height:0;margin:0}
+
+.footer{margin-top:48px;padding-top:24px;border-top:1px solid var(--border);font-size:.9rem;color:var(--muted)}
+.footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px}
+.footer-item strong{display:block;color:var(--primary);margin-bottom:6px;font-size:.95rem}
+.footer-meta{margin-top:24px;padding-top:16px;border-top:1px solid var(--border);text-align:center;font-size:.85rem}
+
+@media (max-width:1000px){
+  .section,.grid2,.grid3,.grid4,.mistake-card{grid-template-columns:1fr}
+  h1{font-size:2.3rem}
+  .page{padding:16px}
+  .panel{font-size:13px}
+  .sidebar{display:none}
+  .layout{display:block}
+}
+
+/* ===== Site-wide Cross Navigation ===== */
+.site-nav{
+  position:sticky;top:0;z-index:1000;
+  background:var(--primary);color:#fff;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:12px 28px;font-size:.92rem;
+  box-shadow:0 2px 10px rgba(0,0,76,.18);
+  font-family:Inter,-apple-system,'Segoe UI',sans-serif;
+}
+.site-nav .nav-brand{font-weight:800;font-size:1.05rem;margin-right:auto;color:#fff}
+.site-nav details{position:relative}
+.site-nav summary{cursor:pointer;list-style:none;padding:7px 16px;border-radius:8px;background:rgba(255,255,255,.12);font-weight:600;color:#fff;user-select:none}
+.site-nav summary::-webkit-details-marker,.site-nav summary::marker{display:none;content:''}
+.site-nav details[open] summary{background:rgba(255,255,255,.24)}
+.site-nav .nav-menu{
+  position:absolute;top:calc(100% + 8px);left:0;
+  background:#fff;color:var(--text);
+  border:1px solid var(--border);border-radius:12px;
+  padding:8px;min-width:300px;box-shadow:0 16px 32px rgba(0,0,76,.22);
+  display:flex;flex-direction:column;gap:2px;z-index:1001;
+}
+.site-nav .nav-menu a{
+  display:block;padding:9px 14px;border-radius:8px;border-bottom:none;
+  color:var(--text);font-weight:500;font-size:.95rem;
+}
+.site-nav .nav-menu a:hover{background:#eef2ff;color:#1e2a78}
+.site-nav .nav-menu a.active{background:#eef2ff;color:#1735ad;font-weight:700}
+@media (max-width:768px){
+  .site-nav{padding:10px 16px}
+  .site-nav .nav-brand{font-size:.95rem}
+}
+/* ===== Page Sidebar (On This Page) ===== */
+.layout{max-width:1400px;margin:auto;display:flex;align-items:flex-start}
+.sidebar{
+  flex:0 0 260px;
+  position:sticky;top:88px;
+  max-height:calc(100vh - 108px);
+  overflow-y:auto;
+  margin:28px 0 28px 28px;
+  padding:20px 18px;
+  background:#fff;border:1px solid var(--border);border-radius:14px;
+  box-shadow:0 4px 16px rgba(21,29,99,.05);
+}
+.sidebar .toc-title{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 12px;padding:0 12px}
+.sidebar hr.sidebar-divider{border:none;border-top:1px solid var(--border);margin:14px 0}
+.sidebar .toc-title.module-title{margin-top:0}
+.sidebar a{display:block;padding:8px 12px;margin-bottom:2px;border-radius:8px;font-size:.88rem;font-weight:500;color:var(--text);border-bottom:none;border-left:3px solid transparent;line-height:1.4}
+.sidebar a:hover{background:#eef2ff;color:#1e2a78}
+.sidebar a.active{background:#eef2ff;color:#1735ad;font-weight:700;border-left-color:var(--primary)}
+@media print{
+  .site-nav{display:none}
+  body{background:#fff}
+  .page{padding:0}
+  .panel{box-shadow:none}
+  .sidebar{display:none}
+  .layout{display:block}
+}
+</style>
+</head>
+<body>
+<nav class="site-nav">
+  <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
+  <details class="nav-group">
+    <summary>Module 00 - Prerequisites</summary>
+    <div class="nav-menu">
+      <a href="../../00-prerequisites/documents/01-cloud-computing-fundamentals.html">01 - Cloud Computing Fundamentals</a>
+      <a href="../../00-prerequisites/documents/02-networking-basics.html">02 - Networking Basics</a>
+      <a href="../../00-prerequisites/documents/03-identity-and-access-fundamentals.html">03 - Identity &amp; Access Fundamentals</a>
+      <a href="../../00-prerequisites/documents/04-azure-portal-navigation.html">04 - Azure Portal Navigation</a>
+      <a href="../../00-prerequisites/documents/lab00-azure-portal-navigation.html">Lab 00 - Portal Navigation</a>
+    </div>
+  </details>
+  <details class="nav-group">
+    <summary>Module 01 - Identity &amp; Governance</summary>
+    <div class="nav-menu">
+      <a href="../../01-identity-governance/documents/01-entra-id-overview.html">01 - Entra ID Overview</a>
+      <a href="../../01-identity-governance/documents/02-rbac-fundamentals.html">02 - RBAC Fundamentals</a>
+      <a href="../../01-identity-governance/documents/03-management-groups-and-azure-policy.html">03 - Management Groups &amp; Policy</a>
+      <a href="../../01-identity-governance/documents/04-access-control-scenarios.html">04 - Access Control Scenarios</a>
+      <a href="../../01-identity-governance/documents/05-identity-best-practices.html">05 - Identity Best Practices</a>
+      <a href="../../01-identity-governance/documents/lab01-entra-users-groups.html">Lab 01 - Entra ID Users</a>
+      <a href="../../01-identity-governance/documents/lab02-rbac-azure-policy.html">Lab 02 - RBAC &amp; Policy</a>
+    </div>
+  </details>
+</nav>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="toc-title module-title">Module 04 - Networking</div>
+    <a href="#objectives">Objectives</a>
+<a href="#prerequisites">Prerequisites</a>
+<a href="#estimated-time">Estimated time</a>
+<a href="#part-1-create-two-vnets-non-overlapping-address-spaces">Part 1 – Create two VNets (non-overlapping address spaces)</a>
+<a href="#part-2-create-vnet-peering-both-directions">Part 2 – Create VNet peering (both directions)</a>
+<a href="#part-3-test-connectivity">Part 3 – Test connectivity</a>
+<a href="#part-4-peering-options-gateway-transit-forwarded-traffic">Part 4 – Peering options: gateway transit & forwarded traffic</a>
+<a href="#part-5-optional-site-to-site-vpn-gateway">Part 5 – (Optional) Site-to-Site VPN Gateway</a>
+<a href="#validation">Validation</a>
+<a href="#cleanup">Cleanup</a>
+<a href="#exam-tips">Exam Tips</a>
+<hr class="sidebar-divider">
+<div class="toc-title">On This Page</div>
+  </aside>
+  <div class="page">
+  <h1>Lab 14 – VNet Peering & VPN Gateway</h1>
+
+<h2 id="$(Convert-TitleToId Objectives)">Objectives</h2>
+<ul><ol><li>Peer two VNets and verify connectivity</li></ol></ul>
+<ul><ol><li>Configure peering options (gateway transit, forwarded traffic, access)</li></ol></ul>
+<ul><ol><li>(Overview + optional deploy) Create a Site-to-Site VPN gateway</li></ol></ul>
+
+<h2 id="$(Convert-TitleToId Prerequisites)">Prerequisites</h2>
+<ul><ol><li>None</li></ol></ul>
+<ul><ol><li>Signed in at <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
+
+<h2 id="$(Convert-TitleToId Estimated time)">Estimated time</h2>
+<p>40 minutes (VPN gateway provisioning alone can take ~30 min — plan accordingly)</p>
+
+<hr class="divider">
+
+<h2 id="$(Convert-TitleToId Part 1 – Create two VNets (non-overlapping address spaces))">Part 1 – Create two VNets (non-overlapping address spaces)</h2>
+
+<ol><li>Search for <strong>Virtual networks</strong> > <strong>Create</strong>.</li></ol>
+<p>- <strong>Resource group</strong>: <strong>Create new</strong> <code>rg-az104-lab14</code></p>
+<p>- <strong>Name</strong>: <code>vnet-hub14</code></p>
+<p>- <strong>Address space</strong>: <code>10.70.0.0/16</code></p>
+<p>- <strong>Subnets</strong>: <code>subnet-hub</code> with <code>10.70.1.0/24</code></p>
+<p>- <strong>Create</strong>.</p>
+
+<ol><li>Repeat to create <strong>vnet-spoke14</strong>:</li></ol>
+<p>- <strong>Address space</strong>: <code>10.71.0.0/16</code> (non-overlapping)</p>
+<p>- <strong>Subnets</strong>: <code>subnet-spoke</code> with <code>10.71.1.0/24</code></p>
+<p>- <strong>Create</strong>.</p>
+
+<h2 id="$(Convert-TitleToId Part 2 – Create VNet peering (both directions))">Part 2 – Create VNet peering (both directions)</h2>
+
+<ol><li>Go to <strong>vnet-hub14</strong> > <strong>Peerings</strong> (under <strong>Settings</strong>) > <strong>+ Add</strong>.</li></ol>
+<ol><li><strong>Add peering</strong>:</li></ol>
+<p>- <strong>Peering link name</strong>: <code>hub-to-spoke</code></p>
+<p>- <strong>Remote virtual network</strong>:</p>
+<p>- <strong>Select by ID</strong> > choose <code>vnet-spoke14</code></p>
+<p>- <strong>Allow access between VNets</strong>: <strong>Checked</strong></p>
+<p>- <strong>Add</strong>.</p>
+
+<ol><li>Go to <strong>vnet-spoke14</strong> > <strong>Peerings</strong> > <strong>+ Add</strong>.</li></ol>
+<ol><li><strong>Add peering</strong>:</li></ol>
+<p>- <strong>Peering link name</strong>: <code>spoke-to-hub</code></p>
+<p>- <strong>Remote virtual network</strong>: select <code>vnet-hub14</code></p>
+<p>- <strong>Allow access between VNets</strong>: <strong>Checked</strong></p>
+<p>- <strong>Add</strong>.</p>
+
+<p>Both peerings should now show <strong>Connected</strong> status.</p>
+
+<h2 id="$(Convert-TitleToId Part 3 – Test connectivity)">Part 3 – Test connectivity</h2>
+
+<ol><li>Create two VMs:</li></ol>
+<p>- <strong>Virtual machines</strong> > <strong>Create</strong> > <code>vm-hub</code>, <strong>Ubuntu 22.04 LTS</strong>,</p>
+<p><code>vnet-hub14</code>/<code>subnet-hub</code> with a <strong>public IP</strong>. <strong>Create</strong>.</p>
+<p>- Create <code>vm-spoke</code>, <strong>Ubuntu 22.04 LTS</strong>, <code>vnet-spoke14</code>/<code>subnet-spoke<strong></p>
+<p>with </strong>No public IP<strong>. </strong>Create<strong>.</p>
+
+<ol><li>SSH into </code>vm-hub<code> using its public IP, then ping/SSH to </code>vm-spoke<code>'s private IP</li></ol>
+<p>(e.g., </code>10.71.1.x<code>) — should succeed over the peering connection (private</p>
+<p>IPs, no public exposure needed).</p>
+
+<h2 id="$(Convert-TitleToId Part 4 – Peering options: gateway transit & forwarded traffic)">Part 4 – Peering options: gateway transit & forwarded traffic</h2>
+
+<ol><li>Go to </strong>hub-to-spoke<strong> peering > </strong>Edit peering<strong>:</li></ol>
+<p>- </strong>Allow forwarded traffic<strong>: </strong>Checked<strong> (lets traffic NOT originating in</p>
+<p>the peered VNet pass through — needed for NVAs/firewalls)</p>
+<p>- </strong>Save<strong>.</p>
+
+<ol><li>Discuss (no need to configure now): </strong>Allow gateway transit<strong> lets the spoke</li></ol>
+<p>use the hub's VPN/ExpressRoute gateway (hub-spoke topology) — set on the hub</p>
+<p>side; spoke side sets </strong>Use remote gateways<strong>.</p>
+
+<div class="callout"><p>Note: VNet peering is </strong>not transitive<strong> — if spoke A peers with hub, and hub</p></div>
+<div class="callout"><p>peers with spoke B, A cannot reach B unless explicitly peered (or via gateway</p></div>
+<div class="callout"><p>transit + an NVA).</p></div>
+
+<h2 id="$(Convert-TitleToId Part 5 – (Optional) Site-to-Site VPN Gateway)">Part 5 – (Optional) Site-to-Site VPN Gateway</h2>
+
+<p>This part provisions a real gateway — </strong>expensive and slow (~30 min)<strong>. Only</p>
+<p>do this if you want hands-on VPN experience; otherwise read through for concepts.</p>
+
+<ol><li>Go to </strong>vnet-hub14<strong> > </strong>Subnets<strong> > </strong>+ Subnet<strong>. Create:</li></ol>
+<p>- </strong>Name<strong>: </code>GatewaySubnet<code> (reserved name)</p>
+<p>- </strong>Address range<strong>: </code>10.70.255.0/27<code></p>
+<p>- </strong>Add<strong>.</p>
+
+<ol><li>Search for </strong>Virtual network gateways<strong> > </strong>Create<strong>.</li></ol>
+<p>- </strong>Name<strong>: </code>vpngw-lab14<code></p>
+<p>- </strong>Region<strong>: </code>East US<code></p>
+<p>- </strong>Gateway type<strong>: </strong>VPN<strong></p>
+<p>- </strong>VPN type<strong>: </strong>Route-based<strong></p>
+<p>- </strong>Virtual network<strong>: </code>vnet-hub14<code></p>
+<p>- </strong>Gateway subnet<strong>: </code>GatewaySubnet<code></p>
+<p>- </strong>Public IP<strong>: </strong>Create new<strong> (e.g., </code>pip-vpngw<code>)</p>
+<p>- </strong>SKU<strong>: </strong>VpnGw1<strong></p>
+<p>- </strong>Create<strong> (provisioning takes ~30 minutes).</p>
+
+<ol><li>While it's provisioning, go to </strong>Local network gateways<strong> > </strong>Create<strong> to</li></ol>
+<p>represent the on-prem side:</p>
+<p>- </strong>Name<strong>: </code>lng-onprem<code></p>
+<p>- </strong>Endpoint<strong>: </strong>IP address<strong></p>
+<p>- </strong>IP address<strong>: </code>203.0.113.1<code> (a placeholder on-prem public IP)</p>
+<p>- </strong>Address space<strong>: </code>192.168.1.0/24<code> (a placeholder on-prem network)</p>
+<p>- </strong>Create<strong>.</p>
+
+<ol><li>Once the VPN gateway finishes provisioning, go to </strong>vpngw-lab14<strong> ></li></ol>
+<p></strong>Connections<strong> > </strong>+ Add<strong> to create a </strong>Site-to-Site (IPSec)<strong> connection:</p>
+<p>- </strong>Name<strong>: </code>conn-onprem<code></p>
+<p>- </strong>Connection type<strong>: </strong>Site-to-Site (IPSec)<strong></p>
+<p>- </strong>Local network gateway<strong>: </code>lng-onprem<code></p>
+<p>- </strong>Shared key<strong>: </code>P@ssw0rd123!<code> (used for IPSec negotiation)</p>
+<p>- </strong>Create<strong>.</p>
+
+<h2 id="$(Convert-TitleToId Validation)">Validation</h2>
+<ul><ol><li>[ ] Both peerings (</code>hub-to-spoke<code> and </code>spoke-to-hub<code>) show </strong>Connected<strong> status</li></ol></ul>
+<ul><ol><li>[ ] </code>vm-hub<code> can reach </code>vm-spoke<code>'s private IP across the peering</li></ol></ul>
+<ul><ol><li>[ ] Can explain gateway transit vs forwarded traffic vs non-transitive peering</li></ol></ul>
+<ul><ol><li>[ ] (If completed) VPN gateway provisioned and connection created</li></ol></ul>
+
+<h2 id="$(Convert-TitleToId Cleanup)">Cleanup</h2>
+<ol><li></strong>Resource groups<strong> > select </code>rg-az104-lab14<code> > </strong>Delete resource group<strong>.</li></ol>
+<p>> If you deployed the VPN gateway, deletion can take 10-15+ minutes — that's normal.</p>
+
+<h2 id="$(Convert-TitleToId Exam Tips)">Exam Tips</h2>
+<ul><ol><li>VNet Peering is </strong>low-latency, private-backbone<strong> connectivity between VNets — can span regions (global peering) and subscriptions/tenants.</li></ol></ul>
+<ul><ol><li>Peering is </strong>not transitive<strong> — a common exam trap. Hub-spoke transitive routing needs gateway transit + NVA/route tables, or Azure Virtual WAN.</li></ol></ul>
+<ul><ol><li>VPN Gateway SKUs (VpnGw1-5) determine throughput/tunnel counts; </strong>Policy-based<strong> vs </strong>Route-based** VPN types — route-based is more flexible and required for most scenarios (P2S, multiple connections).</li></ol></ul>
+<ul><ol><li></code>GatewaySubnet` is a reserved name and must not have an NSG attached.</li></ol></ul>
+
+  </div>
+</div>
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.sidebar a'));
+  var sections = [];
+  links.forEach(function(a){
+    var el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) sections.push({link:a, el:el});
+  });
+  if (!sections.length || !('IntersectionObserver' in window)) return;
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (!entry.isIntersecting) return;
+      var match = sections.find(function(s){ return s.el === entry.target; });
+      if (!match) return;
+      links.forEach(function(a){ a.classList.remove('active'); });
+      match.link.classList.add('active');
+    });
+  }, { rootMargin: '-100px 0px -70% 0px', threshold: 0 });
+  sections.forEach(function(s){ observer.observe(s.el); });
+})();
+</script>
+</body>
+</html>

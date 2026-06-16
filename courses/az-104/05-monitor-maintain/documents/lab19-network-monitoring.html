@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab 19 – Network Monitoring Tools (Network Watcher) - AZ-104 Labs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f8fc;--card:#fff;--border:#d9e0ef;--text:#1f2937;--muted:#5b6678;
+  --primary:#151d63;--panel:#00004C;--panel-shadow:rgba(0,0,76,.18);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:Inter,-apple-system,'Segoe UI',sans-serif;color:var(--text)}
+.page{flex:1;min-width:0;padding:28px}
+
+h1{font-size:3.2rem;line-height:1.15;margin:0;color:var(--primary);font-weight:800;letter-spacing:-1px}
+.subtitle{font-size:1.4rem;font-weight:600;color:#2d3b77;margin-top:10px}
+
+.badges{display:flex;gap:12px;margin:20px 0 26px;flex-wrap:wrap}
+.badge{background:#eef2ff;border:1px solid #d8def7;color:#1e2a78;padding:10px 18px;border-radius:999px;font-weight:600;font-size:.95rem}
+
+.section{display:grid;grid-template-columns:42% 58%;gap:28px;padding:26px 0;border-top:1px solid var(--border)}
+.section.full{display:block;padding:26px 0;border-top:1px solid var(--border)}
+.section:first-of-type, .section.full:first-of-type{border-top:none}
+
+h2{font-size:2rem;margin:0 0 14px;color:var(--primary);font-weight:800}
+h3{font-size:1.4rem;margin:22px 0 10px;color:var(--primary);font-weight:700}
+h3:first-child{margin-top:0}
+h4{font-size:1.1rem;margin:16px 0 8px;color:#2d3b77;font-weight:700}
+
+p{font-size:1.05rem;line-height:1.65;margin:.5rem 0;color:var(--text)}
+
+ul, ol{margin:.6rem 0;padding-left:1.4rem}
+li{margin-bottom:6px;line-height:1.6;font-size:1.02rem}
+
+a{color:#1e2a78;text-decoration:none;border-bottom:1px solid transparent;font-weight:600}
+a:hover{border-bottom-color:#1e2a78}
+
+strong{color:var(--primary);font-weight:700}
+
+code{background:#eef2ff;color:#1735ad;padding:2px 6px;border-radius:6px;font:13px/1.4 'SF Mono',Consolas,'Courier New',monospace}
+th code,td code{font-size:.92em}
+
+.callout{margin-top:20px;background:#f3f7ff;border:1px solid #bfd0ff;border-radius:14px;padding:18px 22px}
+.callout strong{color:#1735ad}
+.callout p{margin:0}
+.callout p + p{margin-top:8px}
+
+.panel{
+  background:var(--panel);
+  color:#fff;border-radius:18px;padding:22px 26px;
+  box-shadow:0 12px 28px var(--panel-shadow);
+  font:15px/1.65 'SF Mono',Consolas,'Courier New',monospace;
+  white-space:pre-wrap;
+  overflow:auto;
+}
+.panel.small{font-size:13.5px;line-height:1.6}
+.panel + .panel{margin-top:18px}
+
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:14px 0}
+th,td{padding:14px;border:1px solid var(--border);text-align:left;font-size:.98rem}
+th{background:#eef2ff;color:var(--primary);font-weight:700}
+tr:hover td{background:#fafbff}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+
+.mistake-card{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:14px 0 8px}
+.mistake-card h4{margin-top:0}
+
+.tip{margin-top:20px;background:#eef4ff;border:1px solid #c8d5ff;border-radius:12px;padding:16px 20px;font-size:1.02rem}
+.tip strong{color:#1735ad}
+
+hr.divider{border:none;height:0;margin:0}
+
+.footer{margin-top:48px;padding-top:24px;border-top:1px solid var(--border);font-size:.9rem;color:var(--muted)}
+.footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px}
+.footer-item strong{display:block;color:var(--primary);margin-bottom:6px;font-size:.95rem}
+.footer-meta{margin-top:24px;padding-top:16px;border-top:1px solid var(--border);text-align:center;font-size:.85rem}
+
+@media (max-width:1000px){
+  .section,.grid2,.grid3,.grid4,.mistake-card{grid-template-columns:1fr}
+  h1{font-size:2.3rem}
+  .page{padding:16px}
+  .panel{font-size:13px}
+  .sidebar{display:none}
+  .layout{display:block}
+}
+
+/* ===== Site-wide Cross Navigation ===== */
+.site-nav{
+  position:sticky;top:0;z-index:1000;
+  background:var(--primary);color:#fff;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:12px 28px;font-size:.92rem;
+  box-shadow:0 2px 10px rgba(0,0,76,.18);
+  font-family:Inter,-apple-system,'Segoe UI',sans-serif;
+}
+.site-nav .nav-brand{font-weight:800;font-size:1.05rem;margin-right:auto;color:#fff}
+.site-nav details{position:relative}
+.site-nav summary{cursor:pointer;list-style:none;padding:7px 16px;border-radius:8px;background:rgba(255,255,255,.12);font-weight:600;color:#fff;user-select:none}
+.site-nav summary::-webkit-details-marker,.site-nav summary::marker{display:none;content:''}
+.site-nav details[open] summary{background:rgba(255,255,255,.24)}
+.site-nav .nav-menu{
+  position:absolute;top:calc(100% + 8px);left:0;
+  background:#fff;color:var(--text);
+  border:1px solid var(--border);border-radius:12px;
+  padding:8px;min-width:300px;box-shadow:0 16px 32px rgba(0,0,76,.22);
+  display:flex;flex-direction:column;gap:2px;z-index:1001;
+}
+.site-nav .nav-menu a{
+  display:block;padding:9px 14px;border-radius:8px;border-bottom:none;
+  color:var(--text);font-weight:500;font-size:.95rem;
+}
+.site-nav .nav-menu a:hover{background:#eef2ff;color:#1e2a78}
+.site-nav .nav-menu a.active{background:#eef2ff;color:#1735ad;font-weight:700}
+@media (max-width:768px){
+  .site-nav{padding:10px 16px}
+  .site-nav .nav-brand{font-size:.95rem}
+}
+/* ===== Page Sidebar (On This Page) ===== */
+.layout{max-width:1400px;margin:auto;display:flex;align-items:flex-start}
+.sidebar{
+  flex:0 0 260px;
+  position:sticky;top:88px;
+  max-height:calc(100vh - 108px);
+  overflow-y:auto;
+  margin:28px 0 28px 28px;
+  padding:20px 18px;
+  background:#fff;border:1px solid var(--border);border-radius:14px;
+  box-shadow:0 4px 16px rgba(21,29,99,.05);
+}
+.sidebar .toc-title{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 12px;padding:0 12px}
+.sidebar hr.sidebar-divider{border:none;border-top:1px solid var(--border);margin:14px 0}
+.sidebar .toc-title.module-title{margin-top:0}
+.sidebar a{display:block;padding:8px 12px;margin-bottom:2px;border-radius:8px;font-size:.88rem;font-weight:500;color:var(--text);border-bottom:none;border-left:3px solid transparent;line-height:1.4}
+.sidebar a:hover{background:#eef2ff;color:#1e2a78}
+.sidebar a.active{background:#eef2ff;color:#1735ad;font-weight:700;border-left-color:var(--primary)}
+@media print{
+  .site-nav{display:none}
+  body{background:#fff}
+  .page{padding:0}
+  .panel{box-shadow:none}
+  .sidebar{display:none}
+  .layout{display:block}
+}
+</style>
+</head>
+<body>
+<nav class="site-nav">
+  <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
+  <details class="nav-group">
+    <summary>Module 00 - Prerequisites</summary>
+    <div class="nav-menu">
+      <a href="../../00-prerequisites/documents/01-cloud-computing-fundamentals.html">01 - Cloud Computing Fundamentals</a>
+      <a href="../../00-prerequisites/documents/02-networking-basics.html">02 - Networking Basics</a>
+      <a href="../../00-prerequisites/documents/03-identity-and-access-fundamentals.html">03 - Identity &amp; Access Fundamentals</a>
+      <a href="../../00-prerequisites/documents/04-azure-portal-navigation.html">04 - Azure Portal Navigation</a>
+      <a href="../../00-prerequisites/documents/lab00-azure-portal-navigation.html">Lab 00 - Portal Navigation</a>
+    </div>
+  </details>
+  <details class="nav-group">
+    <summary>Module 01 - Identity &amp; Governance</summary>
+    <div class="nav-menu">
+      <a href="../../01-identity-governance/documents/01-entra-id-overview.html">01 - Entra ID Overview</a>
+      <a href="../../01-identity-governance/documents/02-rbac-fundamentals.html">02 - RBAC Fundamentals</a>
+      <a href="../../01-identity-governance/documents/03-management-groups-and-azure-policy.html">03 - Management Groups &amp; Policy</a>
+      <a href="../../01-identity-governance/documents/04-access-control-scenarios.html">04 - Access Control Scenarios</a>
+      <a href="../../01-identity-governance/documents/05-identity-best-practices.html">05 - Identity Best Practices</a>
+      <a href="../../01-identity-governance/documents/lab01-entra-users-groups.html">Lab 01 - Entra ID Users</a>
+      <a href="../../01-identity-governance/documents/lab02-rbac-azure-policy.html">Lab 02 - RBAC &amp; Policy</a>
+    </div>
+  </details>
+</nav>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="toc-title module-title">Module 05 - Monitor &amp; Maintain</div>
+    <a href="#objectives">Objectives</a>
+<a href="#prerequisites">Prerequisites</a>
+<a href="#estimated-time">Estimated time</a>
+<a href="#part-1-enable-network-watcher">Part 1 – Enable Network Watcher</a>
+<a href="#part-2-setup-vms-if-not-reusing-prior-labs">Part 2 – Setup VMs (if not reusing prior labs)</a>
+<a href="#part-3-connection-troubleshoot">Part 3 – Connection Troubleshoot</a>
+<a href="#part-4-ip-flow-verify">Part 4 – IP flow verify</a>
+<a href="#part-5-next-hop">Part 5 – Next hop</a>
+<a href="#part-6-packet-capture">Part 6 – Packet capture</a>
+<a href="#part-7-nsg-flow-logs-traffic-analytics-concepts">Part 7 – NSG flow logs & Traffic Analytics (concepts)</a>
+<a href="#part-8-topology">Part 8 – Topology</a>
+<a href="#validation">Validation</a>
+<a href="#cleanup">Cleanup</a>
+<a href="#exam-tips">Exam Tips</a>
+<hr class="sidebar-divider">
+<div class="toc-title">On This Page</div>
+  </aside>
+  <div class="page">
+  <h1>Lab 19 – Network Monitoring Tools (Network Watcher)</h1>
+
+<h2 id="$(Convert-TitleToId Objectives)">Objectives</h2>
+<ul><ol><li>Enable Network Watcher and explore its diagnostic tools</li></ol></ul>
+<ul><ol><li>Use Connection Troubleshoot to test connectivity</li></ol></ul>
+<ul><ol><li>Capture packets with Packet Capture</li></ol></ul>
+<ul><ol><li>Review NSG flow logs and Traffic Analytics (concepts)</li></ol></ul>
+
+<h2 id="$(Convert-TitleToId Prerequisites)">Prerequisites</h2>
+<ul><ol><li>Two VMs in the same/peered VNets (or create new)</li></ol></ul>
+<ul><ol><li>Signed in at <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
+
+<h2 id="$(Convert-TitleToId Estimated time)">Estimated time</h2>
+<p>35 minutes</p>
+
+<hr class="divider">
+
+<h2 id="$(Convert-TitleToId Part 1 – Enable Network Watcher)">Part 1 – Enable Network Watcher</h2>
+
+<p>Network Watcher is typically auto-enabled per region when you create networking</p>
+<p>resources. To verify/enable:</p>
+
+<ol><li>Search for <strong>Network Watcher</strong> > check the region (e.g., <strong>East US</strong>) is</li></ol>
+<p>listed and <strong>Status</strong> is <strong>Enabled</strong>.</p>
+<ol><li>If not, select the region > <strong>Enable</strong> (or select <strong>Configure</strong> on an</li></ol>
+<p>existing region).</p>
+
+<h2 id="$(Convert-TitleToId Part 2 – Setup VMs (if not reusing prior labs))">Part 2 – Setup VMs (if not reusing prior labs)</h2>
+
+<ol><li>Search for <strong>Resource groups</strong> > <strong>Create</strong>. Name: <code>rg-az104-lab19</code>,</li></ol>
+<p>region: <code>East US</code>. <strong>Create</strong>.</p>
+<ol><li><strong>Virtual networks</strong> > <strong>Create</strong>. <strong>Name</strong>: <code>vnet-lab19</code>, <strong>Address space</strong>:</li></ol>
+<p><code>10.100.0.0/16</code>, <strong>Subnets</strong>: <code>subnet-vms</code> with <code>10.100.1.0/24</code>. <strong>Create</strong>.</p>
+<ol><li>Create two VMs:</li></ol>
+<p>- <strong>vm-source</strong>: <strong>Ubuntu 22.04 LTS</strong>, <strong>Standard_B1s</strong>, <code>vnet-lab19</code>/<code>subnet-vms</code></p>
+<p>with a <strong>public IP</strong>. <strong>Create</strong>.</p>
+<p>- <strong>vm-dest</strong>: same config, but with <strong>no public IP</strong>. <strong>Create</strong>.</p>
+
+<h2 id="$(Convert-TitleToId Part 3 – Connection Troubleshoot)">Part 3 – Connection Troubleshoot</h2>
+
+<ol><li>Go to <strong>Network Watcher</strong> > <strong>Connection troubleshoot</strong> (under <strong>Network</li></ol>
+<p>diagnostic tools</strong>).</p>
+<ol><li><strong>Source</strong>:</li></ol>
+<p>- <strong>Resource type</strong>: <strong>Virtual machine</strong></p>
+<p>- <strong>Virtual machine</strong>: <code>vm-source</code></p>
+<p>- <strong>Network interface</strong>: (auto-selected)</p>
+<ol><li><strong>Destination</strong>:</li></ol>
+<p>- <strong>Resource type</strong>: <strong>Virtual machine</strong></p>
+<p>- <strong>Virtual machine</strong>: <code>vm-dest</code></p>
+<p>- <strong>Port</strong>: 22</p>
+<ol><li><strong>Check</strong> — Network Watcher tests connectivity and reports latency, hops,</li></ol>
+<p>and success/failure. Useful for diagnosing "VM A can't reach VM B" scenarios.</p>
+
+<h2 id="$(Convert-TitleToId Part 4 – IP flow verify)">Part 4 – IP flow verify</h2>
+
+<ol><li><strong>Network Watcher</strong> > <strong>IP flow verify</strong> (under <strong>Network diagnostic tools</strong>).</li></ol>
+<ol><li><strong>VM</strong>: <code>vm-source</code></li></ol>
+<ol><li><strong>Network interface</strong>: (auto-selected)</li></ol>
+<ol><li><strong>Direction</strong>: <strong>Outbound</strong></li></ol>
+<ol><li><strong>Protocol</strong>: <strong>TCP</strong></li></ol>
+<ol><li><strong>Local IP address/port</strong>: <code>10.100.1.4:*</code> (or the VM's actual private IP)</li></ol>
+<ol><li><strong>Remote IP address/port</strong>: <code>10.100.1.5:22</code> (or <code>vm-dest</code>'s private IP)</li></ol>
+<ol><li><strong>Check</strong> — should show <strong>Allow</strong> if no NSG rules block it. Try with port 3389</li></ol>
+<p>(RDP) or a blocked port to see <strong>Deny</strong>.</p>
+
+<h2 id="$(Convert-TitleToId Part 5 – Next hop)">Part 5 – Next hop</h2>
+
+<ol><li><strong>Network Watcher</strong> > <strong>Next hop</strong> (under <strong>Network diagnostic tools</strong>).</li></ol>
+<ol><li><strong>VM</strong>: <code>vm-source</code></li></ol>
+<ol><li><strong>Network interface</strong>: (auto-selected)</li></ol>
+<ol><li><strong>Source IP address</strong>: <code>10.100.1.4</code> (or the VM's private IP)</li></ol>
+<ol><li><strong>Destination IP address</strong>: <code>10.100.1.5</code> (or a destination within the VNet)</li></ol>
+<ol><li><strong>Check</strong> — should show <strong>Next hop type</strong>: <strong>VnetLocal</strong> for intra-VNet traffic.</li></ol>
+<ol><li>Try again with a destination outside the VNet (e.g., <code>8.8.8.8</code>) — should show</li></ol>
+<p><strong>Internet</strong> (traffic exits the VNet).</p>
+
+<p>Useful for validating custom route tables (UDRs) and confirming expected</p>
+<p>routing behavior.</p>
+
+<h2 id="$(Convert-TitleToId Part 6 – Packet capture)">Part 6 – Packet capture</h2>
+
+<ol><li><strong>Network Watcher</strong> > <strong>Packet capture</strong> (under <strong>Network diagnostic tools</strong>) ></li></ol>
+<p><strong>+ Add</strong>.</p>
+<ol><li><strong>Create packet capture</strong>:</li></ol>
+<p>- <strong>Name</strong>: <code>capture01</code></p>
+<p>- <strong>VM</strong>: <code>vm-source</code></p>
+<p>- <strong>Network interface</strong>: (auto-selected)</p>
+<p>- <strong>Capture settings</strong>:</p>
+<p>- <strong>Time limit (seconds)</strong>: 60</p>
+<p>- <strong>Maximum file size</strong>: (default 100 MB)</p>
+<p>- <strong>Filters</strong> (optional): leave empty for now</p>
+<p>- <strong>Storage account</strong>: select or <strong>Create new</strong> (stores the <code>.pcap</code> file)</p>
+<p>- <strong>Create</strong> — begins capturing.</p>
+<ol><li>After ~1 minute (or manually <strong>Stop</strong>), go to <strong>Packet captures</strong> > select</li></ol>
+<p><code>capture01</code> > <strong>Download</strong> the <code>.pcap</code> file to analyze with Wireshark.</p>
+
+<h2 id="$(Convert-TitleToId Part 7 – NSG flow logs & Traffic Analytics (concepts))">Part 7 – NSG flow logs & Traffic Analytics (concepts)</h2>
+
+<ol><li><strong>Network Watcher</strong> > <strong>NSG flow logs</strong> (under <strong>Logs</strong>) > <strong>+ Add</strong>.</li></ol>
+<ol><li>Configure (requires an NSG from a prior lab, e.g., Lab 13):</li></ol>
+<p>- <strong>Select NSG</strong>: choose an NSG</p>
+<p>- <strong>Target storage account</strong>: select or create</p>
+<p>- <strong>Retention (days)</strong>: 30</p>
+<p>- <strong>Traffic Analytics</strong>: <strong>Enabled</strong> (optional, requires a Log Analytics workspace)</p>
+<ol><li><strong>Save</strong>.</li></ol>
+
+<p>Once enabled:</p>
+<ul><ol><li><strong>Flow logs</strong> record inbound/outbound traffic through the NSG (stored in a</li></ol></ul>
+<p>storage account blob).</p>
+<ul><ol><li><strong>Traffic Analytics</strong> (with Log Analytics) aggregates flow logs every 10–60</li></ol></ul>
+<p>minutes and provides visualizations: top talkers, blocked flows, geographic</p>
+<p>distribution, etc.</p>
+
+<h2 id="$(Convert-TitleToId Part 8 – Topology)">Part 8 – Topology</h2>
+
+<ol><li><strong>Network Watcher</strong> > <strong>Topology</strong> (under <strong>Monitoring</strong>).</li></ol>
+<ol><li><strong>Resource group</strong>: select <code>rg-az104-lab19</code> — visualizes VNets, subnets,</li></ol>
+<p>NICs, NSGs, and their relationships in a topology diagram.</p>
+
+<h2 id="$(Convert-TitleToId Validation)">Validation</h2>
+<ul><ol><li>[ ] <strong>Connection troubleshoot</strong> returns latency/hop info between VMs</li></ol></ul>
+<ul><ol><li>[ ] <strong>Next hop</strong> returns <strong>VnetLocal</strong> for intra-VNet traffic, <strong>Internet</strong> for external</li></ol></ul>
+<ul><ol><li>[ ] Packet capture session created, data captured, and <code>.pcap</code> file available</li></ol></ul>
+<ul><ol><li>[ ] Can describe how to enable NSG flow logs + Traffic Analytics and what they show</li></ol></ul>
+
+<h2 id="$(Convert-TitleToId Cleanup)">Cleanup</h2>
+<ol><li><strong>Network Watcher</strong> > <strong>Packet captures</strong> > select <code>capture01</code> > <strong>Delete</strong>.</li></ol>
+<ol><li><strong>Resource groups</strong> > select <code>rg-az104-lab19</code> > <strong>Delete resource group</strong>.</li></ol>
+
+<div class="callout"><p><code>NetworkWatcherRG</code> is a special auto-created resource group — don't delete it;</p></div>
+<div class="callout"><p>it's shared across your subscription's networking diagnostics.</p></div>
+
+<h2 id="$(Convert-TitleToId Exam Tips)">Exam Tips</h2>
+<ul><ol><li><strong>Network Watcher</strong> tools to know: <strong>IP flow verify</strong> (NSG rule evaluation for specific traffic), <strong>Next hop</strong> (routing decision for a packet), <strong>Connection troubleshoot/Connection monitor</strong> (end-to-end connectivity + latency), <strong>Packet capture</strong> (deep packet inspection), <strong>NSG flow logs + Traffic Analytics</strong> (traffic patterns over time).</li></ol></ul>
+<ul><ol><li><code>NetworkWatcherRG</code> is auto-created the first time Network Watcher is enabled in a region — it's normal and shouldn't be deleted.</li></ol></ul>
+<ul><ol><li>NSG flow logs require a storage account; Traffic Analytics additionally requires a Log Analytics workspace and aggregates flow logs every ~10/60 minutes.</li></ol></ul>
+<ul><ol><li><code>show-next-hop</code> (via <strong>Next hop</strong>) is the fastest way to confirm whether custom route tables (UDRs) are affecting traffic as expected.</li></ol></ul>
+
+  </div>
+</div>
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.sidebar a'));
+  var sections = [];
+  links.forEach(function(a){
+    var el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) sections.push({link:a, el:el});
+  });
+  if (!sections.length || !('IntersectionObserver' in window)) return;
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (!entry.isIntersecting) return;
+      var match = sections.find(function(s){ return s.el === entry.target; });
+      if (!match) return;
+      links.forEach(function(a){ a.classList.remove('active'); });
+      match.link.classList.add('active');
+    });
+  }, { rootMargin: '-100px 0px -70% 0px', threshold: 0 });
+  sections.forEach(function(s){ observer.observe(s.el); });
+})();
+</script>
+</body>
+</html>

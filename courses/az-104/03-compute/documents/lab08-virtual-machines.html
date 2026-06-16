@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab 08 – Virtual Machines - AZ-104 Labs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f8fc;--card:#fff;--border:#d9e0ef;--text:#1f2937;--muted:#5b6678;
+  --primary:#151d63;--panel:#00004C;--panel-shadow:rgba(0,0,76,.18);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:Inter,-apple-system,'Segoe UI',sans-serif;color:var(--text)}
+.page{flex:1;min-width:0;padding:28px}
+
+h1{font-size:3.2rem;line-height:1.15;margin:0;color:var(--primary);font-weight:800;letter-spacing:-1px}
+.subtitle{font-size:1.4rem;font-weight:600;color:#2d3b77;margin-top:10px}
+
+.badges{display:flex;gap:12px;margin:20px 0 26px;flex-wrap:wrap}
+.badge{background:#eef2ff;border:1px solid #d8def7;color:#1e2a78;padding:10px 18px;border-radius:999px;font-weight:600;font-size:.95rem}
+
+.section{display:grid;grid-template-columns:42% 58%;gap:28px;padding:26px 0;border-top:1px solid var(--border)}
+.section.full{display:block;padding:26px 0;border-top:1px solid var(--border)}
+.section:first-of-type, .section.full:first-of-type{border-top:none}
+
+h2{font-size:2rem;margin:0 0 14px;color:var(--primary);font-weight:800}
+h3{font-size:1.4rem;margin:22px 0 10px;color:var(--primary);font-weight:700}
+h3:first-child{margin-top:0}
+h4{font-size:1.1rem;margin:16px 0 8px;color:#2d3b77;font-weight:700}
+
+p{font-size:1.05rem;line-height:1.65;margin:.5rem 0;color:var(--text)}
+
+ul, ol{margin:.6rem 0;padding-left:1.4rem}
+li{margin-bottom:6px;line-height:1.6;font-size:1.02rem}
+
+a{color:#1e2a78;text-decoration:none;border-bottom:1px solid transparent;font-weight:600}
+a:hover{border-bottom-color:#1e2a78}
+
+strong{color:var(--primary);font-weight:700}
+
+code{background:#eef2ff;color:#1735ad;padding:2px 6px;border-radius:6px;font:13px/1.4 'SF Mono',Consolas,'Courier New',monospace}
+th code,td code{font-size:.92em}
+
+.callout{margin-top:20px;background:#f3f7ff;border:1px solid #bfd0ff;border-radius:14px;padding:18px 22px}
+.callout strong{color:#1735ad}
+.callout p{margin:0}
+.callout p + p{margin-top:8px}
+
+.panel{
+  background:var(--panel);
+  color:#fff;border-radius:18px;padding:22px 26px;
+  box-shadow:0 12px 28px var(--panel-shadow);
+  font:15px/1.65 'SF Mono',Consolas,'Courier New',monospace;
+  white-space:pre-wrap;
+  overflow:auto;
+}
+.panel.small{font-size:13.5px;line-height:1.6}
+.panel + .panel{margin-top:18px}
+
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:14px 0}
+th,td{padding:14px;border:1px solid var(--border);text-align:left;font-size:.98rem}
+th{background:#eef2ff;color:var(--primary);font-weight:700}
+tr:hover td{background:#fafbff}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+
+.mistake-card{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:14px 0 8px}
+.mistake-card h4{margin-top:0}
+
+.tip{margin-top:20px;background:#eef4ff;border:1px solid #c8d5ff;border-radius:12px;padding:16px 20px;font-size:1.02rem}
+.tip strong{color:#1735ad}
+
+hr.divider{border:none;height:0;margin:0}
+
+.footer{margin-top:48px;padding-top:24px;border-top:1px solid var(--border);font-size:.9rem;color:var(--muted)}
+.footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px}
+.footer-item strong{display:block;color:var(--primary);margin-bottom:6px;font-size:.95rem}
+.footer-meta{margin-top:24px;padding-top:16px;border-top:1px solid var(--border);text-align:center;font-size:.85rem}
+
+@media (max-width:1000px){
+  .section,.grid2,.grid3,.grid4,.mistake-card{grid-template-columns:1fr}
+  h1{font-size:2.3rem}
+  .page{padding:16px}
+  .panel{font-size:13px}
+  .sidebar{display:none}
+  .layout{display:block}
+}
+
+/* ===== Site-wide Cross Navigation ===== */
+.site-nav{
+  position:sticky;top:0;z-index:1000;
+  background:var(--primary);color:#fff;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:12px 28px;font-size:.92rem;
+  box-shadow:0 2px 10px rgba(0,0,76,.18);
+  font-family:Inter,-apple-system,'Segoe UI',sans-serif;
+}
+.site-nav .nav-brand{font-weight:800;font-size:1.05rem;margin-right:auto;color:#fff}
+.site-nav details{position:relative}
+.site-nav summary{cursor:pointer;list-style:none;padding:7px 16px;border-radius:8px;background:rgba(255,255,255,.12);font-weight:600;color:#fff;user-select:none}
+.site-nav summary::-webkit-details-marker,.site-nav summary::marker{display:none;content:''}
+.site-nav details[open] summary{background:rgba(255,255,255,.24)}
+.site-nav .nav-menu{
+  position:absolute;top:calc(100% + 8px);left:0;
+  background:#fff;color:var(--text);
+  border:1px solid var(--border);border-radius:12px;
+  padding:8px;min-width:300px;box-shadow:0 16px 32px rgba(0,0,76,.22);
+  display:flex;flex-direction:column;gap:2px;z-index:1001;
+}
+.site-nav .nav-menu a{
+  display:block;padding:9px 14px;border-radius:8px;border-bottom:none;
+  color:var(--text);font-weight:500;font-size:.95rem;
+}
+.site-nav .nav-menu a:hover{background:#eef2ff;color:#1e2a78}
+.site-nav .nav-menu a.active{background:#eef2ff;color:#1735ad;font-weight:700}
+@media (max-width:768px){
+  .site-nav{padding:10px 16px}
+  .site-nav .nav-brand{font-size:.95rem}
+}
+/* ===== Page Sidebar (On This Page) ===== */
+.layout{max-width:1400px;margin:auto;display:flex;align-items:flex-start}
+.sidebar{
+  flex:0 0 260px;
+  position:sticky;top:88px;
+  max-height:calc(100vh - 108px);
+  overflow-y:auto;
+  margin:28px 0 28px 28px;
+  padding:20px 18px;
+  background:#fff;border:1px solid var(--border);border-radius:14px;
+  box-shadow:0 4px 16px rgba(21,29,99,.05);
+}
+.sidebar .toc-title{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 12px;padding:0 12px}
+.sidebar hr.sidebar-divider{border:none;border-top:1px solid var(--border);margin:14px 0}
+.sidebar .toc-title.module-title{margin-top:0}
+.sidebar a{display:block;padding:8px 12px;margin-bottom:2px;border-radius:8px;font-size:.88rem;font-weight:500;color:var(--text);border-bottom:none;border-left:3px solid transparent;line-height:1.4}
+.sidebar a:hover{background:#eef2ff;color:#1e2a78}
+.sidebar a.active{background:#eef2ff;color:#1735ad;font-weight:700;border-left-color:var(--primary)}
+@media print{
+  .site-nav{display:none}
+  body{background:#fff}
+  .page{padding:0}
+  .panel{box-shadow:none}
+  .sidebar{display:none}
+  .layout{display:block}
+}
+</style>
+</head>
+<body>
+<nav class="site-nav">
+  <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
+  <details class="nav-group">
+    <summary>Module 00 - Prerequisites</summary>
+    <div class="nav-menu">
+      <a href="../../00-prerequisites/documents/01-cloud-computing-fundamentals.html">01 - Cloud Computing Fundamentals</a>
+      <a href="../../00-prerequisites/documents/02-networking-basics.html">02 - Networking Basics</a>
+      <a href="../../00-prerequisites/documents/03-identity-and-access-fundamentals.html">03 - Identity &amp; Access Fundamentals</a>
+      <a href="../../00-prerequisites/documents/04-azure-portal-navigation.html">04 - Azure Portal Navigation</a>
+      <a href="../../00-prerequisites/documents/lab00-azure-portal-navigation.html">Lab 00 - Portal Navigation</a>
+    </div>
+  </details>
+  <details class="nav-group">
+    <summary>Module 01 - Identity &amp; Governance</summary>
+    <div class="nav-menu">
+      <a href="../../01-identity-governance/documents/01-entra-id-overview.html">01 - Entra ID Overview</a>
+      <a href="../../01-identity-governance/documents/02-rbac-fundamentals.html">02 - RBAC Fundamentals</a>
+      <a href="../../01-identity-governance/documents/03-management-groups-and-azure-policy.html">03 - Management Groups &amp; Policy</a>
+      <a href="../../01-identity-governance/documents/04-access-control-scenarios.html">04 - Access Control Scenarios</a>
+      <a href="../../01-identity-governance/documents/05-identity-best-practices.html">05 - Identity Best Practices</a>
+      <a href="../../01-identity-governance/documents/lab01-entra-users-groups.html">Lab 01 - Entra ID Users</a>
+      <a href="../../01-identity-governance/documents/lab02-rbac-azure-policy.html">Lab 02 - RBAC &amp; Policy</a>
+    </div>
+  </details>
+</nav>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="toc-title module-title">Module 03 - Compute</div>
+    <a href="#objectives">Objectives</a>
+<a href="#prerequisites">Prerequisites</a>
+<a href="#estimated-time">Estimated time</a>
+<a href="#part-1-resource-group-and-networking">Part 1 – Resource group and networking</a>
+<a href="#part-2-deploy-a-linux-vm">Part 2 – Deploy a Linux VM</a>
+<a href="#part-3-deploy-a-windows-vm">Part 3 – Deploy a Windows VM</a>
+<a href="#part-4-add-a-data-disk">Part 4 – Add a data disk</a>
+<a href="#part-5-vm-extensions-custom-script">Part 5 – VM Extensions (Custom Script)</a>
+<a href="#part-6-azure-bastion-secure-rdpssh-without-public-ip">Part 6 – Azure Bastion (secure RDP/SSH without public IP)</a>
+<a href="#part-7-resize-and-power-states">Part 7 – Resize and power states</a>
+<a href="#validation">Validation</a>
+<a href="#cleanup">Cleanup</a>
+<a href="#exam-tips">Exam Tips</a>
+<hr class="sidebar-divider">
+<div class="toc-title">On This Page</div>
+  </aside>
+  <div class="page">
+  <h1>Lab 08 – Virtual Machines</h1>
+
+<h2 id="$(Convert-TitleToId Objectives)">Objectives</h2>
+<ul><ol><li>Deploy a Linux and a Windows VM</li></ol></ul>
+<ul><ol><li>Configure VM sizing, disks (OS + data disk), and extensions</li></ol></ul>
+<ul><ol><li>Connect via SSH/RDP and Azure Bastion</li></ol></ul>
+<ul><ol><li>Resize a VM and manage VM power states/costs</li></ol></ul>
+
+<h2 id="$(Convert-TitleToId Prerequisites)">Prerequisites</h2>
+<ul><ol><li>None (creates its own RG/VNet)</li></ol></ul>
+<ul><ol><li>Signed in at <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
+
+<h2 id="$(Convert-TitleToId Estimated time)">Estimated time</h2>
+<p>50 minutes</p>
+
+<hr class="divider">
+
+<h2 id="$(Convert-TitleToId Part 1 – Resource group and networking)">Part 1 – Resource group and networking</h2>
+
+<ol><li>Search for <strong>Resource groups</strong> > <strong>Create</strong>. Name: <code>rg-az104-lab08</code>,</li></ol>
+<p>region: <code>East US</code>. <strong>Review + create</strong> > <strong>Create</strong>.</p>
+<ol><li>Search for <strong>Virtual networks</strong> > <strong>Create</strong>. <strong>Resource group</strong>:</li></ol>
+<p><code>rg-az104-lab08</code>, <strong>Name</strong>: <code>vnet-lab08</code>, <strong>Address space</strong>: <code>10.30.0.0/16</code>.</p>
+<p><strong>Subnets</strong> tab: create subnet <strong>subnet-vms</strong> with address range <code>10.30.1.0/24</code>.</p>
+<p><strong>Review + create</strong> > <strong>Create</strong>.</p>
+
+<h2 id="$(Convert-TitleToId Part 2 – Deploy a Linux VM)">Part 2 – Deploy a Linux VM</h2>
+
+<ol><li>Search for <strong>Virtual machines</strong> > <strong>Create</strong> > <strong>Azure virtual machine</strong>.</li></ol>
+<ol><li><strong>Basics</strong> tab:</li></ol>
+<p>- <strong>Resource group</strong>: <code>rg-az104-lab08</code></p>
+<p>- <strong>VM name</strong>: <code>vm-linux01</code></p>
+<p>- <strong>Region</strong>: <code>East US</code></p>
+<p>- <strong>Image</strong>: search <strong>Ubuntu</strong> > select <strong>Ubuntu Server 22.04 LTS</strong></p>
+<p>- <strong>VM architecture</strong>: x64</p>
+<p>- <strong>Size</strong>: <strong>Standard<em>B1s</strong></p>
+<p>- <strong>Authentication type</strong>: <strong>SSH public key</strong></p>
+<p>- <strong>Username</strong>: <code>azureuser</code></p>
+<p>- <strong>SSH public key source</strong>: <strong>Generate new key pair</strong> (save the private key</p>
+<p>when prompted)</p>
+<ol><li><strong>Networking</strong> tab: <strong>Virtual network</strong>: <code>vnet-lab08</code>, <strong>Subnet</strong>:</li></ol>
+<p><code>subnet-vms</code>, <strong>Public IP</strong>: create new (e.g., <code>pip-vm-linux01</code>),</p>
+<p><strong>Public inbound ports</strong>: allow <strong>SSH (22)</strong>.</p>
+<ol><li><strong>Disks</strong> tab: leave defaults (OS disk type Standard).</li></ol>
+<ol><li><strong>Management</strong> tab: review <strong>Monitoring</strong> options (optional).</li></ol>
+<ol><li><strong>Review + create</strong> > <strong>Create</strong>. When finished, <strong>Download private key</li></ol>
+<p>and create resource</strong> (or just <strong>Create</strong> if you want to generate the key</p>
+<p>pair separately).</p>
+
+<h3 id="$(Convert-TitleToId Connect via SSH)">Connect via SSH</h3>
+<ol><li>Go to <strong>vm-linux01</strong> > <strong>Overview</strong> > copy its <strong>Public IP address</strong>.</li></ol>
+<ol><li>Open a terminal/SSH client and run:</li></ol>
+<p>``<code></p>
+<p>ssh -i <private-key-file> azureuser@<public-ip></p>
+<p></code>`<code></p>
+
+<h2 id="$(Convert-TitleToId Part 3 – Deploy a Windows VM)">Part 3 – Deploy a Windows VM</h2>
+
+<ol><li><strong>Virtual machines</strong> > <strong>Create</strong> > <strong>Azure virtual machine</strong>.</li></ol>
+<ol><li><strong>Basics</strong> tab:</li></ol>
+<p>- <strong>Resource group</strong>: </code>rg-az104-lab08<code></p>
+<p>- <strong>VM name</strong>: </code>vm-win01<code></p>
+<p>- <strong>Region</strong>: </code>East US<code></p>
+<p>- <strong>Image</strong>: search <strong>Windows Server</strong> > select <strong>Windows Server 2022 Datacenter</strong></p>
+<p>- <strong>VM architecture</strong>: x64</p>
+<p>- <strong>Size</strong>: <strong>Standard</em>B2s</strong> (more resources for Windows desktop experience)</p>
+<p>- <strong>Authentication type</strong>: <strong>Password</strong></p>
+<p>- <strong>Username</strong>: </code>azureuser<code></p>
+<p>- <strong>Password</strong>: set a strong password (meet Azure requirements)</p>
+<p>- <strong>Confirm password</strong></p>
+<ol><li><strong>Networking</strong> tab: <strong>Virtual network</strong>: </code>vnet-lab08<code>, <strong>Subnet</strong>:</li></ol>
+<p></code>subnet-vms<code>, <strong>Public IP</strong>: create new, <strong>Public inbound ports</strong>:</p>
+<p>allow <strong>RDP (3389)</strong>.</p>
+<ol><li><strong>Disks</strong> and <strong>Management</strong> tabs: leave defaults.</li></ol>
+<ol><li><strong>Review + create</strong> > <strong>Create</strong>.</li></ol>
+
+<h3 id="$(Convert-TitleToId Connect via RDP)">Connect via RDP</h3>
+<ol><li>Go to <strong>vm-win01</strong> > <strong>Overview</strong> > click <strong>Connect</strong> (top menu) > <strong>RDP</strong>.</li></ol>
+<ol><li>Select <strong>Download RDP file</strong> > open the .rdp file > enter username</li></ol>
+<p>(</code>azureuser<code>) and the password you set > <strong>Connect</strong>.</p>
+
+<h2 id="$(Convert-TitleToId Part 4 – Add a data disk)">Part 4 – Add a data disk</h2>
+
+<ol><li>Go to <strong>vm-linux01</strong> > <strong>Disks</strong> > <strong>Create and attach a new disk</strong> (top</li></ol>
+<p>toolbar).</p>
+<ol><li><strong>Disk name</strong>: </code>disk-data01<code>. <strong>Size</strong>: 32 GiB. <strong>Storage type</strong>: <strong>Standard</li></ol>
+<p>HDD</strong>. <strong>Attach</strong> (or <strong>Create</strong> > then <strong>Attach</strong>).</p>
+<ol><li>On the Linux VM (via SSH), partition and mount the new disk:</li></ol>
+<p></code>`<code>bash</p>
+<p># List disks (the new one is likely /dev/sdc)</p>
+<p>sudo lsblk</p>
+
+<p># Partition, format, and mount (example):</p>
+<p>sudo parted /dev/sdc --script mklabel gpt mkpart xfspart xfs 0% 100%</p>
+<p>sudo mkfs.xfs /dev/sdc1</p>
+<p>sudo mkdir /data</p>
+<p>sudo mount /dev/sdc1 /data</p>
+<p></code>`<code></p>
+
+<h2 id="$(Convert-TitleToId Part 5 – VM Extensions (Custom Script))">Part 5 – VM Extensions (Custom Script)</h2>
+
+<ol><li>Go to <strong>vm-linux01</strong> > <strong>Extensions + applications</strong> (under <strong>Settings</strong>) ></li></ol>
+<p><strong>+ Add</strong>.</p>
+<ol><li>Search for <strong>Custom Script Extension</strong> > <strong>Create</strong>.</li></ol>
+<ol><li><strong>Script file</strong> tab: in the inline script box, enter:</li></ol>
+<p></code>`<code>bash</p>
+<p>apt-get update</p>
+<p>apt-get install -y nginx</p>
+<p></code>`<code></p>
+<ol><li><strong>Review + create</strong> > <strong>Create</strong> (installation runs asynchronously; check</li></ol>
+<p><strong>Activity log</strong> for progress).</p>
+<ol><li>Open <strong>Networking</strong> > <strong>Inbound port rules</strong> > <strong>+ Add inbound port rule</strong></li></ol>
+<p>> port 80 (HTTP) > <strong>Add</strong>, so nginx is reachable.</p>
+<ol><li>In a browser, open </code>http://<public-ip><code> to confirm nginx serves the default</li></ol>
+<p>page.</p>
+
+<h2 id="$(Convert-TitleToId Part 6 – Azure Bastion (secure RDP/SSH without public IP))">Part 6 – Azure Bastion (secure RDP/SSH without public IP)</h2>
+
+<ol><li><strong>Virtual networks</strong> > select </code>vnet-lab08<code> > <strong>Subnets</strong> > <strong>+ Subnet</strong>.</li></ol>
+<p>Create <strong>AzureBastionSubnet</strong> with address range </code>10.30.2.0/27<code>.</p>
+<ol><li><strong>Virtual networks</strong> > select </code>vnet-lab08<code> > <strong>Bastion</strong> (left-hand menu) ></li></ol>
+<p><strong>+ Add</strong>.</p>
+<ol><li><strong>Bastion host name</strong>: </code>bastion-lab08<code>. <strong>Public IP</strong>: create new</li></ol>
+<p>(e.g., </code>pip-bastion<code>). <strong>SKU</strong>: <strong>Basic</strong> (cheapest).</p>
+<ol><li><strong>Create</strong> (takes ~10 minutes). Once deployed:</li></ol>
+<ol><li>Go to <strong>vm-win01</strong> (or any VM without a public IP) > <strong>Connect</strong> > <strong>Bastion</strong> ></li></ol>
+<p>enter <strong>Username</strong>/<strong>Password</strong> > <strong>Connect</strong> (opens an RDP/SSH session in</p>
+<p>the browser).</p>
+
+<div class="callout"><p><strong>Cost note:</strong> Bastion is billed hourly — delete it when done (step 5 under</p></div>
+<div class="callout"><p><strong>Cleanup</strong>) if cost is a concern.</p></div>
+
+<h2 id="$(Convert-TitleToId Part 7 – Resize and power states)">Part 7 – Resize and power states</h2>
+
+<ol><li>Go to <strong>vm-linux01</strong> > <strong>Size</strong> (under <strong>Settings</strong>).</li></ol>
+<ol><li>Select a new size (e.g., <strong>Standard_B2s</strong>) > <strong>Resize</strong>.</li></ol>
+<p>- The VM <strong>must be deallocated</strong> to resize — the Portal handles this</p>
+<p>automatically.</p>
+<ol><li>Once resized, the VM <strong>starts automatically</strong> (or select <strong>Start</strong> manually</li></ol>
+<p>if it's still stopped).</p>
+<ol><li>To manage power states without resizing, go to <strong>vm-linux01</strong> ></li></ol>
+<p><strong>Overview</strong> > <strong>Stop</strong> (deallocates, stops compute billing) or <strong>Start</strong>.</p>
+
+<h3 id="$(Convert-TitleToId Understanding VM states)">Understanding VM states</h3>
+<ul><ol><li><strong>Running</strong>: billable for compute, network, disk.</li></ol></ul>
+<ul><ol><li><strong>Stopped</strong> (deallocated): no compute billing, but storage/IP charges remain.</li></ol></ul>
+<ul><ol><li><strong>Deallocated</strong> is the only state that avoids hourly compute costs.</li></ol></ul>
+
+<h2 id="$(Convert-TitleToId Validation)">Validation</h2>
+<ul><ol><li>[ ] </code>vm-linux01<code> reachable via SSH with public IP</li></ol></ul>
+<ul><ol><li>[ ] </code>vm-win01<code> reachable via RDP</li></ol></ul>
+<ul><ol><li>[ ] Data disk </code>/dev/sdc<code> attached and mounted on Linux VM</li></ol></ul>
+<ul><ol><li>[ ] nginx installed and reachable on port 80</li></ol></ul>
+<ul><ol><li>[ ] Bastion host deployed and can connect to </code>vm-win01<code> (or another VM)</li></ol></ul>
+<ul><ol><li>[ ] VM successfully resized while deallocated</li></ol></ul>
+
+<h2 id="$(Convert-TitleToId Cleanup)">Cleanup</h2>
+<ol><li>If Bastion is deployed: <strong>Virtual networks</strong> > </code>vnet-lab08<code> > <strong>Bastion</strong> ></li></ol>
+<p>select the Bastion host > <strong>Delete</strong>.</p>
+<ol><li><strong>Resource groups</strong> > select </code>rg-az104-lab08` > <strong>Delete resource group</strong></li></ol>
+<p>(type the name to confirm). This deletes all VMs, disks, VNet, and public IPs.</p>
+
+<h2 id="$(Convert-TitleToId Exam Tips)">Exam Tips</h2>
+<ul><ol><li><strong>Stopped vs Deallocated</strong>: only <em>deallocated</em> VMs stop compute billing; storage/IP charges continue regardless.</li></ol></ul>
+<ul><ol><li>Resizing often requires the VM to be deallocated, and the target size must be available in the current hardware cluster/availability set.</li></ol></ul>
+<ul><ol><li>Azure Bastion provides RDP/SSH over TLS via the Portal — no public IP needed on the VM NIC, reducing attack surface.</li></ol></ul>
+<ul><ol><li>VM extensions (Custom Script, DSC, etc.) run post-deployment configuration — they're managed via the <strong>Extensions + applications</strong> blade.</li></ol></ul>
+
+  </div>
+</div>
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.sidebar a'));
+  var sections = [];
+  links.forEach(function(a){
+    var el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) sections.push({link:a, el:el});
+  });
+  if (!sections.length || !('IntersectionObserver' in window)) return;
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (!entry.isIntersecting) return;
+      var match = sections.find(function(s){ return s.el === entry.target; });
+      if (!match) return;
+      links.forEach(function(a){ a.classList.remove('active'); });
+      match.link.classList.add('active');
+    });
+  }, { rootMargin: '-100px 0px -70% 0px', threshold: 0 });
+  sections.forEach(function(s){ observer.observe(s.el); });
+})();
+</script>
+</body>
+</html>

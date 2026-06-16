@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab 02 – Role-Based Access Control (RBAC) & Azure Policy - AZ-104 Labs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f8fc;--card:#fff;--border:#d9e0ef;--text:#1f2937;--muted:#5b6678;
+  --primary:#151d63;--panel:#00004C;--panel-shadow:rgba(0,0,76,.18);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:Inter,-apple-system,'Segoe UI',sans-serif;color:var(--text)}
+.page{flex:1;min-width:0;padding:28px}
+
+h1{font-size:3.2rem;line-height:1.15;margin:0;color:var(--primary);font-weight:800;letter-spacing:-1px}
+.subtitle{font-size:1.4rem;font-weight:600;color:#2d3b77;margin-top:10px}
+
+.badges{display:flex;gap:12px;margin:20px 0 26px;flex-wrap:wrap}
+.badge{background:#eef2ff;border:1px solid #d8def7;color:#1e2a78;padding:10px 18px;border-radius:999px;font-weight:600;font-size:.95rem}
+
+.section{display:grid;grid-template-columns:42% 58%;gap:28px;padding:26px 0;border-top:1px solid var(--border)}
+.section.full{display:block;padding:26px 0;border-top:1px solid var(--border)}
+.section:first-of-type, .section.full:first-of-type{border-top:none}
+
+h2{font-size:2rem;margin:0 0 14px;color:var(--primary);font-weight:800}
+h3{font-size:1.4rem;margin:22px 0 10px;color:var(--primary);font-weight:700}
+h3:first-child{margin-top:0}
+h4{font-size:1.1rem;margin:16px 0 8px;color:#2d3b77;font-weight:700}
+
+p{font-size:1.05rem;line-height:1.65;margin:.5rem 0;color:var(--text)}
+
+ul, ol{margin:.6rem 0;padding-left:1.4rem}
+li{margin-bottom:6px;line-height:1.6;font-size:1.02rem}
+
+a{color:#1e2a78;text-decoration:none;border-bottom:1px solid transparent;font-weight:600}
+a:hover{border-bottom-color:#1e2a78}
+
+strong{color:var(--primary);font-weight:700}
+
+code{background:#eef2ff;color:#1735ad;padding:2px 6px;border-radius:6px;font:13px/1.4 'SF Mono',Consolas,'Courier New',monospace}
+th code,td code{font-size:.92em}
+
+.callout{margin-top:20px;background:#f3f7ff;border:1px solid #bfd0ff;border-radius:14px;padding:18px 22px}
+.callout strong{color:#1735ad}
+.callout p{margin:0}
+.callout p + p{margin-top:8px}
+
+.panel{
+  background:var(--panel);
+  color:#fff;border-radius:18px;padding:22px 26px;
+  box-shadow:0 12px 28px var(--panel-shadow);
+  font:15px/1.65 'SF Mono',Consolas,'Courier New',monospace;
+  white-space:pre-wrap;
+  overflow:auto;
+}
+.panel.small{font-size:13.5px;line-height:1.6}
+.panel + .panel{margin-top:18px}
+
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:14px 0}
+th,td{padding:14px;border:1px solid var(--border);text-align:left;font-size:.98rem}
+th{background:#eef2ff;color:var(--primary);font-weight:700}
+tr:hover td{background:#fafbff}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+
+.mistake-card{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:14px 0 8px}
+.mistake-card h4{margin-top:0}
+
+.tip{margin-top:20px;background:#eef4ff;border:1px solid #c8d5ff;border-radius:12px;padding:16px 20px;font-size:1.02rem}
+.tip strong{color:#1735ad}
+
+hr.divider{border:none;height:0;margin:0}
+
+.footer{margin-top:48px;padding-top:24px;border-top:1px solid var(--border);font-size:.9rem;color:var(--muted)}
+.footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px}
+.footer-item strong{display:block;color:var(--primary);margin-bottom:6px;font-size:.95rem}
+.footer-meta{margin-top:24px;padding-top:16px;border-top:1px solid var(--border);text-align:center;font-size:.85rem}
+
+@media (max-width:1000px){
+  .section,.grid2,.grid3,.grid4,.mistake-card{grid-template-columns:1fr}
+  h1{font-size:2.3rem}
+  .page{padding:16px}
+  .panel{font-size:13px}
+  .sidebar{display:none}
+  .layout{display:block}
+}
+
+/* ===== Site-wide Cross Navigation ===== */
+.site-nav{
+  position:sticky;top:0;z-index:1000;
+  background:var(--primary);color:#fff;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:12px 28px;font-size:.92rem;
+  box-shadow:0 2px 10px rgba(0,0,76,.18);
+  font-family:Inter,-apple-system,'Segoe UI',sans-serif;
+}
+.site-nav .nav-brand{font-weight:800;font-size:1.05rem;margin-right:auto;color:#fff}
+.site-nav details{position:relative}
+.site-nav summary{cursor:pointer;list-style:none;padding:7px 16px;border-radius:8px;background:rgba(255,255,255,.12);font-weight:600;color:#fff;user-select:none}
+.site-nav summary::-webkit-details-marker,.site-nav summary::marker{display:none;content:''}
+.site-nav details[open] summary{background:rgba(255,255,255,.24)}
+.site-nav .nav-menu{
+  position:absolute;top:calc(100% + 8px);left:0;
+  background:#fff;color:var(--text);
+  border:1px solid var(--border);border-radius:12px;
+  padding:8px;min-width:300px;box-shadow:0 16px 32px rgba(0,0,76,.22);
+  display:flex;flex-direction:column;gap:2px;z-index:1001;
+}
+.site-nav .nav-menu a{
+  display:block;padding:9px 14px;border-radius:8px;border-bottom:none;
+  color:var(--text);font-weight:500;font-size:.95rem;
+}
+.site-nav .nav-menu a:hover{background:#eef2ff;color:#1e2a78}
+.site-nav .nav-menu a.active{background:#eef2ff;color:#1735ad;font-weight:700}
+@media (max-width:768px){
+  .site-nav{padding:10px 16px}
+  .site-nav .nav-brand{font-size:.95rem}
+}
+/* ===== Page Sidebar (On This Page) ===== */
+.layout{max-width:1400px;margin:auto;display:flex;align-items:flex-start}
+.sidebar{
+  flex:0 0 260px;
+  position:sticky;top:88px;
+  max-height:calc(100vh - 108px);
+  overflow-y:auto;
+  margin:28px 0 28px 28px;
+  padding:20px 18px;
+  background:#fff;border:1px solid var(--border);border-radius:14px;
+  box-shadow:0 4px 16px rgba(21,29,99,.05);
+}
+.sidebar .toc-title{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 12px;padding:0 12px}
+.sidebar hr.sidebar-divider{border:none;border-top:1px solid var(--border);margin:14px 0}
+.sidebar .toc-title.module-title{margin-top:0}
+.sidebar a{display:block;padding:8px 12px;margin-bottom:2px;border-radius:8px;font-size:.88rem;font-weight:500;color:var(--text);border-bottom:none;border-left:3px solid transparent;line-height:1.4}
+.sidebar a:hover{background:#eef2ff;color:#1e2a78}
+.sidebar a.active{background:#eef2ff;color:#1735ad;font-weight:700;border-left-color:var(--primary)}
+@media print{
+  .site-nav{display:none}
+  body{background:#fff}
+  .page{padding:0}
+  .panel{box-shadow:none}
+  .sidebar{display:none}
+  .layout{display:block}
+}
+</style>
+</head>
+<body>
+<nav class="site-nav">
+  <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
+  <details class="nav-group">
+    <summary>Module 00 - Prerequisites</summary>
+    <div class="nav-menu">
+      <a href="../../00-prerequisites/documents/01-cloud-computing-fundamentals.html">01 - Cloud Computing Fundamentals</a>
+      <a href="../../00-prerequisites/documents/02-networking-basics.html">02 - Networking Basics</a>
+      <a href="../../00-prerequisites/documents/03-identity-and-access-fundamentals.html">03 - Identity &amp; Access Fundamentals</a>
+      <a href="../../00-prerequisites/documents/04-azure-portal-navigation.html">04 - Azure Portal Navigation</a>
+      <a href="../../00-prerequisites/documents/lab00-azure-portal-navigation.html">Lab 00 - Portal Navigation</a>
+    </div>
+  </details>
+  <details class="nav-group">
+    <summary>Module 01 - Identity &amp; Governance</summary>
+    <div class="nav-menu">
+      <a href="../../01-identity-governance/documents/01-entra-id-overview.html">01 - Entra ID Overview</a>
+      <a href="../../01-identity-governance/documents/02-rbac-fundamentals.html">02 - RBAC Fundamentals</a>
+      <a href="../../01-identity-governance/documents/03-management-groups-and-azure-policy.html">03 - Management Groups &amp; Policy</a>
+      <a href="../../01-identity-governance/documents/04-access-control-scenarios.html">04 - Access Control Scenarios</a>
+      <a href="../../01-identity-governance/documents/05-identity-best-practices.html">05 - Identity Best Practices</a>
+      <a href="../../01-identity-governance/documents/lab01-entra-users-groups.html">Lab 01 - Entra ID Users</a>
+      <a href="../../01-identity-governance/documents/lab02-rbac-azure-policy.html">Lab 02 - RBAC &amp; Policy</a>
+    </div>
+  </details>
+</nav>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="toc-title module-title">Module 01 - Identity &amp; Governance</div>
+    <a href="#objectives">Objectives</a>
+<a href="#prerequisites">Prerequisites</a>
+<a href="#estimated-time">Estimated time</a>
+<a href="#part-1-create-a-resource-group-for-this-lab">Part 1 – Create a resource group for this lab</a>
+<a href="#part-2-assign-built-in-roles">Part 2 – Assign built-in roles</a>
+<a href="#part-3-create-a-custom-role">Part 3 – Create a custom role</a>
+<a href="#part-4-azure-policy-deny-resources-without-a-tag">Part 4 – Azure Policy: deny resources without a tag</a>
+<a href="#part-5-azure-policy-allowed-locations-initiative">Part 5 – Azure Policy: allowed locations initiative</a>
+<a href="#part-6-review-compliance">Part 6 – Review compliance</a>
+<a href="#validation">Validation</a>
+<a href="#cleanup">Cleanup</a>
+<a href="#exam-tips">Exam Tips</a>
+<hr class="sidebar-divider">
+<div class="toc-title">On This Page</div>
+  </aside>
+  <div class="page">
+  <h1>Lab 02 – Role-Based Access Control (RBAC) & Azure Policy</h1>
+
+<h2 id="$(Convert-TitleToId Objectives)">Objectives</h2>
+<ul><ol><li>Assign built-in roles at different scopes (subscription, RG, resource)</li></ol></ul>
+<ul><ol><li>Create a custom RBAC role</li></ol></ul>
+<ul><ol><li>Create and assign an Azure Policy definition and an initiative</li></ol></ul>
+<ul><ol><li>Use Policy to enforce tagging and allowed locations</li></ol></ul>
+
+<h2 id="$(Convert-TitleToId Prerequisites)">Prerequisites</h2>
+<ul><ol><li>Owner or User Access Administrator on the subscription</li></ol></ul>
+<ul><ol><li>Lab 01 users/groups (optional, can use any test user)</li></ol></ul>
+
+<h2 id="$(Convert-TitleToId Estimated time)">Estimated time</h2>
+<p>45 minutes</p>
+
+<hr class="divider">
+
+<h2 id="$(Convert-TitleToId Part 1 – Create a resource group for this lab)">Part 1 – Create a resource group for this lab</h2>
+
+<ol><li>Search for <strong>Resource groups</strong> > <strong>Create</strong>.</li></ol>
+<ol><li><strong>Subscription</strong>: your subscription. <strong>Resource group</strong>: <code>rg-az104-lab02</code>.</li></ol>
+<p><strong>Region</strong>: <code>East US</code>.</p>
+<ol><li>Select <strong>Review + create</strong> > <strong>Create</strong>.</li></ol>
+
+<h2 id="$(Convert-TitleToId Part 2 – Assign built-in roles)">Part 2 – Assign built-in roles</h2>
+
+<ol><li>Go to <strong>rg-az104-lab02</strong> > <strong>Access control (IAM)</strong> > <strong>Add</strong> > <strong>Add role assignment</strong>.</li></ol>
+<ol><li>Role tab: select <strong>Reader</strong>. Select <strong>Next</strong>.</li></ol>
+<ol><li>Members tab: <strong>Assign access to</strong> = <strong>User, group, or service principal</strong> ></li></ol>
+<p><strong>Select members</strong> > choose <code>grp-az104-lab</code> (from Lab 01).</p>
+<ol><li><strong>Review + assign</strong>.</li></ol>
+<ol><li>Repeat at the <strong>resource</strong> level: create a storage account (see Lab 04 if not</li></ol>
+<p>yet created). Open the storage account > <strong>Access control (IAM)</strong> > <strong>Add role</p>
+<p>assignment</strong> > Role = <strong>Storage Blob Data Contributor</strong> > assign to Bob —</p>
+<p>this grants Bob access only at the storage account scope, not the whole RG.</p>
+<ol><li>To list current assignments at any scope, open <strong>Access control (IAM)</strong> ></li></ol>
+<p><strong>Role assignments</strong> tab and filter as needed.</p>
+
+<h2 id="$(Convert-TitleToId Part 3 – Create a custom role)">Part 3 – Create a custom role</h2>
+
+<ol><li>Go to the subscription (or <code>rg-az104-lab02</code>) > <strong>Access control (IAM)</strong> ></li></ol>
+<p><strong>Add</strong> > <strong>Add custom role</strong>.</p>
+<ol><li><strong>Basics</strong> tab:</li></ol>
+<p>- <strong>Custom role name</strong>: <code>VM Operator (Start/Stop only)</code></p>
+<p>- <strong>Description</strong>: <code>Can start and restart VMs but not create or delete them</code></p>
+<p>- <strong>Baseline permissions</strong>: <strong>Clone a role</strong> > select <strong>Virtual Machine</p>
+<p>Contributor</strong> as the starting point.</p>
+<ol><li><strong>Permissions</strong> tab: select <strong>Edit permissions in JSON</strong> and replace the</li></ol>
+<p><code>actions</code>/<code>notActions</code> arrays so the role only includes:</p>
+<p>``<code>json</p>
+<p>"actions": [</p>
+<p>"Microsoft.Compute/virtualMachines/start/action",</p>
+<p>"Microsoft.Compute/virtualMachines/restart/action",</p>
+<p>"Microsoft.Compute/virtualMachines/read"</p>
+<p>],</p>
+<p>"notActions": []</p>
+<p></code>`<code></p>
+<ol><li><strong>Assignable scopes</strong> tab: confirm the scope is your subscription (or narrow</li></ol>
+<p>it to </code>rg-az104-lab02<code> using <strong>+ Add assignable scopes</strong>).</p>
+<ol><li><strong>Review + create</strong> > <strong>Create</strong>.</li></ol>
+<ol><li>Assign the new role: <strong>Access control (IAM)</strong> > <strong>Add role assignment</strong> ></li></ol>
+<p>search for <strong>VM Operator (Start/Stop only)</strong> under <strong>Custom roles</strong> > assign</p>
+<p>it to </code>carol@<yourtenant>.onmicrosoft.com<code> at the </code>rg-az104-lab02<code> scope.</p>
+
+<h2 id="$(Convert-TitleToId Part 4 – Azure Policy: deny resources without a tag)">Part 4 – Azure Policy: deny resources without a tag</h2>
+
+<ol><li>Search for <strong>Policy</strong> > <strong>Definitions</strong> > search the built-in definition</li></ol>
+<p><strong>"Require a tag on resource groups"</strong>.</p>
+<ol><li>Select it > <strong>Assign</strong>.</li></ol>
+<ol><li><strong>Basics</strong> tab: <strong>Scope</strong> = your subscription.</li></ol>
+<ol><li><strong>Parameters</strong> tab: set </code>Tag Name<code> = </code>CostCenter<code>.</li></ol>
+<ol><li>Confirm the <strong>Effect</strong> parameter (shown on the Parameters tab, or under</li></ol>
+<p><strong>Advanced</strong> depending on the definition) is set to <strong>Deny</strong>.</p>
+<ol><li><strong>Review + create</strong> > <strong>Create</strong>.</li></ol>
+<ol><li>Test it: go to <strong>Resource groups</strong> > <strong>Create</strong>, name it </code>rg-policy-test<code>,</li></ol>
+<p>region </code>East US<code>, and select <strong>Review + create</strong>. Expect a policy validation</p>
+<p>error (</code>RequestDisallowedByPolicy<code>) because the </code>CostCenter<code> tag is missing —</p>
+<p>do not proceed past this point.</p>
+
+<h2 id="$(Convert-TitleToId Part 5 – Azure Policy: allowed locations initiative)">Part 5 – Azure Policy: allowed locations initiative</h2>
+
+<ol><li><strong>Policy</strong> > <strong>Assignments</strong> > <strong>Assign initiative</strong> > search <strong>"Allowed locations"</strong>.</li></ol>
+<ol><li><strong>Scope</strong>: </code>rg-az104-lab02<code>. <strong>Parameters</strong> tab: <strong>Allowed locations</strong> =</li></ol>
+<p></code>East US<code>, </code>East US 2<code>.</p>
+<ol><li><strong>Review + create</strong> > <strong>Create</strong>.</li></ol>
+<ol><li>Test it: try to create a resource (e.g., a new storage account) inside</li></ol>
+<p></code>rg-az104-lab02<code> with <strong>Region</strong> set to </code>West US<code>. The <strong>Review + create</strong></p>
+<p>step should report a policy violation and block creation.</p>
+
+<h2 id="$(Convert-TitleToId Part 6 – Review compliance)">Part 6 – Review compliance</h2>
+
+<ol><li><strong>Policy</strong> > <strong>Compliance</strong> — review the compliance state for your assignments</li></ol>
+<p>(state may take a few minutes to evaluate after assignment).</p>
+<ol><li><strong>Policy</strong> > <strong>Remediation</strong> — note this is used for </code>DeployIfNotExists<code>/</code>Modify<code></li></ol>
+<p>policies (e.g., auto-enabling diagnostic settings) to bring <em>existing</em></p>
+<p>non-compliant resources into compliance.</p>
+
+<h2 id="$(Convert-TitleToId Validation)">Validation</h2>
+<ul><ol><li>[ ] </code>grp-az104-lab<code> has <strong>Reader</strong> on </code>rg-az104-lab02<code> (check via <strong>Access</li></ol></ul>
+<p>control (IAM)</strong> > <strong>Role assignments</strong>)</p>
+<ul><ol><li>[ ] Bob has <strong>Storage Blob Data Contributor</strong> scoped to the storage account only</li></ol></ul>
+<ul><ol><li>[ ] Custom role <strong>VM Operator (Start/Stop only)</strong> exists under <strong>Access control</li></ol></ul>
+<p>(IAM)</strong> > <strong>Roles</strong> (filter by <strong>Custom roles</strong>) and is assigned to Carol</p>
+<ul><ol><li>[ ] Creating </code>rg-policy-test<code> without a </code>CostCenter<code> tag is denied</li></ol></ul>
+<ul><ol><li>[ ] Creating a resource in </code>West US<code> within </code>rg-az104-lab02<code> is denied</li></ol></ul>
+
+<h2 id="$(Convert-TitleToId Cleanup)">Cleanup</h2>
+<ol><li><strong>Policy</strong> > <strong>Assignments</strong> > delete the <strong>"Require a tag on resource</li></ol>
+<p>groups"</strong> assignment and the <strong>"Allowed locations"</strong> initiative assignment.</p>
+<ol><li><strong>rg-az104-lab02</strong> > <strong>Access control (IAM)</strong> > <strong>Role assignments</strong> > remove</li></ol>
+<p>Carol's <strong>VM Operator (Start/Stop only)</strong> assignment.</p>
+<ol><li>Subscription > <strong>Access control (IAM)</strong> > <strong>Roles</strong> > find <strong>VM Operator</li></ol>
+<p>(Start/Stop only)</strong> under <strong>Custom roles</strong> > <strong>...</strong> > <strong>Delete</strong>.</p>
+<ol><li><strong>Resource groups</strong> > select </code>rg-az104-lab02<code> > <strong>Delete resource group</strong></li></ol>
+<p>(type the name to confirm).</p>
+<ol><li>If </code>rg-policy-test<code> was somehow created, delete it the same way.</li></ol>
+
+<h2 id="$(Convert-TitleToId Exam Tips)">Exam Tips</h2>
+<ul><ol><li>RBAC = <strong>who can do what</strong> (data plane/management plane access). Policy = <strong>what configurations are allowed</strong>, regardless of who.</li></ol></ul>
+<ul><ol><li>Role assignments are inherited down the hierarchy: Management Group → Subscription → Resource Group → Resource.</li></ol></ul>
+<ul><ol><li>Deny policies block non-compliant <em>new</em> resources; </code>audit<code> only flags; </code>DeployIfNotExists<code>/</code>Modify` need remediation tasks for <em>existing</em> resources.</li></ol></ul>
+<ul><ol><li>Custom roles need <strong>Assignable scopes</strong> — without the right scope, the role can't be assigned where you need it.</li></ol></ul>
+
+  </div>
+</div>
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.sidebar a'));
+  var sections = [];
+  links.forEach(function(a){
+    var el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) sections.push({link:a, el:el});
+  });
+  if (!sections.length || !('IntersectionObserver' in window)) return;
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (!entry.isIntersecting) return;
+      var match = sections.find(function(s){ return s.el === entry.target; });
+      if (!match) return;
+      links.forEach(function(a){ a.classList.remove('active'); });
+      match.link.classList.add('active');
+    });
+  }, { rootMargin: '-100px 0px -70% 0px', threshold: 0 });
+  sections.forEach(function(s){ observer.observe(s.el); });
+})();
+</script>
+</body>
+</html>
