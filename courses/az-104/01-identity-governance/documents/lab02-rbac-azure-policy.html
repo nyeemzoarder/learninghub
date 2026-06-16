@@ -3,14 +3,250 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lab 02 – Role-Based Access Control (RBAC) & Azure Policy - AZ-104 Labs</title>
+<title>Lab 02 – Role-Based Access Control (RBAC) & Azure Policy - AZ-104 Labs</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../../_styles/lab-template.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
 <style>
+:root{
+  --bg:#f6f8fc;--card:#fff;--border:#d9e0ef;--text:#1f2937;--muted:#5b6678;
+  --primary:#151d63;--panel:#00004C;--panel-shadow:rgba(0,0,76,.18);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:Inter,-apple-system,'Segoe UI',sans-serif;color:var(--text)}
+.page{flex:1;min-width:0;padding:28px}
 
-/* Copy button click handler for code blocks */
+h1{font-size:3.2rem;line-height:1.15;margin:0;color:var(--primary);font-weight:800;letter-spacing:-1px}
+.subtitle{font-size:1.4rem;font-weight:600;color:#2d3b77;margin-top:10px}
+
+.badges{display:flex;gap:12px;margin:20px 0 26px;flex-wrap:wrap}
+.badge{background:#eef2ff;border:1px solid #d8def7;color:#1e2a78;padding:10px 18px;border-radius:999px;font-weight:600;font-size:.95rem}
+
+.section{display:grid;grid-template-columns:42% 58%;gap:28px;padding:26px 0;border-top:1px solid var(--border)}
+.section.full{display:block;padding:26px 0;border-top:1px solid var(--border)}
+.section:first-of-type, .section.full:first-of-type{border-top:none}
+
+h2{font-size:2rem;margin:48px 0 20px;color:var(--primary);font-weight:800;padding-top:24px;border-top:2px solid var(--border)}
+h2:first-of-type{margin-top:0;border-top:none;padding-top:0}
+h3{font-size:1.4rem;margin:22px 0 10px;color:var(--primary);font-weight:700}
+h3:first-child{margin-top:0}
+h4{font-size:1.1rem;margin:16px 0 8px;color:#2d3b77;font-weight:700}
+
+p{font-size:1.05rem;line-height:1.65;margin:.5rem 0;color:var(--text)}
+
+ul, ol{margin:.6rem 0;padding-left:1.4rem}
+li{margin-bottom:6px;line-height:1.6;font-size:1.02rem}
+
+a{color:#1e2a78;text-decoration:none;border-bottom:1px solid transparent;font-weight:600}
+a:hover{border-bottom-color:#1e2a78}
+
+strong{color:var(--primary);font-weight:700}
+
+code{background:#eef2ff;color:#1735ad;padding:2px 6px;border-radius:6px;font:13px/1.4 'SF Mono',Consolas,'Courier New',monospace}
+th code,td code{font-size:.92em}
+
+.callout{margin-top:20px;background:#f3f7ff;border:1px solid #bfd0ff;border-radius:14px;padding:18px 22px}
+.callout strong{color:#1735ad}
+.callout p{margin:0}
+.callout p + p{margin-top:8px}
+
+.panel{
+  background:var(--panel);
+  color:#fff;border-radius:18px;padding:22px 26px;
+  box-shadow:0 12px 28px var(--panel-shadow);
+  font:15px/1.65 'SF Mono',Consolas,'Courier New',monospace;
+  white-space:pre-wrap;
+  overflow:auto;
+}
+.panel.small{font-size:13.5px;line-height:1.6}
+.panel + .panel{margin-top:18px}
+
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:14px 0}
+th,td{padding:14px;border:1px solid var(--border);text-align:left;font-size:.98rem}
+th{background:#eef2ff;color:var(--primary);font-weight:700}
+tr:hover td{background:#fafbff}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+
+.mistake-card{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:14px 0 8px}
+.mistake-card h4{margin-top:0}
+
+.tip{margin-top:20px;background:#eef4ff;border:1px solid #c8d5ff;border-radius:12px;padding:16px 20px;font-size:1.02rem}
+.tip strong{color:#1735ad}
+
+hr.divider{border:none;height:0;margin:0}
+
+.footer{margin-top:48px;padding-top:24px;border-top:1px solid var(--border);font-size:.9rem;color:var(--muted)}
+.footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px}
+.footer-item strong{display:block;color:var(--primary);margin-bottom:6px;font-size:.95rem}
+.footer-meta{margin-top:24px;padding-top:16px;border-top:1px solid var(--border);text-align:center;font-size:.85rem}
+
+/* ===== PROFESSIONAL LAB TEMPLATE STYLES ===== */
+
+/* Time Estimate Display */
+.time-estimate-header{display:flex;align-items:center;gap:8px;margin:10px 0 20px;padding:12px 16px;background:#eef2ff;border-radius:8px;border-left:4px solid #1735ad;width:fit-content}
+.time-estimate-header .clock-icon{font-size:1.3rem}
+.time-estimate-header .time-text{font-weight:600;color:#1735ad;font-size:1.05rem}
+
+/* Section Header with Time Estimate */
+.section-header{margin:32px 0 24px 0;padding-bottom:16px;border-bottom:2px solid #d9e0ef;display:flex;justify-content:space-between;align-items:flex-start}
+.section-header h2{margin:0;font-size:1.8rem}
+.section-time{background:#e3f2fd;border:1px solid #90caf9;border-radius:8px;padding:8px 14px;font-size:0.95rem;font-weight:600;color:#1565c0;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.section-time .icon{font-size:1.1rem}
+
+/* Task Box */
+.task-box{margin:20px 0;padding:0;background:#fff;border:1px solid #d9e0ef;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(21,29,99,0.06)}
+.task-header{display:flex;align-items:center;gap:12px;padding:16px;background:linear-gradient(135deg,#eef2ff 0%,#f5f8ff 100%);border-bottom:1px solid #d9e0ef}
+.task-header .task-icon{font-size:1.5rem;color:#1735ad}
+.task-header h3{margin:0;font-size:1.15rem;color:var(--primary);font-weight:700}
+.task-content{padding:16px}
+
+/* Step and Substep Styling */
+.step{margin:16px 0;padding:12px 16px;border-left:4px solid #1735ad;background:#f9fafb;border-radius:0 6px 6px 0}
+.step-number{display:inline-block;min-width:32px;height:32px;background:#1735ad;color:#fff;border-radius:50%;text-align:center;line-height:32px;font-weight:700;font-size:0.95rem;margin-right:10px}
+.step-content{display:inline;line-height:1.6;color:var(--text)}
+.step strong{color:var(--primary)}
+
+.substep{margin:12px 0 12px 48px;padding:8px 12px;background:#fff;border-left:3px solid #c8d5ff;border-radius:0 4px 4px 0;color:var(--text);line-height:1.6}
+.substep::before{content:'→ ';color:#1735ad;font-weight:700;margin-right:6px}
+
+/* Callout Boxes */
+.callout-box{margin:20px 0;padding:16px;border-radius:10px;border-left:4px solid;display:flex;gap:12px}
+.callout-icon{font-size:1.4rem;flex-shrink:0;min-width:24px}
+.callout-content{flex:1}
+.callout-content h4{margin:0 0 6px 0;font-size:1.05rem}
+.callout-content p{margin:0;line-height:1.6}
+
+/* Callout Variants */
+.callout-tip{background:#e3f2fd;border-color:#90caf9}
+.callout-tip .callout-icon{color:#1976d2}
+.callout-tip h4{color:#1565c0}
+
+.callout-warning{background:#fff3e0;border-color:#ffb74d}
+.callout-warning .callout-icon{color:#f57c00}
+.callout-warning h4{color:#e65100}
+
+.callout-important{background:#ffebee;border-color:#ef5350}
+.callout-important .callout-icon{color:#d32f2f}
+.callout-important h4{color:#c62828}
+
+.callout-note{background:#f5f5f5;border-color:#bdbdbd}
+.callout-note .callout-icon{color:#616161}
+.callout-note h4{color:#424242}
+
+/* Code Block */
+.code-block{position:relative;margin:16px 0;background:#2d2d30;border-radius:8px;overflow:hidden;border:1px solid #3e3e42}
+.code-block pre{margin:0;padding:16px;color:#d4d4d4;font-family:'SF Mono',Consolas,'Courier New',monospace;font-size:0.95rem;line-height:1.6;overflow-x:auto}
+.code-block .keyword{color:#569cd6}
+.code-block .string{color:#ce9178}
+.code-block .comment{color:#6a9955;font-style:italic}
+.code-block .function{color:#dcdcaa}
+.code-block .operator{color:#d4d4d4}
+.code-block .property{color:#9cdcfe}
+.code-block .number{color:#b5cea8}
+.code-copy-btn{position:absolute;top:10px;right:10px;padding:6px 12px;background:#3e3e42;color:#d4d4d4;border:1px solid #555;border-radius:6px;cursor:pointer;font-size:0.85rem;font-weight:500;transition:all 0.2s}
+.code-copy-btn:hover{background:#454545;color:#fff;border-color:#007acc}
+
+/* Success/Completion Box */
+.success-box{margin:24px 0;padding:20px;background:#f1f8e9;border:1px solid #c5e1a5;border-radius:10px;border-left:4px solid #7cb342}
+.success-box h4{color:#558b2f;margin-top:0;font-size:1.1rem}
+.success-items{list-style:none;margin:12px 0;padding:0}
+.success-item{padding:8px 0;line-height:1.6;color:var(--text)}
+.success-item::before{content:'✓ ';color:#7cb342;font-weight:700;margin-right:8px;font-size:1.1rem}
+
+/* Validation Checklist */
+.validation-checklist{margin:24px 0;padding:20px;background:#fff;border:1px solid #d9e0ef;border-radius:10px}
+.validation-checklist h4{margin-top:0;color:var(--primary);font-size:1.1rem}
+.checklist-item{padding:10px 0;margin:8px 0;line-height:1.6}
+.checklist-item input[type="checkbox"]{margin-right:10px;cursor:pointer;width:18px;height:18px}
+.checklist-item label{cursor:pointer}
+
+/* Spacing Utilities */
+.mt-32{margin-top:32px}
+.mb-24{margin-bottom:24px}
+.mb-16{margin-bottom:16px}
+.mb-8{margin-bottom:8px}
+
+@media (max-width:1000px){
+  .section,.grid2,.grid3,.grid4,.mistake-card{grid-template-columns:1fr}
+  h1{font-size:2.3rem}
+  .page{padding:16px}
+  .panel{font-size:13px}
+  .sidebar{display:none}
+  .layout{display:block}
+  .section-header{flex-direction:column;gap:12px}
+  .section-time{width:100%}
+}
+
+/* ===== Site-wide Cross Navigation ===== */
+.site-nav{
+  position:sticky;top:0;z-index:1000;
+  background:var(--primary);color:#fff;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:12px 28px;font-size:.92rem;
+  box-shadow:0 2px 10px rgba(0,0,76,.18);
+  font-family:Inter,-apple-system,'Segoe UI',sans-serif;
+}
+.site-nav .nav-brand{font-weight:800;font-size:1.05rem;margin-right:auto;color:#fff}
+.site-nav details{position:relative}
+.site-nav summary{cursor:pointer;list-style:none;padding:7px 16px;border-radius:8px;background:rgba(255,255,255,.12);font-weight:600;color:#fff;user-select:none}
+.site-nav summary::-webkit-details-marker,.site-nav summary::marker{display:none;content:''}
+.site-nav details[open] summary{background:rgba(255,255,255,.24)}
+.site-nav .nav-menu{
+  position:absolute;top:calc(100% + 8px);left:0;
+  background:#fff;color:var(--text);
+  border:1px solid var(--border);border-radius:12px;
+  padding:8px;min-width:300px;box-shadow:0 16px 32px rgba(0,0,76,.22);
+  display:flex;flex-direction:column;gap:2px;z-index:1001;
+}
+.site-nav .nav-menu a{
+  display:block;padding:9px 14px;border-radius:8px;border-bottom:none;
+  color:var(--text);font-weight:500;font-size:.95rem;
+}
+.site-nav .nav-menu a:hover{background:#eef2ff;color:#1e2a78}
+.site-nav .nav-menu a.active{background:#eef2ff;color:#1735ad;font-weight:700}
+@media (max-width:768px){
+  .site-nav{padding:10px 16px}
+  .site-nav .nav-brand{font-size:.95rem}
+}
+/* ===== Page Sidebar (On This Page) ===== */
+.layout{max-width:1400px;margin:auto;display:flex;align-items:flex-start}
+.sidebar{
+  flex:0 0 260px;
+  position:sticky;top:88px;
+  max-height:calc(100vh - 108px);
+  overflow-y:auto;
+  margin:28px 0 28px 28px;
+  padding:20px 18px;
+  background:#fff;border:1px solid var(--border);border-radius:14px;
+  box-shadow:0 4px 16px rgba(21,29,99,.05);
+}
+.sidebar .toc-title{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 12px;padding:0 12px}
+.sidebar hr.sidebar-divider{border:none;border-top:1px solid var(--border);margin:14px 0}
+.sidebar .toc-title.module-title{margin-top:0}
+.sidebar details{margin-bottom:0}
+.sidebar summary{cursor:pointer;list-style:none;padding:10px 12px;border-radius:8px;font-weight:600;font-size:.92rem;color:var(--primary);user-select:none;transition:background 0.2s}
+.sidebar summary::-webkit-details-marker,.sidebar summary::marker{display:none}
+.sidebar details[open]>summary{background:#eef2ff}
+.sidebar summary:hover{background:#f0f4ff}
+.sidebar details > div{padding:0 0 8px 12px}
+.sidebar a{display:block;padding:8px 12px;margin-bottom:2px;border-radius:8px;font-size:.88rem;font-weight:500;color:var(--text);border-bottom:none;border-left:3px solid transparent;line-height:1.4;transition:all 0.15s}
+.sidebar a:hover{background:#eef2ff;color:#1e2a78}
+.sidebar a.active{background:#eef2ff;color:#1735ad;font-weight:700;border-left-color:var(--primary)}
+/* Keyboard Navigation & Accessibility */
+a:focus-visible,button:focus-visible,.sidebar a:focus-visible,.sidebar summary:focus-visible,.site-nav summary:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+details:focus-visible > summary{outline:2px solid var(--primary);outline-offset:2px}
+@media print{
+  .site-nav{display:none}
+  body{background:#fff}
+  .page{padding:0}
+  .panel{box-shadow:none}
+  .sidebar{display:none}
+  .layout{display:block}
+}
 </style>
 </head>
 <body>
@@ -20,7 +256,7 @@
     <summary>Learning Module</summary>
     <div class="nav-menu">
       <a href="../../00-prerequisites/documents/module-home.html">00 - Prerequisites</a>
-      <a href="../../01-identity-governance/documents/module-home.html">01 - Identity &amp; Governance</a>
+      <a href="../../01-identity-governance/documents/module-home.html" class="active">01 - Identity &amp; Governance</a>
       <a href="../../02-storage/documents/module-home.html">02 - Storage</a>
       <a href="../../03-compute/documents/module-home.html">03 - Compute</a>
       <a href="../../04-networking/documents/module-home.html">04 - Networking</a>
@@ -30,7 +266,7 @@
 </nav>
 <div class="layout">
   <aside class="sidebar" aria-label="Page navigation">
-    <details open>
+    <details open aria-label="Module concepts">
       <summary>▶ Module 01 - Identity &amp; Governance</summary>
       <div>
         <a href="01-entra-id-overview.html">01 - Entra ID Overview</a>
@@ -40,261 +276,445 @@
 <a href="05-identity-best-practices.html">05 - Identity Best Practices</a>
       </div>
     </details>
-    <details>
+    <details aria-label="Module labs">
       <summary>▶ Labs</summary>
       <div>
         <a href="lab01-entra-users-groups.html">Lab 01 - Entra Users &amp; Groups</a>
-<a href="lab02-rbac-azure-policy.html">Lab 02 - RBAC &amp; Azure Policy</a>
+<a href="lab02-rbac-azure-policy.html" class="active">Lab 02 - RBAC &amp; Azure Policy</a>
 <a href="lab03-management-groups-subscriptions.html">Lab 03 - Management Groups</a>
       </div>
     </details>
-    <details>
+    <details aria-label="On this page">
       <summary>▶ On This Page</summary>
       <div>
-        <a href="#objectives-">Objectives</a>
-<a href="#prerequisites-">Prerequisites</a>
-<a href="#estimated-time-">Estimated time</a>
-<a href="#part-1-create-a-resource-group-for-this-lab-">Part 1 – Create a resource group for this lab</a>
-<a href="#part-2-assign-built-in-roles-">Part 2 – Assign built-in roles</a>
-<a href="#part-3-create-a-custom-role-">Part 3 – Create a custom role</a>
-<a href="#part-4-azure-policy-enforce-required-tags-">Part 4 – Azure Policy: enforce required tags</a>
-<a href="#part-5-azure-policy-enforce-allowed-locations-">Part 5 – Azure Policy: enforce allowed locations</a>
-<a href="#success-criteria-">Success Criteria</a>
-<a href="#cleanup-if-needed-">Cleanup (If Needed)</a>
-<a href="#key-takeaways-">Key Takeaways</a>
-<a href="#next-steps-">Next Steps</a>
+        <a href="#objectives">Objectives</a>
+<a href="#prerequisites">Prerequisites</a>
+<a href="#estimated-time">Estimated Time</a>
+<a href="#part-1-create-a-resource-group-for-this-lab">Part 1 – Create Resource Group</a>
+<a href="#part-2-assign-built-in-roles">Part 2 – Assign Built-in Roles</a>
+<a href="#part-3-create-a-custom-role">Part 3 – Create Custom Role</a>
+<a href="#part-4-azure-policy-enforce-required-tags">Part 4 – Enforce Tags</a>
+<a href="#part-5-azure-policy-enforce-allowed-locations">Part 5 – Allowed Locations</a>
+<a href="#success-criteria">Success Criteria</a>
+<a href="#cleanup-if-needed">Cleanup</a>
+<a href="#key-takeaways">Key Takeaways</a>
       </div>
     </details>
   </aside>
   <div class="page">
-  <h1>Lab 02 – Role-Based Access Control (RBAC) & Azure Policy</h1>
+  <h1>Lab 02 – Role-Based Access Control (RBAC) &amp; Azure Policy</h1>
 
-<h2 id="objectives-">Objectives</h2>
+  <div class="time-estimate-header">
+    <span class="clock-icon">⏱️</span>
+    <span class="time-text">Total Estimated Time: 45 minutes</span>
+  </div>
 
-<ul><ol><li>Assign built-in roles at different scopes (subscription, resource group, resource)</li>
-<li>Create a custom RBAC role</li>
-<li>Create and assign an Azure Policy definition and initiative</li>
-<li>Use Policy to enforce tagging and allowed locations</li></ol></ul>
+<h2 id="objectives">Objectives</h2>
 
-<h2 id="prerequisites-">Prerequisites</h2>
+<ul>
+<li>Assign built-in roles at different scopes (subscription, resource group, resource)</li>
+<li>Create a custom RBAC role</li>
+<li>Create and assign an Azure Policy definition and initiative</li>
+<li>Use Policy to enforce tagging and allowed locations</li>
+</ul>
 
-<ul><ol><li>Owner or User Access Administrator on the subscription</li>
-<li>Lab 01 users/groups (optional, can use any test user)</li></ol></ul>
+<h2 id="prerequisites">Prerequisites</h2>
 
-<h2 id="estimated-time-">Estimated time</h2>
+<ul>
+<li>Owner or User Access Administrator on the subscription</li>
+<li>Lab 01 users/groups (optional, can use any test user)</li>
+</ul>
 
-<p>45 minutes</p>
+<h2 id="estimated-time">Estimated Time</h2>
 
-<p>---</p>
+<p><strong>45 minutes total</strong></p>
 
-<h2 id="part-1-create-a-resource-group-for-this-lab-">Part 1 – Create a resource group for this lab</h2>
+<div class="section-header">
+  <h2 id="part-1-create-a-resource-group-for-this-lab">Part 1 – Create a Resource Group for This Lab</h2>
+  <div class="section-time"><span class="icon">⏱️</span> 5 minutes</div>
+</div>
 
-<h3 id="step-1-create-resource-group-">Step 1: Create resource group</h3>
+<div class="task-box">
+  <div class="task-header">
+    <span class="task-icon">✓</span>
+    <h3>Step 1: Create resource group</h3>
+  </div>
+  <div class="task-content">
+    <ol>
+      <li>Search for <strong>Resource groups</strong> &gt; <strong>Create</strong></li>
+      <li><strong>Subscription</strong>: your subscription. <strong>Resource group</strong>: <code>rg-az104-lab02</code></li>
+      <li><strong>Region</strong>: <code>East US</code></li>
+      <li>Select <strong>Review + create</strong> &gt; <strong>Create</strong></li>
+    </ol>
+  </div>
+</div>
 
-<ol><li>Search for <strong>Resource groups</strong> > <strong>Create</strong></li>
-<li><strong>Subscription</strong>: your subscription. <strong>Resource group</strong>: <code>rg-az104-lab02</code></li></ol>
-<p><strong>Region</strong>: <code>East US</code></p>
-<ol><li>Select <strong>Review + create</strong> > <strong>Create</strong></li></ol>
+<div class="callout-box callout-tip">
+  <span class="callout-icon">ℹ️</span>
+  <div class="callout-content">
+    <h4>Tip</h4>
+    <p>Resource groups are free containers. Always organize resources into RGs by project, environment, or cost center.</p>
+  </div>
+</div>
 
-<div class='callout-box callout-tip'><span class='callout-icon'>ℹ️</span><div class='callout-content'><h4>tip</h4><p>Resource groups are free containers. Always organize resources into RGs by project, environment, or cost center.</p></div></div>
+<div class="validation-checklist">
+  <h4>Part 1 Validation</h4>
+  <div class="checklist-item">
+    <input type="checkbox" id="check1" />
+    <label for="check1">Resource group <code>rg-az104-lab02</code> created in East US region</label>
+  </div>
+</div>
 
-<p>---</p>
+<div class="section-header">
+  <h2 id="part-2-assign-built-in-roles">Part 2 – Assign Built-in Roles</h2>
+  <div class="section-time"><span class="icon">⏱️</span> 10 minutes</div>
+</div>
 
-<h2 id="part-2-assign-built-in-roles-">Part 2 – Assign built-in roles</h2>
+<h3>Understanding RBAC Scopes</h3>
 
-<h3 id="understanding-rbac-scopes-">Understanding RBAC Scopes</h3>
+<div class="callout-box callout-important">
+  <span class="callout-icon">❗</span>
+  <div class="callout-content">
+    <h4>Important</h4>
+    <p>RBAC assignments inherit down the hierarchy: Subscription → Resource Group → Resource. An assignment at the RG level applies to all resources within it.</p>
+  </div>
+</div>
 
-<div class='callout-box callout-important'><span class='callout-icon'>❗</span><div class='callout-content'><h4>important</h4><p>RBAC assignments inherit down the hierarchy. Subscription → Resource Group → Resource. An assignment at the RG level applies to all resources within it.</p></div></div>
+<div class="task-box">
+  <div class="task-header">
+    <span class="task-icon">✓</span>
+    <h3>Step 1: Assign Reader role at Resource Group scope</h3>
+  </div>
+  <div class="task-content">
+    <ol>
+      <li>Go to <strong>rg-az104-lab02</strong> &gt; <strong>Access control (IAM)</strong> &gt; <strong>Add</strong> &gt; <strong>Add role assignment</strong></li>
+      <li><strong>Role</strong> tab: select <strong>Reader</strong>. Select <strong>Next</strong></li>
+      <li><strong>Members</strong> tab: Assign access to User, group, or service principal</li>
+      <li>Select members &gt; choose <code>grp-az104-lab</code> (from Lab 01)</li>
+      <li><strong>Review + assign</strong></li>
+    </ol>
+  </div>
+</div>
 
-<h3 id="step-1-assign-reader-role-at-resource-group-scope-">Step 1: Assign Reader role at Resource Group scope</h3>
+<div class="task-box">
+  <div class="task-header">
+    <span class="task-icon">✓</span>
+    <h3>Step 2: Assign Storage role at Resource scope</h3>
+  </div>
+  <div class="task-content">
+    <div class="callout-box callout-warning">
+      <span class="callout-icon">⚠️</span>
+      <div class="callout-content">
+        <h4>Warning</h4>
+        <p>Resource-level assignments are more restrictive. Bob here can only access this one storage account, not others in the RG.</p>
+      </div>
+    </div>
+    <ol>
+      <li>Create a storage account (or use one from Lab 04)</li>
+      <li>Open the storage account &gt; <strong>Access control (IAM)</strong> &gt; <strong>Add role assignment</strong></li>
+      <li>Role = <strong>Storage Blob Data Contributor</strong> &gt; assign to <strong>Bob</strong></li>
+      <li>This grants Bob access <strong>only</strong> at this storage account scope, not the whole RG</li>
+    </ol>
+  </div>
+</div>
 
-<ol><li>Go to <strong>rg-az104-lab02</strong> > <strong>Access control (IAM)</strong> > <strong>Add</strong> > <strong>Add role assignment</strong></li>
-<li><strong>Role</strong> tab: select <strong>Reader</strong>. Select <strong>Next</strong></li>
-<li><strong>Members</strong> tab: </li></ol>
-<p>- <strong>Assign access to</strong> = <strong>User, group, or service principal</strong></p>
-<p>- <strong>Select members</strong> > choose <code>grp-az104-lab</code> (from Lab 01)</p>
-<ol><li><strong>Review + assign</strong></li></ol>
+<div class="validation-checklist">
+  <h4>Part 2 Validation</h4>
+  <div class="checklist-item">
+    <input type="checkbox" id="check2a" />
+    <label for="check2a">Reader role assigned to group at RG scope</label>
+  </div>
+  <div class="checklist-item">
+    <input type="checkbox" id="check2b" />
+    <label for="check2b">Storage Blob Data Contributor assigned to Bob at storage account scope</label>
+  </div>
+</div>
 
-<h3 id="step-2-assign-storage-role-at-resource-scope-">Step 2: Assign Storage role at Resource scope</h3>
+<div class="section-header">
+  <h2 id="part-3-create-a-custom-role">Part 3 – Create a Custom Role</h2>
+  <div class="section-time"><span class="icon">⏱️</span> 8 minutes</div>
+</div>
 
-<div class='callout-box callout-warning'><span class='callout-icon'>⚠️</span><div class='callout-content'><h4>warning</h4><p>Resource-level assignments are more restrictive. Bob here can only access this one storage account, not others in the RG.</p></div></div>
+<h3>Why Custom Roles?</h3>
 
-<ol><li>Create a storage account (or use one from Lab 04)</li>
-<li>Open the storage account > <strong>Access control (IAM)</strong> > <strong>Add role assignment</strong></li>
-<li>Role = <strong>Storage Blob Data Contributor</strong> > assign to <strong>Bob</strong></li></ol>
-<p>- This grants Bob access <strong>only</strong> at this storage account scope, not the whole RG</p>
+<div class="callout-box callout-tip">
+  <span class="callout-icon">ℹ️</span>
+  <div class="callout-content">
+    <h4>Tip</h4>
+    <p>Built-in roles like "Virtual Machine Contributor" are too broad. Custom roles let you grant minimal permissions—only what's needed.</p>
+  </div>
+</div>
 
-<h3 id="step-3-view-current-assignments-">Step 3: View current assignments</h3>
+<div class="task-box">
+  <div class="task-header">
+    <span class="task-icon">✓</span>
+    <h3>Step 1: Start custom role</h3>
+  </div>
+  <div class="task-content">
+    <ol>
+      <li>Go to the subscription &gt; <strong>Access control (IAM)</strong> &gt; <strong>Add</strong> &gt; <strong>Add custom role</strong></li>
+      <li><strong>Basics</strong> tab:
+        <ul>
+          <li><strong>Custom role name</strong>: <code>VM Operator (Start/Stop only)</code></li>
+          <li><strong>Description</strong>: <code>Can start and restart VMs but not create or delete them</code></li>
+          <li><strong>Baseline permissions</strong>: Clone a role &gt; select <strong>Virtual Machine Contributor</strong></li>
+        </ul>
+      </li>
+    </ol>
+  </div>
+</div>
 
-<ol><li>Go to <strong>Access control (IAM)</strong> > <strong>Role assignments</strong> tab</li>
-<li>Filter by role, user, or scope as needed</li></ol>
+<div class="task-box">
+  <div class="task-header">
+    <span class="task-icon">✓</span>
+    <h3>Step 2: Edit permissions</h3>
+  </div>
+  <div class="task-content">
+    <ol>
+      <li><strong>Permissions</strong> tab: select <strong>Edit permissions in JSON</strong></li>
+      <li>Replace the <code>actions</code>/<code>notActions</code> arrays with:</li>
+    </ol>
+    <div class="code-block"><pre>{
+  "actions": [
+    "Microsoft.Compute/virtualMachines/start/action",
+    "Microsoft.Compute/virtualMachines/restart/action",
+    "Microsoft.Compute/virtualMachines/read"
+  ],
+  "notActions": []
+}</pre></div>
+    <ol>
+      <li><strong>Assignable scopes</strong> tab: confirm scope is your subscription</li>
+    </ol>
+  </div>
+</div>
 
-<p>---</p>
+<div class="task-box">
+  <div class="task-header">
+    <span class="task-icon">✓</span>
+    <h3>Step 3: Assign custom role</h3>
+  </div>
+  <div class="task-content">
+    <ol>
+      <li><strong>Access control (IAM)</strong> &gt; <strong>Add role assignment</strong></li>
+      <li>Search for <strong>VM Operator (Start/Stop only)</strong> under <strong>Custom roles</strong></li>
+      <li>Assign to <code>carol@&lt;yourtenant&gt;.onmicrosoft.com</code> at <code>rg-az104-lab02</code> scope</li>
+    </ol>
+  </div>
+</div>
 
-<h2 id="part-3-create-a-custom-role-">Part 3 – Create a custom role</h2>
+<div class="validation-checklist">
+  <h4>Part 3 Validation</h4>
+  <div class="checklist-item">
+    <input type="checkbox" id="check3" />
+    <label for="check3">Custom role <code>VM Operator (Start/Stop only)</code> created and assigned</label>
+  </div>
+</div>
 
-<h3 id="why-custom-roles-">Why Custom Roles?</h3>
+<div class="section-header">
+  <h2 id="part-4-azure-policy-enforce-required-tags">Part 4 – Azure Policy: Enforce Required Tags</h2>
+  <div class="section-time"><span class="icon">⏱️</span> 8 minutes</div>
+</div>
 
-<div class='callout-box callout-tip'><span class='callout-icon'>ℹ️</span><div class='callout-content'><h4>tip</h4><p>Built-in roles like "Virtual Machine Contributor" are too broad. Custom roles let you grant minimal permissions—only what's needed.</p></div></div>
+<h3>Understanding Policy</h3>
 
-<h3 id="step-1-start-custom-role-">Step 1: Start custom role</h3>
+<div class="callout-box callout-important">
+  <span class="callout-icon">❗</span>
+  <div class="callout-content">
+    <h4>Important</h4>
+    <p>Policies PREVENT creation/modification of resources that don't comply. Unlike RBAC (who can do what), Policy enforces what is allowed to be created.</p>
+  </div>
+</div>
 
-<ol><li>Go to the subscription > <strong>Access control (IAM)</strong> > <strong>Add</strong> > <strong>Add custom role</strong></li>
-<li><strong>Basics</strong> tab:</li></ol>
-<p>- <strong>Custom role name</strong>: <code>VM Operator (Start/Stop only)</code></p>
-<p>- <strong>Description</strong>: <code>Can start and restart VMs but not create or delete them</code></p>
-<p>- <strong>Baseline permissions</strong>: <strong>Clone a role</strong> > select <strong>Virtual Machine Contributor</strong></p>
+<div class="task-box">
+  <div class="task-header">
+    <span class="task-icon">✓</span>
+    <h3>Step 1: Find and assign policy</h3>
+  </div>
+  <div class="task-content">
+    <ol>
+      <li>Search for <strong>Policy</strong> &gt; <strong>Definitions</strong></li>
+      <li>Search for <strong>"Require a tag on resource groups"</strong></li>
+      <li>Select it &gt; <strong>Assign</strong></li>
+      <li><strong>Basics</strong> tab: <strong>Scope</strong> = your subscription</li>
+      <li><strong>Parameters</strong> tab: set <code>Tag Name</code> = <code>CostCenter</code></li>
+      <li><strong>Effect</strong>: confirm it's <strong>Deny</strong> (blocks creation without tag)</li>
+      <li><strong>Review + create</strong> &gt; <strong>Create</strong></li>
+    </ol>
+  </div>
+</div>
 
-<h3 id="step-2-edit-permissions-">Step 2: Edit permissions</h3>
+<div class="task-box">
+  <div class="task-header">
+    <span class="task-icon">✓</span>
+    <h3>Step 2: Test the policy</h3>
+  </div>
+  <div class="task-content">
+    <div class="callout-box callout-warning">
+      <span class="callout-icon">⚠️</span>
+      <div class="callout-content">
+        <h4>Warning</h4>
+        <p>This will block resource creation. Expect a policy error.</p>
+      </div>
+    </div>
+    <ol>
+      <li>Go to <strong>Resource groups</strong> &gt; <strong>Create</strong></li>
+      <li>Name: <code>rg-policy-test</code>, Region: <code>East US</code></li>
+      <li>Select <strong>Review + create</strong> and expect this error:</li>
+    </ol>
+    <div class="code-block"><pre>RequestDisallowedByPolicy
+The request is denied by an Azure policy.
+Reason: Resource group does not have required tags.</pre></div>
+    <ol>
+      <li><strong>Do not proceed</strong> past this validation error</li>
+      <li>This proves the policy is working!</li>
+    </ol>
+  </div>
+</div>
 
-<ol><li><strong>Permissions</strong> tab: select <strong>Edit permissions in JSON</strong></li>
-<li>Replace the <code>actions</code>/<code>notActions</code> arrays with:</li></ol>
+<div class="validation-checklist">
+  <h4>Part 4 Validation</h4>
+  <div class="checklist-item">
+    <input type="checkbox" id="check4" />
+    <label for="check4">Tag policy prevents resource group creation without <code>CostCenter</code> tag</label>
+  </div>
+</div>
 
-<div class='code-block'><pre>{
-<p>&quot;actions&quot;: [</p>
-<p>&quot;Microsoft.Compute/virtualMachines/start/action&quot;,</p>
-<p>&quot;Microsoft.Compute/virtualMachines/restart/action&quot;,</p>
-<p>&quot;Microsoft.Compute/virtualMachines/read&quot;</p>
-<p>],</p>
-<p>&quot;notActions&quot;: []</p>
-<p>}</pre></div></p>
+<div class="section-header">
+  <h2 id="part-5-azure-policy-enforce-allowed-locations">Part 5 – Azure Policy: Enforce Allowed Locations</h2>
+  <div class="section-time"><span class="icon">⏱️</span> 8 minutes</div>
+</div>
 
-<ol><li><strong>Assignable scopes</strong> tab: confirm scope is your subscription</li></ol>
+<div class="task-box">
+  <div class="task-header">
+    <span class="task-icon">✓</span>
+    <h3>Step 1: Create policy definition</h3>
+  </div>
+  <div class="task-content">
+    <ol>
+      <li>Go to <strong>Policy</strong> &gt; <strong>Definitions</strong> &gt; <strong>+ Policy Definition</strong></li>
+      <li><strong>Name</strong>: <code>Allowed Azure Locations</code></li>
+      <li><strong>Category</strong>: <strong>General</strong></li>
+      <li><strong>Description</strong>: <code>Restrict resource creation to approved regions only</code></li>
+      <li><strong>Policy rule</strong> (replace template with):</li>
+    </ol>
+    <div class="code-block"><pre>{
+  "policyRule": {
+    "if": {
+      "not": {
+        "field": "location",
+        "in": [
+          "East US",
+          "West US",
+          "West Europe"
+        ]
+      }
+    },
+    "then": {
+      "effect": "Deny"
+    }
+  }
+}</pre></div>
+    <ol>
+      <li><strong>Review + create</strong> &gt; <strong>Create</strong></li>
+    </ol>
+  </div>
+</div>
 
-<h3 id="step-3-assign-custom-role-">Step 3: Assign custom role</h3>
+<div class="task-box">
+  <div class="task-header">
+    <span class="task-icon">✓</span>
+    <h3>Step 2: Assign the policy</h3>
+  </div>
+  <div class="task-content">
+    <ol>
+      <li><strong>Policy</strong> &gt; <strong>Assignments</strong> &gt; <strong>Assign Policy</strong></li>
+      <li><strong>Scope</strong>: your subscription</li>
+      <li><strong>Policy definition</strong>: select <code>Allowed Azure Locations</code></li>
+      <li><strong>Effect</strong>: <strong>Deny</strong></li>
+      <li><strong>Review + create</strong> &gt; <strong>Assign</strong></li>
+    </ol>
+  </div>
+</div>
 
-<ol><li><strong>Access control (IAM)</strong> > <strong>Add role assignment</strong></li>
-<li>Search for <strong>VM Operator (Start/Stop only)</strong> under <strong>Custom roles</strong></li>
-<li>Assign to <code>carol@<yourtenant>.onmicrosoft.com</code> at <code>rg-az104-lab02</code> scope</li></ol>
+<div class="task-box">
+  <div class="task-header">
+    <span class="task-icon">✓</span>
+    <h3>Step 3: Test the policy</h3>
+  </div>
+  <div class="task-content">
+    <ol>
+      <li>Try to create a resource in <strong>Central US</strong> (not in the allowed list)</li>
+      <li>Expect a <strong>Deny</strong> error</li>
+      <li>Try creating in <strong>East US</strong> (in the allowed list)</li>
+      <li>Should succeed</li>
+    </ol>
+  </div>
+</div>
 
-<p>---</p>
+<div class="validation-checklist">
+  <h4>Part 5 Validation</h4>
+  <div class="checklist-item">
+    <input type="checkbox" id="check5" />
+    <label for="check5">Location policy allows only East US, West US, West Europe</label>
+  </div>
+</div>
 
-<h2 id="part-4-azure-policy-enforce-required-tags-">Part 4 – Azure Policy: enforce required tags</h2>
+<h2 id="success-criteria">Success Criteria</h2>
 
-<h3 id="understanding-policy-">Understanding Policy</h3>
+<div class="success-box">
+  <h4>Lab Completion Checklist</h4>
+  <ul class="success-items">
+    <li class="success-item">Resource group <code>rg-az104-lab02</code> created</li>
+    <li class="success-item">Reader role assigned to group at RG scope</li>
+    <li class="success-item">Storage Blob Data Contributor assigned to Bob at resource scope</li>
+    <li class="success-item">Custom role <code>VM Operator (Start/Stop only)</code> created and assigned</li>
+    <li class="success-item">Tag policy prevents resource group creation without <code>CostCenter</code> tag</li>
+    <li class="success-item">Location policy allows only East US, West US, West Europe</li>
+  </ul>
+</div>
 
-<div class='callout-box callout-important'><span class='callout-icon'>❗</span><div class='callout-content'><h4>important</h4><p>Policies PREVENT creation/modification of resources that don't comply. Unlike RBAC (who can do what), Policy (what is allowed to be created).</p></div></div>
-
-<h3 id="step-1-find-and-assign-policy-">Step 1: Find and assign policy</h3>
-
-<ol><li>Search for <strong>Policy</strong> > <strong>Definitions</strong></li>
-<li>Search for <strong>"Require a tag on resource groups"</strong></li>
-<li>Select it > <strong>Assign</strong></li>
-<li><strong>Basics</strong> tab: <strong>Scope</strong> = your subscription</li>
-<li><strong>Parameters</strong> tab: set <code>Tag Name</code> = <code>CostCenter</code></li>
-<li><strong>Effect</strong>: confirm it's <strong>Deny</strong> (blocks creation without tag)</li>
-<li><strong>Review + create</strong> > <strong>Create</strong></li></ol>
-
-<h3 id="step-2-test-the-policy-">Step 2: Test the policy</h3>
-
-<div class='callout-box callout-warning'><span class='callout-icon'>⚠️</span><div class='callout-content'><h4>warning</h4><p>This will block resource creation. Expect a policy error.</p></div></div>
-
-<ol><li>Go to <strong>Resource groups</strong> > <strong>Create</strong></li>
-<li>Name: <code>rg-policy-test</code>, Region: <code>East US</code></li>
-<li>Select <strong>Review + create</strong> and expect this error:</li></ol>
-
-<div class='code-block'><pre>RequestDisallowedByPolicy
-<p>The request is denied by an Azure policy.</p>
-<p>Reason: Resource group does not have required tags.</pre></div></p>
-
-<ol><li><strong>Do not proceed</strong> past this validation error</li>
-<li>This proves the policy is working!</li></ol>
-
-<p>---</p>
-
-<h2 id="part-5-azure-policy-enforce-allowed-locations-">Part 5 – Azure Policy: enforce allowed locations</h2>
-
-<h3 id="step-1-create-initiative-multi-policy-">Step 1: Create initiative (multi-policy)</h3>
-
-<ol><li>Go to <strong>Policy</strong> > <strong>Definitions</strong> > <strong>+ Policy Definition</strong></li>
-<li><strong>Name</strong>: <code>Allowed Azure Locations</code></li>
-<li><strong>Category</strong>: <strong>General</strong></li>
-<li><strong>Description</strong>: <code>Restrict resource creation to approved regions only</code></li>
-<li><strong>Policy rule</strong> (replace template with):</li></ol>
-
-<div class='code-block'><pre>{
-<p>&quot;policyRule&quot;: {</p>
-<p>&quot;if&quot;: {</p>
-<p>&quot;not&quot;: {</p>
-<p>&quot;field&quot;: &quot;location&quot;,</p>
-<p>&quot;in&quot;: [</p>
-<p>&quot;East US&quot;,</p>
-<p>&quot;West US&quot;,</p>
-<p>&quot;West Europe&quot;</p>
-<p>]</p>
-<p>}</p>
-<p>},</p>
-<p>&quot;then&quot;: {</p>
-<p>&quot;effect&quot;: &quot;Deny&quot;</p>
-<p>}</p>
-<p>}</p>
-<p>}</pre></div></p>
-
-<ol><li><strong>Review + create</strong> > <strong>Create</strong></li></ol>
-
-<h3 id="step-2-assign-the-policy-">Step 2: Assign the policy</h3>
-
-<ol><li><strong>Policy</strong> > <strong>Assignments</strong> > <strong>Assign Policy</strong></li>
-<li><strong>Scope</strong>: your subscription</li>
-<li><strong>Policy definition</strong>: select <code>Allowed Azure Locations</code></li>
-<li><strong>Effect</strong>: <strong>Deny</strong></li>
-<li><strong>Review + create</strong> > <strong>Assign</strong></li></ol>
-
-<h3 id="step-3-test-the-policy-">Step 3: Test the policy</h3>
-
-<ol><li>Try to create a resource in <strong>Central US</strong> (not in the allowed list)</li>
-<li>Expect a <strong>Deny</strong> error</li>
-<li>Try creating in <strong>East US</strong> (in the allowed list)</li>
-<li>Should succeed</li></ol>
-
-<p>---</p>
-
-<h2 id="success-criteria-">Success Criteria</h2>
-
-<p>✓ Resource group <code>rg-az104-lab02</code> created</p>
-<p>✓ Reader role assigned to group at RG scope</p>
-<p>✓ Storage Blob Data Contributor assigned to Bob at resource scope</p>
-<p>✓ Custom role <code>VM Operator (Start/Stop only)</code> created and assigned</p>
-<p>✓ Tag policy prevents resource group creation without <code>CostCenter</code> tag</p>
-<p>✓ Location policy allows only East US, West US, West Europe</p>
-
-<p>---</p>
-
-<h2 id="cleanup-if-needed-">Cleanup (If Needed)</h2>
+<h2 id="cleanup-if-needed">Cleanup (If Needed)</h2>
 
 <p>To remove policies and role assignments:</p>
 
-<div class='code-block'><pre>&lt;h1&gt;Remove policy assignments&lt;/h1&gt;
-<p>Remove<span class="operator">-</span><span class="property">AzPolicyAssignment</span> <span class="operator">-</span><span class="property">Name</span> &quot;Require a tag on resource groups&quot; <span class="operator">-</span><span class="property">Scope</span> &quot;/subscriptions/[subscription<span class="operator">-</span><span class="property">id</span>]&quot;</p>
-<p>Remove<span class="operator">-</span><span class="property">AzPolicyAssignment</span> <span class="operator">-</span><span class="property">Name</span> &quot;Allowed Azure Locations&quot; <span class="operator">-</span><span class="property">Scope</span> &quot;/subscriptions/[subscription<span class="operator">-</span><span class="property">id</span>]&quot;</p>
+<div class="code-block"><pre># Remove policy assignments
+Remove-AzPolicyAssignment -Name "Require a tag on resource groups" -Scope "/subscriptions/[subscription-id]"
+Remove-AzPolicyAssignment -Name "Allowed Azure Locations" -Scope "/subscriptions/[subscription-id]"
 
-<p>&lt;h1&gt;Remove custom role&lt;/h1&gt;</p>
-<p>Remove<span class="operator">-</span><span class="property">AzRoleDefinition</span> <span class="operator">-</span><span class="property">Id</span> &quot;[role<span class="operator">-</span><span class="property">id</span>]&quot; <span class="operator">-</span><span class="property">Force</span></p>
+# Remove custom role
+Remove-AzRoleDefinition -Id "[role-id]" -Force
 
-<p>&lt;h1&gt;Remove resource group (includes all resources inside)&lt;/h1&gt;</p>
-<p>Remove<span class="operator">-</span><span class="property">AzResourceGroup</span> <span class="operator">-</span><span class="property">Name</span> &quot;rg<span class="operator">-</span><span class="property">az104</span><span class="operator">-</span><span class="property">lab02</span>&quot; <span class="operator">-</span><span class="property">Force</span></pre></div></p>
+# Remove resource group (includes all resources inside)
+Remove-AzResourceGroup -Name "rg-az104-lab02" -Force</pre></div>
 
-<div class='callout-box callout-tip'><span class='callout-icon'>ℹ️</span><div class='callout-content'><h4>tip</h4><p>Keeping test RGs around helps you learn. Only delete if you're confident you won't need them.</p></div></div>
+<div class="callout-box callout-tip">
+  <span class="callout-icon">ℹ️</span>
+  <div class="callout-content">
+    <h4>Tip</h4>
+    <p>Keeping test RGs around helps you learn. Only delete if you're confident you won't need them.</p>
+  </div>
+</div>
 
-<p>---</p>
+<h2 id="key-takeaways">Key Takeaways</h2>
 
-<h2 id="key-takeaways-">Key Takeaways</h2>
-
-<ul><ol><li><strong>RBAC</strong> = WHO can do WHAT (identity-based)</li>
-<li><strong>Policy</strong> = WHAT resources can be created (compliance-based)</li>
-<li><strong>Scopes matter</strong>: Assignment at subscription affects all RGs; assignment at RG affects only resources in that RG</li>
-<li><strong>Least privilege</strong>: Custom roles let you grant only what's needed</li>
-<li><strong>Policy prevents</strong>: Unlike RBAC (which is permissive), Policy actively prevents non-compliant operations</li></ol></ul>
-
-<p>---</p>
-
-<h2 id="next-steps-">Next Steps</h2>
-
-<p>Proceed to Lab 03 to learn about Management Groups and subscription organization at scale.</p>
+<ul>
+<li><strong>RBAC</strong> = WHO can do WHAT (identity-based)</li>
+<li><strong>Policy</strong> = WHAT resources can be created (compliance-based)</li>
+<li><strong>Scopes matter</strong>: Assignment at subscription affects all RGs; assignment at RG affects only resources in that RG</li>
+<li><strong>Least privilege</strong>: Custom roles let you grant only what's needed</li>
+<li><strong>Policy prevents</strong>: Unlike RBAC (which is permissive), Policy actively prevents non-compliant operations</li>
+</ul>
 
   </div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script>
+/* Initialize Syntax Highlighting */
+hljs.configure({ languages: ['powershell', 'bash', 'json', 'xml', 'yaml'] });
+document.querySelectorAll('.code-block pre').forEach(block => {
+  hljs.highlightElement(block);
+});
+
 /* Sidebar Active Link Tracking */
 (function(){
   var links = Array.prototype.slice.call(document.querySelectorAll('.sidebar a'));
@@ -315,38 +735,6 @@
   }, { rootMargin: '-100px 0px -70% 0px', threshold: 0 });
   sections.forEach(function(s){ observer.observe(s.el); });
 })();
-
-/* Code Block Copy Button Functionality */
-document.addEventListener('DOMContentLoaded', function(){
-  var codeBlocks = document.querySelectorAll('.code-block');
-  codeBlocks.forEach(function(block){
-    var pre = block.querySelector('pre');
-    if (!pre) return;
-
-    var btn = document.createElement('button');
-    btn.className = 'code-copy-btn';
-    btn.textContent = 'Copy';
-    btn.type = 'button';
-    btn.setAttribute('aria-label', 'Copy code to clipboard');
-
-    btn.addEventListener('click', function(){
-      var code = pre.textContent;
-      navigator.clipboard.writeText(code).then(function(){
-        var original = btn.textContent;
-        btn.textContent = '✓ Copied!';
-        btn.classList.add('copied');
-        setTimeout(function(){
-          btn.textContent = original;
-          btn.classList.remove('copied');
-        }, 2000);
-      }).catch(function(){
-        alert('Failed to copy code');
-      });
-    });
-
-    block.appendChild(btn);
-  });
-});
 </script>
 </body>
 </html>
