@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -137,9 +137,18 @@ hr.divider{border:none;height:0;margin:0}
 .sidebar .toc-title{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 12px;padding:0 12px}
 .sidebar hr.sidebar-divider{border:none;border-top:1px solid var(--border);margin:14px 0}
 .sidebar .toc-title.module-title{margin-top:0}
-.sidebar a{display:block;padding:8px 12px;margin-bottom:2px;border-radius:8px;font-size:.88rem;font-weight:500;color:var(--text);border-bottom:none;border-left:3px solid transparent;line-height:1.4}
+.sidebar details{margin-bottom:0}
+.sidebar summary{cursor:pointer;list-style:none;padding:10px 12px;border-radius:8px;font-weight:600;font-size:.92rem;color:var(--primary);user-select:none;transition:background 0.2s}
+.sidebar summary::-webkit-details-marker,.sidebar summary::marker{display:none}
+.sidebar details[open]>summary{background:#eef2ff}
+.sidebar summary:hover{background:#f0f4ff}
+.sidebar details > div{padding:0 0 8px 12px}
+.sidebar a{display:block;padding:8px 12px;margin-bottom:2px;border-radius:8px;font-size:.88rem;font-weight:500;color:var(--text);border-bottom:none;border-left:3px solid transparent;line-height:1.4;transition:all 0.15s}
 .sidebar a:hover{background:#eef2ff;color:#1e2a78}
 .sidebar a.active{background:#eef2ff;color:#1735ad;font-weight:700;border-left-color:var(--primary)}
+/* Keyboard Navigation & Accessibility */
+a:focus-visible,button:focus-visible,.sidebar a:focus-visible,.sidebar summary:focus-visible,.site-nav summary:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+details:focus-visible > summary{outline:2px solid var(--primary);outline-offset:2px}
 @media print{
   .site-nav{display:none}
   body{background:#fff}
@@ -148,49 +157,51 @@ hr.divider{border:none;height:0;margin:0}
   .sidebar{display:none}
   .layout{display:block}
 }
-
-.sidebar a { transition: all 0.15s; }
-.sidebar summary { transition: background 0.2s; }
-
-/* Keyboard Navigation & Accessibility */
-a:focus-visible,
-button:focus-visible,
-.sidebar a:focus-visible,
-.sidebar summary:focus-visible,
-.site-nav summary:focus-visible {
-  outline: 2px solid var(--primary);
-  outline-offset: 2px;
-}
-
-details:focus-visible > summary {
-  outline: 2px solid var(--primary);
-  outline-offset: 2px;
-}
 </style>
 </head>
 <body>
-<nav class="site-nav" aria-label="Main site navigation">
+<nav class="site-nav">
   <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
-  <details class="nav-group" aria-label="Learning module selector">
-    <summary>Learning Module</summary>
+  <details class="nav-group">
+    <summary>Module 00 - Prerequisites</summary>
     <div class="nav-menu">
-      <a href="../../00-prerequisites/documents/module-home.html">00 - Prerequisites</a>
-      <a href="../../01-identity-governance/documents/module-home.html">01 - Identity &amp; Governance</a>
-      <a href="../../02-storage/documents/module-home.html" class="active">02 - Storage</a>
-      <a href="../../03-compute/documents/module-home.html">03 - Compute</a>
-      <a href="../../04-networking/documents/module-home.html">04 - Networking</a>
-      <a href="../../05-monitor-maintain/documents/module-home.html">05 - Monitor &amp; Maintain</a>
+      <a href="../../00-prerequisites/documents/01-cloud-computing-fundamentals.html">01 - Cloud Computing Fundamentals</a>
+      <a href="../../00-prerequisites/documents/02-networking-basics.html">02 - Networking Basics</a>
+      <a href="../../00-prerequisites/documents/03-identity-and-access-fundamentals.html">03 - Identity &amp; Access Fundamentals</a>
+      <a href="../../00-prerequisites/documents/04-azure-portal-navigation.html">04 - Azure Portal Navigation</a>
+      <a href="../../00-prerequisites/documents/labs-index.html">Labs</a>
+    </div>
+  </details>
+  <details class="nav-group">
+    <summary>Module 01 - Identity &amp; Governance</summary>
+    <div class="nav-menu">
+      <a href="../../01-identity-governance/documents/01-entra-id-overview.html">01 - Entra ID Overview</a>
+      <a href="../../01-identity-governance/documents/02-rbac-fundamentals.html">02 - RBAC Fundamentals</a>
+      <a href="../../01-identity-governance/documents/03-management-groups-and-azure-policy.html">03 - Management Groups &amp; Policy</a>
+      <a href="../../01-identity-governance/documents/04-access-control-scenarios.html">04 - Access Control Scenarios</a>
+      <a href="../../01-identity-governance/documents/05-identity-best-practices.html">05 - Identity Best Practices</a>
+      <a href="../../01-identity-governance/documents/labs-index.html">Labs</a>
     </div>
   </details>
 </nav>
 <div class="layout">
-  <aside class="sidebar">
-    <div class="toc-title module-title">Module 02 - Storage</div>
-    <hr class="sidebar-divider">
-<div class="toc-title">Labs</div>
-<hr class="sidebar-divider">
-<div class="toc-title">On This Page</div>
-<a href="#objectives">Objectives</a>
+  <aside class="sidebar" aria-label="Page navigation">
+    <details open>
+      <summary>▶ Module 02 - Storage</summary>
+      <div>
+        
+      </div>
+    </details>
+    <details>
+      <summary>▶ Labs</summary>
+      <div>
+        
+      </div>
+    </details>
+    <details>
+      <summary>▶ On This Page</summary>
+      <div>
+        <a href="#objectives">Objectives</a>
 <a href="#prerequisites">Prerequisites</a>
 <a href="#estimated-time">Estimated time</a>
 <a href="#part-1-create-the-resource-group-and-storage-account">Part 1 – Create the resource group and storage account</a>
@@ -202,6 +213,8 @@ details:focus-visible > summary {
 <a href="#validation">Validation</a>
 <a href="#cleanup">Cleanup</a>
 <a href="#exam-tips">Exam Tips</a>
+      </div>
+    </details>
   </aside>
   <div class="page">
   <h1>Lab 04 – Storage Accounts</h1>
@@ -222,7 +235,6 @@ details:focus-visible > summary {
 <hr class="divider">
 
 <h2 id="part-1-create-the-resource-group-and-storage-account">Part 1 – Create the resource group and storage account</h2>
-<h3>Set up resources</h3>
 
 <ol><li>Search for <strong>Resource groups</strong> > <strong>Create</strong>. Name: <code>rg-az104-lab04</code>,</li></ol>
 <p>region: <code>East US</code>. <strong>Review + create</strong> > <strong>Create</strong>.</p>
@@ -238,7 +250,6 @@ details:focus-visible > summary {
 <li><strong>Review + create</strong> > <strong>Create</strong>.</li></ol>
 
 <h2 id="part-2-explore-redundancy-performance-options">Part 2 – Explore redundancy & performance options</h2>
-<h3>Compare storage options</h3>
 
 <ol><li>Open the storage account > <strong>Redundancy</strong> (under <strong>Data management</strong>).</li></ol>
 <p>Note options: LRS, ZRS, GRS, GZRS, RA-GRS, RA-GZRS.</p>
@@ -249,7 +260,6 @@ details:focus-visible > summary {
 <p>to Blob/StorageV2 accounts and can be changed in place.</p>
 
 <h2 id="part-3-containers-blobs-queues-tables-file-shares">Part 3 – Containers, blobs, queues, tables, file shares</h2>
-<h3>Create storage resources</h3>
 
 <ol><li>Open the storage account > <strong>Containers</strong> (under <strong>Data storage</strong>) ></li></ol>
 <p><strong>+ Container</strong>. Name: <code>demo-container</code>. <strong>Public access level</strong>: <strong>Private</strong>.</p>
@@ -261,7 +271,6 @@ details:focus-visible > summary {
 <p><code>demo-share</code>, <strong>Quota</strong>: 5 GiB, <strong>Tier</strong>: Transaction optimized.</p>
 
 <h2 id="part-4-access-keys-vs-sas-vs-microsoft-entra-authorization">Part 4 – Access keys vs SAS vs Microsoft Entra authorization</h2>
-<h3>Configure authorization methods</h3>
 
 <ol><li><strong>Access keys</strong> (under <strong>Security + networking</strong>) — note there are two</li></ol>
 <p>keys (<code>key1</code>/<code>key2</code>) so you can rotate one while the other is still in use.</p>
@@ -285,7 +294,6 @@ details:focus-visible > summary {
 <p>uses your Entra identity + RBAC instead of the account key.</p>
 
 <h2 id="part-5-network-rules">Part 5 – Network rules</h2>
-<h3>Restrict network access</h3>
 
 <ol><li><strong>Networking</strong> (under <strong>Security + networking</strong>) > <strong>Public network access</strong>:</li></ol>
 <p>select <strong>Enabled from selected virtual networks and IP addresses</strong>.</p>
@@ -297,7 +305,6 @@ details:focus-visible > summary {
 <ol><li>Re-enable <strong>All networks</strong> for lab simplicity afterward.</li></ol>
 
 <h2 id="part-6-copying-data-with-the-storage-browser">Part 6 – Copying data with the Storage browser</h2>
-<h3>Use storage browser tools</h3>
 
 <ol><li>Open the storage account > <strong>Storage browser</strong> > <strong>Blob containers</strong> ></li></ol>
 <p><code>demo-container</code>.</p>

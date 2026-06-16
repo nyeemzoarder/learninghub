@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -122,7 +122,7 @@ hr.divider{border:none;height:0;margin:0}
   .site-nav{padding:10px 16px}
   .site-nav .nav-brand{font-size:.95rem}
 }
-/* ===== Page Sidebar (Collapsible) ===== */
+/* ===== Page Sidebar (On This Page) ===== */
 .layout{max-width:1400px;margin:auto;display:flex;align-items:flex-start}
 .sidebar{
   flex:0 0 260px;
@@ -134,21 +134,21 @@ hr.divider{border:none;height:0;margin:0}
   background:#fff;border:1px solid var(--border);border-radius:14px;
   box-shadow:0 4px 16px rgba(21,29,99,.05);
 }
+.sidebar .toc-title{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 12px;padding:0 12px}
+.sidebar hr.sidebar-divider{border:none;border-top:1px solid var(--border);margin:14px 0}
+.sidebar .toc-title.module-title{margin-top:0}
 .sidebar details{margin-bottom:0}
-.sidebar summary{
-  cursor:pointer;list-style:none;padding:10px 12px;border-radius:8px;
-  font-weight:600;font-size:.92rem;color:var(--primary);
-  user-select:none;transition:background 0.2s;
-}
-.sidebar summary::-webkit-details-marker,.sidebar summary::marker{display:none;content:''}
+.sidebar summary{cursor:pointer;list-style:none;padding:10px 12px;border-radius:8px;font-weight:600;font-size:.92rem;color:var(--primary);user-select:none;transition:background 0.2s}
+.sidebar summary::-webkit-details-marker,.sidebar summary::marker{display:none}
 .sidebar details[open]>summary{background:#eef2ff}
 .sidebar summary:hover{background:#f0f4ff}
-.sidebar a{display:block;padding:8px 12px;margin:2px 0;border-radius:8px;font-size:.88rem;font-weight:500;
-  color:var(--text);border-bottom:none;border-left:3px solid transparent;line-height:1.4;transition:all 0.15s}
+.sidebar details > div{padding:0 0 8px 12px}
+.sidebar a{display:block;padding:8px 12px;margin-bottom:2px;border-radius:8px;font-size:.88rem;font-weight:500;color:var(--text);border-bottom:none;border-left:3px solid transparent;line-height:1.4;transition:all 0.15s}
 .sidebar a:hover{background:#eef2ff;color:#1e2a78}
 .sidebar a.active{background:#eef2ff;color:#1735ad;font-weight:700;border-left-color:var(--primary)}
-.sidebar details > div{padding:0 0 8px 12px}
-.sidebar hr.sidebar-divider{border:none;border-top:1px solid var(--border);margin:12px 0}
+/* Keyboard Navigation & Accessibility */
+a:focus-visible,button:focus-visible,.sidebar a:focus-visible,.sidebar summary:focus-visible,.site-nav summary:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+details:focus-visible > summary{outline:2px solid var(--primary);outline-offset:2px}
 @media print{
   .site-nav{display:none}
   body{background:#fff}
@@ -158,60 +158,66 @@ hr.divider{border:none;height:0;margin:0}
   .layout{display:block}
 }
 </style>
-/* Keyboard Navigation & Accessibility */
-a:focus-visible,
-button:focus-visible,
-.sidebar a:focus-visible,
-.sidebar summary:focus-visible,
-.site-nav summary:focus-visible {
-  outline: 2px solid var(--primary);
-  outline-offset: 2px;
-}
-
-details:focus-visible > summary {
-  outline: 2px solid var(--primary);
-  outline-offset: 2px;
-}
 </head>
 <body>
-<nav class="site-nav" aria-label="Main site navigation">
+<nav class="site-nav">
   <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
-  <details class="nav-group" aria-label="Learning module selector">
-    <summary>Learning Module</summary>
+  <details class="nav-group">
+    <summary>Module 00 - Prerequisites</summary>
     <div class="nav-menu">
-      <a href="../../00-prerequisites/documents/module-home.html">00 - Prerequisites</a>
-      <a href="../../01-identity-governance/documents/module-home.html" class="active">01 - Identity &amp; Governance</a>
-      <a href="../../02-storage/documents/module-home.html">02 - Storage</a>
-      <a href="../../03-compute/documents/module-home.html">03 - Compute</a>
-      <a href="../../04-networking/documents/module-home.html">04 - Networking</a>
-      <a href="../../05-monitor-maintain/documents/module-home.html">05 - Monitor &amp; Maintain</a>
+      <a href="../../00-prerequisites/documents/01-cloud-computing-fundamentals.html">01 - Cloud Computing Fundamentals</a>
+      <a href="../../00-prerequisites/documents/02-networking-basics.html">02 - Networking Basics</a>
+      <a href="../../00-prerequisites/documents/03-identity-and-access-fundamentals.html">03 - Identity &amp; Access Fundamentals</a>
+      <a href="../../00-prerequisites/documents/04-azure-portal-navigation.html">04 - Azure Portal Navigation</a>
+      <a href="../../00-prerequisites/documents/labs-index.html">Labs</a>
+    </div>
+  </details>
+  <details class="nav-group">
+    <summary>Module 01 - Identity &amp; Governance</summary>
+    <div class="nav-menu">
+      <a href="../../01-identity-governance/documents/01-entra-id-overview.html">01 - Entra ID Overview</a>
+      <a href="../../01-identity-governance/documents/02-rbac-fundamentals.html">02 - RBAC Fundamentals</a>
+      <a href="../../01-identity-governance/documents/03-management-groups-and-azure-policy.html">03 - Management Groups &amp; Policy</a>
+      <a href="../../01-identity-governance/documents/04-access-control-scenarios.html">04 - Access Control Scenarios</a>
+      <a href="../../01-identity-governance/documents/05-identity-best-practices.html">05 - Identity Best Practices</a>
+      <a href="../../01-identity-governance/documents/labs-index.html">Labs</a>
     </div>
   </details>
 </nav>
 <div class="layout">
-  <aside class="sidebar">
+  <aside class="sidebar" aria-label="Page navigation">
     <details open>
-      <summary>▶ Module 01 - Identity & Governance</summary>
+      <summary>▶ Module 01 - Identity &amp; Governance</summary>
       <div>
-        <a href="01-entra-id-overview.html">01 - Entra id overview</a>
-        <a href="02-rbac-fundamentals.html">02 - Rbac fundamentals</a>
-        <a href="03-management-groups-and-azure-policy.html">03 - Management groups and azure policy</a>
-        <a href="04-access-control-scenarios.html">04 - Access control scenarios</a>
-        <a href="05-identity-best-practices.html">05 - Identity best practices</a>
+        <a href="01-entra-id-overview.html">01 - Entra ID Overview</a>
+<a href="02-rbac-fundamentals.html">02 - RBAC Fundamentals</a>
+<a href="03-management-groups-and-azure-policy.html">03 - Management Groups &amp; Azure Policy</a>
+<a href="04-access-control-scenarios.html">04 - Access Control Scenarios</a>
+<a href="05-identity-best-practices.html">05 - Identity Best Practices</a>
       </div>
     </details>
     <details>
       <summary>▶ Labs</summary>
       <div>
-        <a href="lab01-entra-users-groups.html">lab01 - Entra users groups</a>
-        <a href="lab02-rbac-azure-policy.html">lab02 - Rbac azure policy</a>
-        <a href="lab03-management-groups-subscriptions.html">lab03 - Management groups subscriptions</a>
+        <a href="lab01-entra-users-groups.html">Lab 01 - Entra Users &amp; Groups</a>
+<a href="lab02-rbac-azure-policy.html">Lab 02 - RBAC &amp; Azure Policy</a>
+<a href="lab03-management-groups-subscriptions.html">Lab 03 - Management Groups</a>
       </div>
     </details>
     <details>
       <summary>▶ On This Page</summary>
       <div>
-        <a href="#overview">Overview</a>
+        <a href="#objectives">Objectives</a>
+<a href="#prerequisites">Prerequisites</a>
+<a href="#estimated-time">Estimated time</a>
+<a href="#part-1-create-a-management-group-hierarchy">Part 1 – Create a management group hierarchy</a>
+<a href="#part-2-move-your-subscription-under-mg-sandbox">Part 2 – Move your subscription under mg-sandbox</a>
+<a href="#part-3-resource-groups-and-tagging-strategy">Part 3 – Resource groups and tagging strategy</a>
+<a href="#part-4-resource-locks">Part 4 – Resource locks</a>
+<a href="#part-5-cost-management-basics">Part 5 – Cost Management basics</a>
+<a href="#validation">Validation</a>
+<a href="#cleanup">Cleanup</a>
+<a href="#exam-tips">Exam Tips</a>
       </div>
     </details>
   </aside>
@@ -234,7 +240,6 @@ details:focus-visible > summary {
 <hr class="divider">
 
 <h2 id="part-1-create-a-management-group-hierarchy">Part 1 – Create a management group hierarchy</h2>
-<h3>Set up the hierarchy structure</h3>
 
 <ol><li>Search for <strong>Management groups</strong>.</li>
 <li>Select <strong>Add management group</strong>. Set <strong>Management group ID</strong> to <code>mg-contoso</code></li></ol>
@@ -253,7 +258,6 @@ details:focus-visible > summary {
 <p></code>`<code></p>
 
 <h2 id="part-2-move-your-subscription-under-mg-sandbox">Part 2 – Move your subscription under mg-sandbox</h2>
-<h3>Complete the subscription move</h3>
 
 <ol><li><strong>Management groups</strong> > select </code>mg-sandbox<code> > <strong>Subscriptions</strong> tab.</li>
 <li>Select <strong>Add subscription</strong>, choose your subscription from the list, and</li></ol>
@@ -262,7 +266,6 @@ details:focus-visible > summary {
 <div class="callout"><p>Policies/RBAC assigned at </code>mg-contoso<code> or </code>mg-sandbox<code> now apply to this subscription.</p></div>
 
 <h2 id="part-3-resource-groups-and-tagging-strategy">Part 3 – Resource groups and tagging strategy</h2>
-<h3>Create a resource group with tags</h3>
 
 <ol><li>Search for <strong>Resource groups</strong> > <strong>Create</strong>.</li>
 <li><strong>Resource group</strong>: </code>rg-az104-lab03<code>. <strong>Region</strong>: </code>East US<code>.</li>
@@ -277,7 +280,6 @@ details:focus-visible > summary {
 <p>the name-value pairs > <strong>Save</strong>.</p>
 
 <h2 id="part-4-resource-locks">Part 4 – Resource locks</h2>
-<h3>Apply and test locks</h3>
 
 <ol><li>Open </code>rg-az104-lab03<code> > <strong>Locks</strong> (under <strong>Settings</strong>).</li>
 <li>Select <strong>Add</strong>. <strong>Lock name</strong>: </code>lock-no-delete<code>. <strong>Lock type</strong>: <strong>Delete</strong></li></ol>
@@ -294,7 +296,6 @@ details:focus-visible > summary {
 <p>interfere with other labs.</p>
 
 <h2 id="part-5-cost-management-basics">Part 5 – Cost Management basics</h2>
-<h3>Set up cost monitoring</h3>
 
 <ol><li>Go to <strong>Cost Management + Billing</strong> > <strong>Cost analysis</strong>. Filter by</li></ol>
 <p></code>rg-az104-lab03<code> using the <strong>Resource group</strong> filter.</p>
@@ -353,7 +354,3 @@ details:focus-visible > summary {
 </script>
 </body>
 </html>
-
-
-
-

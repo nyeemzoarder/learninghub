@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -122,7 +122,7 @@ hr.divider{border:none;height:0;margin:0}
   .site-nav{padding:10px 16px}
   .site-nav .nav-brand{font-size:.95rem}
 }
-/* ===== Page Sidebar (Collapsible) ===== */
+/* ===== Page Sidebar (On This Page) ===== */
 .layout{max-width:1400px;margin:auto;display:flex;align-items:flex-start}
 .sidebar{
   flex:0 0 260px;
@@ -134,21 +134,21 @@ hr.divider{border:none;height:0;margin:0}
   background:#fff;border:1px solid var(--border);border-radius:14px;
   box-shadow:0 4px 16px rgba(21,29,99,.05);
 }
+.sidebar .toc-title{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 12px;padding:0 12px}
+.sidebar hr.sidebar-divider{border:none;border-top:1px solid var(--border);margin:14px 0}
+.sidebar .toc-title.module-title{margin-top:0}
 .sidebar details{margin-bottom:0}
-.sidebar summary{
-  cursor:pointer;list-style:none;padding:10px 12px;border-radius:8px;
-  font-weight:600;font-size:.92rem;color:var(--primary);
-  user-select:none;transition:background 0.2s;
-}
-.sidebar summary::-webkit-details-marker,.sidebar summary::marker{display:none;content:''}
+.sidebar summary{cursor:pointer;list-style:none;padding:10px 12px;border-radius:8px;font-weight:600;font-size:.92rem;color:var(--primary);user-select:none;transition:background 0.2s}
+.sidebar summary::-webkit-details-marker,.sidebar summary::marker{display:none}
 .sidebar details[open]>summary{background:#eef2ff}
 .sidebar summary:hover{background:#f0f4ff}
-.sidebar a{display:block;padding:8px 12px;margin:2px 0;border-radius:8px;font-size:.88rem;font-weight:500;
-  color:var(--text);border-bottom:none;border-left:3px solid transparent;line-height:1.4;transition:all 0.15s}
+.sidebar details > div{padding:0 0 8px 12px}
+.sidebar a{display:block;padding:8px 12px;margin-bottom:2px;border-radius:8px;font-size:.88rem;font-weight:500;color:var(--text);border-bottom:none;border-left:3px solid transparent;line-height:1.4;transition:all 0.15s}
 .sidebar a:hover{background:#eef2ff;color:#1e2a78}
 .sidebar a.active{background:#eef2ff;color:#1735ad;font-weight:700;border-left-color:var(--primary)}
-.sidebar details > div{padding:0 0 8px 12px}
-.sidebar hr.sidebar-divider{border:none;border-top:1px solid var(--border);margin:12px 0}
+/* Keyboard Navigation & Accessibility */
+a:focus-visible,button:focus-visible,.sidebar a:focus-visible,.sidebar summary:focus-visible,.site-nav summary:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+details:focus-visible > summary{outline:2px solid var(--primary);outline-offset:2px}
 @media print{
   .site-nav{display:none}
   body{background:#fff}
@@ -158,57 +158,74 @@ hr.divider{border:none;height:0;margin:0}
   .layout{display:block}
 }
 </style>
-/* Keyboard Navigation & Accessibility */
-a:focus-visible,
-button:focus-visible,
-.sidebar a:focus-visible,
-.sidebar summary:focus-visible,
-.site-nav summary:focus-visible {
-  outline: 2px solid var(--primary);
-  outline-offset: 2px;
-}
-
-details:focus-visible > summary {
-  outline: 2px solid var(--primary);
-  outline-offset: 2px;
-}
 </head>
 <body>
-<nav class="site-nav" aria-label="Main site navigation">
+<nav class="site-nav">
   <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
-  <details class="nav-group" aria-label="Learning module selector">
-    <summary>Learning Module</summary>
+  <details class="nav-group">
+    <summary>Module 00 - Prerequisites</summary>
     <div class="nav-menu">
-      <a href="../../00-prerequisites/documents/module-home.html" class="active">00 - Prerequisites</a>
-      <a href="../../01-identity-governance/documents/module-home.html">01 - Identity &amp; Governance</a>
-      <a href="../../02-storage/documents/module-home.html">02 - Storage</a>
-      <a href="../../03-compute/documents/module-home.html">03 - Compute</a>
-      <a href="../../04-networking/documents/module-home.html">04 - Networking</a>
-      <a href="../../05-monitor-maintain/documents/module-home.html">05 - Monitor &amp; Maintain</a>
+      <a href="../../00-prerequisites/documents/01-cloud-computing-fundamentals.html">01 - Cloud Computing Fundamentals</a>
+      <a href="../../00-prerequisites/documents/02-networking-basics.html">02 - Networking Basics</a>
+      <a href="../../00-prerequisites/documents/03-identity-and-access-fundamentals.html">03 - Identity &amp; Access Fundamentals</a>
+      <a href="../../00-prerequisites/documents/04-azure-portal-navigation.html">04 - Azure Portal Navigation</a>
+      <a href="../../00-prerequisites/documents/labs-index.html">Labs</a>
+    </div>
+  </details>
+  <details class="nav-group">
+    <summary>Module 01 - Identity &amp; Governance</summary>
+    <div class="nav-menu">
+      <a href="../../01-identity-governance/documents/01-entra-id-overview.html">01 - Entra ID Overview</a>
+      <a href="../../01-identity-governance/documents/02-rbac-fundamentals.html">02 - RBAC Fundamentals</a>
+      <a href="../../01-identity-governance/documents/03-management-groups-and-azure-policy.html">03 - Management Groups &amp; Policy</a>
+      <a href="../../01-identity-governance/documents/04-access-control-scenarios.html">04 - Access Control Scenarios</a>
+      <a href="../../01-identity-governance/documents/05-identity-best-practices.html">05 - Identity Best Practices</a>
+      <a href="../../01-identity-governance/documents/labs-index.html">Labs</a>
     </div>
   </details>
 </nav>
 <div class="layout">
-  <aside class="sidebar">
+  <aside class="sidebar" aria-label="Page navigation">
     <details open>
       <summary>▶ Module 00 - Prerequisites</summary>
       <div>
-        <a href="01-cloud-computing-fundamentals.html">01 - Cloud computing fundamentals</a>
-        <a href="02-networking-basics.html">02 - Networking basics</a>
-        <a href="03-identity-and-access-fundamentals.html">03 - Identity and access fundamentals</a>
-        <a href="04-azure-portal-navigation.html">04 - Azure portal navigation</a>
+        <a href="01-cloud-computing-fundamentals.html">01 - Cloud Computing Fundamentals</a>
+<a href="02-networking-basics.html">02 - Networking Basics</a>
+<a href="03-identity-and-access-fundamentals.html">03 - Identity &amp; Access Fundamentals</a>
+<a href="04-azure-portal-navigation.html">04 - Azure Portal Navigation</a>
       </div>
     </details>
     <details>
       <summary>▶ Labs</summary>
       <div>
-        <a href="lab00-azure-portal-navigation.html">lab00 - Azure portal navigation</a>
+        <a href="lab00-azure-portal-navigation.html">Lab 00 - Portal Navigation</a>
       </div>
     </details>
     <details>
       <summary>▶ On This Page</summary>
       <div>
-        <a href="#overview">Overview</a>
+        <a href="#real-life-scenario">Real-Life Scenario</a>
+<a href="#objectives">Objectives</a>
+<a href="#prerequisites">Prerequisites</a>
+<a href="#estimated-time">Estimated Time</a>
+<a href="#part-1-create-a-resource-group">Part 1 – Create a Resource Group</a>
+<a href="#part-2-explore-the-azure-portal-layout">Part 2 – Explore the Azure Portal Layout</a>
+<a href="#part-3-understand-subscriptions-and-scopes">Part 3 – Understand Subscriptions and Scopes</a>
+<a href="#part-4-find-azure-services-by-category">Part 4 – Find Azure Services by Category</a>
+<a href="#part-5-create-a-storage-account-understanding-blades-and-tabs">Part 5 – Create a Storage Account (Understanding Blades and Tabs)</a>
+<a href="#part-6-apply-resource-tags">Part 6 – Apply Resource Tags</a>
+<a href="#part-7-review-and-create">Part 7 – Review and Create</a>
+<a href="#part-8-use-the-cloud-shell-and-portal-help">Part 8 – Use the Cloud Shell and Portal Help</a>
+<a href="#part-9-explore-all-resources">Part 9 – Explore All Resources</a>
+<a href="#part-10-understanding-resource-groups-and-resource-organization">Part 10 – Understanding Resource Groups and Resource Organization</a>
+<a href="#validation-checklist">Validation Checklist</a>
+<a href="#cleanup">Cleanup</a>
+<a href="#exam-tips">Exam Tips</a>
+<a href="#see-it-in-action">See It In Action</a>
+<a href="#next-steps">Next Steps</a>
+<a href="#key-takeaways">Key Takeaways</a>
+<a href="#troubleshooting">Troubleshooting</a>
+<a href="#related-concepts">Related Concepts</a>
       </div>
     </details>
   </aside>
@@ -708,7 +725,3 @@ details:focus-visible > summary {
 </script>
 </body>
 </html>
-
-
-
-

@@ -11,6 +11,7 @@ function Convert-MarkdownToHTML {
         [string]$MarkdownPath,
         [string]$OutputPath,
         [string]$ModuleName,
+        [string]$ModuleDir,
         [string]$LabTitle
     )
 
@@ -125,8 +126,11 @@ function Convert-MarkdownToHTML {
     $titleMatch = [regex]::Match($content, '^# (.+)$', [System.Text.RegularExpressions.RegexOptions]::Multiline)
     $pageTitle = if ($titleMatch.Success) { $titleMatch.Groups[1].Value } else { $LabTitle }
 
-    # Generate TOC
-    $tocHtml = Generate-TableOfContents -Sections $sections -ModuleName $ModuleName -ModuleDir $moduleDir
+    # Generate TOC (returns hashtable with ConceptLinks, LabLinks, PageLinks)
+    $tocData = Generate-TableOfContents -Sections $sections -ModuleName $ModuleName -ModuleDir $moduleDir
+    $conceptLinksHtml = $tocData.ConceptLinks
+    $labLinksHtml = $tocData.LabLinks
+    $onThisPageHtml = $tocData.PageLinks
 
     # Generate navigation
     $navHtml = Generate-Navigation -ModuleName $ModuleName
@@ -275,9 +279,18 @@ hr.divider{border:none;height:0;margin:0}
 .sidebar .toc-title{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 12px;padding:0 12px}
 .sidebar hr.sidebar-divider{border:none;border-top:1px solid var(--border);margin:14px 0}
 .sidebar .toc-title.module-title{margin-top:0}
-.sidebar a{display:block;padding:8px 12px;margin-bottom:2px;border-radius:8px;font-size:.88rem;font-weight:500;color:var(--text);border-bottom:none;border-left:3px solid transparent;line-height:1.4}
+.sidebar details{margin-bottom:0}
+.sidebar summary{cursor:pointer;list-style:none;padding:10px 12px;border-radius:8px;font-weight:600;font-size:.92rem;color:var(--primary);user-select:none;transition:background 0.2s}
+.sidebar summary::-webkit-details-marker,.sidebar summary::marker{display:none}
+.sidebar details[open]>summary{background:#eef2ff}
+.sidebar summary:hover{background:#f0f4ff}
+.sidebar details > div{padding:0 0 8px 12px}
+.sidebar a{display:block;padding:8px 12px;margin-bottom:2px;border-radius:8px;font-size:.88rem;font-weight:500;color:var(--text);border-bottom:none;border-left:3px solid transparent;line-height:1.4;transition:all 0.15s}
 .sidebar a:hover{background:#eef2ff;color:#1e2a78}
 .sidebar a.active{background:#eef2ff;color:#1735ad;font-weight:700;border-left-color:var(--primary)}
+/* Keyboard Navigation & Accessibility */
+a:focus-visible,button:focus-visible,.sidebar a:focus-visible,.sidebar summary:focus-visible,.site-nav summary:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+details:focus-visible > summary{outline:2px solid var(--primary);outline-offset:2px}
 @media print{
   .site-nav{display:none}
   body{background:#fff}
@@ -291,9 +304,25 @@ hr.divider{border:none;height:0;margin:0}
 <body>
 $navHtml
 <div class="layout">
-  <aside class="sidebar">
-    <div class="toc-title module-title">$ModuleName</div>
-    $tocHtml
+  <aside class="sidebar" aria-label="Page navigation">
+    <details open>
+      <summary>▶ $ModuleName</summary>
+      <div>
+        $conceptLinksHtml
+      </div>
+    </details>
+    <details>
+      <summary>▶ Labs</summary>
+      <div>
+        $labLinksHtml
+      </div>
+    </details>
+    <details>
+      <summary>▶ On This Page</summary>
+      <div>
+        $onThisPageHtml
+      </div>
+    </details>
   </aside>
   <div class="page">
   $html
@@ -339,34 +368,26 @@ function Generate-TableOfContents {
         [string]$ModuleDir = ""
     )
 
-    $toc = @()
-
-    # Add concept document links based on module
+    # Build concept links
     $conceptLinks = Get-ConceptLinks $ModuleDir
-    foreach ($link in $conceptLinks) {
-        $toc += $link
-    }
+    $conceptHtml = if ($conceptLinks.Count -gt 0) { $conceptLinks -join "`n" } else { "" }
 
-    # Add lab divider if there are labs
-    $toc += '<hr class="sidebar-divider">'
-    $toc += '<div class="toc-title">Labs</div>'
-
-    # Add lab links based on module
+    # Build lab links
     $labLinks = Get-LabLinks $ModuleDir
-    foreach ($link in $labLinks) {
-        $toc += $link
-    }
+    $labHtml = if ($labLinks.Count -gt 0) { $labLinks -join "`n" } else { "" }
 
-    # Add divider and on-this-page section
-    $toc += '<hr class="sidebar-divider">'
-    $toc += '<div class="toc-title">On This Page</div>'
-
-    # Add page-specific TOC
+    # Build on-this-page links (h2 sections)
+    $pageLinks = @()
     foreach ($section in $Sections | Where-Object { $_.Level -eq 2 }) {
-        $toc += "<a href=`"#$($section.Id)`">$($section.Title)</a>"
+        $pageLinks += "<a href=`"#$($section.Id)`">$($section.Title)</a>"
     }
+    $pageHtml = $pageLinks -join "`n"
 
-    return $toc -join "`n"
+    return @{
+        ConceptLinks = $conceptHtml
+        LabLinks = $labHtml
+        PageLinks = $pageHtml
+    }
 }
 
 function Get-ConceptLinks {
@@ -521,7 +542,7 @@ function Convert-TableLinesToHtml {
 }
 
 # Main script execution
-Write-Host "🚀 Starting Lab HTML Generation..." -ForegroundColor Cyan
+Write-Host "Starting Lab HTML Generation..." -ForegroundColor Cyan
 Write-Host ""
 
 # Find all lab markdown files
@@ -572,24 +593,24 @@ foreach ($labFile in $labFiles) {
         $labTitle = if ($titleMatch.Success) { $titleMatch.Groups[1].Value } else { "Lab - $labName" }
 
         # Generate HTML
-        $html = Convert-MarkdownToHTML -MarkdownPath $labFile.FullName -OutputPath $outputFile -ModuleName $moduleName -LabTitle $labTitle
+        $html = Convert-MarkdownToHTML -MarkdownPath $labFile.FullName -OutputPath $outputFile -ModuleName $moduleName -ModuleDir $moduleDir -LabTitle $labTitle
 
         # Write HTML file
         Set-Content -Path $outputFile -Value $html -Encoding UTF8
 
-        Write-Host "✅ Generated: $($labFile.Name) → $(Split-Path $outputFile -Leaf)" -ForegroundColor Green
+        Write-Host "Generated: $($labFile.Name) -> $(Split-Path $outputFile -Leaf)" -ForegroundColor Green
         $generatedCount++
     }
     catch {
-        Write-Host "❌ Error processing $($labFile.Name): $($_.Exception.Message)" -ForegroundColor Red
+        Write-Host "Error processing $($labFile.Name): $($_.Exception.Message)" -ForegroundColor Red
         $errorCount++
     }
 }
 
 Write-Host ""
-Write-Host "📊 Generation Complete" -ForegroundColor Cyan
-Write-Host "  ✅ Generated: $generatedCount files"
+Write-Host "Generation Complete" -ForegroundColor Cyan
+Write-Host "  Generated: $generatedCount files"
 if ($errorCount -gt 0) {
-    Write-Host "  ❌ Errors: $errorCount files" -ForegroundColor Red
+    Write-Host "  Errors: $errorCount files" -ForegroundColor Red
 }
 Write-Host ""
