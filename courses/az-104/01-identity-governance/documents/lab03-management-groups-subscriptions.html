@@ -149,6 +149,101 @@ hr.divider{border:none;height:0;margin:0}
 /* Keyboard Navigation & Accessibility */
 a:focus-visible,button:focus-visible,.sidebar a:focus-visible,.sidebar summary:focus-visible,.site-nav summary:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
 details:focus-visible > summary{outline:2px solid var(--primary);outline-offset:2px}
+
+/* ===== PROFESSIONAL LAB TEMPLATE STYLES ===== */
+
+/* Time Estimate Display */
+.time-estimate-header{display:flex;align-items:center;gap:8px;margin:10px 0 20px;padding:12px 16px;background:#eef2ff;border-radius:8px;border-left:4px solid #1735ad;width:fit-content}
+.time-estimate-header .clock-icon{font-size:1.3rem}
+.time-estimate-header .time-text{font-weight:600;color:#1735ad;font-size:1.05rem}
+
+/* Section Header with Time Estimate */
+.section-header{margin:32px 0 24px 0;padding-bottom:16px;border-bottom:2px solid #d9e0ef;display:flex;justify-content:space-between;align-items:flex-start}
+.section-header h2{margin:0;font-size:1.8rem}
+.section-time{background:#e3f2fd;border:1px solid #90caf9;border-radius:8px;padding:8px 14px;font-size:0.95rem;font-weight:600;color:#1565c0;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.section-time .icon{font-size:1.1rem}
+
+/* Task Box */
+.task-box{margin:20px 0;padding:0;background:#fff;border:1px solid #d9e0ef;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(21,29,99,0.06)}
+.task-header{display:flex;align-items:center;gap:12px;padding:16px;background:linear-gradient(135deg,#eef2ff 0%,#f5f8ff 100%);border-bottom:1px solid #d9e0ef}
+.task-header .task-icon{font-size:1.5rem;color:#1735ad}
+.task-header h3{margin:0;font-size:1.15rem;color:var(--primary);font-weight:700}
+.task-content{padding:16px}
+
+/* Step and Substep Styling */
+.step{margin:16px 0;padding:12px 16px;border-left:4px solid #1735ad;background:#f9fafb;border-radius:0 6px 6px 0}
+.step-number{display:inline-block;min-width:32px;height:32px;background:#1735ad;color:#fff;border-radius:50%;text-align:center;line-height:32px;font-weight:700;font-size:0.95rem;margin-right:10px}
+.step-content{display:inline;line-height:1.6;color:var(--text)}
+.step strong{color:var(--primary)}
+
+.substep{margin:12px 0 12px 48px;padding:8px 12px;background:#fff;border-left:3px solid #c8d5ff;border-radius:0 4px 4px 0;color:var(--text);line-height:1.6}
+.substep::before{content:'→ ';color:#1735ad;font-weight:700;margin-right:6px}
+
+/* Callout Boxes */
+.callout-box{margin:20px 0;padding:16px;border-radius:10px;border-left:4px solid;display:flex;gap:12px}
+.callout-icon{font-size:1.4rem;flex-shrink:0;min-width:24px}
+.callout-content{flex:1}
+.callout-content h4{margin:0 0 6px 0;font-size:1.05rem}
+.callout-content p{margin:0;line-height:1.6}
+
+/* Callout Variants */
+.callout-tip{background:#e3f2fd;border-color:#90caf9}
+.callout-tip .callout-icon{color:#1976d2}
+.callout-tip h4{color:#1565c0}
+
+.callout-warning{background:#fff3e0;border-color:#ffb74d}
+.callout-warning .callout-icon{color:#f57c00}
+.callout-warning h4{color:#e65100}
+
+.callout-important{background:#ffebee;border-color:#ef5350}
+.callout-important .callout-icon{color:#d32f2f}
+.callout-important h4{color:#c62828}
+
+.callout-note{background:#f5f5f5;border-color:#bdbdbd}
+.callout-note .callout-icon{color:#616161}
+.callout-note h4{color:#424242}
+
+/* Code Block */
+.code-block{position:relative;margin:16px 0;background:#1e1e1e;border-radius:8px;overflow:hidden;border:1px solid #333;box-shadow:0 2px 8px rgba(0,0,0,0.3)}
+.code-block pre{margin:0;padding:16px 40px 16px 16px;color:#e0e0e0;font-family:'SF Mono',Consolas,'Courier New',monospace;font-size:0.93rem;line-height:1.6;overflow-x:auto}
+.code-copy-btn{position:absolute;top:10px;right:10px;padding:8px 14px;background:#2d2d2d;color:#a8e6ce;border:1px solid #444;border-radius:6px;cursor:pointer;font-size:0.85rem;font-weight:600;transition:all 0.2s;user-select:none}
+.code-copy-btn:hover{background:#3a3a3a;color:#fff;border-color:#555}
+.code-copy-btn.copied{background:#27ae60;color:#fff}
+
+/* Syntax Highlighting in Code Blocks */
+.code-block .keyword{color:#569cd6;font-weight:500}
+.code-block .string{color:#ce9178}
+.code-block .number{color:#b5cea8}
+.code-block .comment{color:#6a9955}
+.code-block .operator{color:#d4d4d4}
+.code-block .function{color:#dcdcaa}
+.code-block .property{color:#9cdcfe}
+
+/* Success/Completion Box */
+.success-box{margin:24px 0;padding:20px;background:#f1f8e9;border:1px solid #c5e1a5;border-radius:10px;border-left:4px solid #7cb342}
+.success-box h4{color:#558b2f;margin-top:0;font-size:1.1rem}
+.success-items{list-style:none;margin:12px 0;padding:0}
+.success-item{padding:8px 0;line-height:1.6;color:var(--text)}
+.success-item::before{content:'✓ ';color:#7cb342;font-weight:700;margin-right:8px;font-size:1.1rem}
+
+/* Validation Checklist */
+.validation-checklist{margin:24px 0;padding:20px;background:#fff;border:1px solid #d9e0ef;border-radius:10px}
+.validation-checklist h4{margin-top:0;color:var(--primary);font-size:1.1rem}
+.checklist-item{padding:10px 0;margin:8px 0;line-height:1.6}
+.checklist-item input[type="checkbox"]{margin-right:10px;cursor:pointer;width:18px;height:18px}
+.checklist-item label{cursor:pointer}
+
+/* Spacing Utilities */
+.mt-32{margin-top:32px}
+.mb-24{margin-bottom:24px}
+.mb-16{margin-bottom:16px}
+.mb-8{margin-bottom:8px}
+
+@media (max-width:1000px){
+  .section-header{flex-direction:column;gap:12px}
+  .section-time{width:100%}
+}
+
 @media print{
   .site-nav{display:none}
   body{background:#fff}
@@ -166,7 +261,7 @@ details:focus-visible > summary{outline:2px solid var(--primary);outline-offset:
     <summary>Learning Module</summary>
     <div class="nav-menu">
       <a href="../../00-prerequisites/documents/module-home.html">00 - Prerequisites</a>
-      <a href="../../01-identity-governance/documents/module-home.html" class="active">01 - Identity &amp; Governance</a>
+      <a href="../../01-identity-governance/documents/module-home.html">01 - Identity &amp; Governance</a>
       <a href="../../02-storage/documents/module-home.html">02 - Storage</a>
       <a href="../../03-compute/documents/module-home.html">03 - Compute</a>
       <a href="../../04-networking/documents/module-home.html">04 - Networking</a>
@@ -176,7 +271,7 @@ details:focus-visible > summary{outline:2px solid var(--primary);outline-offset:
 </nav>
 <div class="layout">
   <aside class="sidebar" aria-label="Page navigation">
-    <details open aria-label="Module concepts">
+    <details open>
       <summary>▶ Module 01 - Identity &amp; Governance</summary>
       <div>
         <a href="01-entra-id-overview.html">01 - Entra ID Overview</a>
@@ -186,7 +281,7 @@ details:focus-visible > summary{outline:2px solid var(--primary);outline-offset:
 <a href="05-identity-best-practices.html">05 - Identity Best Practices</a>
       </div>
     </details>
-    <details aria-label="Module labs">
+    <details>
       <summary>▶ Labs</summary>
       <div>
         <a href="lab01-entra-users-groups.html">Lab 01 - Entra Users &amp; Groups</a>
@@ -194,7 +289,7 @@ details:focus-visible > summary{outline:2px solid var(--primary);outline-offset:
 <a href="lab03-management-groups-subscriptions.html">Lab 03 - Management Groups</a>
       </div>
     </details>
-    <details aria-label="On this page">
+    <details>
       <summary>▶ On This Page</summary>
       <div>
         <a href="#objectives">Objectives</a>
@@ -322,6 +417,7 @@ details:focus-visible > summary{outline:2px solid var(--primary);outline-offset:
   </div>
 </div>
 <script>
+/* Sidebar Active Link Tracking */
 (function(){
   var links = Array.prototype.slice.call(document.querySelectorAll('.sidebar a'));
   var sections = [];
@@ -341,6 +437,38 @@ details:focus-visible > summary{outline:2px solid var(--primary);outline-offset:
   }, { rootMargin: '-100px 0px -70% 0px', threshold: 0 });
   sections.forEach(function(s){ observer.observe(s.el); });
 })();
+
+/* Code Block Copy Button Functionality */
+document.addEventListener('DOMContentLoaded', function(){
+  var codeBlocks = document.querySelectorAll('.code-block');
+  codeBlocks.forEach(function(block){
+    var pre = block.querySelector('pre');
+    if (!pre) return;
+
+    var btn = document.createElement('button');
+    btn.className = 'code-copy-btn';
+    btn.textContent = 'Copy';
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'Copy code to clipboard');
+
+    btn.addEventListener('click', function(){
+      var code = pre.textContent;
+      navigator.clipboard.writeText(code).then(function(){
+        var original = btn.textContent;
+        btn.textContent = '✓ Copied!';
+        btn.classList.add('copied');
+        setTimeout(function(){
+          btn.textContent = original;
+          btn.classList.remove('copied');
+        }, 2000);
+      }).catch(function(){
+        alert('Failed to copy code');
+      });
+    });
+
+    block.appendChild(btn);
+  });
+});
 </script>
 </body>
 </html>
