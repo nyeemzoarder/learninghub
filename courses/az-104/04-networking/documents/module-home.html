@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Identity &amp; Access Fundamentals - AZ-104 Prerequisites</title>
+<title>Module 04 - Networking - AZ-104 Learning Hub</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -41,9 +41,6 @@ a:hover{border-bottom-color:#1e2a78}
 
 strong{color:var(--primary);font-weight:700}
 
-code{background:#eef2ff;color:#1735ad;padding:2px 6px;border-radius:6px;font:13px/1.4 'SF Mono',Consolas,'Courier New',monospace}
-th code,td code{font-size:.92em}
-
 .callout{margin-top:20px;background:#f3f7ff;border:1px solid #bfd0ff;border-radius:14px;padding:18px 22px}
 .callout strong{color:#1735ad}
 .callout p{margin:0}
@@ -69,8 +66,16 @@ tr:hover td{background:#fafbff}
 .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
 
-.mistake-card{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:14px 0 8px}
-.mistake-card h4{margin-top:0}
+.card{
+  background:#fff;border:1px solid var(--border);border-radius:12px;
+  padding:22px;box-shadow:0 2px 8px rgba(21,29,99,.06);
+  transition:box-shadow 0.2s;
+}
+.card:hover{box-shadow:0 8px 20px rgba(21,29,99,.12)}
+.card h4{margin-top:0;margin-bottom:8px;color:var(--primary)}
+.card p{margin:0;color:var(--muted);font-size:.95rem;line-height:1.5}
+.card a{display:inline-block;margin-top:12px;color:#1e2a78;text-decoration:none;font-weight:600}
+.card a:hover{text-decoration:underline}
 
 .tip{margin-top:20px;background:#eef4ff;border:1px solid #c8d5ff;border-radius:12px;padding:16px 20px;font-size:1.02rem}
 .tip strong{color:#1735ad}
@@ -83,7 +88,7 @@ hr.divider{border:none;height:0;margin:0}
 .footer-meta{margin-top:24px;padding-top:16px;border-top:1px solid var(--border);text-align:center;font-size:.85rem}
 
 @media (max-width:1000px){
-  .section,.grid2,.grid3,.grid4,.mistake-card{grid-template-columns:1fr}
+  .section,.grid2,.grid3,.grid4{grid-template-columns:1fr}
   h1{font-size:2.3rem}
   .page{padding:16px}
   .panel{font-size:13px}
@@ -122,6 +127,7 @@ hr.divider{border:none;height:0;margin:0}
   .site-nav{padding:10px 16px}
   .site-nav .nav-brand{font-size:.95rem}
 }
+
 /* ===== Page Sidebar (Collapsible) ===== */
 .layout{max-width:1400px;margin:auto;display:flex;align-items:flex-start}
 .sidebar{
@@ -149,6 +155,7 @@ hr.divider{border:none;height:0;margin:0}
 .sidebar a.active{background:#eef2ff;color:#1735ad;font-weight:700;border-left-color:var(--primary)}
 .sidebar details > div{padding:0 0 8px 12px}
 .sidebar hr.sidebar-divider{border:none;border-top:1px solid var(--border);margin:12px 0}
+
 @media print{
   .site-nav{display:none}
   body{background:#fff}
@@ -165,7 +172,7 @@ hr.divider{border:none;height:0;margin:0}
   <details class="nav-group">
     <summary>Module 00 - Prerequisites</summary>
     <div class="nav-menu">
-      <a href="../../00-prerequisites/documents/module-home.html" class="active">Module 00 Home</a>
+      <a href="../../00-prerequisites/documents/module-home.html">Module 00 Home</a>
     </div>
   </details>
   <details class="nav-group">
@@ -177,156 +184,160 @@ hr.divider{border:none;height:0;margin:0}
   <details class="nav-group">
     <summary>Module 04 - Networking</summary>
     <div class="nav-menu">
-      <a href="../../04-networking/documents/module-home.html">Module 04 Home</a>
+      <a href="module-home.html" class="active">Module 04 Home</a>
     </div>
   </details>
 </nav>
 <div class="layout">
   <aside class="sidebar">
     <details open>
-      <summary>▶ Module 00 - Prerequisites</summary>
+      <summary>▶ Module 04 - Networking</summary>
       <div>
-        <a href="01-cloud-computing-fundamentals.html">01 - Cloud computing fundamentals</a>
-        <a href="02-networking-basics.html">02 - Networking basics</a>
-        <a href="03-identity-and-access-fundamentals.html">03 - Identity and access fundamentals</a>
-        <a href="04-azure-portal-navigation.html">04 - Azure portal navigation</a>
+        <a href="01-vnets-and-subnets.html">01 - VNets &amp; Subnets</a>
+        <a href="02-network-security-groups.html">02 - Network Security Groups</a>
+        <a href="03-routing-fundamentals.html">03 - Routing Fundamentals</a>
+        <a href="04-vnet-peering.html">04 - VNet Peering</a>
+        <a href="05-vpn-and-expressroute.html">05 - VPN &amp; ExpressRoute</a>
+        <a href="06-hub-spoke-topology.html">06 - Hub-Spoke Topology</a>
+        <a href="07-private-endpoints-service-endpoints.html">07 - Private &amp; Service Endpoints</a>
+        <a href="08-network-security-advanced.html">08 - Advanced Network Security</a>
       </div>
     </details>
     <details>
       <summary>▶ Labs</summary>
       <div>
-        <a href="lab00-azure-portal-navigation.html">lab00 - Azure portal navigation</a>
+        <a href="lab12-vnet-subnets.html">Lab 12 - VNet &amp; Subnets</a>
+        <a href="lab13-nsg-asg.html">Lab 13 - NSG &amp; ASG</a>
+        <a href="lab14-vnet-peering-vpn.html">Lab 14 - VNet Peering &amp; VPN</a>
+        <a href="lab15-load-balancer-app-gateway.html">Lab 15 - Load Balancer</a>
+        <a href="lab16-dns-name-resolution.html">Lab 16 - DNS Name Resolution</a>
       </div>
     </details>
     <details>
       <summary>▶ On This Page</summary>
       <div>
-        <a href="#authentication-vs-authorization">Authentication vs authorization</a>
-        <a href="#tenants-and-directories">Tenants and directories</a>
-        <a href="#users-groups-and-roles">Users groups and roles</a>
-        <a href="#why-this-distinction-matters-on-the-exam">Why this distinction matters on the exam</a>
-        <a href="#how-this-connects-to-other-topics">How this connects to other topics</a>
-        <a href="#key-takeaways">Key takeaways</a>
-        <a href="#next-steps">Next steps</a>
+        <a href="#overview">Overview</a>
+        <a href="#concepts">Concepts</a>
+        <a href="#labs">Labs</a>
       </div>
     </details>
   </aside>
   <div class="page">
 
-  <h1>Identity &amp; Access Fundamentals</h1>
-  <div class="subtitle">AuthN vs. AuthZ, tenants, users, groups and roles — the building blocks of Module 01</div>
+  <h1>Module 04: Networking</h1>
+  <div class="subtitle">Master Azure networking fundamentals and advanced network architectures</div>
 
   <div class="badges">
-    <span class="badge">🟢 Beginner</span>
-    <span class="badge">⏱ 10 Minutes</span>
-    <span class="badge">📘 AZ-104 · Prerequisites</span>
+    <span class="badge">🟡 Intermediate</span>
+    <span class="badge">⏱ 150 Minutes</span>
+    <span class="badge">📘 AZ-104 · Module 04</span>
   </div>
 
   <div class="callout">
     <strong>Why This Matters</strong>
-    <p>Identity &amp; Governance is the <strong>largest single domain</strong> on the AZ-104 exam (20–25%). Module 01 builds directly on the concepts below — read this first if terms like "tenant," "directory," or "role-based access" are new to you.</p>
+    <p>Networking is the backbone of Azure infrastructure. This module covers how to design and manage virtual networks, control traffic with security groups, implement routing, connect multiple networks, and secure communications. Solid networking skills are essential for any Azure administrator.</p>
   </div>
 
-  <!-- AuthN vs AuthZ -->
-  <div class="section" id="authentication-vs-authorization">
-    <div>
-      <h2>Authentication vs. Authorization</h2>
-      <p>These two terms are often confused but mean different things:</p>
-      <ul>
-        <li><strong>Authentication (AuthN)</strong> — <em>proving who you are</em> (e.g., signing in with a username and password, or MFA).</li>
-        <li><strong>Authorization (AuthZ)</strong> — <em>what you're allowed to do once you're signed in</em> (e.g., can you create a VM in this subscription?).</li>
-      </ul>
-      <p>Microsoft Entra ID (formerly Azure AD) handles <strong>authentication</strong>. <strong>Role-Based Access Control (RBAC)</strong> handles <strong>authorization</strong>. Module 01 covers both — Lab 01 focuses on Entra ID identities, Lab 02 on RBAC.</p>
-    </div>
-    <div class="panel">Sign-in request
-   │
-   ▼
-Authentication (Entra ID)
-"Who are you?"
-   │  ✓ identity verified
-   ▼
-Authorization (Azure RBAC)
-"What can you do?"
-   │
-   ├── Contributor → can manage resources
-   ├── Reader      → can view only
-   └── No role     → "signed in" but
-                      can't do anything ✗</div>
+  <!-- Overview -->
+  <div class="section full" id="overview">
+    <h2>Module Overview</h2>
+    <p>Module 04 teaches you how to design and manage Azure networks. You'll learn to create and configure virtual networks, implement network security, design multi-network architectures, and connect on-premises networks to Azure securely.</p>
+    <p>This module covers fundamental networking concepts and advanced patterns like hub-spoke topology for enterprise-scale deployments.</p>
   </div>
 
-  <!-- Tenants and Directories -->
-  <div class="section full" id="tenants-and-directories">
-    <h2>Tenants &amp; Directories</h2>
-    <p>A <strong>Microsoft Entra tenant</strong> (directory) is a dedicated, isolated instance of Entra ID — essentially "your organization's identity database" in the cloud. When you sign up for Azure, a tenant is created automatically. Every <strong>user</strong>, <strong>group</strong>, and <strong>app registration</strong> lives inside a tenant.</p>
-    <p><strong>Example:</strong> Your organization <code>contoso.com</code> has one Entra tenant. All employees' user accounts, the security groups they belong to, and any custom applications registered for SSO all live in that one tenant — even if the organization has multiple Azure <em>subscriptions</em> (billing/resource containers) underneath it.</p>
-    <div class="callout">
-      <strong>⚠️ Note</strong>
-      <p>A tenant is <em>not</em> the same as a subscription. One tenant can be linked to many subscriptions; Module 01 (Lab 03) covers how subscriptions, management groups, and resource groups relate.</p>
-    </div>
-  </div>
-
-  <!-- Users, Groups, Roles -->
-  <div class="section full" id="users-groups-and-roles">
-    <h2>Users, Groups &amp; Roles</h2>
-    <ul>
-      <li>A <strong>user</strong> is an identity that can sign in (a person, or in some cases a service).</li>
-      <li>A <strong>group</strong> is a collection of users (and/or other groups) — used to assign permissions or licenses to many users at once instead of individually.</li>
-      <li>A <strong>role</strong> is a named set of permissions. Entra ID has built-in <strong>administrator roles</strong> (e.g., <em>User Administrator</em>, <em>Global Administrator</em>) that control what someone can do <em>to the directory itself</em> (manage users, reset passwords, etc.) — distinct from Azure RBAC roles, which control what someone can do <em>to Azure resources</em> (VMs, storage, networks).</li>
-    </ul>
-    <table>
-      <tr><th></th><th>Entra ID roles</th><th>Azure RBAC roles</th></tr>
-      <tr><td><strong>Controls access to</strong></td><td>The directory (users, groups, licenses)</td><td>Azure resources (subscriptions, resource groups, individual resources)</td></tr>
-      <tr><td><strong>Example role</strong></td><td><em>User Administrator</em></td><td><em>Contributor</em>, <em>Reader</em>, <em>Virtual Machine Contributor</em></td></tr>
-      <tr><td><strong>Covered in</strong></td><td>Lab 01</td><td>Lab 02</td></tr>
-    </table>
-  </div>
-
-  <!-- Why this distinction matters -->
-  <div class="section full" id="why-this-distinction-matters-on-the-exam">
-    <h2>Why This Distinction Matters on the Exam</h2>
-    <p>A classic exam scenario: "User A can sign in but can't create any resources." This is almost always an <strong>Azure RBAC</strong> problem (no role assignment on the subscription/resource group), not an Entra ID problem — because <em>signing in successfully</em> already proves authentication works. Knowing which layer (AuthN vs. AuthZ) a symptom points to is a recurring exam pattern.</p>
-  </div>
-
-  <!-- Connections -->
-  <div class="section full" id="how-this-connects-to-other-topics">
-    <h2>How This Connects to Other Topics</h2>
+  <!-- Concepts -->
+  <div class="section full" id="concepts">
+    <h2>Concepts</h2>
     <div class="grid2">
-      <div>
-        <h3>Glossary</h3>
-        <p>Unfamiliar term? Check the <a href="../../resources/glossary.md">AZ-104 Glossary</a> for quick definitions of every concept used across these docs.</p>
+      <div class="card">
+        <h4>01 - VNets &amp; Subnets</h4>
+        <p>Design and create virtual networks and subnets as the foundation for all Azure network infrastructure.</p>
+        <a href="01-vnets-and-subnets.html">Read Concept →</a>
       </div>
-      <div>
-        <h3>Module 01 — Identity &amp; Governance</h3>
-        <p>Start with <a href="../../01-identity-governance/documents/01-entra-id-overview.html">Entra ID Overview</a> (tenants, users, groups in practice), then <a href="../../01-identity-governance/documents/02-rbac-fundamentals.html">RBAC Fundamentals</a> (authorization in depth).</p>
+      <div class="card">
+        <h4>02 - Network Security Groups</h4>
+        <p>Implement network-level firewalls using NSGs to control inbound and outbound traffic to resources.</p>
+        <a href="02-network-security-groups.html">Read Concept →</a>
+      </div>
+      <div class="card">
+        <h4>03 - Routing Fundamentals</h4>
+        <p>Understand IP routing, route tables, and how traffic flows between subnets and networks.</p>
+        <a href="03-routing-fundamentals.html">Read Concept →</a>
+      </div>
+      <div class="card">
+        <h4>04 - VNet Peering</h4>
+        <p>Connect multiple virtual networks together for seamless communication between networks.</p>
+        <a href="04-vnet-peering.html">Read Concept →</a>
+      </div>
+      <div class="card">
+        <h4>05 - VPN &amp; ExpressRoute</h4>
+        <p>Securely connect on-premises networks to Azure using VPN Gateway and ExpressRoute.</p>
+        <a href="05-vpn-and-expressroute.html">Read Concept →</a>
+      </div>
+      <div class="card">
+        <h4>06 - Hub-Spoke Topology</h4>
+        <p>Design enterprise-scale network architectures using the hub-spoke pattern for centralized management.</p>
+        <a href="06-hub-spoke-topology.html">Read Concept →</a>
+      </div>
+      <div class="card">
+        <h4>07 - Private &amp; Service Endpoints</h4>
+        <p>Secure access to Azure services using private endpoints and service endpoints.</p>
+        <a href="07-private-endpoints-service-endpoints.html">Read Concept →</a>
+      </div>
+      <div class="card">
+        <h4>08 - Advanced Network Security</h4>
+        <p>Implement advanced security patterns including Application Gateway, WAF, and DDoS protection.</p>
+        <a href="08-network-security-advanced.html">Read Concept →</a>
       </div>
     </div>
   </div>
 
-  <!-- Key Takeaways -->
-  <div class="section full" id="key-takeaways">
-    <h2>Key Takeaways</h2>
-    <div class="tip">
-      <strong>💡 Summary</strong>
-      <ul style="margin-top:8px">
-        <li><strong>Authentication (AuthN)</strong> = proving who you are (Entra ID)</li>
-        <li><strong>Authorization (AuthZ)</strong> = what you can do (Azure RBAC)</li>
-        <li><strong>Tenant</strong> = your organization's isolated identity directory</li>
-        <li><strong>Tenant ≠ Subscription</strong> — one tenant can have many subscriptions</li>
-        <li><strong>Users / Groups / Roles</strong> = the building blocks of identity and access</li>
-        <li><strong>Entra roles ≠ Azure RBAC roles</strong> — different systems, both needed</li>
-        <li>"Can sign in but can't do anything" → almost always an <strong>RBAC</strong> issue</li>
-      </ul>
+  <!-- Labs -->
+  <div class="section full" id="labs">
+    <h2>Hands-On Labs</h2>
+    <p>Build your networking skills with practical labs that let you design, configure, and troubleshoot Azure networks.</p>
+    <div class="grid3">
+      <div class="card">
+        <h4>Lab 12 - VNet &amp; Subnets</h4>
+        <p>Create and configure virtual networks, subnets, and IP addressing schemes.</p>
+        <a href="lab12-vnet-subnets.html">Start Lab →</a>
+      </div>
+      <div class="card">
+        <h4>Lab 13 - NSG &amp; ASG</h4>
+        <p>Implement network security groups and application security groups to control traffic.</p>
+        <a href="lab13-nsg-asg.html">Start Lab →</a>
+      </div>
+      <div class="card">
+        <h4>Lab 14 - VNet Peering &amp; VPN</h4>
+        <p>Connect multiple networks and securely link on-premises environments to Azure.</p>
+        <a href="lab14-vnet-peering-vpn.html">Start Lab →</a>
+      </div>
+      <div class="card">
+        <h4>Lab 15 - Load Balancer</h4>
+        <p>Distribute traffic across virtual machines using load balancers and application gateways.</p>
+        <a href="lab15-load-balancer-app-gateway.html">Start Lab →</a>
+      </div>
+      <div class="card">
+        <h4>Lab 16 - DNS Name Resolution</h4>
+        <p>Configure DNS, private DNS zones, and name resolution in Azure networks.</p>
+        <a href="lab16-dns-name-resolution.html">Start Lab →</a>
+      </div>
     </div>
   </div>
 
-  <!-- Next Steps -->
-  <div class="section full" id="next-steps">
-    <h2>Next Steps</h2>
+  <!-- Learning Path -->
+  <div class="section full">
+    <h2>Recommended Learning Path</h2>
     <ol>
-      <li><strong>Recap:</strong> Read <a href="01-cloud-computing-fundamentals.html">Cloud Computing Fundamentals</a> if you haven't yet</li>
-      <li><strong>Recap:</strong> Read <a href="02-networking-basics.html">Networking Basics</a> (needed for Module 04)</li>
-      <li><strong>Begin:</strong> <a href="../../01-identity-governance/documents/01-entra-id-overview.html">Module 01: Entra ID Overview</a> — apply tenants, users &amp; groups</li>
-      <li><strong>Continue:</strong> <a href="../../01-identity-governance/documents/02-rbac-fundamentals.html">Module 01: RBAC Fundamentals</a> — apply authorization</li>
+      <li><strong>Start here:</strong> Read <a href="01-vnets-and-subnets.html">VNets &amp; Subnets</a> for foundational networking</li>
+      <li><strong>Then:</strong> Read <a href="02-network-security-groups.html">Network Security Groups</a> to control traffic</li>
+      <li><strong>Next:</strong> Read <a href="03-routing-fundamentals.html">Routing Fundamentals</a> to understand traffic flow</li>
+      <li><strong>Expand:</strong> Read <a href="04-vnet-peering.html">VNet Peering</a> to connect networks</li>
+      <li><strong>Connect:</strong> Read <a href="05-vpn-and-expressroute.html">VPN &amp; ExpressRoute</a> for hybrid connectivity</li>
+      <li><strong>Scale:</strong> Read <a href="06-hub-spoke-topology.html">Hub-Spoke Topology</a> for enterprise patterns</li>
+      <li><strong>Secure:</strong> Read <a href="07-private-endpoints-service-endpoints.html">Private &amp; Service Endpoints</a></li>
+      <li><strong>Advanced:</strong> Read <a href="08-network-security-advanced.html">Advanced Network Security</a></li>
+      <li><strong>Practice:</strong> Complete all five labs to master networking</li>
     </ol>
   </div>
 
@@ -335,15 +346,15 @@ Authorization (Azure RBAC)
     <div class="footer-grid">
       <div class="footer-item">
         <strong>Azure AZ-104</strong>
-        Professional Concept Documentation
+        Professional Learning Hub
       </div>
       <div class="footer-item">
         <strong>Module</strong>
-        00 — Prerequisites
+        04 — Networking
       </div>
       <div class="footer-item">
         <strong>Generated</strong>
-        June 15, 2026
+        June 16, 2026
       </div>
     </div>
     <div class="footer-meta">&copy; 2026 — AZ-104 Learning Hub. For study purposes only.</div>
@@ -374,7 +385,3 @@ Authorization (Azure RBAC)
 </script>
 </body>
 </html>
-
-
-
-
