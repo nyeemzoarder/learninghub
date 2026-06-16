@@ -55,13 +55,14 @@
 <a href="#prerequisites">Prerequisites</a>
 <a href="#estimated-time">Estimated time</a>
 <a href="#part-1-create-a-management-group-hierarchy">Part 1 – Create a management group hierarchy</a>
-<a href="#part-2-move-your-subscription-under-mg-sandbox">Part 2 – Move your subscription under mg-sandbox</a>
+<a href="#part-2-move-subscription-under-management-group">Part 2 – Move subscription under management group</a>
 <a href="#part-3-resource-groups-and-tagging-strategy">Part 3 – Resource groups and tagging strategy</a>
-<a href="#part-4-resource-locks">Part 4 – Resource locks</a>
+<a href="#part-4-resource-locks-prevent-accidents">Part 4 – Resource locks (prevent accidents)</a>
 <a href="#part-5-cost-management-basics">Part 5 – Cost Management basics</a>
-<a href="#validation">Validation</a>
-<a href="#cleanup">Cleanup</a>
-<a href="#exam-tips">Exam Tips</a>
+<a href="#success-criteria">Success Criteria</a>
+<a href="#cleanup-if-needed">Cleanup (If Needed)</a>
+<a href="#key-takeaways">Key Takeaways</a>
+<a href="#next-steps">Next Steps</a>
       </div>
     </details>
   </aside>
@@ -69,31 +70,39 @@
   <h1>Lab 03 – Management Groups, Subscriptions & Resource Organization</h1>
 
 <h2 id="objectives">Objectives</h2>
+
 <ul><ol><li>Create a management group hierarchy</li>
 <li>Move a subscription into a management group</li>
 <li>Organize resources using resource groups, tags, and locks</li>
 <li>Understand cost management basics (budgets, cost analysis)</li></ol></ul>
 
 <h2 id="prerequisites">Prerequisites</h2>
+
 <ul><ol><li>Global Administrator or User Access Administrator with root management group access</li>
 <li>Signed in at <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
 
 <h2 id="estimated-time">Estimated time</h2>
+
 <p>30 minutes</p>
 
 <hr class="divider">
 
 <h2 id="part-1-create-a-management-group-hierarchy">Part 1 – Create a management group hierarchy</h2>
 
-<ol><li>Search for <strong>Management groups</strong>.</li>
-<li>Select <strong>Add management group</strong>. Set <strong>Management group ID</strong> to <code>mg-contoso</code></li></ol>
-<p>and a display name, then <strong>Save</strong>.</p>
-<ol><li>Select <strong>Add management group</strong> again for <code>mg-corp</code>. After it's created,</li></ol>
-<p>open it, go to <strong>Details</strong>, select <strong>Change parent</strong>, and set the parent to</p>
-<p><code>mg-contoso</code>.</p>
-<ol><li>Repeat step 3 to create <code>mg-sandbox</code> and set its parent to <code>mg-contoso</code> as well.</li></ol>
+<h3 id="why-management-groups">Why Management Groups?</h3>
 
-<p>Resulting hierarchy:</p>
+<div class='callout-box callout-important'><span class='callout-icon'>❗</span><div class='callout-content'><h4>important</h4><p>Management Groups are the FOUNDATION of Azure governance at scale. Policies and RBAC assigned at MG level apply to all subscriptions beneath them.</p></div></div>
+
+<h3 id="step-1-create-the-hierarchy">Step 1: Create the hierarchy</h3>
+
+<ol><li>Search for <strong>Management groups</strong></li>
+<li>Select <strong>Add management group</strong> > <strong>Management group ID</strong>: <code>mg-contoso</code> > <strong>Save</strong></li>
+<li>Select <strong>Add management group</strong> again > <strong>Management group ID</strong>: <code>mg-corp</code> > <strong>Save</strong></li>
+<li>Open <code>mg-corp</code> > <strong>Details</strong> > <strong>Change parent</strong> > select <code>mg-contoso</code></li>
+<li>Repeat for <code>mg-sandbox</code> with parent = <code>mg-contoso</code></li></ol>
+
+<h3 id="resulting-structure">Resulting structure:</h3>
+
 <p>``<code></p>
 <p>Root (Tenant Root Group)</p>
 <p>└── mg-contoso</p>
@@ -101,77 +110,182 @@
 <p>└── mg-sandbox</p>
 <p></code>`<code></p>
 
-<h2 id="part-2-move-your-subscription-under-mg-sandbox">Part 2 – Move your subscription under mg-sandbox</h2>
+<div class='callout-box callout-tip'><span class='callout-icon'>ℹ️</span><div class='callout-content'><h4>tip</h4><p>The Tenant Root Group is automatic. You create everything beneath it. Deep hierarchies (3+ levels) are common in large enterprises.</p></div></div>
 
-<ol><li><strong>Management groups</strong> > select </code>mg-sandbox<code> > <strong>Subscriptions</strong> tab.</li>
-<li>Select <strong>Add subscription</strong>, choose your subscription from the list, and</li></ol>
-<p>confirm the move.</p>
+<hr class="divider">
 
-<div class="callout"><p>Policies/RBAC assigned at </code>mg-contoso<code> or </code>mg-sandbox<code> now apply to this subscription.</p></div>
+<h2 id="part-2-move-subscription-under-management-group">Part 2 – Move subscription under management group</h2>
+
+<h3 id="step-1-associate-subscription-with-mg">Step 1: Associate subscription with MG</h3>
+
+<ol><li><strong>Management groups</strong> > select </code>mg-sandbox<code> > <strong>Subscriptions</strong> tab</li>
+<li>Select <strong>Add subscription</strong> > choose your subscription > confirm move</li></ol>
+
+<div class='callout-box callout-important'><span class='callout-icon'>❗</span><div class='callout-content'><h4>important</h4><p>Policies and RBAC assigned at </code>mg-contoso<code> or </code>mg-sandbox<code> now apply automatically to this subscription and all resources in it.</p></div></div>
+
+<h3 id="step-2-verify-the-move">Step 2: Verify the move</h3>
+
+<ol><li>Go back to <strong>Management groups</strong> > select each MG to confirm your subscription appears under </code>mg-sandbox<code></li></ol>
+
+<hr class="divider">
 
 <h2 id="part-3-resource-groups-and-tagging-strategy">Part 3 – Resource groups and tagging strategy</h2>
 
-<ol><li>Search for <strong>Resource groups</strong> > <strong>Create</strong>.</li>
-<li><strong>Resource group</strong>: </code>rg-az104-lab03<code>. <strong>Region</strong>: </code>East US<code>.</li>
-<li>On the <strong>Tags</strong> tab, add:</li></ol>
-<p>- </code>Environment<code> = </code>Lab<code></p>
-<p>- </code>CostCenter<code> = </code>Training<code></p>
-<p>- </code>Owner<code> = </code>yourname<code></p>
-<ol><li><strong>Review + create</strong> > <strong>Create</strong>.</li></ol>
+<h3 id="understanding-tags">Understanding Tags</h3>
 
-<p>If you need to add or change tags on an existing resource group later, open</p>
-<p>the resource group > <strong>Tags</strong> (left-hand menu or <strong>Overview</strong> page) > add/edit</p>
-<p>the name-value pairs > <strong>Save</strong>.</p>
+<div class='callout-box callout-tip'><span class='callout-icon'>ℹ️</span><div class='callout-content'><h4>tip</h4><p>Tags are KEY for cost allocation, automation, and compliance reporting. Always tag resources at creation time—adding tags later is error-prone.</p></div></div>
 
-<h2 id="part-4-resource-locks">Part 4 – Resource locks</h2>
+<h3 id="step-1-create-resource-group-with-tags">Step 1: Create resource group with tags</h3>
 
-<ol><li>Open </code>rg-az104-lab03<code> > <strong>Locks</strong> (under <strong>Settings</strong>).</li>
-<li>Select <strong>Add</strong>. <strong>Lock name</strong>: </code>lock-no-delete<code>. <strong>Lock type</strong>: <strong>Delete</strong></li></ol>
-<p>(this is the Portal's label for <strong>CanNotDelete</strong>).</p>
-<ol><li><strong>OK</strong>.</li>
-<li>Try to delete the resource group: <strong>Overview</strong> > <strong>Delete resource group</strong>,</li></ol>
-<p>type the name to confirm, and select <strong>Delete</strong>. It should fail with a</p>
-<p>message that the resource group is locked.</p>
-<ol><li>To explore the other lock type, select a single resource (e.g., the storage</li></ol>
-<p>account from Lab 02) > <strong>Locks</strong> > <strong>Add</strong> > <strong>Lock type</strong>: <strong>Read-only</strong>.</p>
-<p>Observe that you can still view the resource's properties, but any attempt</p>
-<p>to edit or delete it is blocked.</p>
-<ol><li>Remove the <strong>Read-only</strong> lock from that resource afterwards so it doesn't</li></ol>
-<p>interfere with other labs.</p>
+<ol><li>Search for <strong>Resource groups</strong> > <strong>Create</strong></li>
+<li><strong>Resource group</strong>: </code>rg-az104-lab03<code>  </li></ol>
+<p><strong>Region</strong>: </code>East US<code></p>
+<ol><li><strong>Tags</strong> tab: add the following:</li></ol>
+<p>- Key: </code>Environment<code> → Value: </code>Lab<code></p>
+<p>- Key: </code>CostCenter<code> → Value: </code>Training<code></p>
+<p>- Key: </code>Owner<code> → Value: </code>yourname<code></p>
+<ol><li><strong>Review + create</strong> > <strong>Create</strong></li></ol>
+
+<h3 id="step-2-update-tags-on-existing-resources">Step 2: Update tags on existing resources</h3>
+
+<p>If you need to modify tags later:</p>
+
+<ol><li>Open the resource group > <strong>Tags</strong> (left menu)</li>
+<li>Edit name-value pairs > <strong>Save</strong></li></ol>
+
+<div class='callout-box callout-warning'><span class='callout-icon'>⚠️</span><div class='callout-content'><h4>warning</h4><p>Portal doesn't warn you before overwriting tags. Be careful when bulk-updating tags on many resources.</p></div></div>
+
+<hr class="divider">
+
+<h2 id="part-4-resource-locks-prevent-accidents">Part 4 – Resource locks (prevent accidents)</h2>
+
+<h3 id="lock-types">Lock Types</h3>
+
+<table>
+<p><tr></p>
+<p><th>Lock Type</th></p>
+<p><th>What It Prevents</th></p>
+<p><th>Use Case</th></p>
+<p></tr></p>
+<p><tr></p>
+<p><td><strong>Delete</strong></td></p>
+<p><td>Deletion</td></p>
+<p><td>Prevent accidental resource group removal</td></p>
+<p></tr></p>
+<p><tr></p>
+<p><td><strong>Read-only</strong></td></p>
+<p><td>Any modification</td></p>
+<p><td>Lock down production resources</td></p>
+<p></tr></p>
+<p></table></p>
+
+
+<h3 id="step-1-apply-delete-lock">Step 1: Apply Delete lock</h3>
+
+<ol><li>Open </code>rg-az104-lab03<code> > <strong>Locks</strong> (under <strong>Settings</strong>)</li>
+<li>Select <strong>Add</strong>:</li></ol>
+<p>- <strong>Lock name</strong>: </code>lock-no-delete<code></p>
+<p>- <strong>Lock type</strong>: <strong>Delete</strong></p>
+<ol><li><strong>OK</strong></li></ol>
+
+<h3 id="step-2-test-the-delete-lock">Step 2: Test the Delete lock</h3>
+
+<ol><li>Go to <strong>Overview</strong> > <strong>Delete resource group</strong></li>
+<li>Type the name to confirm deletion</li>
+<li>Click <strong>Delete</strong></li>
+<li>Expect this error:</li></ol>
+
+<p></code>`<code></p>
+<p>The resource group is locked and cannot be deleted.</p>
+<p>Lock name: lock-no-delete</p>
+<p></code>`<code></p>
+
+<p>This proves the lock is working! ✓</p>
+
+<h3 id="step-3-test-read-only-lock">Step 3: Test Read-only lock</h3>
+
+<ol><li>Select a resource (e.g., storage account from Lab 02)</li>
+<li><strong>Locks</strong> > <strong>Add</strong> > <strong>Lock type</strong>: <strong>Read-only</strong> > <strong>OK</strong></li>
+<li>Try to edit properties or delete—both will be blocked</li>
+<li><strong>Remove the Read-only lock</strong> afterward so it doesn't interfere with other labs</li></ol>
+
+<hr class="divider">
 
 <h2 id="part-5-cost-management-basics">Part 5 – Cost Management basics</h2>
 
-<ol><li>Go to <strong>Cost Management + Billing</strong> > <strong>Cost analysis</strong>. Filter by</li></ol>
-<p></code>rg-az104-lab03<code> using the <strong>Resource group</strong> filter.</p>
-<ol><li><strong>Budgets</strong> > <strong>Add</strong> — create a budget of $10/month scoped to</li></ol>
-<p></code>rg-az104-lab03<code>, with an alert at 80% via email.</p>
-<ol><li>Review <strong>Advisor</strong> > <strong>Cost</strong> recommendations (may be empty in a new sandbox).</li></ol>
+<h3 id="step-1-analyze-costs">Step 1: Analyze costs</h3>
 
-<h2 id="validation">Validation</h2>
-<ul><ol><li>[ ] Management group hierarchy </code>mg-contoso > mg-corp, mg-sandbox<code> exists</li></ol></ul>
-<p>(<strong>Management groups</strong> view)</p>
-<ul><ol><li>[ ] Subscription is a child of </code>mg-sandbox<code></li>
-<li>[ ] </code>rg-az104-lab03<code> has </code>Environment<code>/</code>CostCenter<code>/</code>Owner<code> tags (check the</li></ol></ul>
-<p><strong>Tags</strong> page)</p>
-<ul><ol><li>[ ] </code>lock-no-delete<code> (<strong>Delete</strong> lock) prevents resource group deletion</li>
-<li>[ ] A budget alert exists for </code>rg-az104-lab03<code> (<strong>Cost Management + Billing</strong> ></li></ol></ul>
-<p><strong>Budgets</strong>)</p>
+<ol><li>Go to <strong>Cost Management + Billing</strong> > <strong>Cost analysis</strong></li>
+<li>Filter by <strong>Resource group</strong> = </code>rg-az104-lab03<code></li>
+<li>Observe current costs (may be $0.00 in sandbox)</li></ol>
 
-<h2 id="cleanup">Cleanup</h2>
-<ol><li></code>rg-az104-lab03<code> > <strong>Locks</strong> > select </code>lock-no-delete<code> > <strong>Delete</strong>.</li>
-<li><strong>Resource groups</strong> > select </code>rg-az104-lab03<code> > <strong>Delete resource group</strong></li></ol>
-<p>(type the name to confirm).</p>
-<ol><li>(Optional) <strong>Management groups</strong> > </code>mg-sandbox<code> > <strong>Subscriptions</strong> tab ></li></ol>
-<p>move your subscription back to the tenant root group.</p>
-<ol><li><strong>Management groups</strong> > select </code>mg-sandbox<code>, </code>mg-corp<code>, then </code>mg-contoso<code></li></ol>
-<p>(children first) > <strong>Details</strong> > <strong>Delete</strong>.</p>
-<ol><li>Remove the budget via <strong>Cost Management + Billing</strong> > <strong>Budgets</strong>.</li></ol>
+<div class='callout-box callout-tip'><span class='callout-icon'>ℹ️</span><div class='callout-content'><h4>tip</h4><p>Cost analysis updates with a 24-48 hour delay. This lab shows the UI, but real data takes time to populate.</p></div></div>
 
-<h2 id="exam-tips">Exam Tips</h2>
-<ul><ol><li>Management group hierarchy max depth: 6 levels (excluding root and subscription/resource levels).</li>
-<li>A subscription can only belong to <strong>one</strong> management group at a time.</li>
-<li>Lock types: <strong>Read-only</strong> (no writes/deletes) vs <strong>Delete</strong>/</code>CanNotDelete<code> (writes ok, no delete). Locks apply to child resources too and override RBAC permissions (even Owners are blocked).</li>
-<li>Tags don't inherit automatically from RG to resources unless you use Azure Policy </code>Modify<code>/</code>Inherit a tag` policies.</li></ol></ul>
+<h3 id="step-2-set-a-budget-alert">Step 2: Set a budget alert</h3>
+
+<ol><li><strong>Cost Management + Billing</strong> > <strong>Budgets</strong> > <strong>Add</strong></li>
+<li><strong>Name</strong>: </code>lab03-budget<code></li>
+<li><strong>Amount</strong>: $10 (per month)</li>
+<li><strong>Scope</strong>: </code>rg-az104-lab03<code></li>
+<li><strong>Alert thresholds</strong>: set email alert at <strong>80%</strong></li>
+<li><strong>Create</strong></li></ol>
+
+<h3 id="step-3-check-advisor-recommendations">Step 3: Check Advisor recommendations</h3>
+
+<ol><li>Go to <strong>Advisor</strong> > <strong>Cost</strong></li>
+<li>Review any recommendations (may be empty in a new sandbox)</li></ol>
+
+<hr class="divider">
+
+<h2 id="success-criteria">Success Criteria</h2>
+
+<p>✓ Management group hierarchy exists: </code>mg-contoso<code> > </code>mg-corp<code> and </code>mg-sandbox<code></p>
+<p>✓ Your subscription is child of </code>mg-sandbox<code></p>
+<p>✓ </code>rg-az104-lab03<code> has all three tags: </code>Environment<code>, </code>CostCenter<code>, </code>Owner<code></p>
+<p>✓ Delete lock </code>lock-no-delete<code> prevents resource group deletion</p>
+<p>✓ Budget alert configured for </code>rg-az104-lab03<code></p>
+
+<hr class="divider">
+
+<h2 id="cleanup-if-needed">Cleanup (If Needed)</h2>
+
+<p>To clean up all resources created in this lab:</p>
+
+<p></code>`<code>powershell</p>
+<h1>Remove Delete lock</h1>
+<p>Remove-AzManagementGroupDeployment -ResourceGroupName "rg-az104-lab03" -Name "lock-no-delete"</p>
+
+<h1>Delete resource group</h1>
+<p>Remove-AzResourceGroup -Name "rg-az104-lab03" -Force</p>
+
+<h1>Move subscription back to tenant root</h1>
+<p>Update-AzManagementGroup -GroupId "mg-sandbox" -Remove</p>
+
+<h1>Delete management groups (children first!)</h1>
+<p>Remove-AzManagementGroup -GroupId "mg-sandbox" -AsJob</p>
+<p>Remove-AzManagementGroup -GroupId "mg-corp" -AsJob</p>
+<p>Remove-AzManagementGroup -GroupId "mg-contoso" -AsJob</p>
+
+<h1>Remove budget</h1>
+<p>Remove-AzBudget -Name "lab03-budget" -ResourceGroupName "rg-az104-lab03"</p>
+<p></code>``</p>
+
+<hr class="divider">
+
+<h2 id="key-takeaways">Key Takeaways</h2>
+
+<ul><ol><li><strong>Management Groups</strong> = governance at subscription level (multiple subscriptions)</li>
+<li><strong>Subscriptions</strong> = billing boundary (one per department/project)</li>
+<li><strong>Resource Groups</strong> = organizing container for resources</li>
+<li><strong>Tags</strong> = metadata for cost allocation, automation, compliance</li>
+<li><strong>Locks</strong> = safety mechanism to prevent accidental deletion/modification</li>
+<li><strong>Cost Management</strong> = understand and control Azure spending</li></ol></ul>
+
+<hr class="divider">
+
+<h2 id="next-steps">Next Steps</h2>
+
+<p>Proceed to Lab 04 to learn about storage accounts and data organization.</p>
 
   </div>
 </div>

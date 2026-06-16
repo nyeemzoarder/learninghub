@@ -27,6 +27,16 @@
 
 ## Part 2 – Container access level
 
+### Understanding Access Levels
+
+| Level | Listing | Reading Blobs | Best For |
+|-------|---------|---------------|----------|
+| **Private** | ❌ | ❌ | Sensitive data |
+| **Blob** | ❌ | ✅ | Public files (share individual URLs) |
+| **Container** | ✅ | ✅ | Public datasets (allow listing) |
+
+> Warning: Setting to "Container" exposes all blob names and allows directory listing. Only use for non-sensitive data.
+
 1. **Containers** > select `data` > **Change access level** (top toolbar).
 2. Set **Public access level** to **Blob (anonymous read access for blobs only)**.
 
@@ -34,6 +44,8 @@
    > the account level by default. If the option is greyed out, go to the
    > storage account > **Configuration** and set **Allow Blob public access**
    > to **Enabled** first.
+
+> Tip: Share individual blob URLs instead of setting container to public. More secure and controlled.
 3. Open `data` > **Upload** > upload a small text file named `public.txt`
    (content: "public file").
 4. Select `public.txt` > copy its **URL** from the properties pane and open

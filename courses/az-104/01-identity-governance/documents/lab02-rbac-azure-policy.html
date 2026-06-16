@@ -57,12 +57,12 @@
 <a href="#part-1-create-a-resource-group-for-this-lab">Part 1 – Create a resource group for this lab</a>
 <a href="#part-2-assign-built-in-roles">Part 2 – Assign built-in roles</a>
 <a href="#part-3-create-a-custom-role">Part 3 – Create a custom role</a>
-<a href="#part-4-azure-policy-deny-resources-without-a-tag">Part 4 – Azure Policy: deny resources without a tag</a>
-<a href="#part-5-azure-policy-allowed-locations-initiative">Part 5 – Azure Policy: allowed locations initiative</a>
-<a href="#part-6-review-compliance">Part 6 – Review compliance</a>
-<a href="#validation">Validation</a>
-<a href="#cleanup">Cleanup</a>
-<a href="#exam-tips">Exam Tips</a>
+<a href="#part-4-azure-policy-enforce-required-tags">Part 4 – Azure Policy: enforce required tags</a>
+<a href="#part-5-azure-policy-enforce-allowed-locations">Part 5 – Azure Policy: enforce allowed locations</a>
+<a href="#success-criteria">Success Criteria</a>
+<a href="#cleanup-if-needed">Cleanup (If Needed)</a>
+<a href="#key-takeaways">Key Takeaways</a>
+<a href="#next-steps">Next Steps</a>
       </div>
     </details>
   </aside>
@@ -70,125 +70,235 @@
   <h1>Lab 02 – Role-Based Access Control (RBAC) & Azure Policy</h1>
 
 <h2 id="objectives">Objectives</h2>
-<ul><ol><li>Assign built-in roles at different scopes (subscription, RG, resource)</li>
+
+<ul><ol><li>Assign built-in roles at different scopes (subscription, resource group, resource)</li>
 <li>Create a custom RBAC role</li>
-<li>Create and assign an Azure Policy definition and an initiative</li>
+<li>Create and assign an Azure Policy definition and initiative</li>
 <li>Use Policy to enforce tagging and allowed locations</li></ol></ul>
 
 <h2 id="prerequisites">Prerequisites</h2>
+
 <ul><ol><li>Owner or User Access Administrator on the subscription</li>
 <li>Lab 01 users/groups (optional, can use any test user)</li></ol></ul>
 
 <h2 id="estimated-time">Estimated time</h2>
+
 <p>45 minutes</p>
 
 <hr class="divider">
 
 <h2 id="part-1-create-a-resource-group-for-this-lab">Part 1 – Create a resource group for this lab</h2>
 
-<ol><li>Search for <strong>Resource groups</strong> > <strong>Create</strong>.</li>
-<li><strong>Subscription</strong>: your subscription. <strong>Resource group</strong>: <code>rg-az104-lab02</code>.</li></ol>
-<p><strong>Region</strong>: <code>East US</code>.</p>
-<ol><li>Select <strong>Review + create</strong> > <strong>Create</strong>.</li></ol>
+<h3 id="step-1-create-resource-group">Step 1: Create resource group</h3>
+
+<ol><li>Search for <strong>Resource groups</strong> > <strong>Create</strong></li>
+<li><strong>Subscription</strong>: your subscription. <strong>Resource group</strong>: <code>rg-az104-lab02</code></li></ol>
+<p><strong>Region</strong>: <code>East US</code></p>
+<ol><li>Select <strong>Review + create</strong> > <strong>Create</strong></li></ol>
+
+<div class='callout-box callout-tip'><span class='callout-icon'>ℹ️</span><div class='callout-content'><h4>tip</h4><p>Resource groups are free containers. Always organize resources into RGs by project, environment, or cost center.</p></div></div>
+
+<hr class="divider">
 
 <h2 id="part-2-assign-built-in-roles">Part 2 – Assign built-in roles</h2>
 
-<ol><li>Go to <strong>rg-az104-lab02</strong> > <strong>Access control (IAM)</strong> > <strong>Add</strong> > <strong>Add role assignment</strong>.</li>
-<li>Role tab: select <strong>Reader</strong>. Select <strong>Next</strong>.</li>
-<li>Members tab: <strong>Assign access to</strong> = <strong>User, group, or service principal</strong> ></li></ol>
-<p><strong>Select members</strong> > choose <code>grp-az104-lab</code> (from Lab 01).</p>
-<ol><li><strong>Review + assign</strong>.</li>
-<li>Repeat at the <strong>resource</strong> level: create a storage account (see Lab 04 if not</li></ol>
-<p>yet created). Open the storage account > <strong>Access control (IAM)</strong> > <strong>Add role</p>
-<p>assignment</strong> > Role = <strong>Storage Blob Data Contributor</strong> > assign to Bob —</p>
-<p>this grants Bob access only at the storage account scope, not the whole RG.</p>
-<ol><li>To list current assignments at any scope, open <strong>Access control (IAM)</strong> ></li></ol>
-<p><strong>Role assignments</strong> tab and filter as needed.</p>
+<h3 id="understanding-rbac-scopes">Understanding RBAC Scopes</h3>
+
+<div class='callout-box callout-important'><span class='callout-icon'>❗</span><div class='callout-content'><h4>important</h4><p>RBAC assignments inherit down the hierarchy. Subscription → Resource Group → Resource. An assignment at the RG level applies to all resources within it.</p></div></div>
+
+<h3 id="step-1-assign-reader-role-at-resource-group-scope">Step 1: Assign Reader role at Resource Group scope</h3>
+
+<ol><li>Go to <strong>rg-az104-lab02</strong> > <strong>Access control (IAM)</strong> > <strong>Add</strong> > <strong>Add role assignment</strong></li>
+<li><strong>Role</strong> tab: select <strong>Reader</strong>. Select <strong>Next</strong></li>
+<li><strong>Members</strong> tab: </li></ol>
+<p>- <strong>Assign access to</strong> = <strong>User, group, or service principal</strong></p>
+<p>- <strong>Select members</strong> > choose <code>grp-az104-lab</code> (from Lab 01)</p>
+<ol><li><strong>Review + assign</strong></li></ol>
+
+<h3 id="step-2-assign-storage-role-at-resource-scope">Step 2: Assign Storage role at Resource scope</h3>
+
+<div class='callout-box callout-warning'><span class='callout-icon'>⚠️</span><div class='callout-content'><h4>warning</h4><p>Resource-level assignments are more restrictive. Bob here can only access this one storage account, not others in the RG.</p></div></div>
+
+<ol><li>Create a storage account (or use one from Lab 04)</li>
+<li>Open the storage account > <strong>Access control (IAM)</strong> > <strong>Add role assignment</strong></li>
+<li>Role = <strong>Storage Blob Data Contributor</strong> > assign to <strong>Bob</strong></li></ol>
+<p>- This grants Bob access <strong>only</strong> at this storage account scope, not the whole RG</p>
+
+<h3 id="step-3-view-current-assignments">Step 3: View current assignments</h3>
+
+<ol><li>Go to <strong>Access control (IAM)</strong> > <strong>Role assignments</strong> tab</li>
+<li>Filter by role, user, or scope as needed</li></ol>
+
+<hr class="divider">
 
 <h2 id="part-3-create-a-custom-role">Part 3 – Create a custom role</h2>
 
-<ol><li>Go to the subscription (or <code>rg-az104-lab02</code>) > <strong>Access control (IAM)</strong> ></li></ol>
-<p><strong>Add</strong> > <strong>Add custom role</strong>.</p>
-<ol><li><strong>Basics</strong> tab:</li></ol>
+<h3 id="why-custom-roles">Why Custom Roles?</h3>
+
+<div class='callout-box callout-tip'><span class='callout-icon'>ℹ️</span><div class='callout-content'><h4>tip</h4><p>Built-in roles like "Virtual Machine Contributor" are too broad. Custom roles let you grant minimal permissions—only what's needed.</p></div></div>
+
+<h3 id="step-1-start-custom-role">Step 1: Start custom role</h3>
+
+<ol><li>Go to the subscription > <strong>Access control (IAM)</strong> > <strong>Add</strong> > <strong>Add custom role</strong></li>
+<li><strong>Basics</strong> tab:</li></ol>
 <p>- <strong>Custom role name</strong>: <code>VM Operator (Start/Stop only)</code></p>
 <p>- <strong>Description</strong>: <code>Can start and restart VMs but not create or delete them</code></p>
-<p>- <strong>Baseline permissions</strong>: <strong>Clone a role</strong> > select <strong>Virtual Machine</p>
-<p>Contributor</strong> as the starting point.</p>
-<ol><li><strong>Permissions</strong> tab: select <strong>Edit permissions in JSON</strong> and replace the</li></ol>
-<p><code>actions</code>/<code>notActions</code> arrays so the role only includes:</p>
+<p>- <strong>Baseline permissions</strong>: <strong>Clone a role</strong> > select <strong>Virtual Machine Contributor</strong></p>
+
+<h3 id="step-2-edit-permissions">Step 2: Edit permissions</h3>
+
+<ol><li><strong>Permissions</strong> tab: select <strong>Edit permissions in JSON</strong></li>
+<li>Replace the <code>actions</code>/<code>notActions</code> arrays with:</li></ol>
+
 <p>``<code>json</p>
+<p>{</p>
 <p>"actions": [</p>
 <p>"Microsoft.Compute/virtualMachines/start/action",</p>
 <p>"Microsoft.Compute/virtualMachines/restart/action",</p>
 <p>"Microsoft.Compute/virtualMachines/read"</p>
 <p>],</p>
 <p>"notActions": []</p>
+<p>}</p>
 <p></code>`<code></p>
-<ol><li><strong>Assignable scopes</strong> tab: confirm the scope is your subscription (or narrow</li></ol>
-<p>it to </code>rg-az104-lab02<code> using <strong>+ Add assignable scopes</strong>).</p>
-<ol><li><strong>Review + create</strong> > <strong>Create</strong>.</li>
-<li>Assign the new role: <strong>Access control (IAM)</strong> > <strong>Add role assignment</strong> ></li></ol>
-<p>search for <strong>VM Operator (Start/Stop only)</strong> under <strong>Custom roles</strong> > assign</p>
-<p>it to </code>carol@<yourtenant>.onmicrosoft.com<code> at the </code>rg-az104-lab02<code> scope.</p>
 
-<h2 id="part-4-azure-policy-deny-resources-without-a-tag">Part 4 – Azure Policy: deny resources without a tag</h2>
+<ol><li><strong>Assignable scopes</strong> tab: confirm scope is your subscription</li></ol>
 
-<ol><li>Search for <strong>Policy</strong> > <strong>Definitions</strong> > search the built-in definition</li></ol>
-<p><strong>"Require a tag on resource groups"</strong>.</p>
-<ol><li>Select it > <strong>Assign</strong>.</li>
-<li><strong>Basics</strong> tab: <strong>Scope</strong> = your subscription.</li>
-<li><strong>Parameters</strong> tab: set </code>Tag Name<code> = </code>CostCenter<code>.</li>
-<li>Confirm the <strong>Effect</strong> parameter (shown on the Parameters tab, or under</li></ol>
-<p><strong>Advanced</strong> depending on the definition) is set to <strong>Deny</strong>.</p>
-<ol><li><strong>Review + create</strong> > <strong>Create</strong>.</li>
-<li>Test it: go to <strong>Resource groups</strong> > <strong>Create</strong>, name it </code>rg-policy-test<code>,</li></ol>
-<p>region </code>East US<code>, and select <strong>Review + create</strong>. Expect a policy validation</p>
-<p>error (</code>RequestDisallowedByPolicy<code>) because the </code>CostCenter<code> tag is missing —</p>
-<p>do not proceed past this point.</p>
+<h3 id="step-3-assign-custom-role">Step 3: Assign custom role</h3>
 
-<h2 id="part-5-azure-policy-allowed-locations-initiative">Part 5 – Azure Policy: allowed locations initiative</h2>
+<ol><li><strong>Access control (IAM)</strong> > <strong>Add role assignment</strong></li>
+<li>Search for <strong>VM Operator (Start/Stop only)</strong> under <strong>Custom roles</strong></li>
+<li>Assign to </code>carol@<yourtenant>.onmicrosoft.com<code> at </code>rg-az104-lab02<code> scope</li></ol>
 
-<ol><li><strong>Policy</strong> > <strong>Assignments</strong> > <strong>Assign initiative</strong> > search <strong>"Allowed locations"</strong>.</li>
-<li><strong>Scope</strong>: </code>rg-az104-lab02<code>. <strong>Parameters</strong> tab: <strong>Allowed locations</strong> =</li></ol>
-<p></code>East US<code>, </code>East US 2<code>.</p>
-<ol><li><strong>Review + create</strong> > <strong>Create</strong>.</li>
-<li>Test it: try to create a resource (e.g., a new storage account) inside</li></ol>
-<p></code>rg-az104-lab02<code> with <strong>Region</strong> set to </code>West US<code>. The <strong>Review + create</strong></p>
-<p>step should report a policy violation and block creation.</p>
+<hr class="divider">
 
-<h2 id="part-6-review-compliance">Part 6 – Review compliance</h2>
+<h2 id="part-4-azure-policy-enforce-required-tags">Part 4 – Azure Policy: enforce required tags</h2>
 
-<ol><li><strong>Policy</strong> > <strong>Compliance</strong> — review the compliance state for your assignments</li></ol>
-<p>(state may take a few minutes to evaluate after assignment).</p>
-<ol><li><strong>Policy</strong> > <strong>Remediation</strong> — note this is used for </code>DeployIfNotExists<code>/</code>Modify<code></li></ol>
-<p>policies (e.g., auto-enabling diagnostic settings) to bring <em>existing</em></p>
-<p>non-compliant resources into compliance.</p>
+<h3 id="understanding-policy">Understanding Policy</h3>
 
-<h2 id="validation">Validation</h2>
-<ul><ol><li>[ ] </code>grp-az104-lab<code> has <strong>Reader</strong> on </code>rg-az104-lab02<code> (check via <strong>Access</li></ol></ul>
-<p>control (IAM)</strong> > <strong>Role assignments</strong>)</p>
-<ul><ol><li>[ ] Bob has <strong>Storage Blob Data Contributor</strong> scoped to the storage account only</li>
-<li>[ ] Custom role <strong>VM Operator (Start/Stop only)</strong> exists under <strong>Access control</li></ol></ul>
-<p>(IAM)</strong> > <strong>Roles</strong> (filter by <strong>Custom roles</strong>) and is assigned to Carol</p>
-<ul><ol><li>[ ] Creating </code>rg-policy-test<code> without a </code>CostCenter<code> tag is denied</li>
-<li>[ ] Creating a resource in </code>West US<code> within </code>rg-az104-lab02<code> is denied</li></ol></ul>
+<div class='callout-box callout-important'><span class='callout-icon'>❗</span><div class='callout-content'><h4>important</h4><p>Policies PREVENT creation/modification of resources that don't comply. Unlike RBAC (who can do what), Policy (what is allowed to be created).</p></div></div>
 
-<h2 id="cleanup">Cleanup</h2>
-<ol><li><strong>Policy</strong> > <strong>Assignments</strong> > delete the <strong>"Require a tag on resource</li></ol>
-<p>groups"</strong> assignment and the <strong>"Allowed locations"</strong> initiative assignment.</p>
-<ol><li><strong>rg-az104-lab02</strong> > <strong>Access control (IAM)</strong> > <strong>Role assignments</strong> > remove</li></ol>
-<p>Carol's <strong>VM Operator (Start/Stop only)</strong> assignment.</p>
-<ol><li>Subscription > <strong>Access control (IAM)</strong> > <strong>Roles</strong> > find <strong>VM Operator</li></ol>
-<p>(Start/Stop only)</strong> under <strong>Custom roles</strong> > <strong>...</strong> > <strong>Delete</strong>.</p>
-<ol><li><strong>Resource groups</strong> > select </code>rg-az104-lab02<code> > <strong>Delete resource group</strong></li></ol>
-<p>(type the name to confirm).</p>
-<ol><li>If </code>rg-policy-test<code> was somehow created, delete it the same way.</li></ol>
+<h3 id="step-1-find-and-assign-policy">Step 1: Find and assign policy</h3>
 
-<h2 id="exam-tips">Exam Tips</h2>
-<ul><ol><li>RBAC = <strong>who can do what</strong> (data plane/management plane access). Policy = <strong>what configurations are allowed</strong>, regardless of who.</li>
-<li>Role assignments are inherited down the hierarchy: Management Group → Subscription → Resource Group → Resource.</li>
-<li>Deny policies block non-compliant <em>new</em> resources; </code>audit<code> only flags; </code>DeployIfNotExists<code>/</code>Modify` need remediation tasks for <em>existing</em> resources.</li>
-<li>Custom roles need <strong>Assignable scopes</strong> — without the right scope, the role can't be assigned where you need it.</li></ol></ul>
+<ol><li>Search for <strong>Policy</strong> > <strong>Definitions</strong></li>
+<li>Search for <strong>"Require a tag on resource groups"</strong></li>
+<li>Select it > <strong>Assign</strong></li>
+<li><strong>Basics</strong> tab: <strong>Scope</strong> = your subscription</li>
+<li><strong>Parameters</strong> tab: set </code>Tag Name<code> = </code>CostCenter<code></li>
+<li><strong>Effect</strong>: confirm it's <strong>Deny</strong> (blocks creation without tag)</li>
+<li><strong>Review + create</strong> > <strong>Create</strong></li></ol>
+
+<h3 id="step-2-test-the-policy">Step 2: Test the policy</h3>
+
+<div class='callout-box callout-warning'><span class='callout-icon'>⚠️</span><div class='callout-content'><h4>warning</h4><p>This will block resource creation. Expect a policy error.</p></div></div>
+
+<ol><li>Go to <strong>Resource groups</strong> > <strong>Create</strong></li>
+<li>Name: </code>rg-policy-test<code>, Region: </code>East US<code></li>
+<li>Select <strong>Review + create</strong> and expect this error:</li></ol>
+
+<p></code>`<code></p>
+<p>RequestDisallowedByPolicy</p>
+<p>The request is denied by an Azure policy.</p>
+<p>Reason: Resource group does not have required tags.</p>
+<p></code>`<code></p>
+
+<ol><li><strong>Do not proceed</strong> past this validation error</li>
+<li>This proves the policy is working!</li></ol>
+
+<hr class="divider">
+
+<h2 id="part-5-azure-policy-enforce-allowed-locations">Part 5 – Azure Policy: enforce allowed locations</h2>
+
+<h3 id="step-1-create-initiative-multi-policy">Step 1: Create initiative (multi-policy)</h3>
+
+<ol><li>Go to <strong>Policy</strong> > <strong>Definitions</strong> > <strong>+ Policy Definition</strong></li>
+<li><strong>Name</strong>: </code>Allowed Azure Locations<code></li>
+<li><strong>Category</strong>: <strong>General</strong></li>
+<li><strong>Description</strong>: </code>Restrict resource creation to approved regions only<code></li>
+<li><strong>Policy rule</strong> (replace template with):</li></ol>
+
+<p></code>`<code>json</p>
+<p>{</p>
+<p>"policyRule": {</p>
+<p>"if": {</p>
+<p>"not": {</p>
+<p>"field": "location",</p>
+<p>"in": [</p>
+<p>"East US",</p>
+<p>"West US",</p>
+<p>"West Europe"</p>
+<p>]</p>
+<p>}</p>
+<p>},</p>
+<p>"then": {</p>
+<p>"effect": "Deny"</p>
+<p>}</p>
+<p>}</p>
+<p>}</p>
+<p></code>`<code></p>
+
+<ol><li><strong>Review + create</strong> > <strong>Create</strong></li></ol>
+
+<h3 id="step-2-assign-the-policy">Step 2: Assign the policy</h3>
+
+<ol><li><strong>Policy</strong> > <strong>Assignments</strong> > <strong>Assign Policy</strong></li>
+<li><strong>Scope</strong>: your subscription</li>
+<li><strong>Policy definition</strong>: select </code>Allowed Azure Locations<code></li>
+<li><strong>Effect</strong>: <strong>Deny</strong></li>
+<li><strong>Review + create</strong> > <strong>Assign</strong></li></ol>
+
+<h3 id="step-3-test-the-policy">Step 3: Test the policy</h3>
+
+<ol><li>Try to create a resource in <strong>Central US</strong> (not in the allowed list)</li>
+<li>Expect a <strong>Deny</strong> error</li>
+<li>Try creating in <strong>East US</strong> (in the allowed list)</li>
+<li>Should succeed</li></ol>
+
+<hr class="divider">
+
+<h2 id="success-criteria">Success Criteria</h2>
+
+<p>✓ Resource group </code>rg-az104-lab02<code> created</p>
+<p>✓ Reader role assigned to group at RG scope</p>
+<p>✓ Storage Blob Data Contributor assigned to Bob at resource scope</p>
+<p>✓ Custom role </code>VM Operator (Start/Stop only)<code> created and assigned</p>
+<p>✓ Tag policy prevents resource group creation without </code>CostCenter<code> tag</p>
+<p>✓ Location policy allows only East US, West US, West Europe</p>
+
+<hr class="divider">
+
+<h2 id="cleanup-if-needed">Cleanup (If Needed)</h2>
+
+<p>To remove policies and role assignments:</p>
+
+<p></code>`<code>powershell</p>
+<h1>Remove policy assignments</h1>
+<p>Remove-AzPolicyAssignment -Name "Require a tag on resource groups" -Scope "/subscriptions/[subscription-id]"</p>
+<p>Remove-AzPolicyAssignment -Name "Allowed Azure Locations" -Scope "/subscriptions/[subscription-id]"</p>
+
+<h1>Remove custom role</h1>
+<p>Remove-AzRoleDefinition -Id "[role-id]" -Force</p>
+
+<h1>Remove resource group (includes all resources inside)</h1>
+<p>Remove-AzResourceGroup -Name "rg-az104-lab02" -Force</p>
+<p></code>``</p>
+
+<div class='callout-box callout-tip'><span class='callout-icon'>ℹ️</span><div class='callout-content'><h4>tip</h4><p>Keeping test RGs around helps you learn. Only delete if you're confident you won't need them.</p></div></div>
+
+<hr class="divider">
+
+<h2 id="key-takeaways">Key Takeaways</h2>
+
+<ul><ol><li><strong>RBAC</strong> = WHO can do WHAT (identity-based)</li>
+<li><strong>Policy</strong> = WHAT resources can be created (compliance-based)</li>
+<li><strong>Scopes matter</strong>: Assignment at subscription affects all RGs; assignment at RG affects only resources in that RG</li>
+<li><strong>Least privilege</strong>: Custom roles let you grant only what's needed</li>
+<li><strong>Policy prevents</strong>: Unlike RBAC (which is permissive), Policy actively prevents non-compliant operations</li></ol></ul>
+
+<hr class="divider">
+
+<h2 id="next-steps">Next Steps</h2>
+
+<p>Proceed to Lab 03 to learn about Management Groups and subscription organization at scale.</p>
 
   </div>
 </div>

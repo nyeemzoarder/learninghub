@@ -1,31 +1,39 @@
 # Lab 03 – Management Groups, Subscriptions & Resource Organization
 
 ## Objectives
+
 - Create a management group hierarchy
 - Move a subscription into a management group
 - Organize resources using resource groups, tags, and locks
 - Understand cost management basics (budgets, cost analysis)
 
 ## Prerequisites
+
 - Global Administrator or User Access Administrator with root management group access
 - Signed in at [portal.azure.com](https://portal.azure.com)
 
 ## Estimated time
+
 30 minutes
 
 ---
 
 ## Part 1 – Create a management group hierarchy
 
-1. Search for **Management groups**.
-2. Select **Add management group**. Set **Management group ID** to `mg-contoso`
-   and a display name, then **Save**.
-3. Select **Add management group** again for `mg-corp`. After it's created,
-   open it, go to **Details**, select **Change parent**, and set the parent to
-   `mg-contoso`.
-4. Repeat step 3 to create `mg-sandbox` and set its parent to `mg-contoso` as well.
+### Why Management Groups?
 
-Resulting hierarchy:
+> Important: Management Groups are the FOUNDATION of Azure governance at scale. Policies and RBAC assigned at MG level apply to all subscriptions beneath them.
+
+### Step 1: Create the hierarchy
+
+1. Search for **Management groups**
+2. Select **Add management group** > **Management group ID**: `mg-contoso` > **Save**
+3. Select **Add management group** again > **Management group ID**: `mg-corp` > **Save**
+4. Open `mg-corp` > **Details** > **Change parent** > select `mg-contoso`
+5. Repeat for `mg-sandbox` with parent = `mg-contoso`
+
+### Resulting structure:
+
 ```
 Root (Tenant Root Group)
 └── mg-contoso
@@ -33,74 +41,165 @@ Root (Tenant Root Group)
     └── mg-sandbox
 ```
 
-## Part 2 – Move your subscription under mg-sandbox
+> Tip: The Tenant Root Group is automatic. You create everything beneath it. Deep hierarchies (3+ levels) are common in large enterprises.
 
-1. **Management groups** > select `mg-sandbox` > **Subscriptions** tab.
-2. Select **Add subscription**, choose your subscription from the list, and
-   confirm the move.
+---
 
-> Policies/RBAC assigned at `mg-contoso` or `mg-sandbox` now apply to this subscription.
+## Part 2 – Move subscription under management group
+
+### Step 1: Associate subscription with MG
+
+1. **Management groups** > select `mg-sandbox` > **Subscriptions** tab
+2. Select **Add subscription** > choose your subscription > confirm move
+
+> Important: Policies and RBAC assigned at `mg-contoso` or `mg-sandbox` now apply automatically to this subscription and all resources in it.
+
+### Step 2: Verify the move
+
+1. Go back to **Management groups** > select each MG to confirm your subscription appears under `mg-sandbox`
+
+---
 
 ## Part 3 – Resource groups and tagging strategy
 
-1. Search for **Resource groups** > **Create**.
-2. **Resource group**: `rg-az104-lab03`. **Region**: `East US`.
-3. On the **Tags** tab, add:
-   - `Environment` = `Lab`
-   - `CostCenter` = `Training`
-   - `Owner` = `yourname`
-4. **Review + create** > **Create**.
+### Understanding Tags
 
-If you need to add or change tags on an existing resource group later, open
-the resource group > **Tags** (left-hand menu or **Overview** page) > add/edit
-the name-value pairs > **Save**.
+> Tip: Tags are KEY for cost allocation, automation, and compliance reporting. Always tag resources at creation time—adding tags later is error-prone.
 
-## Part 4 – Resource locks
+### Step 1: Create resource group with tags
 
-1. Open `rg-az104-lab03` > **Locks** (under **Settings**).
-2. Select **Add**. **Lock name**: `lock-no-delete`. **Lock type**: **Delete**
-   (this is the Portal's label for **CanNotDelete**).
-3. **OK**.
-4. Try to delete the resource group: **Overview** > **Delete resource group**,
-   type the name to confirm, and select **Delete**. It should fail with a
-   message that the resource group is locked.
-5. To explore the other lock type, select a single resource (e.g., the storage
-   account from Lab 02) > **Locks** > **Add** > **Lock type**: **Read-only**.
-   Observe that you can still view the resource's properties, but any attempt
-   to edit or delete it is blocked.
-6. Remove the **Read-only** lock from that resource afterwards so it doesn't
-   interfere with other labs.
+1. Search for **Resource groups** > **Create**
+2. **Resource group**: `rg-az104-lab03`  
+   **Region**: `East US`
+3. **Tags** tab: add the following:
+   - Key: `Environment` → Value: `Lab`
+   - Key: `CostCenter` → Value: `Training`
+   - Key: `Owner` → Value: `yourname`
+4. **Review + create** > **Create**
+
+### Step 2: Update tags on existing resources
+
+If you need to modify tags later:
+
+1. Open the resource group > **Tags** (left menu)
+2. Edit name-value pairs > **Save**
+
+> Warning: Portal doesn't warn you before overwriting tags. Be careful when bulk-updating tags on many resources.
+
+---
+
+## Part 4 – Resource locks (prevent accidents)
+
+### Lock Types
+
+| Lock Type | What It Prevents | Use Case |
+|-----------|-----------------|----------|
+| **Delete** | Deletion | Prevent accidental resource group removal |
+| **Read-only** | Any modification | Lock down production resources |
+
+### Step 1: Apply Delete lock
+
+1. Open `rg-az104-lab03` > **Locks** (under **Settings**)
+2. Select **Add**:
+   - **Lock name**: `lock-no-delete`
+   - **Lock type**: **Delete**
+3. **OK**
+
+### Step 2: Test the Delete lock
+
+1. Go to **Overview** > **Delete resource group**
+2. Type the name to confirm deletion
+3. Click **Delete**
+4. Expect this error:
+
+```
+The resource group is locked and cannot be deleted.
+Lock name: lock-no-delete
+```
+
+This proves the lock is working! ✓
+
+### Step 3: Test Read-only lock
+
+1. Select a resource (e.g., storage account from Lab 02)
+2. **Locks** > **Add** > **Lock type**: **Read-only** > **OK**
+3. Try to edit properties or delete—both will be blocked
+4. **Remove the Read-only lock** afterward so it doesn't interfere with other labs
+
+---
 
 ## Part 5 – Cost Management basics
 
-1. Go to **Cost Management + Billing** > **Cost analysis**. Filter by
-   `rg-az104-lab03` using the **Resource group** filter.
-2. **Budgets** > **Add** — create a budget of $10/month scoped to
-   `rg-az104-lab03`, with an alert at 80% via email.
-3. Review **Advisor** > **Cost** recommendations (may be empty in a new sandbox).
+### Step 1: Analyze costs
 
-## Validation
-- [ ] Management group hierarchy `mg-contoso > mg-corp, mg-sandbox` exists
-      (**Management groups** view)
-- [ ] Subscription is a child of `mg-sandbox`
-- [ ] `rg-az104-lab03` has `Environment`/`CostCenter`/`Owner` tags (check the
-      **Tags** page)
-- [ ] `lock-no-delete` (**Delete** lock) prevents resource group deletion
-- [ ] A budget alert exists for `rg-az104-lab03` (**Cost Management + Billing** >
-      **Budgets**)
+1. Go to **Cost Management + Billing** > **Cost analysis**
+2. Filter by **Resource group** = `rg-az104-lab03`
+3. Observe current costs (may be $0.00 in sandbox)
 
-## Cleanup
-1. `rg-az104-lab03` > **Locks** > select `lock-no-delete` > **Delete**.
-2. **Resource groups** > select `rg-az104-lab03` > **Delete resource group**
-   (type the name to confirm).
-3. (Optional) **Management groups** > `mg-sandbox` > **Subscriptions** tab >
-   move your subscription back to the tenant root group.
-4. **Management groups** > select `mg-sandbox`, `mg-corp`, then `mg-contoso`
-   (children first) > **Details** > **Delete**.
-5. Remove the budget via **Cost Management + Billing** > **Budgets**.
+> Tip: Cost analysis updates with a 24-48 hour delay. This lab shows the UI, but real data takes time to populate.
 
-## Exam Tips
-- Management group hierarchy max depth: 6 levels (excluding root and subscription/resource levels).
-- A subscription can only belong to **one** management group at a time.
-- Lock types: **Read-only** (no writes/deletes) vs **Delete**/`CanNotDelete` (writes ok, no delete). Locks apply to child resources too and override RBAC permissions (even Owners are blocked).
-- Tags don't inherit automatically from RG to resources unless you use Azure Policy `Modify`/`Inherit a tag` policies.
+### Step 2: Set a budget alert
+
+1. **Cost Management + Billing** > **Budgets** > **Add**
+2. **Name**: `lab03-budget`
+3. **Amount**: $10 (per month)
+4. **Scope**: `rg-az104-lab03`
+5. **Alert thresholds**: set email alert at **80%**
+6. **Create**
+
+### Step 3: Check Advisor recommendations
+
+1. Go to **Advisor** > **Cost**
+2. Review any recommendations (may be empty in a new sandbox)
+
+---
+
+## Success Criteria
+
+✓ Management group hierarchy exists: `mg-contoso` > `mg-corp` and `mg-sandbox`  
+✓ Your subscription is child of `mg-sandbox`  
+✓ `rg-az104-lab03` has all three tags: `Environment`, `CostCenter`, `Owner`  
+✓ Delete lock `lock-no-delete` prevents resource group deletion  
+✓ Budget alert configured for `rg-az104-lab03`
+
+---
+
+## Cleanup (If Needed)
+
+To clean up all resources created in this lab:
+
+```powershell
+# Remove Delete lock
+Remove-AzManagementGroupDeployment -ResourceGroupName "rg-az104-lab03" -Name "lock-no-delete"
+
+# Delete resource group
+Remove-AzResourceGroup -Name "rg-az104-lab03" -Force
+
+# Move subscription back to tenant root
+Update-AzManagementGroup -GroupId "mg-sandbox" -Remove
+
+# Delete management groups (children first!)
+Remove-AzManagementGroup -GroupId "mg-sandbox" -AsJob
+Remove-AzManagementGroup -GroupId "mg-corp" -AsJob
+Remove-AzManagementGroup -GroupId "mg-contoso" -AsJob
+
+# Remove budget
+Remove-AzBudget -Name "lab03-budget" -ResourceGroupName "rg-az104-lab03"
+```
+
+---
+
+## Key Takeaways
+
+- **Management Groups** = governance at subscription level (multiple subscriptions)
+- **Subscriptions** = billing boundary (one per department/project)
+- **Resource Groups** = organizing container for resources
+- **Tags** = metadata for cost allocation, automation, compliance
+- **Locks** = safety mechanism to prevent accidental deletion/modification
+- **Cost Management** = understand and control Azure spending
+
+---
+
+## Next Steps
+
+Proceed to Lab 04 to learn about storage accounts and data organization.
