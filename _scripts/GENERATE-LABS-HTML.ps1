@@ -410,6 +410,25 @@ function Get-ConceptLinks {
             '<a href="04-access-control-scenarios.html">04 - Access Control Scenarios</a>',
             '<a href="05-identity-best-practices.html">05 - Identity Best Practices</a>'
         )
+        "02-storage" = @(
+            '<a href="01-storage-redundancy-options.html">01 - Storage Redundancy Options</a>'
+        )
+        "03-compute" = @(
+            '<a href="01-compute-options-comparison.html">01 - Compute Options Comparison</a>'
+        )
+        "04-networking" = @(
+            '<a href="01-vnets-and-subnets.html">01 - VNets &amp; Subnets</a>',
+            '<a href="02-network-security-groups.html">02 - Network Security Groups</a>',
+            '<a href="03-routing-fundamentals.html">03 - Routing Fundamentals</a>',
+            '<a href="04-vnet-peering.html">04 - VNet Peering</a>',
+            '<a href="05-vpn-and-expressroute.html">05 - VPN &amp; ExpressRoute</a>',
+            '<a href="06-hub-spoke-topology.html">06 - Hub-Spoke Topology</a>',
+            '<a href="07-private-endpoints-service-endpoints.html">07 - Private Endpoints &amp; Service Endpoints</a>',
+            '<a href="08-network-security-advanced.html">08 - Network Security Advanced</a>'
+        )
+        "05-monitor-maintain" = @(
+            '<a href="01-monitoring-data-flow.html">01 - Monitoring Data Flow</a>'
+        )
     }
 
     if ($conceptMap.ContainsKey($ModuleDir)) {
@@ -433,6 +452,30 @@ function Get-LabLinks {
             '<a href="lab01-entra-users-groups.html">Lab 01 - Entra Users &amp; Groups</a>',
             '<a href="lab02-rbac-azure-policy.html">Lab 02 - RBAC &amp; Azure Policy</a>',
             '<a href="lab03-management-groups-subscriptions.html">Lab 03 - Management Groups</a>'
+        )
+        "02-storage" = @(
+            '<a href="lab04-storage-accounts.html">Lab 04 - Storage Accounts</a>',
+            '<a href="lab05-blob-security-lifecycle.html">Lab 05 - Blob Security &amp; Lifecycle</a>',
+            '<a href="lab06-azure-files-file-sync.html">Lab 06 - Azure Files &amp; File Sync</a>'
+        )
+        "03-compute" = @(
+            '<a href="lab07-arm-bicep-templates.html">Lab 07 - ARM &amp; Bicep Templates</a>',
+            '<a href="lab08-virtual-machines.html">Lab 08 - Virtual Machines</a>',
+            '<a href="lab09-vm-availability-scaling.html">Lab 09 - VM Availability &amp; Scaling</a>',
+            '<a href="lab10-containers-aci-acr.html">Lab 10 - Containers, ACI &amp; ACR</a>',
+            '<a href="lab11-app-service.html">Lab 11 - App Service</a>'
+        )
+        "04-networking" = @(
+            '<a href="lab12-vnet-subnets.html">Lab 12 - VNet &amp; Subnets</a>',
+            '<a href="lab13-nsg-asg.html">Lab 13 - NSG &amp; ASG</a>',
+            '<a href="lab14-vnet-peering-vpn.html">Lab 14 - VNet Peering &amp; VPN</a>',
+            '<a href="lab15-load-balancer-app-gateway.html">Lab 15 - Load Balancer &amp; App Gateway</a>',
+            '<a href="lab16-dns-name-resolution.html">Lab 16 - DNS &amp; Name Resolution</a>'
+        )
+        "05-monitor-maintain" = @(
+            '<a href="lab17-azure-monitor-alerts.html">Lab 17 - Azure Monitor &amp; Alerts</a>',
+            '<a href="lab18-backup-recovery.html">Lab 18 - Backup &amp; Recovery</a>',
+            '<a href="lab19-network-monitoring.html">Lab 19 - Network Monitoring</a>'
         )
     }
 
