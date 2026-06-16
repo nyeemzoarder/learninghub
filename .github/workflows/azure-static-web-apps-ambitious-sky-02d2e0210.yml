@@ -19,6 +19,16 @@ jobs:
         with:
           submodules: true
           lfs: false
+
+      - name: Install PowerShell
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y powershell
+
+      - name: Generate Lab HTML Files
+        run: |
+          pwsh -File _scripts/GENERATE-LABS-HTML.ps1 -Verbose
+
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
