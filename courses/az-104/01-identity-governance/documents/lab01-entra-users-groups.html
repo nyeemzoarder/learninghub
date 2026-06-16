@@ -136,10 +136,20 @@ hr.divider{border:none;height:0;margin:0}
 .callout-note h4{color:#424242}
 
 /* Code Block */
-.code-block{position:relative;margin:16px 0;background:#1e1e1e;border-radius:8px;overflow:hidden;border:1px solid #333}
-.code-block pre{margin:0;padding:16px;color:#e0e0e0;font-family:'SF Mono',Consolas,'Courier New',monospace;font-size:0.95rem;line-height:1.5;overflow-x:auto}
-.code-copy-btn{position:absolute;top:10px;right:10px;padding:6px 12px;background:#333;color:#e0e0e0;border:1px solid #555;border-radius:6px;cursor:pointer;font-size:0.85rem;font-weight:500;transition:all 0.2s}
-.code-copy-btn:hover{background:#444;color:#fff}
+.code-block{position:relative;margin:16px 0;background:#1e1e1e;border-radius:8px;overflow:hidden;border:1px solid #333;box-shadow:0 2px 8px rgba(0,0,0,0.3)}
+.code-block pre{margin:0;padding:16px 40px 16px 16px;color:#e0e0e0;font-family:'SF Mono',Consolas,'Courier New',monospace;font-size:0.93rem;line-height:1.6;overflow-x:auto}
+.code-copy-btn{position:absolute;top:10px;right:10px;padding:8px 14px;background:#2d2d2d;color:#a8e6ce;border:1px solid #444;border-radius:6px;cursor:pointer;font-size:0.85rem;font-weight:600;transition:all 0.2s;user-select:none}
+.code-copy-btn:hover{background:#3a3a3a;color:#fff;border-color:#555}
+.code-copy-btn.copied{background:#27ae60;color:#fff}
+
+/* Syntax Highlighting in Code Blocks */
+.code-block .keyword{color:#569cd6;font-weight:500}
+.code-block .string{color:#ce9178}
+.code-block .number{color:#b5cea8}
+.code-block .comment{color:#6a9955}
+.code-block .operator{color:#d4d4d4}
+.code-block .function{color:#dcdcaa}
+.code-block .property{color:#9cdcfe}
 
 /* Success/Completion Box */
 .success-box{margin:24px 0;padding:20px;background:#f1f8e9;border:1px solid #c5e1a5;border-radius:10px;border-left:4px solid #7cb342}
@@ -352,7 +362,63 @@ details:focus-visible > summary{outline:2px solid var(--primary);outline-offset:
   </div>
 </div>
 
-<h3 id="create-sales-department-users">Create Sales Department Users</h3>
+<h3>Practical Command Examples (Optional Automation)</h3>
+
+<div class="callout-box callout-tip">
+  <span class="callout-icon">ℹ️</span>
+  <div class="callout-content">
+    <h4>Accelerate with PowerShell or Graph API</h4>
+    <p>Instead of clicking through the portal for each user, you can use PowerShell or the Microsoft Graph API to create users in bulk. Below are copy-paste examples.</p>
+  </div>
+</div>
+
+<div class="task-box">
+  <div class="task-header">
+    <span class="task-icon">⚙️</span>
+    <h3>Option A: Create User with PowerShell</h3>
+  </div>
+  <div class="task-content">
+    <p>If you have PowerShell installed and Microsoft Graph module available:</p>
+    <div class="code-block">
+      <pre><span class="keyword">New-MgUser</span> <span class="operator">-</span><span class="property">DisplayName</span> <span class="string">"Sarah Chen"</span> <span class="operator">\</span>
+  <span class="operator">-</span><span class="property">UserPrincipalName</span> <span class="string">"sarah.chen@yourtenant.onmicrosoft.com"</span> <span class="operator">\</span>
+  <span class="operator">-</span><span class="property">PasswordProfile</span> <span class="operator">@{</span><span class="property">ForceChangePasswordNextSignIn</span><span class="operator">=</span><span class="keyword">$true</span><span class="operator">}</span> <span class="operator">\</span>
+  <span class="operator">-</span><span class="property">Department</span> <span class="string">"Sales"</span></pre>
+    </div>
+    <div class="callout-box callout-note">
+      <span class="callout-icon">📝</span>
+      <div class="callout-content">
+        <h4>Prerequisites for PowerShell</h4>
+        <p>Requires: <code>Install-Module Microsoft.Graph</code> and <code>Connect-MgGraph</code> authentication</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="task-box">
+  <div class="task-header">
+    <span class="task-icon">🌐</span>
+    <h3>Option B: Create User with Graph API (cURL)</h3>
+  </div>
+  <div class="task-content">
+    <p>Using REST API directly (requires access token):</p>
+    <div class="code-block">
+      <pre><span class="keyword">curl</span> <span class="operator">-</span><span class="property">X</span> <span class="string">POST</span> https://graph.microsoft.com/v1.0/users <span class="operator">\</span>
+  <span class="operator">-</span><span class="property">H</span> <span class="string">"Authorization: Bearer YOUR_TOKEN"</span> <span class="operator">\</span>
+  <span class="operator">-</span><span class="property">H</span> <span class="string">"Content-Type: application/json"</span> <span class="operator">\</span>
+  <span class="operator">-</span><span class="property">d</span> <span class="operator">'</span><span class="operator">{</span>
+  <span class="string">"displayName"</span><span class="operator">:</span> <span class="string">"Sarah Chen"</span><span class="operator">,</span>
+  <span class="string">"userPrincipalName"</span><span class="operator">:</span> <span class="string">"sarah.chen@yourtenant.onmicrosoft.com"</span><span class="operator">,</span>
+  <span class="string">"passwordProfile"</span><span class="operator">:</span> <span class="operator">{</span>
+    <span class="string">"forceChangePasswordNextSignIn"</span><span class="operator">:</span> <span class="keyword">true</span>
+  <span class="operator">}</span><span class="operator">,</span>
+  <span class="string">"department"</span><span class="operator">:</span> <span class="string">"Sales"</span>
+<span class="operator">}</span><span class="operator">'</span></pre>
+    </div>
+  </div>
+</div>
+
+<h3 id="create-sales-department-users">Create Sales Department Users (Portal Method)</h3>
 
 <div class="task-box">
   <div class="task-header">
@@ -653,6 +719,32 @@ details:focus-visible > summary{outline:2px solid var(--primary);outline-offset:
   </div>
 </div>
 
+<h3>Automation: Create Groups with PowerShell</h3>
+
+<div class="callout-box callout-tip">
+  <span class="callout-icon">ℹ️</span>
+  <div class="callout-content">
+    <h4>Speed Up Group Creation</h4>
+    <p>Instead of clicking through UI four times, create all groups with PowerShell in seconds:</p>
+  </div>
+</div>
+
+<div class="code-block">
+  <pre><span class="comment"># Create Security Groups</span>
+<span class="keyword">New-MgGroup</span> <span class="operator">-</span><span class="property">DisplayName</span> <span class="string">"grp-sales"</span> <span class="operator">\</span>
+  <span class="operator">-</span><span class="property">MailNickname</span> <span class="string">"grpsales"</span> <span class="operator">\</span>
+  <span class="operator">-</span><span class="property">GroupTypes</span> <span class="operator">@()</span> <span class="operator">\</span>
+  <span class="operator">-</span><span class="property">SecurityEnabled</span> <span class="keyword">$true</span>
+
+<span class="comment"># Create sales-admins group</span>
+<span class="keyword">New-MgGroup</span> <span class="operator">-</span><span class="property">DisplayName</span> <span class="string">"grp-sales-admins"</span> <span class="operator">\</span>
+  <span class="operator">-</span><span class="property">MailNickname</span> <span class="string">"grpsalesadmins"</span> <span class="operator">\</span>
+  <span class="operator">-</span><span class="property">GroupTypes</span> <span class="operator">@()</span> <span class="operator">\</span>
+  <span class="operator">-</span><span class="property">SecurityEnabled</span> <span class="keyword">$true</span>
+
+<span class="comment"># Repeat for Finance groups...</span></pre>
+</div>
+
 <h3>Part 2 Validation</h3>
 
 <div class="validation-checklist">
@@ -727,9 +819,28 @@ details:focus-visible > summary{outline:2px solid var(--primary);outline-offset:
       <span class="step-content">Add a dynamic rule under "Dynamic user members":</span>
     </div>
     <div class="code-block">
-      <pre>(user.accountEnabled -eq true)</pre>
+      <pre><span class="comment">// Include all enabled users in Sales department</span>
+(user.accountEnabled -eq true) -and (user.department -eq <span class="string">"Sales"</span>)</pre>
     </div>
-    <div class="substep">This rule adds all enabled users automatically</div>
+    <div class="substep">This rule automatically adds any user with Department = "Sales" who has an active account</div>
+
+    <div class="callout-box callout-tip">
+      <span class="callout-icon">ℹ️</span>
+      <div class="callout-content">
+        <h4>Common Dynamic Group Rules</h4>
+        <p>Try these other rules for different membership scenarios:</p>
+        <div class="code-block" style="margin-top:12px">
+          <pre><span class="comment">// All users in Finance</span>
+(user.department -eq <span class="string">"Finance"</span>)
+
+<span class="comment">// All managers</span>
+(user.jobTitle -contains <span class="string">"Manager"</span>)
+
+<span class="comment">// Users in specific country</span>
+(user.usageLocation -eq <span class="string">"US"</span>)</pre>
+        </div>
+      </div>
+    </div>
 
     <div class="step">
       <span class="step-number">4</span>
@@ -771,7 +882,19 @@ details:focus-visible > summary{outline:2px solid var(--primary);outline-offset:
 
 <p>You'll create two admin units (one per department) and then assign scoped admin roles to your department managers.</p>
 
-<h3 id="step-1-create-admin-unit-for-sales-department">Create Admin Unit for Sales Department</h3>
+<h3>Automation: Create Admin Units with PowerShell</h3>
+
+<div class="code-block">
+  <pre><span class="comment"># Create Sales Admin Unit</span>
+<span class="keyword">New-MgDirectoryAdministrativeUnit</span> <span class="operator">-</span><span class="property">DisplayName</span> <span class="string">"au-sales"</span> <span class="operator">\</span>
+  <span class="operator">-</span><span class="property">Description</span> <span class="string">"Sales department scope for delegated admin"</span>
+
+<span class="comment"># Create Finance Admin Unit</span>
+<span class="keyword">New-MgDirectoryAdministrativeUnit</span> <span class="operator">-</span><span class="property">DisplayName</span> <span class="string">"au-finance"</span> <span class="operator">\</span>
+  <span class="operator">-</span><span class="property">Description</span> <span class="string">"Finance department scope for delegated admin"</span></pre>
+</div>
+
+<h3 id="step-1-create-admin-unit-for-sales-department">Create Admin Unit for Sales Department (Portal Method)</h3>
 
 <div class="task-box">
   <div class="task-header">
@@ -1280,6 +1403,7 @@ details:focus-visible > summary{outline:2px solid var(--primary);outline-offset:
   </div>
 </div>
 <script>
+/* Sidebar Active Link Tracking */
 (function(){
   var links = Array.prototype.slice.call(document.querySelectorAll('.sidebar a'));
   var sections = [];
@@ -1299,6 +1423,38 @@ details:focus-visible > summary{outline:2px solid var(--primary);outline-offset:
   }, { rootMargin: '-100px 0px -70% 0px', threshold: 0 });
   sections.forEach(function(s){ observer.observe(s.el); });
 })();
+
+/* Code Block Copy Button Functionality */
+document.addEventListener('DOMContentLoaded', function(){
+  var codeBlocks = document.querySelectorAll('.code-block');
+  codeBlocks.forEach(function(block){
+    var pre = block.querySelector('pre');
+    if (!pre) return;
+
+    var btn = document.createElement('button');
+    btn.className = 'code-copy-btn';
+    btn.textContent = 'Copy';
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'Copy code to clipboard');
+
+    btn.addEventListener('click', function(){
+      var code = pre.textContent;
+      navigator.clipboard.writeText(code).then(function(){
+        var original = btn.textContent;
+        btn.textContent = '✓ Copied!';
+        btn.classList.add('copied');
+        setTimeout(function(){
+          btn.textContent = original;
+          btn.classList.remove('copied');
+        }, 2000);
+      }).catch(function(){
+        alert('Failed to copy code');
+      });
+    });
+
+    block.appendChild(btn);
+  });
+});
 </script>
 </body>
 </html>
