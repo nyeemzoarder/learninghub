@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../../../_styles/lab-template.css">
+<link rel="stylesheet" href="../../_styles/lab-template.css">
 <style>
 
 /* Copy button click handler for code blocks */
@@ -91,6 +91,38 @@
 
 <h2 id="part-2-container-access-level">Part 2 – Container access level</h2>
 
+<h3 id="understanding-access-levels">Understanding Access Levels</h3>
+
+<table>
+<p><tr></p>
+<p><th>Level</th></p>
+<p><th>Listing</th></p>
+<p><th>Reading Blobs</th></p>
+<p><th>Best For</th></p>
+<p></tr></p>
+<p><tr></p>
+<p><td><strong>Private</strong></td></p>
+<p><td>❌</td></p>
+<p><td>❌</td></p>
+<p><td>Sensitive data</td></p>
+<p></tr></p>
+<p><tr></p>
+<p><td><strong>Blob</strong></td></p>
+<p><td>❌</td></p>
+<p><td>✅</td></p>
+<p><td>Public files (share individual URLs)</td></p>
+<p></tr></p>
+<p><tr></p>
+<p><td><strong>Container</strong></td></p>
+<p><td>✅</td></p>
+<p><td>✅</td></p>
+<p><td>Public datasets (allow listing)</td></p>
+<p></tr></p>
+<p></table></p>
+
+
+<div class='callout-box callout-warning'><span class='callout-icon'>⚠️</span><div class='callout-content'><h4>warning</h4><p>Setting to "Container" exposes all blob names and allows directory listing. Only use for non-sensitive data.</p></div></div>
+
 <ol><li><strong>Containers</strong> > select <code>data</code> > <strong>Change access level</strong> (top toolbar).</li>
 <li>Set <strong>Public access level</strong> to <strong>Blob (anonymous read access for blobs only)</strong>.</li></ol>
 
@@ -98,6 +130,8 @@
 <p>> the account level by default. If the option is greyed out, go to the</p>
 <p>> storage account > <strong>Configuration</strong> and set <strong>Allow Blob public access</strong></p>
 <p>> to <strong>Enabled</strong> first.</p>
+
+<div class='callout-box callout-tip'><span class='callout-icon'>ℹ️</span><div class='callout-content'><h4>tip</h4><p>Share individual blob URLs instead of setting container to public. More secure and controlled.</p></div></div>
 <ol><li>Open <code>data</code> > <strong>Upload</strong> > upload a small text file named <code>public.txt</code></li></ol>
 <p>(content: "public file").</p>
 <ol><li>Select <code>public.txt</code> > copy its <strong>URL</strong> from the properties pane and open</li></ol>

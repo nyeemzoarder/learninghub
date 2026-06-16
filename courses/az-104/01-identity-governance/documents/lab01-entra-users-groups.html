@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../../../_styles/lab-template.css">
+<link rel="stylesheet" href="../../_styles/lab-template.css">
 <style>
 
 /* Copy button click handler for code blocks */
@@ -109,6 +109,8 @@
 
 <h2 id="part-1-create-users-represent-real-employees">Part 1 – Create Users (Represent Real Employees)</h2>
 
+<div class='callout-box callout-important'><span class='callout-icon'>❗</span><div class='callout-content'><h4>important</h4><p>Each user created in this lab will receive an auto-generated password. Record these for testing later—users must change their password on first sign-in.</p></div></div>
+
 <h3 id="create-sales-department-users">Create Sales Department Users</h3>
 
 <ol><li>Go to <strong>Microsoft Entra ID</strong> > <strong>Users</strong> > <strong>New user</strong> > <strong>Create new user</strong>.</li>
@@ -121,7 +123,9 @@
 <p>- Click <strong>Auto-generate password</strong> (record the temporary password)</p>
 <p>- ✅ Check <strong>Require password change on first sign-in</strong></p>
 <p>- Set <strong>Usage location</strong> to your country (required for licensing)</p>
-<p>- <strong>Important:</strong> Set <strong>Department</strong> field to "Sales" (this will be used for dynamic grouping later)</p>
+<p>- <strong>Critical:</strong> Set <strong>Department</strong> field to "Sales" (this will be used for dynamic grouping and admin unit scoping later)</p>
+
+<div class='callout-box callout-tip'><span class='callout-icon'>ℹ️</span><div class='callout-content'><h4>tip</h4><p>You can bulk-create users via PowerShell for faster setup. See the <strong>Appendix</strong> section for a script example.</p></div></div>
 
 <h3 id="create-finance-department-users">Create Finance Department Users</h3>
 
@@ -213,11 +217,16 @@
 
 <h2 id="part-4-administrative-units-limit-where-admins-can-use-their-power">Part 4 – Administrative Units: Limit WHERE Admins Can Use Their Power</h2>
 
-<p><strong>Critical Concept:</strong></p>
-<ul><ol><li><strong>Groups</strong> told us WHO (James is in <code>grp-sales-admins</code> → he's a Sales manager)</li>
-<li><strong>Admin Units</strong> tell us WHERE (James can reset passwords only in the Sales department)</li></ol></ul>
+<div class='callout-box callout-important'><span class='callout-icon'>❗</span><div class='callout-content'><h4>important</h4><p>Critical Concept — Groups and Admin Units work together:</p></div></div>
+<div class="callout"><p>- <strong>Groups</strong> answer "WHO is this person?" (James is in <code>grp-sales-admins</code> → he's a Sales manager)</p></div>
+<div class="callout"><p>- <strong>Admin Units</strong> answer "WHERE can they work?" (James can reset passwords only in the Sales department)</p></div>
 
-<p>Without Admin Units, James would be able to reset passwords for ANYONE (dangerous). With Admin Units, he can only manage Sales users.</p>
+<div class='callout-box callout-warning'><span class='callout-icon'>⚠️</span><div class='callout-content'><h4>warning</h4><p>Without Admin Units, a manager with User Administrator role can reset passwords for ANYONE in your tenant. This is a major security risk. Always use Admin Units to scope delegated admin powers.</p></div></div>
+
+<p><strong>Example:</strong> With Admin Units:</p>
+<ul><ol><li>James (scoped to <code>au-sales</code>) CAN reset passwords for Sales users</li>
+<li>James CAN'T see or reset passwords for Finance users</li>
+<li>Rachel (scoped to <code>au-finance</code>) CAN reset only Finance passwords</li></ol></ul>
 
 <h3 id="step-1-create-admin-unit-for-sales-department">Step 1: Create Admin Unit for Sales Department</h3>
 

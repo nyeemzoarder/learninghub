@@ -40,6 +40,8 @@ The IT department is overwhelmed with password reset requests. Instead of IT han
 
 ## Part 1 – Create Users (Represent Real Employees)
 
+> Important: Each user created in this lab will receive an auto-generated password. Record these for testing later—users must change their password on first sign-in.
+
 ### Create Sales Department Users
 
 1. Go to **Microsoft Entra ID** > **Users** > **New user** > **Create new user**.
@@ -52,7 +54,9 @@ The IT department is overwhelmed with password reset requests. Instead of IT han
    - Click **Auto-generate password** (record the temporary password)
    - ✅ Check **Require password change on first sign-in**
    - Set **Usage location** to your country (required for licensing)
-   - **Important:** Set **Department** field to "Sales" (this will be used for dynamic grouping later)
+   - **Critical:** Set **Department** field to "Sales" (this will be used for dynamic grouping and admin unit scoping later)
+
+> Tip: You can bulk-create users via PowerShell for faster setup. See the **Appendix** section for a script example.
 
 ### Create Finance Department Users
 
@@ -144,11 +148,16 @@ If dynamic groups aren't available in your tenant, just understand the concept a
 
 ## Part 4 – Administrative Units: Limit WHERE Admins Can Use Their Power
 
-**Critical Concept:** 
-- **Groups** told us WHO (James is in `grp-sales-admins` → he's a Sales manager)
-- **Admin Units** tell us WHERE (James can reset passwords only in the Sales department)
+> Important: Critical Concept — Groups and Admin Units work together:
+> - **Groups** answer "WHO is this person?" (James is in `grp-sales-admins` → he's a Sales manager)
+> - **Admin Units** answer "WHERE can they work?" (James can reset passwords only in the Sales department)
 
-Without Admin Units, James would be able to reset passwords for ANYONE (dangerous). With Admin Units, he can only manage Sales users.
+> Warning: Without Admin Units, a manager with User Administrator role can reset passwords for ANYONE in your tenant. This is a major security risk. Always use Admin Units to scope delegated admin powers.
+
+**Example:** With Admin Units:
+- James (scoped to `au-sales`) CAN reset passwords for Sales users
+- James CAN'T see or reset passwords for Finance users
+- Rachel (scoped to `au-finance`) CAN reset only Finance passwords
 
 ### Step 1: Create Admin Unit for Sales Department
 
