@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Module 00 - Prerequisites - AZ-104 Learning Hub</title>
+<title>Module 02 - Storage - AZ-104 Learning Hub</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -172,30 +172,28 @@ hr.divider{border:none;height:0;margin:0}
   <details class="nav-group">
     <summary>Learning Module</summary>
     <div class="nav-menu">
-      <a href="../../00-prerequisites/documents/module-home.html" class="active">00 - Prerequisites</a>
-      <a href="../../01-identity-governance/documents/module-home.html">01 - Identity &amp; Governance</a>
+      <a href="../../00-prerequisites/documents/module-home.html">00 - Prerequisites</a>
+      <a href="../../01-identity-governance/documents/module-home.html">01 - Identity & Governance</a>
       <a href="../../02-storage/documents/module-home.html">02 - Storage</a>
       <a href="../../03-compute/documents/module-home.html">03 - Compute</a>
       <a href="../../04-networking/documents/module-home.html">04 - Networking</a>
-      <a href="../../05-monitor-maintain/documents/module-home.html">05 - Monitor &amp; Maintain</a>
+      <a href="../../05-monitor-maintain/documents/module-home.html">05 - Monitor & Maintain</a>
     </div>
   </details>
 </nav>
 <div class="layout">
   <aside class="sidebar">
     <details open>
-      <summary>▶ Module 00 - Prerequisites</summary>
+      <summary>▶ Module Concepts</summary>
       <div>
-        <a href="01-cloud-computing-fundamentals.html">01 - Cloud Computing Fundamentals</a>
-        <a href="02-networking-basics.html">02 - Networking Basics</a>
-        <a href="03-identity-and-access-fundamentals.html">03 - Identity &amp; Access Fundamentals</a>
-        <a href="04-azure-portal-navigation.html">04 - Azure Portal Navigation</a>
       </div>
     </details>
     <details>
       <summary>▶ Labs</summary>
       <div>
-        <a href="lab00-azure-portal-navigation.html">Lab 00 - Portal Navigation</a>
+        <a href="lab04-storage-accounts.html">Lab 04 - Storage Accounts</a>
+        <a href="lab05-blob-security-lifecycle.html">Lab 05 - Blob Security & Lifecycle</a>
+        <a href="lab06-azure-files-file-sync.html">Lab 06 - Azure Files & File Sync</a>
       </div>
     </details>
     <details>
@@ -209,63 +207,53 @@ hr.divider{border:none;height:0;margin:0}
   </aside>
   <div class="page">
 
-  <h1>Module 00: Prerequisites</h1>
-  <div class="subtitle">Master the foundational concepts needed for Azure administration</div>
+  <h1>Module 02: Storage</h1>
+  <div class="subtitle">Master Azure storage solutions for data management</div>
 
   <div class="badges">
-    <span class="badge">🟢 Foundational</span>
-    <span class="badge">⏱ 60 Minutes</span>
-    <span class="badge">📘 AZ-104 · Module 00</span>
+    <span class="badge">🟡 Intermediate</span>
+    <span class="badge">⏱ 90 Minutes</span>
+    <span class="badge">📘 AZ-104 · Module 02</span>
   </div>
 
   <div class="callout">
     <strong>Why This Matters</strong>
-    <p>Before diving into Azure-specific topics, you need to understand cloud computing fundamentals, networking basics, identity concepts, and how to navigate the Azure Portal. This module builds the foundation for everything else in the AZ-104 exam.</p>
+    <p>Storage is a critical component of any Azure solution. This module covers how to design and manage data in Azure using storage accounts, blobs, files, queues, and tables. You'll learn to secure storage, manage access, implement lifecycle policies, and optimize costs for different data workloads.</p>
   </div>
 
   <!-- Overview -->
   <div class="section full" id="overview">
     <h2>Module Overview</h2>
-    <p>The Prerequisites module covers the essential concepts and skills you need to succeed with Azure Administration. This module is designed to get you up to speed quickly, whether you're new to cloud computing or transitioning from on-premises infrastructure.</p>
-    <p>You'll learn the basics of cloud computing models, networking concepts, identity and access control, and how to navigate the Azure Portal interface.</p>
+    <p>Module 02 teaches you how to work with Azure Storage services for reliable, scalable, and secure data storage. You'll learn about storage accounts, blob storage for unstructured data, Azure Files for shared file access, queues for message passing, and tables for NoSQL storage.</p>
+    <p>These skills are essential for managing data in any Azure deployment, from backups to application data to analytics.</p>
   </div>
 
   <!-- Concepts -->
   <div class="section full" id="concepts">
     <h2>Concepts</h2>
-    <div class="grid3">
-      <div class="card">
-        <h4>01 - Cloud Computing Fundamentals</h4>
-        <p>Understand cloud service models (IaaS, PaaS, SaaS), deployment models, and why organizations choose cloud solutions.</p>
-        <a href="01-cloud-computing-fundamentals.html">Read Concept →</a>
-      </div>
-      <div class="card">
-        <h4>02 - Networking Basics</h4>
-        <p>Learn the fundamentals of IP addressing, network topology, subnetting, and how networks are structured in cloud environments.</p>
-        <a href="02-networking-basics.html">Read Concept →</a>
-      </div>
-      <div class="card">
-        <h4>03 - Identity &amp; Access Fundamentals</h4>
-        <p>Discover the principles of identity management, authentication, authorization, and how access control works in modern systems.</p>
-        <a href="03-identity-and-access-fundamentals.html">Read Concept →</a>
-      </div>
-      <div class="card">
-        <h4>04 - Azure Portal Navigation</h4>
-        <p>Get comfortable navigating the Azure Portal, understanding the dashboard, managing resources, and using essential features.</p>
-        <a href="04-azure-portal-navigation.html">Read Concept →</a>
-      </div>
+    <div class="grid2">
     </div>
   </div>
 
   <!-- Labs -->
   <div class="section full" id="labs">
     <h2>Hands-On Labs</h2>
-    <p>Practice your skills with hands-on labs that let you interact with the Azure Portal and apply the concepts you've learned.</p>
-    <div class="grid2">
+    <p>Build your storage skills with practical labs that let you work with Azure Storage services in real scenarios.</p>
+    <div class="grid3">
       <div class="card">
-        <h4>Lab 00 - Portal Navigation</h4>
-        <p>Get hands-on practice navigating the Azure Portal, exploring resources, and using the portal's key features.</p>
-        <a href="lab00-azure-portal-navigation.html">Start Lab →</a>
+        <h4>Lab 04 - Storage Accounts</h4>
+        <p>Create and configure storage accounts, manage access keys, and implement storage security best practices.</p>
+        <a href="lab04-storage-accounts.html">Start Lab →</a>
+      </div>
+      <div class="card">
+        <h4>Lab 05 - Blob Security & Lifecycle</h4>
+        <p>Work with blob storage, implement security policies, and manage data lifecycle to optimize costs.</p>
+        <a href="lab05-blob-security-lifecycle.html">Start Lab →</a>
+      </div>
+      <div class="card">
+        <h4>Lab 06 - Azure Files & File Sync</h4>
+        <p>Deploy Azure Files for shared access and implement file sync for hybrid scenarios.</p>
+        <a href="lab06-azure-files-file-sync.html">Start Lab →</a>
       </div>
     </div>
   </div>
@@ -274,11 +262,12 @@ hr.divider{border:none;height:0;margin:0}
   <div class="section full">
     <h2>Recommended Learning Path</h2>
     <ol>
-      <li><strong>Start here:</strong> Read <a href="01-cloud-computing-fundamentals.html">Cloud Computing Fundamentals</a> to understand cloud concepts</li>
-      <li><strong>Then:</strong> Read <a href="02-networking-basics.html">Networking Basics</a> to understand networks</li>
-      <li><strong>Next:</strong> Read <a href="03-identity-and-access-fundamentals.html">Identity &amp; Access Fundamentals</a> to understand authentication</li>
-      <li><strong>Then:</strong> Read <a href="04-azure-portal-navigation.html">Azure Portal Navigation</a> to get comfortable with Azure</li>
-      <li><strong>Finally:</strong> Complete <a href="lab00-azure-portal-navigation.html">Lab 00</a> for hands-on practice</li>
+      <li><strong>Start here:</strong> Understand storage account types and capabilities</li>
+      <li><strong>Then:</strong> Learn about blob storage and data management</li>
+      <li><strong>Next:</strong> Explore Azure Files for shared access scenarios</li>
+      <li><strong>Security:</strong> Implement access control and encryption</li>
+      <li><strong>Optimization:</strong> Learn lifecycle management and cost optimization</li>
+      <li><strong>Practice:</strong> Complete all three labs to gain hands-on experience</li>
     </ol>
   </div>
 
@@ -291,7 +280,7 @@ hr.divider{border:none;height:0;margin:0}
       </div>
       <div class="footer-item">
         <strong>Module</strong>
-        00 — Prerequisites
+        02 — Storage
       </div>
       <div class="footer-item">
         <strong>Generated</strong>

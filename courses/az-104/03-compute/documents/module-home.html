@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Module 00 - Prerequisites - AZ-104 Learning Hub</title>
+<title>Module 03 - Compute - AZ-104 Learning Hub</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -172,30 +172,30 @@ hr.divider{border:none;height:0;margin:0}
   <details class="nav-group">
     <summary>Learning Module</summary>
     <div class="nav-menu">
-      <a href="../../00-prerequisites/documents/module-home.html" class="active">00 - Prerequisites</a>
-      <a href="../../01-identity-governance/documents/module-home.html">01 - Identity &amp; Governance</a>
+      <a href="../../00-prerequisites/documents/module-home.html">00 - Prerequisites</a>
+      <a href="../../01-identity-governance/documents/module-home.html">01 - Identity & Governance</a>
       <a href="../../02-storage/documents/module-home.html">02 - Storage</a>
       <a href="../../03-compute/documents/module-home.html">03 - Compute</a>
       <a href="../../04-networking/documents/module-home.html">04 - Networking</a>
-      <a href="../../05-monitor-maintain/documents/module-home.html">05 - Monitor &amp; Maintain</a>
+      <a href="../../05-monitor-maintain/documents/module-home.html">05 - Monitor & Maintain</a>
     </div>
   </details>
 </nav>
 <div class="layout">
   <aside class="sidebar">
     <details open>
-      <summary>▶ Module 00 - Prerequisites</summary>
+      <summary>▶ Module Concepts</summary>
       <div>
-        <a href="01-cloud-computing-fundamentals.html">01 - Cloud Computing Fundamentals</a>
-        <a href="02-networking-basics.html">02 - Networking Basics</a>
-        <a href="03-identity-and-access-fundamentals.html">03 - Identity &amp; Access Fundamentals</a>
-        <a href="04-azure-portal-navigation.html">04 - Azure Portal Navigation</a>
       </div>
     </details>
     <details>
       <summary>▶ Labs</summary>
       <div>
-        <a href="lab00-azure-portal-navigation.html">Lab 00 - Portal Navigation</a>
+        <a href="lab07-arm-bicep-templates.html">Lab 07 - ARM & Bicep Templates</a>
+        <a href="lab08-virtual-machines.html">Lab 08 - Virtual Machines</a>
+        <a href="lab09-vm-availability-scaling.html">Lab 09 - VM Availability & Scaling</a>
+        <a href="lab10-containers-aci-acr.html">Lab 10 - Containers, ACI & ACR</a>
+        <a href="lab11-app-service.html">Lab 11 - App Service</a>
       </div>
     </details>
     <details>
@@ -209,63 +209,63 @@ hr.divider{border:none;height:0;margin:0}
   </aside>
   <div class="page">
 
-  <h1>Module 00: Prerequisites</h1>
-  <div class="subtitle">Master the foundational concepts needed for Azure administration</div>
+  <h1>Module 03: Compute</h1>
+  <div class="subtitle">Master Azure compute solutions from VMs to serverless</div>
 
   <div class="badges">
-    <span class="badge">🟢 Foundational</span>
-    <span class="badge">⏱ 60 Minutes</span>
-    <span class="badge">📘 AZ-104 · Module 00</span>
+    <span class="badge">🟡 Intermediate</span>
+    <span class="badge">⏱ 180 Minutes</span>
+    <span class="badge">📘 AZ-104 · Module 03</span>
   </div>
 
   <div class="callout">
     <strong>Why This Matters</strong>
-    <p>Before diving into Azure-specific topics, you need to understand cloud computing fundamentals, networking basics, identity concepts, and how to navigate the Azure Portal. This module builds the foundation for everything else in the AZ-104 exam.</p>
+    <p>Compute is the core capability in Azure, with many deployment options for different workloads. This module covers Virtual Machines for traditional workloads, containers for modern applications, App Service for web apps, and serverless options. You'll learn to choose the right compute option, deploy infrastructure using ARM and Bicep, and manage scalability.</p>
   </div>
 
   <!-- Overview -->
   <div class="section full" id="overview">
     <h2>Module Overview</h2>
-    <p>The Prerequisites module covers the essential concepts and skills you need to succeed with Azure Administration. This module is designed to get you up to speed quickly, whether you're new to cloud computing or transitioning from on-premises infrastructure.</p>
-    <p>You'll learn the basics of cloud computing models, networking concepts, identity and access control, and how to navigate the Azure Portal interface.</p>
+    <p>Module 03 teaches you how to deploy and manage applications on Azure using various compute services. You'll learn to use Virtual Machines for full control, containers for portability, App Service for web applications, and Infrastructure-as-Code using ARM templates and Bicep.</p>
+    <p>This module covers the full spectrum of compute options, from IaaS to PaaS, and the modern DevOps practices for deployment and scaling.</p>
   </div>
 
   <!-- Concepts -->
   <div class="section full" id="concepts">
     <h2>Concepts</h2>
-    <div class="grid3">
-      <div class="card">
-        <h4>01 - Cloud Computing Fundamentals</h4>
-        <p>Understand cloud service models (IaaS, PaaS, SaaS), deployment models, and why organizations choose cloud solutions.</p>
-        <a href="01-cloud-computing-fundamentals.html">Read Concept →</a>
-      </div>
-      <div class="card">
-        <h4>02 - Networking Basics</h4>
-        <p>Learn the fundamentals of IP addressing, network topology, subnetting, and how networks are structured in cloud environments.</p>
-        <a href="02-networking-basics.html">Read Concept →</a>
-      </div>
-      <div class="card">
-        <h4>03 - Identity &amp; Access Fundamentals</h4>
-        <p>Discover the principles of identity management, authentication, authorization, and how access control works in modern systems.</p>
-        <a href="03-identity-and-access-fundamentals.html">Read Concept →</a>
-      </div>
-      <div class="card">
-        <h4>04 - Azure Portal Navigation</h4>
-        <p>Get comfortable navigating the Azure Portal, understanding the dashboard, managing resources, and using essential features.</p>
-        <a href="04-azure-portal-navigation.html">Read Concept →</a>
-      </div>
+    <div class="grid2">
     </div>
   </div>
 
   <!-- Labs -->
   <div class="section full" id="labs">
     <h2>Hands-On Labs</h2>
-    <p>Practice your skills with hands-on labs that let you interact with the Azure Portal and apply the concepts you've learned.</p>
-    <div class="grid2">
+    <p>Master compute deployment with practical labs covering VMs, containers, App Service, and infrastructure automation.</p>
+    <div class="grid3">
       <div class="card">
-        <h4>Lab 00 - Portal Navigation</h4>
-        <p>Get hands-on practice navigating the Azure Portal, exploring resources, and using the portal's key features.</p>
-        <a href="lab00-azure-portal-navigation.html">Start Lab →</a>
+        <h4>Lab 07 - ARM & Bicep Templates</h4>
+        <p>Learn Infrastructure-as-Code with ARM templates and Bicep to automate Azure deployments.</p>
+        <a href="lab07-arm-bicep-templates.html">Start Lab →</a>
+      </div>
+      <div class="card">
+        <h4>Lab 08 - Virtual Machines</h4>
+        <p>Create, configure, and manage virtual machines for various workloads and scenarios.</p>
+        <a href="lab08-virtual-machines.html">Start Lab →</a>
+      </div>
+      <div class="card">
+        <h4>Lab 09 - VM Availability & Scaling</h4>
+        <p>Implement high availability patterns and auto-scaling for virtual machine workloads.</p>
+        <a href="lab09-vm-availability-scaling.html">Start Lab →</a>
+      </div>
+      <div class="card">
+        <h4>Lab 10 - Containers, ACI & ACR</h4>
+        <p>Deploy containerized applications using Azure Container Instances and Container Registry.</p>
+        <a href="lab10-containers-aci-acr.html">Start Lab →</a>
+      </div>
+      <div class="card">
+        <h4>Lab 11 - App Service</h4>
+        <p>Deploy and manage web applications using Azure App Service with continuous deployment.</p>
+        <a href="lab11-app-service.html">Start Lab →</a>
       </div>
     </div>
   </div>
@@ -274,11 +274,12 @@ hr.divider{border:none;height:0;margin:0}
   <div class="section full">
     <h2>Recommended Learning Path</h2>
     <ol>
-      <li><strong>Start here:</strong> Read <a href="01-cloud-computing-fundamentals.html">Cloud Computing Fundamentals</a> to understand cloud concepts</li>
-      <li><strong>Then:</strong> Read <a href="02-networking-basics.html">Networking Basics</a> to understand networks</li>
-      <li><strong>Next:</strong> Read <a href="03-identity-and-access-fundamentals.html">Identity &amp; Access Fundamentals</a> to understand authentication</li>
-      <li><strong>Then:</strong> Read <a href="04-azure-portal-navigation.html">Azure Portal Navigation</a> to get comfortable with Azure</li>
-      <li><strong>Finally:</strong> Complete <a href="lab00-azure-portal-navigation.html">Lab 00</a> for hands-on practice</li>
+      <li><strong>Start here:</strong> Learn Infrastructure-as-Code with ARM and Bicep templates</li>
+      <li><strong>Fundamentals:</strong> Understand virtual machine deployment and configuration</li>
+      <li><strong>Scaling:</strong> Learn availability sets, scale sets, and auto-scaling</li>
+      <li><strong>Modernization:</strong> Explore containerization with Docker and Azure Container Instances</li>
+      <li><strong>PaaS:</strong> Deploy web applications using App Service</li>
+      <li><strong>Practice:</strong> Complete all five labs to master compute deployments</li>
     </ol>
   </div>
 
@@ -291,7 +292,7 @@ hr.divider{border:none;height:0;margin:0}
       </div>
       <div class="footer-item">
         <strong>Module</strong>
-        00 — Prerequisites
+        03 — Compute
       </div>
       <div class="footer-item">
         <strong>Generated</strong>

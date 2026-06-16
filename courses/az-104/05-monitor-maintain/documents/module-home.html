@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Module 00 - Prerequisites - AZ-104 Learning Hub</title>
+<title>Module 05 - Monitor & Maintain - AZ-104 Learning Hub</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -172,30 +172,28 @@ hr.divider{border:none;height:0;margin:0}
   <details class="nav-group">
     <summary>Learning Module</summary>
     <div class="nav-menu">
-      <a href="../../00-prerequisites/documents/module-home.html" class="active">00 - Prerequisites</a>
-      <a href="../../01-identity-governance/documents/module-home.html">01 - Identity &amp; Governance</a>
+      <a href="../../00-prerequisites/documents/module-home.html">00 - Prerequisites</a>
+      <a href="../../01-identity-governance/documents/module-home.html">01 - Identity & Governance</a>
       <a href="../../02-storage/documents/module-home.html">02 - Storage</a>
       <a href="../../03-compute/documents/module-home.html">03 - Compute</a>
       <a href="../../04-networking/documents/module-home.html">04 - Networking</a>
-      <a href="../../05-monitor-maintain/documents/module-home.html">05 - Monitor &amp; Maintain</a>
+      <a href="../../05-monitor-maintain/documents/module-home.html">05 - Monitor & Maintain</a>
     </div>
   </details>
 </nav>
 <div class="layout">
   <aside class="sidebar">
     <details open>
-      <summary>▶ Module 00 - Prerequisites</summary>
+      <summary>▶ Module Concepts</summary>
       <div>
-        <a href="01-cloud-computing-fundamentals.html">01 - Cloud Computing Fundamentals</a>
-        <a href="02-networking-basics.html">02 - Networking Basics</a>
-        <a href="03-identity-and-access-fundamentals.html">03 - Identity &amp; Access Fundamentals</a>
-        <a href="04-azure-portal-navigation.html">04 - Azure Portal Navigation</a>
       </div>
     </details>
     <details>
       <summary>▶ Labs</summary>
       <div>
-        <a href="lab00-azure-portal-navigation.html">Lab 00 - Portal Navigation</a>
+        <a href="lab17-azure-monitor-alerts.html">Lab 17 - Azure Monitor & Alerts</a>
+        <a href="lab18-backup-recovery.html">Lab 18 - Backup & Recovery</a>
+        <a href="lab19-network-monitoring.html">Lab 19 - Network Monitoring</a>
       </div>
     </details>
     <details>
@@ -209,63 +207,53 @@ hr.divider{border:none;height:0;margin:0}
   </aside>
   <div class="page">
 
-  <h1>Module 00: Prerequisites</h1>
-  <div class="subtitle">Master the foundational concepts needed for Azure administration</div>
+  <h1>Module 05: Monitor & Maintain</h1>
+  <div class="subtitle">Master Azure monitoring, logging, backup, and compliance</div>
 
   <div class="badges">
-    <span class="badge">🟢 Foundational</span>
-    <span class="badge">⏱ 60 Minutes</span>
-    <span class="badge">📘 AZ-104 · Module 00</span>
+    <span class="badge">🟡 Intermediate</span>
+    <span class="badge">⏱ 120 Minutes</span>
+    <span class="badge">📘 AZ-104 · Module 05</span>
   </div>
 
   <div class="callout">
     <strong>Why This Matters</strong>
-    <p>Before diving into Azure-specific topics, you need to understand cloud computing fundamentals, networking basics, identity concepts, and how to navigate the Azure Portal. This module builds the foundation for everything else in the AZ-104 exam.</p>
+    <p>Monitoring and maintenance are critical for keeping Azure solutions reliable, secure, and compliant. This module covers Azure Monitor for visibility, alerts for proactive issue detection, backup and disaster recovery to protect data, and compliance tools to meet regulatory requirements.</p>
   </div>
 
   <!-- Overview -->
   <div class="section full" id="overview">
     <h2>Module Overview</h2>
-    <p>The Prerequisites module covers the essential concepts and skills you need to succeed with Azure Administration. This module is designed to get you up to speed quickly, whether you're new to cloud computing or transitioning from on-premises infrastructure.</p>
-    <p>You'll learn the basics of cloud computing models, networking concepts, identity and access control, and how to navigate the Azure Portal interface.</p>
+    <p>Module 05 teaches you how to monitor Azure resources, respond to issues, protect data with backup and recovery, and ensure compliance. You'll learn to use Azure Monitor for metrics and logs, set up alerts for proactive incident response, implement backup strategies, and audit your environment for compliance.</p>
+    <p>These operational skills are essential for running production Azure solutions reliably and securely.</p>
   </div>
 
   <!-- Concepts -->
   <div class="section full" id="concepts">
     <h2>Concepts</h2>
-    <div class="grid3">
-      <div class="card">
-        <h4>01 - Cloud Computing Fundamentals</h4>
-        <p>Understand cloud service models (IaaS, PaaS, SaaS), deployment models, and why organizations choose cloud solutions.</p>
-        <a href="01-cloud-computing-fundamentals.html">Read Concept →</a>
-      </div>
-      <div class="card">
-        <h4>02 - Networking Basics</h4>
-        <p>Learn the fundamentals of IP addressing, network topology, subnetting, and how networks are structured in cloud environments.</p>
-        <a href="02-networking-basics.html">Read Concept →</a>
-      </div>
-      <div class="card">
-        <h4>03 - Identity &amp; Access Fundamentals</h4>
-        <p>Discover the principles of identity management, authentication, authorization, and how access control works in modern systems.</p>
-        <a href="03-identity-and-access-fundamentals.html">Read Concept →</a>
-      </div>
-      <div class="card">
-        <h4>04 - Azure Portal Navigation</h4>
-        <p>Get comfortable navigating the Azure Portal, understanding the dashboard, managing resources, and using essential features.</p>
-        <a href="04-azure-portal-navigation.html">Read Concept →</a>
-      </div>
+    <div class="grid2">
     </div>
   </div>
 
   <!-- Labs -->
   <div class="section full" id="labs">
     <h2>Hands-On Labs</h2>
-    <p>Practice your skills with hands-on labs that let you interact with the Azure Portal and apply the concepts you've learned.</p>
-    <div class="grid2">
+    <p>Build your operational skills with practical labs for monitoring, alerting, backup, and recovery.</p>
+    <div class="grid3">
       <div class="card">
-        <h4>Lab 00 - Portal Navigation</h4>
-        <p>Get hands-on practice navigating the Azure Portal, exploring resources, and using the portal's key features.</p>
-        <a href="lab00-azure-portal-navigation.html">Start Lab →</a>
+        <h4>Lab 17 - Azure Monitor & Alerts</h4>
+        <p>Set up monitoring, create alerts, and respond to incidents using Azure Monitor and action groups.</p>
+        <a href="lab17-azure-monitor-alerts.html">Start Lab →</a>
+      </div>
+      <div class="card">
+        <h4>Lab 18 - Backup & Recovery</h4>
+        <p>Implement backup strategies and recovery procedures to protect your Azure workloads.</p>
+        <a href="lab18-backup-recovery.html">Start Lab →</a>
+      </div>
+      <div class="card">
+        <h4>Lab 19 - Network Monitoring</h4>
+        <p>Monitor network performance, troubleshoot connectivity issues, and analyze traffic patterns.</p>
+        <a href="lab19-network-monitoring.html">Start Lab →</a>
       </div>
     </div>
   </div>
@@ -274,11 +262,12 @@ hr.divider{border:none;height:0;margin:0}
   <div class="section full">
     <h2>Recommended Learning Path</h2>
     <ol>
-      <li><strong>Start here:</strong> Read <a href="01-cloud-computing-fundamentals.html">Cloud Computing Fundamentals</a> to understand cloud concepts</li>
-      <li><strong>Then:</strong> Read <a href="02-networking-basics.html">Networking Basics</a> to understand networks</li>
-      <li><strong>Next:</strong> Read <a href="03-identity-and-access-fundamentals.html">Identity &amp; Access Fundamentals</a> to understand authentication</li>
-      <li><strong>Then:</strong> Read <a href="04-azure-portal-navigation.html">Azure Portal Navigation</a> to get comfortable with Azure</li>
-      <li><strong>Finally:</strong> Complete <a href="lab00-azure-portal-navigation.html">Lab 00</a> for hands-on practice</li>
+      <li><strong>Start here:</strong> Learn Azure Monitor fundamentals and metrics collection</li>
+      <li><strong>Then:</strong> Implement alerting and automated responses</li>
+      <li><strong>Protect:</strong> Design backup and disaster recovery strategies</li>
+      <li><strong>Troubleshoot:</strong> Use Azure Monitor logs and Network Watcher for diagnostics</li>
+      <li><strong>Optimize:</strong> Analyze costs and performance using Azure Monitor</li>
+      <li><strong>Practice:</strong> Complete all three labs to master monitoring and operations</li>
     </ol>
   </div>
 
@@ -291,7 +280,7 @@ hr.divider{border:none;height:0;margin:0}
       </div>
       <div class="footer-item">
         <strong>Module</strong>
-        00 — Prerequisites
+        05 — Monitor & Maintain
       </div>
       <div class="footer-item">
         <strong>Generated</strong>
