@@ -46,6 +46,10 @@ function Convert-MarkdownToHTML {
     # Read markdown file
     $content = Get-Content -Path $MarkdownPath -Raw -Encoding UTF8
 
+    # Debug: Check if markdown has code blocks
+    $backtickCount = ([regex]::Matches($content, '```')).Count
+    if ($Verbose -and $backtickCount -gt 0) { Write-Host "    Initial backtick markers in markdown: $backtickCount" }
+
     # Parse markdown to extract structure for TOC
     $lines = $content -split "`n"
     $sections = @()
@@ -74,6 +78,14 @@ function Convert-MarkdownToHTML {
     # Convert markdown to HTML
     $html = $content
 
+    # Task Box Detection FIRST - Convert "### Task: Title" into task-box structure (before H3 conversion)
+    $html = [regex]::Replace($html, '(?m)^### Task:(.+?)$', {
+        param($match)
+        $title = $match.Groups[1].Value.Trim()
+        $id = Convert-TitleToId "task-$title"
+        return "<div class='task-box'><div class='task-header'><span class='task-icon'>✓</span><h3 id=""$id"">$title</h3></div><div class='task-content'>"
+    })
+
     # Headings (must be done in order from highest to lowest)
     $html = [regex]::Replace($html, '(?m)^# (.+?)$', '<h1>$1</h1>')
     # H2 and H3 with IDs require MatchEvaluator for dynamic ID generation
@@ -93,19 +105,19 @@ function Convert-MarkdownToHTML {
     $html = [regex]::Replace($html, '(?m)^##### (.+?)$', '<h5>$1</h5>')
 
     # Bold and italic
+    if ($Verbose) { Write-Host "    After headings: $(([regex]::Matches($html, '```')).Count) triple-backtick groups" }
     $html = [regex]::Replace($html, '\*\*([^*]+?)\*\*', '<strong>$1</strong>')
     $html = [regex]::Replace($html, '__([^_]+?)__', '<strong>$1</strong>')
     $html = [regex]::Replace($html, '\*([^*]+?)\*', '<em>$1</em>')
     $html = [regex]::Replace($html, '_([^_]+?)_', '<em>$1</em>')
+    if ($Verbose) { Write-Host "    After bold/italic: $(([regex]::Matches($html, '```')).Count) triple-backtick groups" }
 
-    # Links
-    $html = [regex]::Replace($html, '\[([^\]]+?)\]\(([^)]+?)\)', '<a href="$2">$1</a>')
+    # Code blocks (```language...```) with professional styling - MUST BE BEFORE inline code
+    # Simplified pattern that handles any line ending
+    $codeBlocksBefore = ([regex]::Matches($html, '```(\w*)[`\s\S]*?```', [System.Text.RegularExpressions.RegexOptions]::Singleline)).Count
+    if ($Verbose) { Write-Host "  Code blocks detected: $codeBlocksBefore" }
 
-    # Inline code
-    $html = [regex]::Replace($html, '`([^`]+?)`', '<code>$1</code>')
-
-    # Code blocks (```language...```) with professional styling
-    $html = [regex]::Replace($html, '```(\w*)\n(.*?)\n```', {
+    $html = [regex]::Replace($html, '```(\w*)[\r\n]+([\s\S]*?)[\r\n]+```', {
         param($match)
         $lang = $match.Groups[1].Value
         $code = $match.Groups[2].Value.Trim()
@@ -124,6 +136,15 @@ function Convert-MarkdownToHTML {
         return "<div class='code-block'><pre>$highlighted</pre></div>"
     }, [System.Text.RegularExpressions.RegexOptions]::Singleline)
 
+    $codeBlocksAfter = ([regex]::Matches($html, "<div class='code-block'")).Count
+    if ($Verbose) { Write-Host "  Code blocks generated: $codeBlocksAfter" }
+
+    # Links
+    $html = [regex]::Replace($html, '\[([^\]]+?)\]\(([^)]+?)\)', '<a href="$2">$1</a>')
+
+    # Inline code
+    $html = [regex]::Replace($html, '`([^`]+?)`', '<code>$1</code>')
+
     # Blockquote with callout type detection (Tip:, Warning:, Important:, Note:)
     $html = [regex]::Replace($html, '(?m)^> (\*\*)?((Tip|Warning|Important|Note))(\*\*)?:(.+?)$', {
         param($match)
@@ -132,6 +153,13 @@ function Convert-MarkdownToHTML {
         $icons = @{'tip'='ℹ️'; 'warning'='⚠️'; 'important'='❗'; 'note'='📝'}
         $icon = $icons[$type] ?? 'ℹ️'
         return "<div class='callout-box callout-$type'><span class='callout-icon'>$icon</span><div class='callout-content'><h4>$type</h4><p>$content</p></div></div>"
+    })
+
+    # Detect time estimate format "⏱️ X minutes" or "⏱️ X-Y minutes" and convert to time badge
+    $html = [regex]::Replace($html, '⏱️\s*(\d+(?:-\d+)?)\s*minutes?', {
+        param($match)
+        $time = $match.Groups[1].Value
+        return "<span class='section-time'><span class='icon'>⏱️</span>$time min</span>"
     })
 
     # Fallback for regular blockquotes
@@ -155,6 +183,13 @@ function Convert-MarkdownToHTML {
 
     # Checkboxes
     $html = [regex]::Replace($html, '\- \[( |x)\] ', '<li><input type="checkbox" $1" disabled> ')
+
+    # Close open task-boxes before h2 headings
+    $html = $html -replace '(<div class=''task-content''>.+?)(?=<h2)', '$1</div></div>'
+    # Close open task-boxes before next task (h3 with task-box)
+    $html = $html -replace '(<div class=''task-content''>.+?)(?=<div class=''task-box'')', '$1</div></div>'
+    # Close remaining open task-boxes at end
+    $html = $html -replace '(<div class=''task-content''>.+?)$', '$1</div></div>'
 
     # Paragraph wrapping (for remaining plain lines)
     $paragraphs = @()

@@ -150,16 +150,14 @@
 <ol><li><strong>Permissions</strong> tab: select <strong>Edit permissions in JSON</strong></li>
 <li>Replace the <code>actions</code>/<code>notActions</code> arrays with:</li></ol>
 
-<p>``<code>json</p>
-<p>{</p>
-<p>"actions": [</p>
-<p>"Microsoft.Compute/virtualMachines/start/action",</p>
-<p>"Microsoft.Compute/virtualMachines/restart/action",</p>
-<p>"Microsoft.Compute/virtualMachines/read"</p>
+<div class='code-block'><pre>{
+<p>&quot;actions&quot;: [</p>
+<p>&quot;Microsoft.Compute/virtualMachines/start/action&quot;,</p>
+<p>&quot;Microsoft.Compute/virtualMachines/restart/action&quot;,</p>
+<p>&quot;Microsoft.Compute/virtualMachines/read&quot;</p>
 <p>],</p>
-<p>"notActions": []</p>
-<p>}</p>
-<p></code>`<code></p>
+<p>&quot;notActions&quot;: []</p>
+<p>}</pre></div></p>
 
 <ol><li><strong>Assignable scopes</strong> tab: confirm scope is your subscription</li></ol>
 
@@ -167,7 +165,7 @@
 
 <ol><li><strong>Access control (IAM)</strong> > <strong>Add role assignment</strong></li>
 <li>Search for <strong>VM Operator (Start/Stop only)</strong> under <strong>Custom roles</strong></li>
-<li>Assign to </code>carol@<yourtenant>.onmicrosoft.com<code> at </code>rg-az104-lab02<code> scope</li></ol>
+<li>Assign to <code>carol@<yourtenant>.onmicrosoft.com</code> at <code>rg-az104-lab02</code> scope</li></ol>
 
 <p>---</p>
 
@@ -183,7 +181,7 @@
 <li>Search for <strong>"Require a tag on resource groups"</strong></li>
 <li>Select it > <strong>Assign</strong></li>
 <li><strong>Basics</strong> tab: <strong>Scope</strong> = your subscription</li>
-<li><strong>Parameters</strong> tab: set </code>Tag Name<code> = </code>CostCenter<code></li>
+<li><strong>Parameters</strong> tab: set <code>Tag Name</code> = <code>CostCenter</code></li>
 <li><strong>Effect</strong>: confirm it's <strong>Deny</strong> (blocks creation without tag)</li>
 <li><strong>Review + create</strong> > <strong>Create</strong></li></ol>
 
@@ -192,14 +190,12 @@
 <div class='callout-box callout-warning'><span class='callout-icon'>⚠️</span><div class='callout-content'><h4>warning</h4><p>This will block resource creation. Expect a policy error.</p></div></div>
 
 <ol><li>Go to <strong>Resource groups</strong> > <strong>Create</strong></li>
-<li>Name: </code>rg-policy-test<code>, Region: </code>East US<code></li>
+<li>Name: <code>rg-policy-test</code>, Region: <code>East US</code></li>
 <li>Select <strong>Review + create</strong> and expect this error:</li></ol>
 
-<p></code>`<code></p>
-<p>RequestDisallowedByPolicy</p>
+<div class='code-block'><pre>RequestDisallowedByPolicy
 <p>The request is denied by an Azure policy.</p>
-<p>Reason: Resource group does not have required tags.</p>
-<p></code>`<code></p>
+<p>Reason: Resource group does not have required tags.</pre></div></p>
 
 <ol><li><strong>Do not proceed</strong> past this validation error</li>
 <li>This proves the policy is working!</li></ol>
@@ -211,30 +207,28 @@
 <h3 id="step-1-create-initiative-multi-policy-">Step 1: Create initiative (multi-policy)</h3>
 
 <ol><li>Go to <strong>Policy</strong> > <strong>Definitions</strong> > <strong>+ Policy Definition</strong></li>
-<li><strong>Name</strong>: </code>Allowed Azure Locations<code></li>
+<li><strong>Name</strong>: <code>Allowed Azure Locations</code></li>
 <li><strong>Category</strong>: <strong>General</strong></li>
-<li><strong>Description</strong>: </code>Restrict resource creation to approved regions only<code></li>
+<li><strong>Description</strong>: <code>Restrict resource creation to approved regions only</code></li>
 <li><strong>Policy rule</strong> (replace template with):</li></ol>
 
-<p></code>`<code>json</p>
-<p>{</p>
-<p>"policyRule": {</p>
-<p>"if": {</p>
-<p>"not": {</p>
-<p>"field": "location",</p>
-<p>"in": [</p>
-<p>"East US",</p>
-<p>"West US",</p>
-<p>"West Europe"</p>
+<div class='code-block'><pre>{
+<p>&quot;policyRule&quot;: {</p>
+<p>&quot;if&quot;: {</p>
+<p>&quot;not&quot;: {</p>
+<p>&quot;field&quot;: &quot;location&quot;,</p>
+<p>&quot;in&quot;: [</p>
+<p>&quot;East US&quot;,</p>
+<p>&quot;West US&quot;,</p>
+<p>&quot;West Europe&quot;</p>
 <p>]</p>
 <p>}</p>
 <p>},</p>
-<p>"then": {</p>
-<p>"effect": "Deny"</p>
+<p>&quot;then&quot;: {</p>
+<p>&quot;effect&quot;: &quot;Deny&quot;</p>
 <p>}</p>
 <p>}</p>
-<p>}</p>
-<p></code>`<code></p>
+<p>}</pre></div></p>
 
 <ol><li><strong>Review + create</strong> > <strong>Create</strong></li></ol>
 
@@ -242,7 +236,7 @@
 
 <ol><li><strong>Policy</strong> > <strong>Assignments</strong> > <strong>Assign Policy</strong></li>
 <li><strong>Scope</strong>: your subscription</li>
-<li><strong>Policy definition</strong>: select </code>Allowed Azure Locations<code></li>
+<li><strong>Policy definition</strong>: select <code>Allowed Azure Locations</code></li>
 <li><strong>Effect</strong>: <strong>Deny</strong></li>
 <li><strong>Review + create</strong> > <strong>Assign</strong></li></ol>
 
@@ -257,11 +251,11 @@
 
 <h2 id="success-criteria-">Success Criteria</h2>
 
-<p>✓ Resource group </code>rg-az104-lab02<code> created</p>
+<p>✓ Resource group <code>rg-az104-lab02</code> created</p>
 <p>✓ Reader role assigned to group at RG scope</p>
 <p>✓ Storage Blob Data Contributor assigned to Bob at resource scope</p>
-<p>✓ Custom role </code>VM Operator (Start/Stop only)<code> created and assigned</p>
-<p>✓ Tag policy prevents resource group creation without </code>CostCenter<code> tag</p>
+<p>✓ Custom role <code>VM Operator (Start/Stop only)</code> created and assigned</p>
+<p>✓ Tag policy prevents resource group creation without <code>CostCenter</code> tag</p>
 <p>✓ Location policy allows only East US, West US, West Europe</p>
 
 <p>---</p>
@@ -270,17 +264,15 @@
 
 <p>To remove policies and role assignments:</p>
 
-<p></code>`<code>powershell</p>
-<h1>Remove policy assignments</h1>
-<p>Remove-AzPolicyAssignment -Name "Require a tag on resource groups" -Scope "/subscriptions/[subscription-id]"</p>
-<p>Remove-AzPolicyAssignment -Name "Allowed Azure Locations" -Scope "/subscriptions/[subscription-id]"</p>
+<div class='code-block'><pre>&lt;h1&gt;Remove policy assignments&lt;/h1&gt;
+<p>Remove<span class="operator">-</span><span class="property">AzPolicyAssignment</span> <span class="operator">-</span><span class="property">Name</span> &quot;Require a tag on resource groups&quot; <span class="operator">-</span><span class="property">Scope</span> &quot;/subscriptions/[subscription<span class="operator">-</span><span class="property">id</span>]&quot;</p>
+<p>Remove<span class="operator">-</span><span class="property">AzPolicyAssignment</span> <span class="operator">-</span><span class="property">Name</span> &quot;Allowed Azure Locations&quot; <span class="operator">-</span><span class="property">Scope</span> &quot;/subscriptions/[subscription<span class="operator">-</span><span class="property">id</span>]&quot;</p>
 
-<h1>Remove custom role</h1>
-<p>Remove-AzRoleDefinition -Id "[role-id]" -Force</p>
+<p>&lt;h1&gt;Remove custom role&lt;/h1&gt;</p>
+<p>Remove<span class="operator">-</span><span class="property">AzRoleDefinition</span> <span class="operator">-</span><span class="property">Id</span> &quot;[role<span class="operator">-</span><span class="property">id</span>]&quot; <span class="operator">-</span><span class="property">Force</span></p>
 
-<h1>Remove resource group (includes all resources inside)</h1>
-<p>Remove-AzResourceGroup -Name "rg-az104-lab02" -Force</p>
-<p></code>``</p>
+<p>&lt;h1&gt;Remove resource group (includes all resources inside)&lt;/h1&gt;</p>
+<p>Remove<span class="operator">-</span><span class="property">AzResourceGroup</span> <span class="operator">-</span><span class="property">Name</span> &quot;rg<span class="operator">-</span><span class="property">az104</span><span class="operator">-</span><span class="property">lab02</span>&quot; <span class="operator">-</span><span class="property">Force</span></pre></div></p>
 
 <div class='callout-box callout-tip'><span class='callout-icon'>ℹ️</span><div class='callout-content'><h4>tip</h4><p>Keeping test RGs around helps you learn. Only delete if you're confident you won't need them.</p></div></div>
 

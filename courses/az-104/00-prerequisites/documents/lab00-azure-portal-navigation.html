@@ -176,8 +176,7 @@
 
 <p><strong>Scope</strong> is a foundational concept in Azure. Resources exist within a hierarchy:</p>
 
-<p>``<code></p>
-<p>Tenant (your organization)</p>
+<div class='code-block'><pre>Tenant (your organization)
 <p>↓</p>
 <p>Management Group (optional, for large organizations)</p>
 <p>↓</p>
@@ -185,12 +184,11 @@
 <p>↓</p>
 <p>Resource Group (logical container for related resources)</p>
 <p>↓</p>
-<p>Resource (VMs, storage accounts, databases, etc.)</p>
-<p></code>`<code></p>
+<p>Resource (VMs, storage accounts, databases, etc.)</pre></div></p>
 
 <h3 id="view-your-subscription-">View Your Subscription</h3>
 
-<ol><li>Search for </code>subscriptions<code>.</li>
+<ol><li>Search for <code>subscriptions</code>.</li>
 <li>Click <strong>Subscriptions</strong> from the results.</li>
 <li>You should see your subscription listed. Click on it.</li>
 <li>Observe:</li></ol>
@@ -205,14 +203,14 @@
 
 <p><strong>Scopes</strong> determine what resources you can see and manage. RBAC (Role-Based Access Control) is also scoped — an admin role at the subscription level grants different permissions than at the resource group level.</p>
 
-<ol><li>Navigate to your </code>rg-az104-lab00<code> resource group.</li>
+<ol><li>Navigate to your <code>rg-az104-lab00</code> resource group.</li>
 <li>Click <strong>Access control (IAM)</strong> on the left sidebar.</li>
 <li>Click <strong>Role assignments</strong>.</li>
 <li>You should see at least one role assignment (yourself, with Owner or similar role).</li>
-<li>Note the <strong>Scope</strong> column — it shows the resource group scope (</code>/subscriptions/.../resourceGroups/rg-az104-lab00<code>).</li></ol>
+<li>Note the <strong>Scope</strong> column — it shows the resource group scope (<code>/subscriptions/.../resourceGroups/rg-az104-lab00</code>).</li></ol>
 
 <p><strong>Key concept:</strong> The same user can have different roles at different scopes. For example:</p>
-<ul><ol><li>You might be "Owner" of </code>rg-az104-lab00<code> (can do anything in that RG)</li>
+<ul><ol><li>You might be "Owner" of <code>rg-az104-lab00</code> (can do anything in that RG)</li>
 <li>But only "Reader" at the subscription level (can view everything, but not change anything outside the RG)</li></ol></ul>
 
 <p>---</p>
@@ -223,7 +221,7 @@
 
 <h3 id="browse-services-by-category-">Browse Services by Category</h3>
 
-<ol><li>Click <strong>Create a resource</strong> on the Home page (or search for </code>create a resource<code>).</li>
+<ol><li>Click <strong>Create a resource</strong> on the Home page (or search for <code>create a resource</code>).</li>
 <li>You'll see a page with categories on the left:</li></ol>
 <p>- <strong>Compute</strong> (VMs, containers, serverless)</p>
 <p>- <strong>Storage</strong> (disks, blob storage, queues)</p>
@@ -241,7 +239,7 @@
 
 <h3 id="find-a-specific-service-">Find a Specific Service</h3>
 
-<ol><li>On the <strong>Create a resource</strong> page, search for </code>storage account<code> in the top search box.</li>
+<ol><li>On the <strong>Create a resource</strong> page, search for <code>storage account</code> in the top search box.</li>
 <li>You'll see <strong>Storage account</strong> listed.</li>
 <li>Click on it (but don't create one yet).</li>
 <li>You'll see a description: "Create a cloud storage account..."</li>
@@ -255,12 +253,12 @@
 
 <h3 id="create-a-storage-account-">Create a Storage Account</h3>
 
-<ol><li>Search for </code>storage account<code> > <strong>Create</strong>.</li>
+<ol><li>Search for <code>storage account</code> > <strong>Create</strong>.</li>
 <li><strong>Basics</strong> tab:</li></ol>
 <p>- <strong>Subscription</strong>: your subscription</p>
-<p>- <strong>Resource group</strong>: select </code>rg-az104-lab00<code></p>
-<p>- <strong>Storage account name</strong>: </code>stcontoso<YYMMDD><code> (e.g., </code>stcontoso260615<code> for 2026-06-15; storage account names must be globally unique and lowercase)</p>
-<p>- <strong>Region</strong>: </code>East US<code></p>
+<p>- <strong>Resource group</strong>: select <code>rg-az104-lab00</code></p>
+<p>- <strong>Storage account name</strong>: <code>stcontoso<YYMMDD></code> (e.g., <code>stcontoso260615</code> for 2026-06-15; storage account names must be globally unique and lowercase)</p>
+<p>- <strong>Region</strong>: <code>East US</code></p>
 <p>- <strong>Performance</strong>: Standard</p>
 <p>- <strong>Redundancy</strong>: Locally-redundant storage (LRS)</p>
 <ol><li>Click <strong>Next: Networking</strong> (or click <strong>Next ></strong> to skip to the next tab).</li>
@@ -276,17 +274,17 @@
 <h2 id="part-6-apply-resource-tags-">Part 6 – Apply Resource Tags</h2>
 
 <p><strong>Tags</strong> are key-value pairs that help organize and track resources. At Contoso, you might tag resources with:</p>
-<ul><ol><li></code>Environment: Development<code> or </code>Production<code></li>
-<li></code>CostCenter: Finance<code> or </code>Sales<code></li>
-<li></code>Owner: alice.lee@contoso.com<code></li></ol></ul>
+<ul><ol><li><code>Environment: Development</code> or <code>Production</code></li>
+<li><code>CostCenter: Finance</code> or <code>Sales</code></li>
+<li><code>Owner: alice.lee@contoso.com</code></li></ol></ul>
 
 <h3 id="add-tags-to-the-storage-account-">Add Tags to the Storage Account</h3>
 
 <ol><li>You're now on the <strong>Tags</strong> tab.</li>
 <li>Add the following tags:</li></ol>
-<p>- <strong>Key</strong>: </code>Environment<code> | <strong>Value</strong>: </code>Development<code></p>
-<p>- <strong>Key</strong>: </code>CostCenter<code> | <strong>Value</strong>: </code>Lab<code></p>
-<p>- <strong>Key</strong>: </code>Owner<code> | <strong>Value</strong>: </code><Your name><code></p>
+<p>- <strong>Key</strong>: <code>Environment</code> | <strong>Value</strong>: <code>Development</code></p>
+<p>- <strong>Key</strong>: <code>CostCenter</code> | <strong>Value</strong>: <code>Lab</code></p>
+<p>- <strong>Key</strong>: <code>Owner</code> | <strong>Value</strong>: <code><Your name></code></p>
 <ol><li>Click <strong>Review + create</strong>.</li></ol>
 
 <p>---</p>
@@ -298,8 +296,8 @@
 <ol><li>You're on the <strong>Review + create</strong> tab.</li>
 <li>Review:</li></ol>
 <p>- Storage account name</p>
-<p>- Resource group: </code>rg-az104-lab00<code></p>
-<p>- Region: </code>East US<code></p>
+<p>- Resource group: <code>rg-az104-lab00</code></p>
+<p>- Region: <code>East US</code></p>
 <p>- Tags (scroll down to see them)</p>
 <ol><li>Click <strong>Create</strong>.</li>
 <li>You'll see "Deployment is in progress" → "Your deployment is complete."</li>
@@ -322,16 +320,16 @@
 
 <h3 id="open-the-cloud-shell-">Open the Cloud Shell</h3>
 
-<ol><li>At the top right of the portal, find the <strong>terminal icon</strong> (</code>>_<code>).</li>
+<ol><li>At the top right of the portal, find the <strong>terminal icon</strong> (<code>>_</code>).</li>
 <li>Click it. A terminal panel slides up from the bottom of your browser.</li>
 <li>Select <strong>Bash</strong> (or <strong>PowerShell</strong> if you prefer).</li>
 <li>First time? You'll be prompted to create a storage account for Cloud Shell. Click <strong>Create storage</strong>.</li>
-<li>Wait a few moments for the terminal to initialize. You'll see </code>user@cloudshell:~$<code>.</li></ol>
+<li>Wait a few moments for the terminal to initialize. You'll see <code>user@cloudshell:~$</code>.</li></ol>
 
 <h3 id="run-a-command-in-cloud-shell-">Run a Command in Cloud Shell</h3>
 
 <ol><li>Type:</li></ol>
-<p></code>`<code>bash</p>
+<p>``<code>bash</p>
 <p>az account show</p>
 <p></code>`<code></p>
 <ol><li>Press Enter. You'll see JSON output with your subscription details (ID, name, state).</li></ol>

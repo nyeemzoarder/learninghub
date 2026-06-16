@@ -195,76 +195,75 @@
 <h3 id="step-3-test-sas-access-">Step 3: Test SAS access</h3>
 
 <ol><li>Construct the full URL:</li></ol>
+<div class='code-block'><pre>https://&lt;account&gt;.blob.core.windows.net/demo-container/sample.txt?&lt;sas-token&gt;
 <p>``<code></p>
-<p>https://<account>.blob.core.windows.net/demo-container/sample.txt?<sas-token></p>
-<p></code>`<code></p>
 <ol><li>Open in browser—you should download </code>sample.txt<code></li>
 <li>After 1 hour, this URL will expire and access will fail</li></ol>
 
-<div class='callout-box callout-tip'><span class='callout-icon'>ℹ️</span><div class='callout-content'><h4>tip</h4><p>SAS tokens are great for temporary sharing. Generate new ones for each user/device to minimize blast radius if leaked.</p></div></div>
+<p>&gt; Tip: SAS tokens are great for temporary sharing. Generate new ones for each user/device to minimize blast radius if leaked.</p>
 
-<h3 id="step-4-test-entra-id-access-">Step 4: Test Entra ID access</h3>
+<p>&lt;h3 id=&quot;step-4-test-entra-id-access-&quot;&gt;Step 4: Test Entra ID access&lt;/h3&gt;</p>
 
-<ol><li>Go to the storage account > <strong>Access control (IAM)</strong> > <strong>Add role assignment</strong></li>
-<li><strong>Role</strong>: <strong>Storage Blob Data Reader</strong></li>
-<li><strong>Assign to</strong>: your user account</li>
-<li>Open <strong>Containers</strong> > </code>demo-container<code></li>
-<li>In the top toolbar, switch <strong>Authentication method</strong> from <strong>Access key</strong> to <strong>Microsoft Entra user account</strong></li>
+<ol><li>Go to the storage account &gt; &lt;strong&gt;Access control (IAM)&lt;/strong&gt; &gt; &lt;strong&gt;Add role assignment&lt;/strong&gt;</li>
+<li>&lt;strong&gt;Role&lt;/strong&gt;: &lt;strong&gt;Storage Blob Data Reader&lt;/strong&gt;</li>
+<li>&lt;strong&gt;Assign to&lt;/strong&gt;: your user account</li>
+<li>Open &lt;strong&gt;Containers&lt;/strong&gt; &gt; </code>demo-container<code></li>
+<li>In the top toolbar, switch &lt;strong&gt;Authentication method&lt;/strong&gt; from &lt;strong&gt;Access key&lt;/strong&gt; to &lt;strong&gt;Microsoft Entra user account&lt;/strong&gt;</li>
 <li>Confirm you can still view </code>sample.txt<code></li></ol>
 
-<div class='callout-box callout-important'><span class='callout-icon'>❗</span><div class='callout-content'><h4>important</h4><p>This uses your Entra identity + RBAC instead of account keys. This is the most secure approach for production.</p></div></div>
+<p>&gt; Important: This uses your Entra identity + RBAC instead of account keys. This is the most secure approach for production.</p>
 
 <p>---</p>
 
-<h2 id="part-5-network-rules-">Part 5 – Network rules</h2>
+<p>&lt;h2 id=&quot;part-5-network-rules-&quot;&gt;Part 5 – Network rules&lt;/h2&gt;</p>
 
-<h3 id="restricting-access-">Restricting Access</h3>
+<p>&lt;h3 id=&quot;restricting-access-&quot;&gt;Restricting Access&lt;/h3&gt;</p>
 
-<div class='callout-box callout-warning'><span class='callout-icon'>⚠️</span><div class='callout-content'><h4>warning</h4><p>Network rules can lock you out if misconfigured. Always test before deploying to production.</p></div></div>
+<p>&gt; Warning: Network rules can lock you out if misconfigured. Always test before deploying to production.</p>
 
-<h3 id="step-1-enable-network-rules-">Step 1: Enable network rules</h3>
+<p>&lt;h3 id=&quot;step-1-enable-network-rules-&quot;&gt;Step 1: Enable network rules&lt;/h3&gt;</p>
 
-<ol><li><strong>Networking</strong> (under <strong>Security + networking</strong>)</li>
-<li><strong>Public network access</strong>: select <strong>Enabled from selected virtual networks and IP addresses</strong></li>
-<li>Under <strong>Firewall</strong>, select <strong>Add your client IP address</strong> to allow-list your current IP</li>
-<li><strong>Save</strong></li></ol>
+<ol><li>&lt;strong&gt;Networking&lt;/strong&gt; (under &lt;strong&gt;Security + networking&lt;/strong&gt;)</li>
+<li>&lt;strong&gt;Public network access&lt;/strong&gt;: select &lt;strong&gt;Enabled from selected virtual networks and IP addresses&lt;/strong&gt;</li>
+<li>Under &lt;strong&gt;Firewall&lt;/strong&gt;, select &lt;strong&gt;Add your client IP address&lt;/strong&gt; to allow-list your current IP</li>
+<li>&lt;strong&gt;Save&lt;/strong&gt;</li></ol>
 
-<h3 id="step-2-test-the-restriction-">Step 2: Test the restriction</h3>
+<p>&lt;h3 id=&quot;step-2-test-the-restriction-&quot;&gt;Step 2: Test the restriction&lt;/h3&gt;</p>
 
-<ol><li>Confirm you can still access the storage account (you're on the allow-list)</li>
+<ol><li>Confirm you can still access the storage account (you&#39;re on the allow-list)</li>
 <li>Try accessing from a different network/VPN (should fail with 403 Forbidden)</li>
 <li>Observe that having the access key alone is NOT enough—network rules now take precedence</li></ol>
 
-<div class='callout-box callout-tip'><span class='callout-icon'>ℹ️</span><div class='callout-content'><h4>tip</h4><p>In production, use Service Endpoints or Private Endpoints instead of IP ranges for more security.</p></div></div>
+<p>&gt; Tip: In production, use Service Endpoints or Private Endpoints instead of IP ranges for more security.</p>
 
-<h3 id="step-3-revert-for-simplicity-">Step 3: Revert for simplicity</h3>
+<p>&lt;h3 id=&quot;step-3-revert-for-simplicity-&quot;&gt;Step 3: Revert for simplicity&lt;/h3&gt;</p>
 
-<ol><li>Go back to <strong>Networking</strong> > <strong>Public network access</strong>: <strong>Enable from all networks</strong></li>
-<li><strong>Save</strong> (to not interfere with other labs)</li></ol>
+<ol><li>Go back to &lt;strong&gt;Networking&lt;/strong&gt; &gt; &lt;strong&gt;Public network access&lt;/strong&gt;: &lt;strong&gt;Enable from all networks&lt;/strong&gt;</li>
+<li>&lt;strong&gt;Save&lt;/strong&gt; (to not interfere with other labs)</li></ol>
 
 <p>---</p>
 
-<h2 id="part-6-copy-data-with-storage-browser-">Part 6 – Copy data with Storage browser</h2>
+<p>&lt;h2 id=&quot;part-6-copy-data-with-storage-browser-&quot;&gt;Part 6 – Copy data with Storage browser&lt;/h2&gt;</p>
 
-<h3 id="step-1-copy-blob-between-containers-">Step 1: Copy blob between containers</h3>
+<p>&lt;h3 id=&quot;step-1-copy-blob-between-containers-&quot;&gt;Step 1: Copy blob between containers&lt;/h3&gt;</p>
 
-<ol><li><strong>Storage browser</strong> > <strong>Blob containers</strong> > </code>demo-container<code> > select </code>sample.txt<code></li>
-<li><strong>Copy</strong></li>
+<ol><li>&lt;strong&gt;Storage browser&lt;/strong&gt; &gt; &lt;strong&gt;Blob containers&lt;/strong&gt; &gt; </code>demo-container<code> &gt; select </code>sample.txt<code></li>
+<li>&lt;strong&gt;Copy&lt;/strong&gt;</li>
 <li>Create a new container </code>demo-container-2<code> (or navigate to an existing empty one)</li>
-<li><strong>Paste</strong>—the blob is now copied</li></ol>
+<li>&lt;strong&gt;Paste&lt;/strong&gt;—the blob is now copied</li></ol>
 
-<div class='callout-box callout-tip'><span class='callout-icon'>ℹ️</span><div class='callout-content'><h4>tip</h4><p>This is the Portal equivalent of </code>azcopy<code>. For large data migrations, use AzCopy CLI for speed.</p></div></div>
+<p>&gt; Tip: This is the Portal equivalent of </code>azcopy<code>. For large data migrations, use AzCopy CLI for speed.</p>
 
-<h3 id="step-2-download-and-upload-">Step 2: Download and upload</h3>
+<p>&lt;h3 id=&quot;step-2-download-and-upload-&quot;&gt;Step 2: Download and upload&lt;/h3&gt;</p>
 
-<ol><li>Select </code>sample.txt<code> > <strong>Download</strong> (pulls to your local machine)</li>
+<ol><li>Select </code>sample.txt<code> &gt; &lt;strong&gt;Download&lt;/strong&gt; (pulls to your local machine)</li>
 <li>Modify the file locally</li>
-<li>Go back to <strong>Upload</strong> > upload the modified file</li>
+<li>Go back to &lt;strong&gt;Upload&lt;/strong&gt; &gt; upload the modified file</li>
 <li>Confirm the updated file is in the container</li></ol>
 
 <p>---</p>
 
-<h2 id="success-criteria-">Success Criteria</h2>
+<p>&lt;h2 id=&quot;success-criteria-&quot;&gt;Success Criteria&lt;/h2&gt;</p>
 
 <p>✓ Storage account created with StorageV2, LRS, Hot tier</p>
 <p>✓ Container, queue, table, and file share all exist</p>
@@ -275,9 +274,7 @@
 
 <p>---</p>
 
-<h2 id="cleanup-if-needed-">Cleanup (If Needed)</h2>
-
-<p></code>`<code>powershell</p>
+<p>&lt;h2 id=&quot;cleanup-if-needed-&quot;&gt;Cleanup (If Needed)&lt;/h2&gt;</pre></div>powershell</p>
 <h1>Delete storage account (includes all containers, blobs, queues, tables)</h1>
 <p>Remove-AzStorageAccount -ResourceGroupName "rg-az104-lab04" -Name "stoaz104lab<unique>" -Force</p>
 

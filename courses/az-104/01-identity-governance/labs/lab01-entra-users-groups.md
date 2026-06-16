@@ -34,48 +34,121 @@ The IT department is overwhelmed with password reset requests. Instead of IT han
 
 ## Estimated Time
 
-50 minutes
+⏱️ 50 minutes total
 
 ---
 
 ## Part 1 – Create Users (Represent Real Employees)
 
+⏱️ 10-12 minutes
+
 > Important: Each user created in this lab will receive an auto-generated password. Record these for testing later—users must change their password on first sign-in.
 
-### Create Sales Department Users
+### Task: Create Sales Department Users
 
 1. Go to **Microsoft Entra ID** > **Users** > **New user** > **Create new user**.
-2. Create three Sales users:
-   - **Display name:** Sarah Chen | **Username:** sarah.chen@\<yourtenant\>.onmicrosoft.com | **Department:** Sales
-   - **Display name:** Tom Wilson | **Username:** tom.wilson@\<yourtenant\>.onmicrosoft.com | **Department:** Sales
-   - **Display name:** Lisa Brown | **Username:** lisa.brown@\<yourtenant\>.onmicrosoft.com | **Department:** Sales
+
+2. Create three Sales users with these details:
+
+```txt
+Display Name: Sarah Chen
+Username: sarah.chen@<yourtenant>.onmicrosoft.com
+Department: Sales
+```
+
+```txt
+Display Name: Tom Wilson
+Username: tom.wilson@<yourtenant>.onmicrosoft.com
+Department: Sales
+```
+
+```txt
+Display Name: Lisa Brown
+Username: lisa.brown@<yourtenant>.onmicrosoft.com
+Department: Sales
+```
 
 3. For each user:
    - Click **Auto-generate password** (record the temporary password)
    - ✅ Check **Require password change on first sign-in**
    - Set **Usage location** to your country (required for licensing)
-   - **Critical:** Set **Department** field to "Sales" (this will be used for dynamic grouping and admin unit scoping later)
+   - **Critical:** Set **Department** field to "Sales" (used for dynamic grouping later)
 
-> Tip: You can bulk-create users via PowerShell for faster setup. See the **Appendix** section for a script example.
+> Tip: You can bulk-create users via PowerShell for faster setup in large environments.
 
-### Create Finance Department Users
+### Bulk Create Users with PowerShell (Optional)
 
-4. Create three Finance users:
-   - **Display name:** Bob Johnson | **Username:** bob.johnson@\<yourtenant\>.onmicrosoft.com | **Department:** Finance
-   - **Display name:** Emma Davis | **Username:** emma.davis@\<yourtenant\>.onmicrosoft.com | **Department:** Finance
-   - **Display name:** Mike Lopez | **Username:** mike.lopez@\<yourtenant\>.onmicrosoft.com | **Department:** Finance
+```powershell
+$tenantId = "<your-tenant-id>"
+Connect-MgGraph -TenantId $tenantId -Scopes "User.ReadWrite.All"
 
-5. Set Department to "Finance" for each.
+$users = @(
+    @{DisplayName="Sarah Chen"; UserPrincipalName="sarah.chen@contoso.onmicrosoft.com"; Department="Sales"},
+    @{DisplayName="Tom Wilson"; UserPrincipalName="tom.wilson@contoso.onmicrosoft.com"; Department="Sales"},
+    @{DisplayName="Lisa Brown"; UserPrincipalName="lisa.brown@contoso.onmicrosoft.com"; Department="Sales"}
+)
 
-### Create Department Administrators
+foreach ($user in $users) {
+    $password = -join ((33..126) | Get-Random -Count 12 | ForEach-Object {[char]$_})
+    New-MgUser -DisplayName $user.DisplayName -UserPrincipalName $user.UserPrincipalName `
+        -PasswordProfile @{Password=$password;ForceChangePasswordNextSignIn=$true} `
+        -Department $user.Department
+}
+```
 
-6. Create two admin users who will manage their departments:
-   - **Display name:** James Park (Sales Manager) | **Username:** james.park@\<yourtenant\>.onmicrosoft.com | **Department:** Sales
-   - **Display name:** Rachel Green (Finance Manager) | **Username:** rachel.green@\<yourtenant\>.onmicrosoft.com | **Department:** Finance
+---
 
-7. **Verification:** Go to **Microsoft Entra ID** > **Users**. Confirm all 8 users appear in the list.
+### Task: Create Finance Department Users
+
+1. Go to **Microsoft Entra ID** > **Users** > **New user** > **Create new user**.
+
+2. Create three Finance users:
+
+```txt
+Display Name: Bob Johnson
+Username: bob.johnson@<yourtenant>.onmicrosoft.com
+Department: Finance
+```
+
+```txt
+Display Name: Emma Davis
+Username: emma.davis@<yourtenant>.onmicrosoft.com
+Department: Finance
+```
+
+```txt
+Display Name: Mike Lopez
+Username: mike.lopez@<yourtenant>.onmicrosoft.com
+Department: Finance
+```
+
+3. For each Finance user, ensure **Department** field is set to "Finance".
+
+---
+
+### Task: Create Department Administrators
+
+1. Create two admin users who will manage their departments:
+
+```txt
+Display Name: James Park (Sales Manager)
+Username: james.park@<yourtenant>.onmicrosoft.com
+Department: Sales
+```
+
+```txt
+Display Name: Rachel Green (Finance Manager)
+Username: rachel.green@<yourtenant>.onmicrosoft.com
+Department: Finance
+```
+
+2. **Verification:** Go to **Microsoft Entra ID** > **Users**. Confirm all 8 users appear in the list.
+
+---
 
 ## Part 2 – Create Groups by Department (Identify WHO)
+
+⏱️ 8-10 minutes
 
 **Why Groups?** Groups answer the question: "WHO is this person?" They tell you their role or department.
 - `grp-sales` → "These people are in Sales" (Sales team members)
@@ -83,7 +156,7 @@ The IT department is overwhelmed with password reset requests. Instead of IT han
 - `grp-finance` → "These people are in Finance"
 - `grp-finance-admins` → "These people are Finance managers"
 
-### Step 1: Create the Sales Department Group
+### Task: Create the Sales Department Group
 
 1. Go to **Entra ID** > **Groups** > **New group**.
 2. Fill in:
@@ -93,49 +166,64 @@ The IT department is overwhelmed with password reset requests. Instead of IT han
    - **Members:** Add Sarah Chen, Tom Wilson, Lisa Brown (the Sales employees)
 3. Click **Create**.
 
-### Step 2: Create the Sales Admins Group (The managers)
+> Note: Security groups are used for access control. Microsoft 365 groups are for collaboration. For this lab, use Security.
 
-4. Go to **Groups** > **New group**.
-5. Fill in:
+---
+
+### Task: Create the Sales Admins Group
+
+1. Go to **Groups** > **New group**.
+2. Fill in:
    - **Group type:** Security
    - **Group name:** `grp-sales-admins`
    - **Membership type:** Assigned
    - **Members:** Add James Park (Sales Manager)
-6. Click **Create**.
+3. Click **Create**.
 
-### Step 3: Create the Finance Department Group
+---
 
-7. Go to **Groups** > **New group**.
-8. Fill in:
+### Task: Create the Finance Department Group
+
+1. Go to **Groups** > **New group**.
+2. Fill in:
    - **Group type:** Security
    - **Group name:** `grp-finance`
    - **Membership type:** Assigned
    - **Members:** Add Bob Johnson, Emma Davis, Mike Lopez (the Finance employees)
-9. Click **Create**.
+3. Click **Create**.
 
-### Step 4: Create the Finance Admins Group
+---
 
-10. Go to **Groups** > **New group**.
-11. Fill in:
-    - **Group type:** Security
-    - **Group name:** `grp-finance-admins`
-    - **Membership type:** Assigned
-    - **Members:** Add Rachel Green (Finance Manager)
-12. Click **Create**.
+### Task: Create the Finance Admins Group
 
-### Step 5: Verification
+1. Go to **Groups** > **New group**.
+2. Fill in:
+   - **Group type:** Security
+   - **Group name:** `grp-finance-admins`
+   - **Membership type:** Assigned
+   - **Members:** Add Rachel Green (Finance Manager)
+3. Click **Create**.
 
-13. Go to **Entra ID** > **Groups** and confirm all four groups exist:
-    - ✅ `grp-sales` (3 members: Sarah, Tom, Lisa)
-    - ✅ `grp-sales-admins` (1 member: James)
-    - ✅ `grp-finance` (3 members: Bob, Emma, Mike)
-    - ✅ `grp-finance-admins` (1 member: Rachel)
+---
+
+### Verification: Confirm All Groups Exist
+
+- ✅ `grp-sales` (3 members: Sarah, Tom, Lisa)
+- ✅ `grp-sales-admins` (1 member: James)
+- ✅ `grp-finance` (3 members: Bob, Emma, Mike)
+- ✅ `grp-finance-admins` (1 member: Rachel)
+
+---
 
 ## Part 3 – Optional: Dynamic Groups (Auto-manage Membership)
 
+⏱️ 5 minutes
+
 **Why Dynamic Groups?** Instead of manually adding/removing users, let rules handle it. When someone's department changes, they're automatically added/removed.
 
-**Note:** This requires **Entra ID P1/P2 licensing**. Skip if your tenant doesn't have it.
+> Note: This requires **Entra ID P1/P2 licensing**. Skip if your tenant doesn't have it.
+
+### Create Dynamic User Groups
 
 1. Go to **Groups** > **New group** > **Membership type: Dynamic User**.
 2. **Group name:** `grp-all-employees-dynamic`
@@ -144,9 +232,11 @@ The IT department is overwhelmed with password reset requests. Instead of IT han
 
 **Real-world value:** When Contoso hires a new Sales person, they don't need to manually add them to `grp-sales`. A dynamic rule like `(user.department -eq "Sales")` would do it automatically.
 
-If dynamic groups aren't available in your tenant, just understand the concept and move to Part 4.
+---
 
 ## Part 4 – Administrative Units: Limit WHERE Admins Can Use Their Power
+
+⏱️ 12-15 minutes
 
 > Important: Critical Concept — Groups and Admin Units work together:
 > - **Groups** answer "WHO is this person?" (James is in `grp-sales-admins` → he's a Sales manager)
@@ -154,12 +244,12 @@ If dynamic groups aren't available in your tenant, just understand the concept a
 
 > Warning: Without Admin Units, a manager with User Administrator role can reset passwords for ANYONE in your tenant. This is a major security risk. Always use Admin Units to scope delegated admin powers.
 
-**Example:** With Admin Units:
+**Example Security Impact:**
 - James (scoped to `au-sales`) CAN reset passwords for Sales users
 - James CAN'T see or reset passwords for Finance users
 - Rachel (scoped to `au-finance`) CAN reset only Finance passwords
 
-### Step 1: Create Admin Unit for Sales Department
+### Task: Create Admin Unit for Sales Department
 
 1. Go to **Entra ID** > **Roles & administrators** > **Administrative units** > **+ New administrative unit**.
 2. Fill in:
@@ -167,35 +257,43 @@ If dynamic groups aren't available in your tenant, just understand the concept a
    - **Description:** "Sales department scope — for Sales manager delegation"
 3. Click **Create**.
 
-### Step 2: Add Sales Users to the Admin Unit
+---
 
-4. Open `au-sales` > **Members** > **+ Add members**.
-5. Add the Sales users: **Sarah Chen, Tom Wilson, Lisa Brown** (the Sales team members).
+### Task: Add Sales Users to the Admin Unit
+
+1. Open `au-sales` > **Members** > **+ Add members**.
+2. Add the Sales users: **Sarah Chen, Tom Wilson, Lisa Brown** (the Sales team members).
    - Note: You DON'T add James Park here — he's the admin, not a member being managed.
-6. Click **Add**.
+3. Click **Add**.
 
-### Step 3: Create Admin Unit for Finance Department
+---
 
-7. Go back to **Administrative units** > **+ New administrative unit**.
-8. Fill in:
+### Task: Create Admin Unit for Finance Department
+
+1. Go back to **Administrative units** > **+ New administrative unit**.
+2. Fill in:
    - **Name:** `au-finance`
    - **Description:** "Finance department scope — for Finance manager delegation"
-9. Click **Create**.
+3. Click **Create**.
 
-### Step 4: Add Finance Users to the Finance Admin Unit
+---
 
-10. Open `au-finance` > **Members** > **+ Add members**.
-11. Add the Finance users: **Bob Johnson, Emma Davis, Mike Lopez** (the Finance team members).
-12. Click **Add**.
+### Task: Add Finance Users to the Finance Admin Unit
 
-### Step 5: Assign Scoped Admin Role to Sales Manager (THE KEY PART)
+1. Open `au-finance` > **Members** > **+ Add members**.
+2. Add the Finance users: **Bob Johnson, Emma Davis, Mike Lopez** (the Finance team members).
+3. Click **Add**.
+
+---
+
+### Task: Assign Scoped Admin Role to Sales Manager (THE KEY PART)
 
 **This is where Groups and Admin Units work together:**
 
-13. In `au-sales`, go to **Roles and administrators** > **+ Add assignments**.
-14. Search for and select **User Administrator** role.
-15. **Assign to:** James Park (Sales Manager).
-16. Click **Assign**.
+1. In `au-sales`, go to **Roles and administrators** > **+ Add assignments**.
+2. Search for and select **User Administrator** role.
+3. **Assign to:** James Park (Sales Manager).
+4. Click **Assign**.
 
 **Result:** James Park now has the "User Administrator" role, but ONLY scoped to `au-sales`. This means:
 - ✅ James CAN reset passwords for Sarah, Tom, Lisa (Sales users in au-sales)
@@ -203,26 +301,36 @@ If dynamic groups aren't available in your tenant, just understand the concept a
 - ❌ James CANNOT reset Finance passwords
 - ❌ James CANNOT see Finance users in his admin scope
 
-### Step 6: Assign Scoped Admin Role to Finance Manager
+---
 
-17. In `au-finance`, go to **Roles and administrators** > **+ Add assignments**.
-18. Search for and select **User Administrator** role.
-19. **Assign to:** Rachel Green (Finance Manager).
-20. Click **Assign**.
+### Task: Assign Scoped Admin Role to Finance Manager
+
+1. In `au-finance`, go to **Roles and administrators** > **+ Add assignments**.
+2. Search for and select **User Administrator** role.
+3. **Assign to:** Rachel Green (Finance Manager).
+4. Click **Assign**.
 
 **Result:** Rachel now has the same power as James, but scoped to Finance only.
 
-### Step 7: Verification (The Proof It Works)
+---
 
-21. Go to **Entra ID** > **Roles & administrators** > **Administrative units**.
-    - ✅ `au-sales` exists with 3 members (Sarah, Tom, Lisa)
-    - ✅ `au-finance` exists with 3 members (Bob, Emma, Mike)
-    - ✅ James Park has "User Administrator" role in `au-sales`
-    - ✅ Rachel Green has "User Administrator" role in `au-finance`
+### Task: Verification — Confirm Scoped Admin Roles Are Working
 
-22. **Optional:** Sign in as James Park and navigate to **Entra ID** > **Users**. Notice he only sees Sales users — Finance users are hidden from his view. This is the power of Admin Units!
+1. Go to **Entra ID** > **Roles & administrators** > **Administrative units**.
+
+**Verify the following exist:**
+- ✅ `au-sales` with 3 members (Sarah, Tom, Lisa)
+- ✅ `au-finance` with 3 members (Bob, Emma, Mike)
+- ✅ James Park has "User Administrator" role in `au-sales`
+- ✅ Rachel Green has "User Administrator" role in `au-finance`
+
+2. **Optional:** Sign in as James Park and navigate to **Entra ID** > **Users**. Notice he only sees Sales users — Finance users are hidden from his view. This is the power of Admin Units!
+
+---
 
 ## Part 5 – Self-Service Password Reset (SSPR) for Employees
+
+⏱️ 5 minutes
 
 Now that we have scoped admins (James and Rachel), employees should be able to reset their own passwords without waiting for IT.
 
@@ -236,64 +344,62 @@ Now that we have scoped admins (James and Rachel), employees should be able to r
 
 ---
 
-## Validation Checklist
+## Success Criteria
 
-- [ ] **Users Created:** Go to **Entra ID** > **Users** and verify 8 users exist:
-      - Sales employees: Sarah Chen, Tom Wilson, Lisa Brown
-      - Finance employees: Bob Johnson, Emma Davis, Mike Lopez
-      - Department heads: James Park (Sales Manager), Rachel Green (Finance Manager)
-
-- [ ] **Groups Created:** Go to **Entra ID** > **Groups** and verify 4 groups:
-      - `grp-sales` (3 members: Sarah, Tom, Lisa)
-      - `grp-sales-admins` (1 member: James)
-      - `grp-finance` (3 members: Bob, Emma, Mike)
-      - `grp-finance-admins` (1 member: Rachel)
-
-- [ ] **Admin Units Created:** Go to **Entra ID** > **Roles & administrators** > **Administrative units**:
-      - `au-sales` exists and contains 3 members (Sarah, Tom, Lisa)
-      - `au-finance` exists and contains 3 members (Bob, Emma, Mike)
-
-- [ ] **Scoped Admin Roles:** In each admin unit's **Roles and administrators**:
-      - James Park has "User Administrator" role in `au-sales`
-      - Rachel Green has "User Administrator" role in `au-finance`
-
-- [ ] **SSPR Enabled:** Go to **Password reset** and confirm SSPR is enabled for your selected groups.
+✓ **All 8 users created** (3 Sales, 3 Finance, 2 managers)  
+✓ **All 4 groups created** (grp-sales, grp-sales-admins, grp-finance, grp-finance-admins)  
+✓ **2 admin units created** (au-sales, au-finance)  
+✓ **Scoped admin roles assigned** (James to au-sales, Rachel to au-finance)  
+✓ **SSPR enabled** for employees to reset their own passwords  
 
 ---
 
 ## Cleanup (If Needed)
 
-To delete all lab resources:
+To remove all resources created in this lab:
 
-1. Go to **Entra ID** > **Users** > select all 8 users > **Delete**.
-   
-2. Go to **Entra ID** > **Groups** > select `grp-sales`, `grp-sales-admins`, `grp-finance`, `grp-finance-admins` > **Delete**.
+```powershell
+# Connect to Entra ID
+Connect-MgGraph -TenantId "<your-tenant-id>" -Scopes "User.ReadWrite.All", "Group.ReadWrite.All", "Directory.ReadWrite.All"
 
-3. Go to **Entra ID** > **Roles & administrators** > **Administrative units** > select `au-sales` and `au-finance` > **Delete**.
+# Delete all 8 users
+$users = @("sarah.chen", "tom.wilson", "lisa.brown", "bob.johnson", "emma.davis", "mike.lopez", "james.park", "rachel.green")
+foreach ($user in $users) {
+    Remove-MgUser -UserId "$user@<yourtenant>.onmicrosoft.com"
+}
+
+# Delete all 4 groups
+$groups = @("grp-sales", "grp-sales-admins", "grp-finance", "grp-finance-admins")
+foreach ($group in $groups) {
+    $gObj = Get-MgGroup -Filter "displayName eq '$group'"
+    Remove-MgGroup -GroupId $gObj.Id
+}
+
+# Delete administrative units (if using Azure CLI)
+# az account set --subscription "<subscription-id>"
+# az ad-admin-unit delete --id "<au-sales-id>"
+# az ad-admin-unit delete --id "<au-finance-id>"
+```
 
 ---
 
-## Key Takeaways from This Lab
+## Key Takeaways
 
-### Groups vs Admin Units (The Most Important Concept)
+**Groups vs Admin Units:**
+- **Groups** = Answer "WHO is this person?" (identity/role)
+- **Admin Units** = Answer "WHERE can they work?" (scope/boundary)
 
-| Aspect | Groups | Admin Units |
-|--------|--------|--------------|
-| **Answer the question** | WHO is this person? | WHERE can they use power? |
-| **Purpose** | Identify role/department | Limit scope of delegation |
-| **Example** | `grp-sales-admins` = "James is a Sales manager" | `au-sales` = "James can only manage Sales users" |
-| **Without it** | James is just an employee | James would have unrestricted admin power (dangerous) |
-| **With it** | James belongs to the admin group | James can ONLY manage Sales, not Finance or other depts |
+**Delegation Best Practices:**
+- Always use Admin Units to scope delegated admin roles
+- Never assign admin roles without Admin Unit scoping
+- Use groups to identify administrators, not to scope their power
 
-### Exam Tips
+**SSPR Benefits:**
+- Reduces helpdesk ticket volume
+- Improves user experience
+- Keeps sensitive admin work with scoped admins
 
-- **Groups = WHO (identity)** — Answer "What role/department is this person?"
-- **Admin Units = WHERE (scope)** — Answer "What users can this admin manage?"
-- **Difference between Assigned vs Dynamic groups:**
-  - **Assigned:** Manually add/remove members (good for small, stable teams)
-  - **Dynamic:** Rules auto-add/remove members (good for scale, e.g., all Sales dept)
-- **Admin Units scope** admin roles, NOT resource access. RBAC (Lab 02) scopes resource access.
-- **Group-based licensing** auto-assigns/removes licenses as membership changes.
-- A user can be in MULTIPLE groups AND multiple admin units.
-- Without Admin Units, any admin role is tenant-wide and unrestricted (security risk).
-- Admin Units are essential for delegating admin tasks in large organizations.
+**Security:** The combination of Groups + Admin Units + SSPR creates a secure, scalable identity governance system where:
+- Managers (James, Rachel) can only manage their own department
+- Users can reset their own passwords
+- IT can focus on strategic work instead of password resets

@@ -103,12 +103,10 @@
 
 <h3 id="resulting-structure-">Resulting structure:</h3>
 
-<p>``<code></p>
-<p>Root (Tenant Root Group)</p>
+<div class='code-block'><pre>Root (Tenant Root Group)
 <p>└── mg-contoso</p>
 <p>├── mg-corp</p>
-<p>└── mg-sandbox</p>
-<p></code>`<code></p>
+<p>└── mg-sandbox</pre></div></p>
 
 <div class='callout-box callout-tip'><span class='callout-icon'>ℹ️</span><div class='callout-content'><h4>tip</h4><p>The Tenant Root Group is automatic. You create everything beneath it. Deep hierarchies (3+ levels) are common in large enterprises.</p></div></div>
 
@@ -118,14 +116,14 @@
 
 <h3 id="step-1-associate-subscription-with-mg-">Step 1: Associate subscription with MG</h3>
 
-<ol><li><strong>Management groups</strong> > select </code>mg-sandbox<code> > <strong>Subscriptions</strong> tab</li>
+<ol><li><strong>Management groups</strong> > select <code>mg-sandbox</code> > <strong>Subscriptions</strong> tab</li>
 <li>Select <strong>Add subscription</strong> > choose your subscription > confirm move</li></ol>
 
-<div class='callout-box callout-important'><span class='callout-icon'>❗</span><div class='callout-content'><h4>important</h4><p>Policies and RBAC assigned at </code>mg-contoso<code> or </code>mg-sandbox<code> now apply automatically to this subscription and all resources in it.</p></div></div>
+<div class='callout-box callout-important'><span class='callout-icon'>❗</span><div class='callout-content'><h4>important</h4><p>Policies and RBAC assigned at <code>mg-contoso</code> or <code>mg-sandbox</code> now apply automatically to this subscription and all resources in it.</p></div></div>
 
 <h3 id="step-2-verify-the-move-">Step 2: Verify the move</h3>
 
-<ol><li>Go back to <strong>Management groups</strong> > select each MG to confirm your subscription appears under </code>mg-sandbox<code></li></ol>
+<ol><li>Go back to <strong>Management groups</strong> > select each MG to confirm your subscription appears under <code>mg-sandbox</code></li></ol>
 
 <p>---</p>
 
@@ -138,12 +136,12 @@
 <h3 id="step-1-create-resource-group-with-tags-">Step 1: Create resource group with tags</h3>
 
 <ol><li>Search for <strong>Resource groups</strong> > <strong>Create</strong></li>
-<li><strong>Resource group</strong>: </code>rg-az104-lab03<code>  </li></ol>
-<p><strong>Region</strong>: </code>East US<code></p>
+<li><strong>Resource group</strong>: <code>rg-az104-lab03</code>  </li></ol>
+<p><strong>Region</strong>: <code>East US</code></p>
 <ol><li><strong>Tags</strong> tab: add the following:</li></ol>
-<p>- Key: </code>Environment<code> → Value: </code>Lab<code></p>
-<p>- Key: </code>CostCenter<code> → Value: </code>Training<code></p>
-<p>- Key: </code>Owner<code> → Value: </code>yourname<code></p>
+<p>- Key: <code>Environment</code> → Value: <code>Lab</code></p>
+<p>- Key: <code>CostCenter</code> → Value: <code>Training</code></p>
+<p>- Key: <code>Owner</code> → Value: <code>yourname</code></p>
 <ol><li><strong>Review + create</strong> > <strong>Create</strong></li></ol>
 
 <h3 id="step-2-update-tags-on-existing-resources-">Step 2: Update tags on existing resources</h3>
@@ -168,9 +166,9 @@
 
 <h3 id="step-1-apply-delete-lock-">Step 1: Apply Delete lock</h3>
 
-<ol><li>Open </code>rg-az104-lab03<code> > <strong>Locks</strong> (under <strong>Settings</strong>)</li>
+<ol><li>Open <code>rg-az104-lab03</code> > <strong>Locks</strong> (under <strong>Settings</strong>)</li>
 <li>Select <strong>Add</strong>:</li></ol>
-<p>- <strong>Lock name</strong>: </code>lock-no-delete<code></p>
+<p>- <strong>Lock name</strong>: <code>lock-no-delete</code></p>
 <p>- <strong>Lock type</strong>: <strong>Delete</strong></p>
 <ol><li><strong>OK</strong></li></ol>
 
@@ -181,10 +179,8 @@
 <li>Click <strong>Delete</strong></li>
 <li>Expect this error:</li></ol>
 
-<p></code>`<code></p>
-<p>The resource group is locked and cannot be deleted.</p>
-<p>Lock name: lock-no-delete</p>
-<p></code>`<code></p>
+<div class='code-block'><pre>The resource group is locked and cannot be deleted.
+<p>Lock name: lock-no-delete</pre></div></p>
 
 <p>This proves the lock is working! ✓</p>
 
@@ -202,7 +198,7 @@
 <h3 id="step-1-analyze-costs-">Step 1: Analyze costs</h3>
 
 <ol><li>Go to <strong>Cost Management + Billing</strong> > <strong>Cost analysis</strong></li>
-<li>Filter by <strong>Resource group</strong> = </code>rg-az104-lab03<code></li>
+<li>Filter by <strong>Resource group</strong> = <code>rg-az104-lab03</code></li>
 <li>Observe current costs (may be $0.00 in sandbox)</li></ol>
 
 <div class='callout-box callout-tip'><span class='callout-icon'>ℹ️</span><div class='callout-content'><h4>tip</h4><p>Cost analysis updates with a 24-48 hour delay. This lab shows the UI, but real data takes time to populate.</p></div></div>
@@ -210,9 +206,9 @@
 <h3 id="step-2-set-a-budget-alert-">Step 2: Set a budget alert</h3>
 
 <ol><li><strong>Cost Management + Billing</strong> > <strong>Budgets</strong> > <strong>Add</strong></li>
-<li><strong>Name</strong>: </code>lab03-budget<code></li>
+<li><strong>Name</strong>: <code>lab03-budget</code></li>
 <li><strong>Amount</strong>: $10 (per month)</li>
-<li><strong>Scope</strong>: </code>rg-az104-lab03<code></li>
+<li><strong>Scope</strong>: <code>rg-az104-lab03</code></li>
 <li><strong>Alert thresholds</strong>: set email alert at <strong>80%</strong></li>
 <li><strong>Create</strong></li></ol>
 
@@ -225,11 +221,11 @@
 
 <h2 id="success-criteria-">Success Criteria</h2>
 
-<p>✓ Management group hierarchy exists: </code>mg-contoso<code> > </code>mg-corp<code> and </code>mg-sandbox<code></p>
-<p>✓ Your subscription is child of </code>mg-sandbox<code></p>
-<p>✓ </code>rg-az104-lab03<code> has all three tags: </code>Environment<code>, </code>CostCenter<code>, </code>Owner<code></p>
-<p>✓ Delete lock </code>lock-no-delete<code> prevents resource group deletion</p>
-<p>✓ Budget alert configured for </code>rg-az104-lab03<code></p>
+<p>✓ Management group hierarchy exists: <code>mg-contoso</code> > <code>mg-corp</code> and <code>mg-sandbox</code></p>
+<p>✓ Your subscription is child of <code>mg-sandbox</code></p>
+<p>✓ <code>rg-az104-lab03</code> has all three tags: <code>Environment</code>, <code>CostCenter</code>, <code>Owner</code></p>
+<p>✓ Delete lock <code>lock-no-delete</code> prevents resource group deletion</p>
+<p>✓ Budget alert configured for <code>rg-az104-lab03</code></p>
 
 <p>---</p>
 
@@ -237,24 +233,22 @@
 
 <p>To clean up all resources created in this lab:</p>
 
-<p></code>`<code>powershell</p>
-<h1>Remove Delete lock</h1>
-<p>Remove-AzManagementGroupDeployment -ResourceGroupName "rg-az104-lab03" -Name "lock-no-delete"</p>
+<div class='code-block'><pre>&lt;h1&gt;Remove Delete lock&lt;/h1&gt;
+<p>Remove<span class="operator">-</span><span class="property">AzManagementGroupDeployment</span> <span class="operator">-</span><span class="property">ResourceGroupName</span> &quot;rg<span class="operator">-</span><span class="property">az104</span><span class="operator">-</span><span class="property">lab03</span>&quot; <span class="operator">-</span><span class="property">Name</span> &quot;lock<span class="operator">-</span><span class="property">no</span><span class="operator">-</span><span class="property">delete</span>&quot;</p>
 
-<h1>Delete resource group</h1>
-<p>Remove-AzResourceGroup -Name "rg-az104-lab03" -Force</p>
+<p>&lt;h1&gt;Delete resource group&lt;/h1&gt;</p>
+<p>Remove<span class="operator">-</span><span class="property">AzResourceGroup</span> <span class="operator">-</span><span class="property">Name</span> &quot;rg<span class="operator">-</span><span class="property">az104</span><span class="operator">-</span><span class="property">lab03</span>&quot; <span class="operator">-</span><span class="property">Force</span></p>
 
-<h1>Move subscription back to tenant root</h1>
-<p>Update-AzManagementGroup -GroupId "mg-sandbox" -Remove</p>
+<p>&lt;h1&gt;Move subscription back to tenant root&lt;/h1&gt;</p>
+<p>Update<span class="operator">-</span><span class="property">AzManagementGroup</span> <span class="operator">-</span><span class="property">GroupId</span> &quot;mg<span class="operator">-</span><span class="property">sandbox</span>&quot; <span class="operator">-</span><span class="property">Remove</span></p>
 
-<h1>Delete management groups (children first!)</h1>
-<p>Remove-AzManagementGroup -GroupId "mg-sandbox" -AsJob</p>
-<p>Remove-AzManagementGroup -GroupId "mg-corp" -AsJob</p>
-<p>Remove-AzManagementGroup -GroupId "mg-contoso" -AsJob</p>
+<p>&lt;h1&gt;Delete management groups (children first!)&lt;/h1&gt;</p>
+<p>Remove<span class="operator">-</span><span class="property">AzManagementGroup</span> <span class="operator">-</span><span class="property">GroupId</span> &quot;mg<span class="operator">-</span><span class="property">sandbox</span>&quot; <span class="operator">-</span><span class="property">AsJob</span></p>
+<p>Remove<span class="operator">-</span><span class="property">AzManagementGroup</span> <span class="operator">-</span><span class="property">GroupId</span> &quot;mg<span class="operator">-</span><span class="property">corp</span>&quot; <span class="operator">-</span><span class="property">AsJob</span></p>
+<p>Remove<span class="operator">-</span><span class="property">AzManagementGroup</span> <span class="operator">-</span><span class="property">GroupId</span> &quot;mg<span class="operator">-</span><span class="property">contoso</span>&quot; <span class="operator">-</span><span class="property">AsJob</span></p>
 
-<h1>Remove budget</h1>
-<p>Remove-AzBudget -Name "lab03-budget" -ResourceGroupName "rg-az104-lab03"</p>
-<p></code>``</p>
+<p>&lt;h1&gt;Remove budget&lt;/h1&gt;</p>
+<p>Remove<span class="operator">-</span><span class="property">AzBudget</span> <span class="operator">-</span><span class="property">Name</span> &quot;lab03<span class="operator">-</span><span class="property">budget</span>&quot; <span class="operator">-</span><span class="property">ResourceGroupName</span> &quot;rg<span class="operator">-</span><span class="property">az104</span><span class="operator">-</span><span class="property">lab03</span>&quot;</pre></div></p>
 
 <p>---</p>
 
