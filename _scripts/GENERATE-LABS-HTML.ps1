@@ -444,30 +444,20 @@ function Get-LabLinks {
 }
 
 function Generate-Navigation {
-    param([string]$ModuleName)
+    param([string]$ModuleName, [string]$ModuleDir = "")
 
     $nav = @"
-<nav class="site-nav">
+<nav class="site-nav" aria-label="Main site navigation">
   <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
-  <details class="nav-group">
-    <summary>Module 00 - Prerequisites</summary>
+  <details class="nav-group" aria-label="Learning module selector">
+    <summary>Learning Module</summary>
     <div class="nav-menu">
-      <a href="../../00-prerequisites/documents/01-cloud-computing-fundamentals.html">01 - Cloud Computing Fundamentals</a>
-      <a href="../../00-prerequisites/documents/02-networking-basics.html">02 - Networking Basics</a>
-      <a href="../../00-prerequisites/documents/03-identity-and-access-fundamentals.html">03 - Identity &amp; Access Fundamentals</a>
-      <a href="../../00-prerequisites/documents/04-azure-portal-navigation.html">04 - Azure Portal Navigation</a>
-      <a href="../../00-prerequisites/documents/labs-index.html">Labs</a>
-    </div>
-  </details>
-  <details class="nav-group">
-    <summary>Module 01 - Identity &amp; Governance</summary>
-    <div class="nav-menu">
-      <a href="../../01-identity-governance/documents/01-entra-id-overview.html">01 - Entra ID Overview</a>
-      <a href="../../01-identity-governance/documents/02-rbac-fundamentals.html">02 - RBAC Fundamentals</a>
-      <a href="../../01-identity-governance/documents/03-management-groups-and-azure-policy.html">03 - Management Groups &amp; Policy</a>
-      <a href="../../01-identity-governance/documents/04-access-control-scenarios.html">04 - Access Control Scenarios</a>
-      <a href="../../01-identity-governance/documents/05-identity-best-practices.html">05 - Identity Best Practices</a>
-      <a href="../../01-identity-governance/documents/labs-index.html">Labs</a>
+      <a href="../../00-prerequisites/documents/module-home.html"$(if($ModuleDir -eq "00-prerequisites") { " class=""active""" })>00 - Prerequisites</a>
+      <a href="../../01-identity-governance/documents/module-home.html"$(if($ModuleDir -eq "01-identity-governance") { " class=""active""" })>01 - Identity &amp; Governance</a>
+      <a href="../../02-storage/documents/module-home.html"$(if($ModuleDir -eq "02-storage") { " class=""active""" })>02 - Storage</a>
+      <a href="../../03-compute/documents/module-home.html"$(if($ModuleDir -eq "03-compute") { " class=""active""" })>03 - Compute</a>
+      <a href="../../04-networking/documents/module-home.html"$(if($ModuleDir -eq "04-networking") { " class=""active""" })>04 - Networking</a>
+      <a href="../../05-monitor-maintain/documents/module-home.html"$(if($ModuleDir -eq "05-monitor-maintain") { " class=""active""" })>05 - Monitor &amp; Maintain</a>
     </div>
   </details>
 </nav>
