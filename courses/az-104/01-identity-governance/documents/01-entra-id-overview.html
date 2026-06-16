@@ -172,7 +172,7 @@ hr.divider{border:none;height:0;margin:0}
   <details class="nav-group">
     <summary>Module 04 - Networking</summary>
     <div class="nav-menu">
-      <a href="../../04-networking/documents/01-hub-spoke-topology.html">01 - Hub-Spoke Topology</a>
+      <a href="../../04-networking/documents/06-hub-spoke-topology.html">06 - Hub-Spoke Topology</a>
       <a href="../../04-networking/documents/01-vnets-and-subnets.html">01 - VNets &amp; Subnets</a>
       <a href="../../04-networking/documents/02-network-security-groups.html">02 - Network Security Groups</a>
       <a href="../../04-networking/documents/03-routing-fundamentals.html">03 - Routing Fundamentals</a>
@@ -227,7 +227,7 @@ hr.divider{border:none;height:0;margin:0}
   <div class="section full" id="before-you-start">
     <h2>Before You Start</h2>
     <table>
-      <tr><th>Prerequisites</th><td><a href="../../../00-prerequisites/03-identity-and-access-fundamentals.md">00-Prerequisites: Identity &amp; Access Fundamentals</a></td></tr>
+      <tr><th>Prerequisites</th><td><a href="../../../00-prerequisites/concepts/03-identity-and-access-fundamentals.md">00-Prerequisites: Identity &amp; Access Fundamentals</a></td></tr>
       <tr><th>Time to understand</th><td>15 minutes</td></tr>
       <tr><th>Difficulty</th><td>🟢 Beginner (foundational, no identity experience needed)</td></tr>
       <tr><th>What you'll learn</th><td>What Entra ID is, core identity objects, how groups work, administrative units</td></tr>
@@ -301,7 +301,63 @@ hr.divider{border:none;height:0;margin:0}
   <!-- How It Actually Works -->
   <div class="section full" id="how-it-actually-works">
     <h2>How It Actually Works</h2>
+
+    <h3>The Critical Distinction: Groups Tell WHO, Admin Units Tell WHERE</h3>
+    <p>This is the most commonly misunderstood part of Entra ID. <strong>Groups and Admin Units sound similar, but they serve completely different purposes.</strong></p>
+
+    <p><strong>Groups</strong> = "This is a manager key" ← Defines WHO someone is</p>
+    <ul>
+      <li>Sara is a member of <strong>grp-salesadmins</strong> (she's a sales admin)</li>
+      <li>Groups identify identity and enable role assignment</li>
+      <li>Groups do NOT limit scope</li>
+    </ul>
+
+    <p><strong>Admin Units</strong> = "But it only unlocks the Sales department door" ← Defines WHERE they can use their power</p>
+    <ul>
+      <li>John's admin role is scoped to <strong>au-sales</strong> (he can only manage Sales users)</li>
+      <li>Admin Units limit the scope of delegated power</li>
+      <li>Without an Admin Unit, power extends tenant-wide</li>
+    </ul>
+
+    <h4>Real Example: Why This Matters</h4>
     <div class="grid2">
+      <div>
+        <h4>WITHOUT Admin Unit</h4>
+        <div class="panel small">John is in grp-salesadmins
+← (identifies him as sales admin)
+
+John gets "User Administrator" role
+← (gives him power)
+
+Result: John can reset passwords
+for ANYONE in the company ✗
+Too dangerous</div>
+      </div>
+      <div>
+        <h4>WITH Admin Unit</h4>
+        <div class="panel small">John is in grp-salesadmins
+← (still identifies him as sales admin)
+
+John gets "User Administrator" role
+SCOPED to au-sales
+← (gives power, but limited)
+
+Result: John can reset passwords
+ONLY for Sales users ✓
+Safe and limited</div>
+      </div>
+    </div>
+
+    <p style="margin-top:20px">Think of it like security badges at a building:</p>
+    <ul>
+      <li><strong>Group = Which department you work for</strong> (identifies you)</li>
+      <li><strong>Admin Unit = Which floors your badge opens</strong> (limits your access)</li>
+    </ul>
+    <p>Without an Admin Unit, John has a master key to ALL floors. With an Admin Unit, his key only opens the Sales floor.</p>
+
+    <hr class="divider" style="margin-top:28px">
+
+    <div class="grid2" style="margin-top:28px">
       <div>
         <h3>Step 1: Create a User</h3>
         <div class="panel small">Admin creates user: sara@company.com

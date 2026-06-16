@@ -8,7 +8,7 @@
 
 ## Before You Start
 
-- **Prerequisites:** [00-Prerequisites: Identity & Access Fundamentals](../../../00-prerequisites/03-identity-and-access-fundamentals.md)
+- **Prerequisites:** [00-Prerequisites: Identity & Access Fundamentals](../../../00-prerequisites/concepts/03-identity-and-access-fundamentals.md)
 - **Time to understand:** 15 minutes
 - **Difficulty:** 🟢 **Beginner** (foundational, no identity experience needed)
 - **What you'll learn:** What Entra ID is, core identity objects, how groups work, administrative units
@@ -77,6 +77,44 @@ Each company is **completely isolated**. Users in TechCorp can't see AnotherComp
 ---
 
 ## How It Actually Works
+
+### The Critical Distinction: Groups Tell WHO, Admin Units Tell WHERE
+
+This is the most commonly misunderstood part of Entra ID. **Groups and Admin Units sound similar, but they serve completely different purposes.**
+
+**Groups** = "This is a manager key" ← Defines WHO someone is
+- Sara is a member of **grp-salesadmins** (she's a sales admin)
+- Groups identify identity and enable role assignment
+- Groups do NOT limit scope
+
+**Admin Units** = "But it only unlocks the Sales department door" ← Defines WHERE they can use their power
+- John's admin role is scoped to **au-sales** (he can only manage Sales users)
+- Admin Units limit the scope of delegated power
+- Without an Admin Unit, power extends tenant-wide
+
+#### Real Example: Why This Matters
+
+**WITHOUT Admin Unit:**
+```
+John is in grp-salesadmins ← (identifies him as sales admin)
+John gets "User Administrator" role ← (gives him power)
+Result: John can reset passwords for ANYONE in the company ✗ Too dangerous
+```
+
+**WITH Admin Unit:**
+```
+John is in grp-salesadmins ← (still identifies him as sales admin)
+John gets "User Administrator" role SCOPED to au-sales ← (gives power, but limited)
+Result: John can reset passwords ONLY for Sales users ✓ Safe and limited
+```
+
+Think of it like security badges at a building:
+- **Group = Which department you work for** (identifies you)
+- **Admin Unit = Which floors your badge opens** (limits your access)
+
+Without an Admin Unit, John has a master key to ALL floors. With an Admin Unit, his key only opens the Sales floor.
+
+---
 
 ### Step 1: Create a User
 
