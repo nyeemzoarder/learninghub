@@ -17,6 +17,8 @@
 
 ## Part 1 – App Service plan and web app
 
+> Important: Deployment slots are only available on **Standard** tier and above. **Free** and **Shared** tiers do not support slots.
+
 1. Search for **App Services** > **Create** > **Web App**.
 2. **Basics** tab:
    - **Resource group**: **Create new** `rg-az104-lab11`
@@ -68,6 +70,9 @@ These settings are injected into the app's environment at runtime.
    choose **Zip Deploy** > upload a `.zip` containing your app code.
 
 ### Swap staging into production
+
+> Tip: Use the **Preview swap** feature first to verify the staging slot is working as expected before swapping to production.
+
 1. Go to the app's **Deployment slots** > select `staging` > **Swap** (top toolbar).
 2. **Source**: `staging`, **Target**: `production`. **Swap**.
 3. The slots exchange DNS names — `staging` now serves the production URL, and

@@ -36,6 +36,9 @@
    - **Create**.
 
 2. Go to **nsg-web** > **Inbound security rules** > **+ Add**.
+
+> Important: NSG rules are evaluated in priority order (lower number = higher priority). Rules are stateful — if inbound traffic is allowed, response traffic is automatically allowed outbound.
+
 3. Create rule 1: **Allow SSH from your IP only**
    - **Source**: **IP addresses**, enter your public IP (e.g., `203.0.113.0/32`)
    - **Source port ranges**: `*`

@@ -46,6 +46,8 @@ available usable IPs per subnet = 251 (or 256 - 5).
 
 ## Part 2 – Static private IP
 
+> Important: When planning subnets, always account for the 5 reserved IPs per subnet. A /24 has 256 addresses, but only ~251 are usable for VMs and resources.
+
 1. Search for **Virtual machines** > **Create** > **Azure virtual machine**.
 2. **Basics**: `vm-data01`, **Ubuntu 22.04 LTS**, size **Standard_B1s**.
 3. **Networking** tab:
@@ -90,6 +92,8 @@ Now only resources in `subnet-data` (via the service endpoint) can reach this
 storage account by default — public internet access is denied.
 
 ## Part 4 – Private Endpoint
+
+> Tip: Private endpoints completely remove public network exposure for PaaS services. For maximum security, combine private endpoints with disabled public access on the storage account.
 
 Private Endpoints give a PaaS resource (like Storage) a private IP **inside**
 your VNet — traffic never traverses the public internet.

@@ -38,6 +38,8 @@ resources. To verify/enable:
 
 ## Part 3 – Connection Troubleshoot
 
+> Tip: Connection Troubleshoot is faster and less intrusive than IP Flow Verify for initial connectivity diagnosis. Use it first, then drill down with other tools if needed.
+
 1. Go to **Network Watcher** > **Connection troubleshoot** (under **Network
    diagnostic tools**).
 2. **Source**:
@@ -78,6 +80,8 @@ Useful for validating custom route tables (UDRs) and confirming expected
 routing behavior.
 
 ## Part 6 – Packet capture
+
+> Warning: Packet capture can capture sensitive data (passwords, API keys, etc.) in plaintext. Only capture traffic you intend to analyze, use filters to reduce data, and handle .pcap files securely.
 
 1. **Network Watcher** > **Packet capture** (under **Network diagnostic tools**) >
    **+ Add**.

@@ -16,6 +16,8 @@
 
 ## Part 1 – Create two VNets (non-overlapping address spaces)
 
+> Important: VNet address spaces MUST NOT overlap for peering to work. Check both VNets' address ranges before creating peering links.
+
 1. Search for **Virtual networks** > **Create**.
    - **Resource group**: **Create new** `rg-az104-lab14`
    - **Name**: `vnet-hub14`

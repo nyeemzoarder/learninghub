@@ -26,6 +26,8 @@
 
 ## Part 2 – Deploy a Linux VM
 
+> Important: Save your private SSH key in a secure location — you cannot download it again after VM creation. Without it, you'll lose access to the VM.
+
 1. Search for **Virtual machines** > **Create** > **Azure virtual machine**.
 2. **Basics** tab:
    - **Resource group**: `rg-az104-lab08`
@@ -86,6 +88,9 @@
 2. **Disk name**: `disk-data01`. **Size**: 32 GiB. **Storage type**: **Standard
    HDD**. **Attach** (or **Create** > then **Attach**).
 3. On the Linux VM (via SSH), partition and mount the new disk:
+
+> Warning: These commands will erase the disk. Verify `/dev/sdc` is the new data disk, not the OS disk. Running these commands on the wrong disk will destroy your VM.
+
    ```bash
    # List disks (the new one is likely /dev/sdc)
    sudo lsblk
@@ -98,6 +103,8 @@
    ```
 
 ## Part 5 – VM Extensions (Custom Script)
+
+> Tip: Extensions run post-deployment and can fail silently. Always check the **Activity log** and extension status to confirm success.
 
 1. Go to **vm-linux01** > **Extensions + applications** (under **Settings**) >
    **+ Add**.
@@ -131,6 +138,8 @@
 > **Cleanup**) if cost is a concern.
 
 ## Part 7 – Resize and power states
+
+> Important: Resizing requires deallocation. If the new size isn't available in the current hardware cluster, the resize will fail. Plan for potential downtime.
 
 1. Go to **vm-linux01** > **Size** (under **Settings**).
 2. Select a new size (e.g., **Standard_B2s**) > **Resize**.

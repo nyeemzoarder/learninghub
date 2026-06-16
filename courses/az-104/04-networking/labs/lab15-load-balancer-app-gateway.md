@@ -55,6 +55,9 @@
 2. Select `vm-web01` and `vm-web02` > **Add**.
 
 ### Configure health probe & load-balancing rule
+
+> Tip: Health probes determine if backend instances are healthy. If a probe fails, the load balancer removes that instance from the rotation until it recovers.
+
 1. **lb-lab15** > **Health probes** > **+ Add**:
    - **Name**: `probe-http`
    - **Protocol**: **TCP**

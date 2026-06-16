@@ -30,6 +30,8 @@
 
 ## Part 2 – Enable backup with default policy
 
+> Important: The first backup is a full backup and takes longer than incremental backups. Plan for the VM to be under load during the backup process.
+
 1. Go to **rsv-az104lab18** > **Backup** (under **Getting started**).
 2. **Where is your workload running?**: **Azure**
 3. **What do you want to backup?**: **Virtual machine**
@@ -59,6 +61,8 @@ The backup job begins. **Backup jobs** (under **Manage**) shows progress. This
 can take 15–30+ minutes for the first backup.
 
 ## Part 5 – Recovery Services vault settings: soft delete & redundancy
+
+> Tip: Use **Geo-redundant (GRS)** replication for production backups to protect against regional disasters. LRS is acceptable for non-critical backups or cost-sensitive scenarios.
 
 1. Go to **rsv-az104lab18** > **Properties** (under **Settings**).
 2. **Backup configuration**:

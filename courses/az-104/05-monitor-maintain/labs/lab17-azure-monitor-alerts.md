@@ -26,6 +26,8 @@
 
 ## Part 2 – Diagnostic settings
 
+> Important: Diagnostic data is not retroactive. Enable diagnostic settings BEFORE you want to start collecting logs. Historical data cannot be recovered.
+
 Send metrics/logs to the Log Analytics workspace:
 
 1. Create a storage account (or reuse one):
@@ -94,6 +96,8 @@ After a few minutes, performance data (CPU, memory, disk) flows into Log Analyti
 4. **Review + create** > **Create**.
 
 ## Part 6 – Metric alert
+
+> Tip: Set alert thresholds conservatively to avoid alert fatigue. A threshold too low will trigger false alarms; too high will miss real issues. Start with typical peak usage + 20%.
 
 1. Search for **Alert rules** > **Create** > **Alert rule**.
 2. **Condition**:

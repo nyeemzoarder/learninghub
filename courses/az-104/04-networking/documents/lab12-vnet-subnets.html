@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lab 12 – Virtual Networks & Subnets - AZ-104 Labs</title>
+<title>Lab 12 – Virtual Networks & Subnets - AZ-104 Labs</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -56,59 +56,59 @@
     <details>
       <summary>▶ On This Page</summary>
       <div>
-        <a href="#objectives">Objectives</a>
-<a href="#prerequisites">Prerequisites</a>
-<a href="#estimated-time">Estimated time</a>
-<a href="#part-1-create-the-vnet-and-subnets">Part 1 – Create the VNet and subnets</a>
-<a href="#part-2-static-private-ip">Part 2 – Static private IP</a>
-<a href="#part-3-service-endpoints">Part 3 – Service Endpoints</a>
-<a href="#part-4-private-endpoint">Part 4 – Private Endpoint</a>
-<a href="#part-5-ip-address-planning-exercise">Part 5 – IP address planning exercise</a>
-<a href="#validation">Validation</a>
-<a href="#cleanup">Cleanup</a>
-<a href="#exam-tips">Exam Tips</a>
+        <a href="#objectives-">Objectives</a>
+<a href="#prerequisites-">Prerequisites</a>
+<a href="#estimated-time-">Estimated time</a>
+<a href="#part-1-create-the-vnet-and-subnets-">Part 1 – Create the VNet and subnets</a>
+<a href="#part-2-static-private-ip-">Part 2 – Static private IP</a>
+<a href="#part-3-service-endpoints-">Part 3 – Service Endpoints</a>
+<a href="#part-4-private-endpoint-">Part 4 – Private Endpoint</a>
+<a href="#part-5-ip-address-planning-exercise-">Part 5 – IP address planning exercise</a>
+<a href="#validation-">Validation</a>
+<a href="#cleanup-">Cleanup</a>
+<a href="#exam-tips-">Exam Tips</a>
       </div>
     </details>
   </aside>
   <div class="page">
-  <h1>Lab 12 – Virtual Networks & Subnets</h1>
+  <h1>Lab 12 – Virtual Networks & Subnets</h1>
 
-<h2 id="objectives">Objectives</h2>
-<ul><ol><li>Create a VNet with multiple subnets</li>
-<li>Configure IP addressing, service endpoints, and private endpoints</li>
-<li>Deploy resources into specific subnets</li>
-<li>Understand VNet/subnet design constraints (reserved IPs, address space planning)</li></ol></ul>
+<h2 id="objectives-">Objectives</h2>
+<ul><ol><li>Create a VNet with multiple subnets</li>
+<li>Configure IP addressing, service endpoints, and private endpoints</li>
+<li>Deploy resources into specific subnets</li>
+<li>Understand VNet/subnet design constraints (reserved IPs, address space planning)</li></ol></ul>
 
-<h2 id="prerequisites">Prerequisites</h2>
-<ul><ol><li>None</li>
-<li>Signed in at <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
+<h2 id="prerequisites-">Prerequisites</h2>
+<ul><ol><li>None</li>
+<li>Signed in at <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
 
-<h2 id="estimated-time">Estimated time</h2>
+<h2 id="estimated-time-">Estimated time</h2>
 <p>35 minutes</p>
 
-<hr class="divider">
+<p>---</p>
 
-<h2 id="part-1-create-the-vnet-and-subnets">Part 1 – Create the VNet and subnets</h2>
+<h2 id="part-1-create-the-vnet-and-subnets-">Part 1 – Create the VNet and subnets</h2>
 
-<ol><li>Search for <strong>Virtual networks</strong> > <strong>Create</strong>.</li>
-<li><strong>Basics</strong> tab:</li></ol>
+<ol><li>Search for <strong>Virtual networks</strong> > <strong>Create</strong>.</li>
+<li><strong>Basics</strong> tab:</li></ol>
 <p>- <strong>Resource group</strong>: <strong>Create new</strong> <code>rg-az104-lab12</code></p>
 <p>- <strong>Name</strong>: <code>vnet-hub</code></p>
 <p>- <strong>Region</strong>: <code>East US</code></p>
-<ol><li><strong>IP Addresses</strong> tab:</li></ol>
+<ol><li><strong>IP Addresses</strong> tab:</li></ol>
 <p>- <strong>IPv4 address space</strong>: <code>10.50.0.0/16</code></p>
 <p>- <strong>Subnets</strong>: Create the first subnet</p>
 <p>- <strong>Subnet name</strong>: <code>subnet-web</code></p>
 <p>- <strong>Subnet address range</strong>: <code>10.50.1.0/24</code></p>
-<ol><li><strong>Review + create</strong> > <strong>Create</strong>.</li></ol>
+<ol><li><strong>Review + create</strong> > <strong>Create</strong>.</li></ol>
 
-<h3 id="add-more-subnets">Add more subnets</h3>
-<ol><li>Go to <strong>vnet-hub</strong> > <strong>Subnets</strong> > <strong>+ Subnet</strong>.</li>
-<li>Create <code>subnet-data</code>:</li></ol>
+<h3 id="add-more-subnets-">Add more subnets</h3>
+<ol><li>Go to <strong>vnet-hub</strong> > <strong>Subnets</strong> > <strong>+ Subnet</strong>.</li>
+<li>Create <code>subnet-data</code>:</li></ol>
 <p>- <strong>Name</strong>: <code>subnet-data</code></p>
 <p>- <strong>Address range</strong>: <code>10.50.2.0/24</code></p>
 <p>- <strong>Add</strong></p>
-<ol><li>Repeat for <code>subnet-mgmt</code>:</li></ol>
+<ol><li>Repeat for <code>subnet-mgmt</code>:</li></ol>
 <p>- <strong>Name</strong>: <code>subnet-mgmt</code></p>
 <p>- <strong>Address range</strong>: <code>10.50.3.0/24</code></p>
 <p>- <strong>Add</strong></p>
@@ -117,106 +117,110 @@
 <p>reserves 5 IPs (.0 network, .1 gateway, .2/.3 DNS, broadcast):</p>
 <p>available usable IPs per subnet = 251 (or 256 - 5).</p>
 
-<h2 id="part-2-static-private-ip">Part 2 – Static private IP</h2>
+<h2 id="part-2-static-private-ip-">Part 2 – Static private IP</h2>
 
-<ol><li>Search for <strong>Virtual machines</strong> > <strong>Create</strong> > <strong>Azure virtual machine</strong>.</li>
-<li><strong>Basics</strong>: <code>vm-data01</code>, <strong>Ubuntu 22.04 LTS</strong>, size <strong>Standard_B1s</strong>.</li>
-<li><strong>Networking</strong> tab:</li></ol>
+<div class='callout-box callout-important'><span class='callout-icon'>❗</span><div class='callout-content'><h4>important</h4><p>When planning subnets, always account for the 5 reserved IPs per subnet. A /24 has 256 addresses, but only ~251 are usable for VMs and resources.</p></div></div>
+
+<ol><li>Search for <strong>Virtual machines</strong> > <strong>Create</strong> > <strong>Azure virtual machine</strong>.</li>
+<li><strong>Basics</strong>: <code>vm-data01</code>, <strong>Ubuntu 22.04 LTS</strong>, size <strong>Standard_B1s</strong>.</li>
+<li><strong>Networking</strong> tab:</li></ol>
 <p>- <strong>Virtual network</strong>: <code>vnet-hub</code></p>
 <p>- <strong>Subnet</strong>: <code>subnet-data</code></p>
 <p>- <strong>Public IP</strong>: <strong>None</strong> (we'll keep this VM private)</p>
 <p>- <strong>NIC network security group</strong>: <strong>Basic</strong> (or create one)</p>
-<ol><li><strong>Advanced</strong> tab: <strong>Private IP address</strong>: <code>10.50.2.10</code>.</li>
-<li><strong>Review + create</strong> > <strong>Create</strong>.</li></ol>
+<ol><li><strong>Advanced</strong> tab: <strong>Private IP address</strong>: <code>10.50.2.10</code>.</li>
+<li><strong>Review + create</strong> > <strong>Create</strong>.</li></ol>
 
 <p>The VM now has a static private IP <code>10.50.2.10</code> inside <code>subnet-data</code>, with no</p>
 <p>public IP (only reachable from within the VNet or via Bastion/VPN).</p>
 
-<h2 id="part-3-service-endpoints">Part 3 – Service Endpoints</h2>
+<h2 id="part-3-service-endpoints-">Part 3 – Service Endpoints</h2>
 
 <p>Service Endpoints extend your VNet's identity to a service (e.g., Storage) over</p>
 <p>the Azure backbone, keeping the service's public endpoint but restricting</p>
 <p>access to specified subnets.</p>
 
-<ol><li>Go to <strong>vnet-hub</strong> > <strong>Subnets</strong> > select <code>subnet-data</code> > <strong>Service</li></ol>
+<ol><li>Go to <strong>vnet-hub</strong> > <strong>Subnets</strong> > select <code>subnet-data</code> > <strong>Service</li></ol>
 <p>endpoints</strong> > <strong>+ Add</strong>.</p>
-<ol><li>Select <strong>Microsoft.Storage</strong> > <strong>Add</strong>.</li></ol>
+<ol><li>Select <strong>Microsoft.Storage</strong> > <strong>Add</strong>.</li></ol>
 
-<h3 id="restrict-storage-to-this-subnet">Restrict storage to this subnet</h3>
-<ol><li>Search for <strong>Storage accounts</strong> > <strong>Create</strong>.</li></ol>
+<h3 id="restrict-storage-to-this-subnet-">Restrict storage to this subnet</h3>
+<ol><li>Search for <strong>Storage accounts</strong> > <strong>Create</strong>.</li></ol>
 <p>- <strong>Resource group</strong>: <code>rg-az104-lab12</code></p>
 <p>- <strong>Name</strong>: <code>stoaz104lab12<unique></code></p>
 <p>- <strong>Region</strong>: <code>East US</code></p>
 <p>- <strong>Performance</strong>: Standard, <strong>Redundancy</strong>: LRS</p>
 <p>- <strong>Review + create</strong> > <strong>Create</strong></p>
 
-<ol><li>Go to <strong>stoaz104lab12<unique></strong> > <strong>Networking</strong> (under <strong>Security +</li></ol>
+<ol><li>Go to <strong>stoaz104lab12<unique></strong> > <strong>Networking</strong> (under <strong>Security +</li></ol>
 <p>networking</strong>).</p>
-<ol><li>Set <strong>Public network access</strong> to <strong>Enabled from selected virtual networks</li></ol>
+<ol><li>Set <strong>Public network access</strong> to <strong>Enabled from selected virtual networks</li></ol>
 <p>and IP addresses</strong>.</p>
-<ol><li>Under <strong>Virtual networks</strong>, select <strong>+ Add existing virtual network</strong> ></li></ol>
+<ol><li>Under <strong>Virtual networks</strong>, select <strong>+ Add existing virtual network</strong> ></li></ol>
 <p>choose <code>vnet-hub</code>, subnet <code>subnet-data</code> > <strong>Add</strong>.</p>
-<ol><li>Set <strong>Default action</strong> to <strong>Deny</strong>.</li>
-<li><strong>Save</strong>.</li></ol>
+<ol><li>Set <strong>Default action</strong> to <strong>Deny</strong>.</li>
+<li><strong>Save</strong>.</li></ol>
 
 <p>Now only resources in <code>subnet-data</code> (via the service endpoint) can reach this</p>
 <p>storage account by default — public internet access is denied.</p>
 
-<h2 id="part-4-private-endpoint">Part 4 – Private Endpoint</h2>
+<h2 id="part-4-private-endpoint-">Part 4 – Private Endpoint</h2>
+
+<div class='callout-box callout-tip'><span class='callout-icon'>ℹ️</span><div class='callout-content'><h4>tip</h4><p>Private endpoints completely remove public network exposure for PaaS services. For maximum security, combine private endpoints with disabled public access on the storage account.</p></div></div>
 
 <p>Private Endpoints give a PaaS resource (like Storage) a private IP <strong>inside</strong></p>
 <p>your VNet — traffic never traverses the public internet.</p>
 
-<ol><li>Go to <strong>vnet-hub</strong> > <strong>Subnets</strong> > select <code>subnet-mgmt</code>. (On some Portal</li></ol>
+<ol><li>Go to <strong>vnet-hub</strong> > <strong>Subnets</strong> > select <code>subnet-mgmt</code>. (On some Portal</li></ol>
 <p>versions, you may need to go to the subnet and ensure private endpoint</p>
 <p>policies are not disabled — skip this step if the UI differs.)</p>
 
-<ol><li>Search for <strong>Private endpoints</strong> > <strong>Create</strong>.</li>
-<li><strong>Basics</strong> tab:</li></ol>
+<ol><li>Search for <strong>Private endpoints</strong> > <strong>Create</strong>.</li>
+<li><strong>Basics</strong> tab:</li></ol>
 <p>- <strong>Resource group</strong>: <code>rg-az104-lab12</code></p>
 <p>- <strong>Name</strong>: <code>pe-storage</code></p>
 <p>- <strong>Region</strong>: <code>East US</code></p>
-<ol><li><strong>Resource</strong> tab: <strong>Connect to an Azure resource</strong> > <strong>Resource type</strong>:</li></ol>
+<ol><li><strong>Resource</strong> tab: <strong>Connect to an Azure resource</strong> > <strong>Resource type</strong>:</li></ol>
 <p><strong>Microsoft.Storage/storageAccounts</strong> > <strong>Resource</strong>: select</p>
 <p><code>stoaz104lab12<unique></code> > <strong>Sub-resource</strong>: <strong>blob</strong>.</p>
-<ol><li><strong>Configuration</strong> tab:</li></ol>
+<ol><li><strong>Configuration</strong> tab:</li></ol>
 <p>- <strong>Virtual network</strong>: <code>vnet-hub</code></p>
 <p>- <strong>Subnet</strong>: <code>subnet-mgmt</code></p>
 <p>- <strong>Private DNS integration</strong>: <strong>Yes</strong> (auto-creates a private DNS zone)</p>
-<ol><li><strong>Review + create</strong> > <strong>Create</strong>.</li></ol>
+<ol><li><strong>Review + create</strong> > <strong>Create</strong>.</li></ol>
 
 <p>The storage account now has a private IP inside <code>subnet-mgmt</code> — VNet traffic</p>
 <p>reaches it without ever hitting the public internet.</p>
 
-<h2 id="part-5-ip-address-planning-exercise">Part 5 – IP address planning exercise</h2>
+<h2 id="part-5-ip-address-planning-exercise-">Part 5 – IP address planning exercise</h2>
 
 <p>Given <code>10.50.0.0/16</code> (65,536 addresses), design subnets for these requirements:</p>
-<ul><ol><li><code>subnet-web</code>: 250 hosts → <code>/24</code> (10.50.1.0/24) ✓ (already created)</li>
-<li><code>subnet-data</code>: 60 hosts → <code>/26</code> (10.50.2.0/26) — can subdivide the /24 further</li>
-<li><code>subnet-aks</code>: 1,000+ hosts → <code>/22</code> (10.40.4.0/22)</li>
-<li><code>AzureBastionSubnet</code>: minimum <code>/26</code> (for Bastion)</li>
-<li><code>GatewaySubnet</code>: minimum <code>/27</code> (for VPN/ExpressRoute, recommended <code>/26</code>)</li></ol></ul>
+<ul><ol><li><code>subnet-web</code>: 250 hosts → <code>/24</code> (10.50.1.0/24) ✓ (already created)</li>
+<li><code>subnet-data</code>: 60 hosts → <code>/26</code> (10.50.2.0/26) — can subdivide the /24 further</li>
+<li><code>subnet-aks</code>: 1,000+ hosts → <code>/22</code> (10.40.4.0/22)</li>
+<li><code>AzureBastionSubnet</code>: minimum <code>/26</code> (for Bastion)</li>
+<li><code>GatewaySubnet</code>: minimum <code>/27</code> (for VPN/ExpressRoute, recommended <code>/26</code>)</li></ol></ul>
 
 <p>Key constraints:</p>
-<ul><ol><li>Subnets cannot overlap.</li>
-<li>Special reserved subnet names: <code>GatewaySubnet</code>, <code>AzureBastionSubnet</code>,</li></ol></ul>
+<ul><ol><li>Subnets cannot overlap.</li>
+<li>Special reserved subnet names: <code>GatewaySubnet</code>, <code>AzureBastionSubnet</code>,</li></ol></ul>
 <p><code>AzureFirewallSubnet</code> — these control where specific services can deploy.</p>
-<ul><ol><li>Each subnet automatically reserves 5 IPs.</li></ol></ul>
+<ul><ol><li>Each subnet automatically reserves 5 IPs.</li></ol></ul>
 
-<h2 id="validation">Validation</h2>
-<ul><ol><li>[ ] VNet <code>vnet-hub</code> with 3 subnets created, no overlapping address spaces</li>
-<li>[ ] VM <code>vm-data01</code> deployed with fixed private IP <code>10.50.2.10</code> and no public IP</li>
-<li>[ ] Storage account reachable only from <code>subnet-data</code> via service endpoint</li>
-<li>[ ] Private endpoint <code>pe-storage</code> has a private IP in <code>subnet-mgmt</code></li></ol></ul>
+<h2 id="validation-">Validation</h2>
+<ul><ol><li>[ ] VNet <code>vnet-hub</code> with 3 subnets created, no overlapping address spaces</li>
+<li>[ ] VM <code>vm-data01</code> deployed with fixed private IP <code>10.50.2.10</code> and no public IP</li>
+<li>[ ] Storage account reachable only from <code>subnet-data</code> via service endpoint</li>
+<li>[ ] Private endpoint <code>pe-storage</code> has a private IP in <code>subnet-mgmt</code></li></ol></ul>
 
-<h2 id="cleanup">Cleanup</h2>
-<ol><li><strong>Resource groups</strong> > select <code>rg-az104-lab12</code> > <strong>Delete resource group</strong>.</li></ol>
+<h2 id="cleanup-">Cleanup</h2>
+<ol><li><strong>Resource groups</strong> > select <code>rg-az104-lab12</code> > <strong>Delete resource group</strong>.</li></ol>
 
-<h2 id="exam-tips">Exam Tips</h2>
-<ul><ol><li>Each subnet reserves 5 IPs (.0, .1, .2, .3, and broadcast/last address) — relevant for sizing questions.</li>
-<li><strong>Service Endpoint</strong>: extends VNet identity to the service over Azure backbone, resource keeps its public IP but can restrict access to specific subnets. <strong>Private Endpoint</strong>: gives the PaaS resource a private IP inside your VNet — fully removes public exposure.</li>
-<li>VNets cannot span regions; subnets cannot span VNets; address spaces should not overlap if you plan to peer VNets.</li>
-<li>Special reserved subnet names: <code>GatewaySubnet</code> (VPN/ExpressRoute gateways), <code>AzureBastionSubnet</code>, <code>AzureFirewallSubnet</code>.</li></ol></ul>
+<h2 id="exam-tips-">Exam Tips</h2>
+<ul><ol><li>Each subnet reserves 5 IPs (.0, .1, .2, .3, and broadcast/last address) — relevant for sizing questions.</li>
+<li><strong>Service Endpoint</strong>: extends VNet identity to the service over Azure backbone, resource keeps its public IP but can restrict access to specific subnets. <strong>Private Endpoint</strong>: gives the PaaS resource a private IP inside your VNet — fully removes public exposure.</li>
+<li>VNets cannot span regions; subnets cannot span VNets; address spaces should not overlap if you plan to peer VNets.</li>
+<li>Special reserved subnet names: <code>GatewaySubnet</code> (VPN/ExpressRoute gateways), <code>AzureBastionSubnet</code>, <code>AzureFirewallSubnet</code>.</li></ol></ul>
 
   </div>
 </div>

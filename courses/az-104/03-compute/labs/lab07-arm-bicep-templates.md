@@ -16,11 +16,15 @@
 
 ## Part 1 – Resource group
 
+> Important: This lab uses Azure CLI — ensure `az` is installed and authenticated to your Azure subscription before proceeding.
+
 ```bash
 az group create --name rg-az104-lab07 --location eastus
 ```
 
 ## Part 2 – Author a Bicep template
+
+> Tip: Save your Bicep file in a directory with no spaces in the path to avoid CLI parsing issues.
 
 Create `main.bicep`:
 ```bicep
@@ -69,6 +73,8 @@ output vnetId string = vnet.id
 
 ## Part 3 – Preview with what-if
 
+> Important: Always run `what-if` before deploying to production. It shows exactly what changes will occur without modifying any resources.
+
 ```bash
 az deployment group what-if \
   --resource-group rg-az104-lab07 \
@@ -100,6 +106,8 @@ Open `main.json` and identify: `$schema`, `contentVersion`, `parameters`,
 `variables`, `resources`, `outputs` — map each to its Bicep equivalent.
 
 ## Part 6 – Deployment modes & redeploy
+
+> Warning: **Complete** mode deletes resources NOT in your template. Never use it in production unless you fully understand the consequences.
 
 Modify `storageSku` to `Standard_GRS` and redeploy with **Incremental** mode (default):
 ```bash

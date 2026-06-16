@@ -16,6 +16,8 @@
 
 ## Part 1 – Resource group and ACR
 
+> Important: ACR registry names are globally unique across all Azure customers. If your first choice is taken, you'll need to add numbers/letters to make it unique.
+
 1. Search for **Resource groups** > **Create**. Name: `rg-az104-lab10`,
    region: `East US`. **Review + create** > **Create**.
 2. Search for **Container registries** > **Create**.
@@ -71,6 +73,8 @@
 2. Open `http://<fqdn>:80` in a browser — should show "Hello from AZ-104 Lab 10".
 
 ## Part 4 – Environment variables & secure variables
+
+> Important: Always mark sensitive data (API keys, passwords, tokens) as **Secure** so they're masked in logs and Portal UI, preventing accidental exposure.
 
 1. **Container instances** > **Create** again for `aci-env-demo`.
 2. **Basics** tab: use a public image `mcr.microsoft.com/azuredocs/aci-helloworld`,

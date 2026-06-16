@@ -16,6 +16,8 @@
 
 ## Part 1 – Public DNS zone
 
+> Tip: Record TTL (Time To Live) controls how long DNS clients cache the response. Lower TTL (e.g., 300s) allows faster updates but increases DNS query load. Typical values are 3600s for stable records.
+
 1. Search for **DNS zones** > **Create**.
 2. **Basics**:
    - **Resource group**: **Create new** `rg-az104-lab16`

@@ -24,6 +24,8 @@
 
 ## Part 2 – Availability Set
 
+> Important: An Availability Set must be specified at VM creation time. You cannot add an existing VM to an Availability Set.
+
 1. Search for **Availability sets** > **Create**. **Resource group**:
    `rg-az104-lab09`, **Name**: `avset-lab09`,
    **Fault domains**: 2, **Update domains**: 5. **Create**.
@@ -66,6 +68,8 @@
 6. **Review + create** > **Create**.
 
 ## Part 5 – Autoscale rules
+
+> Tip: Set autoscale thresholds conservatively (e.g., 70% CPU to scale out, 30% to scale in) to avoid rapid scaling in/out fluctuations.
 
 1. Go to **vmss-lab09** > **Scaling** (under **Settings**) > **Configure
    autoscale** (or go to **Monitor** > **Autoscale settings** for the VMSS

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lab 04 – Storage Accounts - AZ-104 Labs</title>
+<title>Lab 04 – Storage Accounts - AZ-104 Labs</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -47,268 +47,224 @@
     <details>
       <summary>▶ On This Page</summary>
       <div>
-        <a href="#objectives">Objectives</a>
-<a href="#prerequisites">Prerequisites</a>
-<a href="#estimated-time">Estimated time</a>
-<a href="#part-1-create-the-resource-group-and-storage-account">Part 1 – Create the resource group and storage account</a>
-<a href="#part-2-explore-redundancy-performance-options">Part 2 – Explore redundancy & performance options</a>
-<a href="#part-3-containers-blobs-queues-tables-file-shares">Part 3 – Containers, blobs, queues, tables, file shares</a>
-<a href="#part-4-access-keys-vs-sas-vs-microsoft-entra-authorization">Part 4 – Access keys vs SAS vs Microsoft Entra authorization</a>
-<a href="#part-5-network-rules">Part 5 – Network rules</a>
-<a href="#part-6-copy-data-with-storage-browser">Part 6 – Copy data with Storage browser</a>
-<a href="#success-criteria">Success Criteria</a>
-<a href="#cleanup-if-needed">Cleanup (If Needed)</a>
-<a href="#key-takeaways">Key Takeaways</a>
-<a href="#next-steps">Next Steps</a>
+        <a href="#objectives-">Objectives</a>
+<a href="#prerequisites-">Prerequisites</a>
+<a href="#estimated-time-">Estimated time</a>
+<a href="#part-1-create-the-resource-group-and-storage-account-">Part 1 – Create the resource group and storage account</a>
+<a href="#part-2-explore-redundancy-performance-options-">Part 2 – Explore redundancy & performance options</a>
+<a href="#part-3-containers-blobs-queues-tables-file-shares-">Part 3 – Containers, blobs, queues, tables, file shares</a>
+<a href="#part-4-access-keys-vs-sas-vs-microsoft-entra-authorization-">Part 4 – Access keys vs SAS vs Microsoft Entra authorization</a>
+<a href="#part-5-network-rules-">Part 5 – Network rules</a>
+<a href="#part-6-copy-data-with-storage-browser-">Part 6 – Copy data with Storage browser</a>
+<a href="#success-criteria-">Success Criteria</a>
+<a href="#cleanup-if-needed-">Cleanup (If Needed)</a>
+<a href="#key-takeaways-">Key Takeaways</a>
+<a href="#next-steps-">Next Steps</a>
       </div>
     </details>
   </aside>
   <div class="page">
-  <h1>Lab 04 – Storage Accounts</h1>
+  <h1>Lab 04 – Storage Accounts</h1>
 
-<h2 id="objectives">Objectives</h2>
+<h2 id="objectives-">Objectives</h2>
 
-<ul><ol><li>Create storage accounts with different redundancy/performance tiers</li>
-<li>Configure access keys, SAS tokens, and network rules</li>
-<li>Work with blob containers, queues, tables, and file shares</li>
-<li>Move/copy data using the Portal's Storage browser</li></ol></ul>
+<ul><ol><li>Create storage accounts with different redundancy/performance tiers</li>
+<li>Configure access keys, SAS tokens, and network rules</li>
+<li>Work with blob containers, queues, tables, and file shares</li>
+<li>Move/copy data using the Portal's Storage browser</li></ol></ul>
 
-<h2 id="prerequisites">Prerequisites</h2>
+<h2 id="prerequisites-">Prerequisites</h2>
 
-<ul><ol><li>A resource group (we'll create one)</li>
-<li>Signed in at <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
+<ul><ol><li>A resource group (we'll create one)</li>
+<li>Signed in at <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
 
-<h2 id="estimated-time">Estimated time</h2>
+<h2 id="estimated-time-">Estimated time</h2>
 
 <p>40 minutes</p>
 
-<hr class="divider">
+<p>---</p>
 
-<h2 id="part-1-create-the-resource-group-and-storage-account">Part 1 – Create the resource group and storage account</h2>
+<h2 id="part-1-create-the-resource-group-and-storage-account-">Part 1 – Create the resource group and storage account</h2>
 
-<h3 id="step-1-create-resource-group">Step 1: Create resource group</h3>
+<h3 id="step-1-create-resource-group-">Step 1: Create resource group</h3>
 
-<ol><li>Search for <strong>Resource groups</strong> > <strong>Create</strong></li>
-<li>Name: <code>rg-az104-lab04</code>, Region: <code>East US</code></li>
-<li><strong>Review + create</strong> > <strong>Create</strong></li></ol>
+<ol><li>Search for <strong>Resource groups</strong> > <strong>Create</strong></li>
+<li>Name: <code>rg-az104-lab04</code>, Region: <code>East US</code></li>
+<li><strong>Review + create</strong> > <strong>Create</strong></li></ol>
 
-<h3 id="step-2-create-storage-account">Step 2: Create storage account</h3>
+<h3 id="step-2-create-storage-account-">Step 2: Create storage account</h3>
 
-<ol><li>Search for <strong>Storage accounts</strong> > <strong>Create</strong></li>
-<li><strong>Basics</strong> tab:</li></ol>
+<ol><li>Search for <strong>Storage accounts</strong> > <strong>Create</strong></li>
+<li><strong>Basics</strong> tab:</li></ol>
 <p>- <strong>Resource group</strong>: <code>rg-az104-lab04</code></p>
 <p>- <strong>Storage account name</strong>: <code>stoaz104lab<unique></code> (3–24 chars, lowercase + numbers only)</p>
 <p>- <strong>Region</strong>: <code>East US</code></p>
 <p>- <strong>Performance</strong>: <strong>Standard</strong></p>
 <p>- <strong>Redundancy</strong>: <strong>Locally-redundant storage (LRS)</strong></p>
-<ol><li>Leave <strong>Advanced</strong> defaults (StorageV2, Hot tier)</li>
-<li><strong>Review + create</strong> > <strong>Create</strong></li></ol>
+<ol><li>Leave <strong>Advanced</strong> defaults (StorageV2, Hot tier)</li>
+<li><strong>Review + create</strong> > <strong>Create</strong></li></ol>
 
 <div class='callout-box callout-important'><span class='callout-icon'>❗</span><div class='callout-content'><h4>important</h4><p>Storage account names must be GLOBALLY unique across all Azure customers. If your first choice is taken, add numbers until it's unique.</p></div></div>
 
-<hr class="divider">
+<p>---</p>
 
-<h2 id="part-2-explore-redundancy-performance-options">Part 2 – Explore redundancy & performance options</h2>
+<h2 id="part-2-explore-redundancy-performance-options-">Part 2 – Explore redundancy & performance options</h2>
 
-<h3 id="understanding-redundancy">Understanding Redundancy</h3>
+<h3 id="understanding-redundancy-">Understanding Redundancy</h3>
 
-<table>
-<p><tr></p>
-<p><th>Option</th></p>
-<p><th>Copies</th></p>
-<p><th>Locations</th></p>
-<p><th>Cost</th></p>
-<p><th>Best For</th></p>
-<p></tr></p>
-<p><tr></p>
-<p><td><strong>LRS</strong></td></p>
-<p><td>3</td></p>
-<p><td>1 Datacenter</td></p>
-<p><td>$$$</td></p>
-<p><td>Dev/Test</td></p>
-<p></tr></p>
-<p><tr></p>
-<p><td><strong>ZRS</strong></td></p>
-<p><td>3</td></p>
-<p><td>3 AZs (1 region)</td></p>
-<p><td>$$$$</td></p>
-<p><td>Production (regional)</td></p>
-<p></tr></p>
-<p><tr></p>
-<p><td><strong>GRS</strong></td></p>
-<p><td>6</td></p>
-<p><td>2 Regions</td></p>
-<p><td>$$$$$</td></p>
-<p><td>Disaster recovery</td></p>
-<p></tr></p>
-<p></table></p>
+<p>| Option | Copies | Locations | Cost | Best For |</p>
+<p>|--------|--------|-----------|------|----------|</p>
+<p>| <strong>LRS</strong> | 3 | 1 Datacenter | $$$ | Dev/Test |</p>
+<p>| <strong>ZRS</strong> | 3 | 3 AZs (1 region) | $$$$ | Production (regional) |</p>
+<p>| <strong>GRS</strong> | 6 | 2 Regions | $$$$$ | Disaster recovery |</p>
 
+<h3 id="step-1-view-redundancy-options-">Step 1: View redundancy options</h3>
 
-<h3 id="step-1-view-redundancy-options">Step 1: View redundancy options</h3>
+<ol><li>Open the storage account > <strong>Redundancy</strong> (under <strong>Data management</strong>)</li>
+<li>Note the options: <strong>LRS, ZRS, GRS, GZRS, RA-GRS, RA-GZRS</strong></li>
+<li>Observe that changing redundancy is easy, but note the cost implications</li></ol>
 
-<ol><li>Open the storage account > <strong>Redundancy</strong> (under <strong>Data management</strong>)</li>
-<li>Note the options: <strong>LRS, ZRS, GRS, GZRS, RA-GRS, RA-GZRS</strong></li>
-<li>Observe that changing redundancy is easy, but note the cost implications</li></ol>
+<h3 id="step-2-understand-performance-tiers-">Step 2: Understand performance tiers</h3>
 
-<h3 id="step-2-understand-performance-tiers">Step 2: Understand performance tiers</h3>
-
-<ol><li>Go to <strong>Configuration</strong> > <strong>Access tier</strong></li></ol>
+<ol><li>Go to <strong>Configuration</strong> > <strong>Access tier</strong></li></ol>
 <p>- <strong>Hot</strong>: Frequent access (cheapest storage, expensive per-operation)</p>
 <p>- <strong>Cool</strong>: Infrequent access (cheaper per-operation, expensive storage)</p>
 <p>- <strong>Archive</strong>: Long-term (cheapest storage, slow retrieval)</p>
 
 <div class='callout-box callout-tip'><span class='callout-icon'>ℹ️</span><div class='callout-content'><h4>tip</h4><p>Changing access tier between Hot/Cool is free and instant. Archive requires rehydration (24-48 hours).</p></div></div>
 
-<hr class="divider">
+<p>---</p>
 
-<h2 id="part-3-containers-blobs-queues-tables-file-shares">Part 3 – Containers, blobs, queues, tables, file shares</h2>
+<h2 id="part-3-containers-blobs-queues-tables-file-shares-">Part 3 – Containers, blobs, queues, tables, file shares</h2>
 
-<h3 id="step-1-create-and-upload-to-blob-container">Step 1: Create and upload to blob container</h3>
+<h3 id="step-1-create-and-upload-to-blob-container-">Step 1: Create and upload to blob container</h3>
 
-<ol><li>Open the storage account > <strong>Containers</strong> (under <strong>Data storage</strong>)</li>
-<li>Select <strong>+ Container</strong>, name: <code>demo-container</code>, <strong>Public access level</strong>: <strong>Private</strong></li>
-<li>Open <code>demo-container</code> > <strong>Upload</strong></li>
-<li>Create a small text file locally (e.g., <code>sample.txt</code> with text "hello az104")</li>
-<li>Upload it to the container</li></ol>
+<ol><li>Open the storage account > <strong>Containers</strong> (under <strong>Data storage</strong>)</li>
+<li>Select <strong>+ Container</strong>, name: <code>demo-container</code>, <strong>Public access level</strong>: <strong>Private</strong></li>
+<li>Open <code>demo-container</code> > <strong>Upload</strong></li>
+<li>Create a small text file locally (e.g., <code>sample.txt</code> with text "hello az104")</li>
+<li>Upload it to the container</li></ol>
 
 <div class='callout-box callout-warning'><span class='callout-icon'>⚠️</span><div class='callout-content'><h4>warning</h4><p>Setting Public access to "Blob" or "Container" allows anonymous download. Only do this for non-sensitive data.</p></div></div>
 
-<h3 id="step-2-create-queue-and-table">Step 2: Create queue and table</h3>
+<h3 id="step-2-create-queue-and-table-">Step 2: Create queue and table</h3>
 
-<ol><li><strong>Queues</strong> (under <strong>Data storage</strong>) > <strong>+ Queue</strong>, name: <code>demo-queue</code></li>
-<li><strong>Tables</strong> (under <strong>Data storage</strong>) > <strong>+ Table</strong>, name: <code>demotable</code></li></ol>
+<ol><li><strong>Queues</strong> (under <strong>Data storage</strong>) > <strong>+ Queue</strong>, name: <code>demo-queue</code></li>
+<li><strong>Tables</strong> (under <strong>Data storage</strong>) > <strong>+ Table</strong>, name: <code>demotable</code></li></ol>
 
 <div class='callout-box callout-tip'><span class='callout-icon'>ℹ️</span><div class='callout-content'><h4>tip</h4><p>Queues = async messaging. Tables = NoSQL key-value store. File Shares = SMB protocol (like network drives).</p></div></div>
 
-<h3 id="step-3-create-file-share">Step 3: Create file share</h3>
+<h3 id="step-3-create-file-share-">Step 3: Create file share</h3>
 
-<ol><li><strong>File shares</strong> (under <strong>Data storage</strong>) > <strong>+ File share</strong></li></ol>
+<ol><li><strong>File shares</strong> (under <strong>Data storage</strong>) > <strong>+ File share</strong></li></ol>
 <p>- <strong>Name</strong>: <code>demo-share</code></p>
 <p>- <strong>Quota</strong>: <code>5</code> GiB</p>
 <p>- <strong>Tier</strong>: <strong>Transaction optimized</strong></p>
-<ol><li>Create</li></ol>
+<ol><li>Create</li></ol>
 
-<hr class="divider">
+<p>---</p>
 
-<h2 id="part-4-access-keys-vs-sas-vs-microsoft-entra-authorization">Part 4 – Access keys vs SAS vs Microsoft Entra authorization</h2>
+<h2 id="part-4-access-keys-vs-sas-vs-microsoft-entra-authorization-">Part 4 – Access keys vs SAS vs Microsoft Entra authorization</h2>
 
-<h3 id="access-patterns">Access Patterns</h3>
+<h3 id="access-patterns-">Access Patterns</h3>
 
-<table>
-<p><tr></p>
-<p><th>Method</th></p>
-<p><th>Security</th></p>
-<p><th>Use Case</th></p>
-<p></tr></p>
-<p><tr></p>
-<p><td><strong>Access Keys</strong></td></p>
-<p><td>Full admin</td></p>
-<p><td>Internal apps only</td></p>
-<p></tr></p>
-<p><tr></p>
-<p><td><strong>SAS</strong></td></p>
-<p><td>Time-limited</td></p>
-<p><td>Temporary external access</td></p>
-<p></tr></p>
-<p><tr></p>
-<p><td><strong>Entra ID</strong></td></p>
-<p><td>Role-based</td></p>
-<p><td>Production (recommended)</td></p>
-<p></tr></p>
-<p></table></p>
+<p>| Method | Security | Use Case |</p>
+<p>|--------|----------|----------|</p>
+<p>| <strong>Access Keys</strong> | Full admin | Internal apps only |</p>
+<p>| <strong>SAS</strong> | Time-limited | Temporary external access |</p>
+<p>| <strong>Entra ID</strong> | Role-based | Production (recommended) |</p>
 
+<h3 id="step-1-view-access-keys-">Step 1: View Access Keys</h3>
 
-<h3 id="step-1-view-access-keys">Step 1: View Access Keys</h3>
-
-<ol><li><strong>Access keys</strong> (under <strong>Security + networking</strong>)</li>
-<li>Note: two keys (<code>key1</code>, <code>key2</code>) for rotation without downtime</li></ol>
+<ol><li><strong>Access keys</strong> (under <strong>Security + networking</strong>)</li>
+<li>Note: two keys (<code>key1</code>, <code>key2</code>) for rotation without downtime</li></ol>
 
 <div class='callout-box callout-important'><span class='callout-icon'>❗</span><div class='callout-content'><h4>important</h4><p>Never commit access keys to GitHub. Always rotate keys when they're exposed.</p></div></div>
 
-<h3 id="step-2-generate-sas-token">Step 2: Generate SAS token</h3>
+<h3 id="step-2-generate-sas-token-">Step 2: Generate SAS token</h3>
 
-<ol><li><strong>Shared Access Signature</strong> (under <strong>Security + networking</strong>)</li>
-<li><strong>Allowed services</strong>: <strong>Blob</strong></li>
-<li><strong>Allowed resource types</strong>: <strong>Container, Object</strong></li>
-<li><strong>Allowed permissions</strong>: <strong>Read</strong></li>
-<li><strong>Start and expiry time</strong>: set expiry to 1 hour from now</li>
-<li><strong>Allowed protocols</strong>: <strong>HTTPS only</strong></li>
-<li>Select <strong>Generate SAS and connection string</strong></li>
-<li>Copy the <strong>Blob SAS URL</strong></li></ol>
+<ol><li><strong>Shared Access Signature</strong> (under <strong>Security + networking</strong>)</li>
+<li><strong>Allowed services</strong>: <strong>Blob</strong></li>
+<li><strong>Allowed resource types</strong>: <strong>Container, Object</strong></li>
+<li><strong>Allowed permissions</strong>: <strong>Read</strong></li>
+<li><strong>Start and expiry time</strong>: set expiry to 1 hour from now</li>
+<li><strong>Allowed protocols</strong>: <strong>HTTPS only</strong></li>
+<li>Select <strong>Generate SAS and connection string</strong></li>
+<li>Copy the <strong>Blob SAS URL</strong></li></ol>
 
-<h3 id="step-3-test-sas-access">Step 3: Test SAS access</h3>
+<h3 id="step-3-test-sas-access-">Step 3: Test SAS access</h3>
 
-<ol><li>Construct the full URL:</li></ol>
+<ol><li>Construct the full URL:</li></ol>
 <p>``<code></p>
 <p>https://<account>.blob.core.windows.net/demo-container/sample.txt?<sas-token></p>
 <p></code>`<code></p>
-<ol><li>Open in browser—you should download </code>sample.txt<code></li>
-<li>After 1 hour, this URL will expire and access will fail</li></ol>
+<ol><li>Open in browser—you should download </code>sample.txt<code></li>
+<li>After 1 hour, this URL will expire and access will fail</li></ol>
 
 <div class='callout-box callout-tip'><span class='callout-icon'>ℹ️</span><div class='callout-content'><h4>tip</h4><p>SAS tokens are great for temporary sharing. Generate new ones for each user/device to minimize blast radius if leaked.</p></div></div>
 
-<h3 id="step-4-test-entra-id-access">Step 4: Test Entra ID access</h3>
+<h3 id="step-4-test-entra-id-access-">Step 4: Test Entra ID access</h3>
 
-<ol><li>Go to the storage account > <strong>Access control (IAM)</strong> > <strong>Add role assignment</strong></li>
-<li><strong>Role</strong>: <strong>Storage Blob Data Reader</strong></li>
-<li><strong>Assign to</strong>: your user account</li>
-<li>Open <strong>Containers</strong> > </code>demo-container<code></li>
-<li>In the top toolbar, switch <strong>Authentication method</strong> from <strong>Access key</strong> to <strong>Microsoft Entra user account</strong></li>
-<li>Confirm you can still view </code>sample.txt<code></li></ol>
+<ol><li>Go to the storage account > <strong>Access control (IAM)</strong> > <strong>Add role assignment</strong></li>
+<li><strong>Role</strong>: <strong>Storage Blob Data Reader</strong></li>
+<li><strong>Assign to</strong>: your user account</li>
+<li>Open <strong>Containers</strong> > </code>demo-container<code></li>
+<li>In the top toolbar, switch <strong>Authentication method</strong> from <strong>Access key</strong> to <strong>Microsoft Entra user account</strong></li>
+<li>Confirm you can still view </code>sample.txt<code></li></ol>
 
 <div class='callout-box callout-important'><span class='callout-icon'>❗</span><div class='callout-content'><h4>important</h4><p>This uses your Entra identity + RBAC instead of account keys. This is the most secure approach for production.</p></div></div>
 
-<hr class="divider">
+<p>---</p>
 
-<h2 id="part-5-network-rules">Part 5 – Network rules</h2>
+<h2 id="part-5-network-rules-">Part 5 – Network rules</h2>
 
-<h3 id="restricting-access">Restricting Access</h3>
+<h3 id="restricting-access-">Restricting Access</h3>
 
 <div class='callout-box callout-warning'><span class='callout-icon'>⚠️</span><div class='callout-content'><h4>warning</h4><p>Network rules can lock you out if misconfigured. Always test before deploying to production.</p></div></div>
 
-<h3 id="step-1-enable-network-rules">Step 1: Enable network rules</h3>
+<h3 id="step-1-enable-network-rules-">Step 1: Enable network rules</h3>
 
-<ol><li><strong>Networking</strong> (under <strong>Security + networking</strong>)</li>
-<li><strong>Public network access</strong>: select <strong>Enabled from selected virtual networks and IP addresses</strong></li>
-<li>Under <strong>Firewall</strong>, select <strong>Add your client IP address</strong> to allow-list your current IP</li>
-<li><strong>Save</strong></li></ol>
+<ol><li><strong>Networking</strong> (under <strong>Security + networking</strong>)</li>
+<li><strong>Public network access</strong>: select <strong>Enabled from selected virtual networks and IP addresses</strong></li>
+<li>Under <strong>Firewall</strong>, select <strong>Add your client IP address</strong> to allow-list your current IP</li>
+<li><strong>Save</strong></li></ol>
 
-<h3 id="step-2-test-the-restriction">Step 2: Test the restriction</h3>
+<h3 id="step-2-test-the-restriction-">Step 2: Test the restriction</h3>
 
-<ol><li>Confirm you can still access the storage account (you're on the allow-list)</li>
-<li>Try accessing from a different network/VPN (should fail with 403 Forbidden)</li>
-<li>Observe that having the access key alone is NOT enough—network rules now take precedence</li></ol>
+<ol><li>Confirm you can still access the storage account (you're on the allow-list)</li>
+<li>Try accessing from a different network/VPN (should fail with 403 Forbidden)</li>
+<li>Observe that having the access key alone is NOT enough—network rules now take precedence</li></ol>
 
 <div class='callout-box callout-tip'><span class='callout-icon'>ℹ️</span><div class='callout-content'><h4>tip</h4><p>In production, use Service Endpoints or Private Endpoints instead of IP ranges for more security.</p></div></div>
 
-<h3 id="step-3-revert-for-simplicity">Step 3: Revert for simplicity</h3>
+<h3 id="step-3-revert-for-simplicity-">Step 3: Revert for simplicity</h3>
 
-<ol><li>Go back to <strong>Networking</strong> > <strong>Public network access</strong>: <strong>Enable from all networks</strong></li>
-<li><strong>Save</strong> (to not interfere with other labs)</li></ol>
+<ol><li>Go back to <strong>Networking</strong> > <strong>Public network access</strong>: <strong>Enable from all networks</strong></li>
+<li><strong>Save</strong> (to not interfere with other labs)</li></ol>
 
-<hr class="divider">
+<p>---</p>
 
-<h2 id="part-6-copy-data-with-storage-browser">Part 6 – Copy data with Storage browser</h2>
+<h2 id="part-6-copy-data-with-storage-browser-">Part 6 – Copy data with Storage browser</h2>
 
-<h3 id="step-1-copy-blob-between-containers">Step 1: Copy blob between containers</h3>
+<h3 id="step-1-copy-blob-between-containers-">Step 1: Copy blob between containers</h3>
 
-<ol><li><strong>Storage browser</strong> > <strong>Blob containers</strong> > </code>demo-container<code> > select </code>sample.txt<code></li>
-<li><strong>Copy</strong></li>
-<li>Create a new container </code>demo-container-2<code> (or navigate to an existing empty one)</li>
-<li><strong>Paste</strong>—the blob is now copied</li></ol>
+<ol><li><strong>Storage browser</strong> > <strong>Blob containers</strong> > </code>demo-container<code> > select </code>sample.txt<code></li>
+<li><strong>Copy</strong></li>
+<li>Create a new container </code>demo-container-2<code> (or navigate to an existing empty one)</li>
+<li><strong>Paste</strong>—the blob is now copied</li></ol>
 
 <div class='callout-box callout-tip'><span class='callout-icon'>ℹ️</span><div class='callout-content'><h4>tip</h4><p>This is the Portal equivalent of </code>azcopy<code>. For large data migrations, use AzCopy CLI for speed.</p></div></div>
 
-<h3 id="step-2-download-and-upload">Step 2: Download and upload</h3>
+<h3 id="step-2-download-and-upload-">Step 2: Download and upload</h3>
 
-<ol><li>Select </code>sample.txt<code> > <strong>Download</strong> (pulls to your local machine)</li>
-<li>Modify the file locally</li>
-<li>Go back to <strong>Upload</strong> > upload the modified file</li>
-<li>Confirm the updated file is in the container</li></ol>
+<ol><li>Select </code>sample.txt<code> > <strong>Download</strong> (pulls to your local machine)</li>
+<li>Modify the file locally</li>
+<li>Go back to <strong>Upload</strong> > upload the modified file</li>
+<li>Confirm the updated file is in the container</li></ol>
 
-<hr class="divider">
+<p>---</p>
 
-<h2 id="success-criteria">Success Criteria</h2>
+<h2 id="success-criteria-">Success Criteria</h2>
 
 <p>✓ Storage account created with StorageV2, LRS, Hot tier</p>
 <p>✓ Container, queue, table, and file share all exist</p>
@@ -317,31 +273,31 @@
 <p>✓ Network rule restricts access to allow-listed IPs</p>
 <p>✓ Blob successfully copied between containers</p>
 
-<hr class="divider">
+<p>---</p>
 
-<h2 id="cleanup-if-needed">Cleanup (If Needed)</h2>
+<h2 id="cleanup-if-needed-">Cleanup (If Needed)</h2>
 
 <p></code>`<code>powershell</p>
-<h1>Delete storage account (includes all containers, blobs, queues, tables)</h1>
+<h1>Delete storage account (includes all containers, blobs, queues, tables)</h1>
 <p>Remove-AzStorageAccount -ResourceGroupName "rg-az104-lab04" -Name "stoaz104lab<unique>" -Force</p>
 
-<h1>Delete resource group</h1>
+<h1>Delete resource group</h1>
 <p>Remove-AzResourceGroup -Name "rg-az104-lab04" -Force</p>
 <p></code>``</p>
 
-<hr class="divider">
+<p>---</p>
 
-<h2 id="key-takeaways">Key Takeaways</h2>
+<h2 id="key-takeaways-">Key Takeaways</h2>
 
-<ul><ol><li><strong>LRS</strong> is cheap but not HA. <strong>GRS</strong> replicates to another region for disaster recovery</li>
-<li><strong>SAS tokens</strong> are time-limited and granular—perfect for sharing data without keys</li>
-<li><strong>Network rules</strong> add another layer of security on top of access keys</li>
-<li><strong>Entra ID authentication</strong> is the modern approach—don't rely on access keys in production</li>
-<li><strong>Storage browser</strong> is convenient for small files; use <strong>AzCopy</strong> for bulk data</li></ol></ul>
+<ul><ol><li><strong>LRS</strong> is cheap but not HA. <strong>GRS</strong> replicates to another region for disaster recovery</li>
+<li><strong>SAS tokens</strong> are time-limited and granular—perfect for sharing data without keys</li>
+<li><strong>Network rules</strong> add another layer of security on top of access keys</li>
+<li><strong>Entra ID authentication</strong> is the modern approach—don't rely on access keys in production</li>
+<li><strong>Storage browser</strong> is convenient for small files; use <strong>AzCopy</strong> for bulk data</li></ol></ul>
 
-<hr class="divider">
+<p>---</p>
 
-<h2 id="next-steps">Next Steps</h2>
+<h2 id="next-steps-">Next Steps</h2>
 
 <p>Proceed to Lab 05 to learn about blob security and lifecycle management.</p>
 
