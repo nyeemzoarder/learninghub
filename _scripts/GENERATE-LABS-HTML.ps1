@@ -7,6 +7,33 @@ param(
     [switch]$Verbose
 )
 
+function Format-PowerShellCode {
+    param([string]$code)
+    $code = $code -replace '\b(New-MgUser|Get-MgUser|Set-MgUser|Remove-MgUser|New-AzResource|Get-AzResource)\b', '<span class="function">$1</span>'
+    $code = $code -replace '"([^"]*)"', '<span class="string">"$1"</span>'
+    $code = $code -replace "'([^']*)'", '<span class="string">''$1''</span>'
+    $code = $code -replace '(#.*)', '<span class="comment">$1</span>'
+    $code = $code -replace '\-(\w+)', '<span class="operator">-</span><span class="property">$1</span>'
+    return $code
+}
+
+function Format-BashCode {
+    param([string]$code)
+    $code = $code -replace '"([^"]*)"', '<span class="string">"$1"</span>'
+    $code = $code -replace "'([^']*)'", '<span class="string">''$1''</span>'
+    $code = $code -replace '(#.*)', '<span class="comment">$1</span>'
+    $code = $code -replace '\b(curl|wget|git|docker|az|npm|yarn)\b', '<span class="function">$1</span>'
+    return $code
+}
+
+function Format-JsonCode {
+    param([string]$code)
+    $code = $code -replace '"([^"]*)":\s*', '<span class="property">"$1"</span>: '
+    $code = $code -replace ':\s*"([^"]*)"', ': <span class="string">"$1"</span>'
+    $code = $code -replace '(true|false|null)', '<span class="keyword">$1</span>'
+    return $code
+}
+
 function Convert-MarkdownToHTML {
     param(
         [string]$MarkdownPath,
@@ -77,15 +104,37 @@ function Convert-MarkdownToHTML {
     # Inline code
     $html = [regex]::Replace($html, '`([^`]+?)`', '<code>$1</code>')
 
-    # Code blocks (```...```)
-    $html = [regex]::Replace($html, '```([^`]*?)```', {
+    # Code blocks (```language...```) with professional styling
+    $html = [regex]::Replace($html, '```(\w*)\n(.*?)\n```', {
         param($match)
-        $code = $match.Groups[1].Value.Trim()
+        $lang = $match.Groups[1].Value
+        $code = $match.Groups[2].Value.Trim()
         $escaped = [System.Web.HttpUtility]::HtmlEncode($code)
-        return "<pre><code>$escaped</code></pre>"
+
+        # Apply syntax highlighting for common keywords
+        $highlighted = $escaped
+        if ($lang -match 'powershell|ps1') {
+            $highlighted = Format-PowerShellCode $escaped
+        } elseif ($lang -match 'bash|shell|sh') {
+            $highlighted = Format-BashCode $escaped
+        } elseif ($lang -match 'json') {
+            $highlighted = Format-JsonCode $escaped
+        }
+
+        return "<div class='code-block'><pre>$highlighted</pre></div>"
     }, [System.Text.RegularExpressions.RegexOptions]::Singleline)
 
-    # Blockquote (> ...)
+    # Blockquote with callout type detection (Tip:, Warning:, Important:, Note:)
+    $html = [regex]::Replace($html, '(?m)^> (\*\*)?((Tip|Warning|Important|Note))(\*\*)?:(.+?)$', {
+        param($match)
+        $type = $match.Groups[3].Value.ToLower()
+        $content = $match.Groups[5].Value.Trim()
+        $icons = @{'tip'='ℹ️'; 'warning'='⚠️'; 'important'='❗'; 'note'='📝'}
+        $icon = $icons[$type] ?? 'ℹ️'
+        return "<div class='callout-box callout-$type'><span class='callout-icon'>$icon</span><div class='callout-content'><h4>$type</h4><p>$content</p></div></div>"
+    })
+
+    # Fallback for regular blockquotes
     $html = [regex]::Replace($html, '(?m)^> (.+?)$', '<div class="callout"><p>$1</p></div>')
 
     # Lists (unordered) - Convert markdown list items to li tags
