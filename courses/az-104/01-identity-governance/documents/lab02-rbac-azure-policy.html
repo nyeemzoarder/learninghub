@@ -158,11 +158,25 @@ hr.divider{border:none;height:0;margin:0}
   .layout{display:block}
 }
 </style>
+/* Keyboard Navigation & Accessibility */
+a:focus-visible,
+button:focus-visible,
+.sidebar a:focus-visible,
+.sidebar summary:focus-visible,
+.site-nav summary:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+details:focus-visible > summary {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
 </head>
 <body>
-<nav class="site-nav">
+<nav class="site-nav" aria-label="Main site navigation">
   <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
-  <details class="nav-group">
+  <details class="nav-group" aria-label="Learning module selector">
     <summary>Learning Module</summary>
     <div class="nav-menu">
       <a href="../../00-prerequisites/documents/module-home.html">00 - Prerequisites</a>
@@ -220,6 +234,7 @@ hr.divider{border:none;height:0;margin:0}
 <hr class="divider">
 
 <h2 id="part-1-create-a-resource-group-for-this-lab">Part 1 – Create a resource group for this lab</h2>
+<h3>Create the resource group</h3>
 
 <ol><li>Search for <strong>Resource groups</strong> > <strong>Create</strong>.</li>
 <li><strong>Subscription</strong>: your subscription. <strong>Resource group</strong>: <code>rg-az104-lab02</code>.</li></ol>
@@ -227,6 +242,7 @@ hr.divider{border:none;height:0;margin:0}
 <ol><li>Select <strong>Review + create</strong> > <strong>Create</strong>.</li></ol>
 
 <h2 id="part-2-assign-built-in-roles">Part 2 – Assign built-in roles</h2>
+<h3>Assign roles at different scopes</h3>
 
 <ol><li>Go to <strong>rg-az104-lab02</strong> > <strong>Access control (IAM)</strong> > <strong>Add</strong> > <strong>Add role assignment</strong>.</li>
 <li>Role tab: select <strong>Reader</strong>. Select <strong>Next</strong>.</li>
@@ -241,6 +257,7 @@ hr.divider{border:none;height:0;margin:0}
 <p><strong>Role assignments</strong> tab and filter as needed.</p>
 
 <h2 id="part-3-create-a-custom-role">Part 3 – Create a custom role</h2>
+<h3>Define permissions</h3>
 
 <ol><li>Go to the subscription (or <code>rg-az104-lab02</code>) > <strong>Access control (IAM)</strong> ></li></ol>
 <p><strong>Add</strong> > <strong>Add custom role</strong>.</p>
@@ -267,6 +284,7 @@ hr.divider{border:none;height:0;margin:0}
 <p>it to </code>carol@<yourtenant>.onmicrosoft.com<code> at the </code>rg-az104-lab02<code> scope.</p>
 
 <h2 id="part-4-azure-policy-deny-resources-without-a-tag">Part 4 – Azure Policy: deny resources without a tag</h2>
+<h3>Create the policy assignment</h3>
 
 <ol><li>Search for <strong>Policy</strong> > <strong>Definitions</strong> > search the built-in definition</li></ol>
 <p><strong>"Require a tag on resource groups"</strong>.</p>
@@ -282,6 +300,7 @@ hr.divider{border:none;height:0;margin:0}
 <p>do not proceed past this point.</p>
 
 <h2 id="part-5-azure-policy-allowed-locations-initiative">Part 5 – Azure Policy: allowed locations initiative</h2>
+<h3>Assign the initiative</h3>
 
 <ol><li><strong>Policy</strong> > <strong>Assignments</strong> > <strong>Assign initiative</strong> > search <strong>"Allowed locations"</strong>.</li>
 <li><strong>Scope</strong>: </code>rg-az104-lab02<code>. <strong>Parameters</strong> tab: <strong>Allowed locations</strong> =</li></ol>
@@ -292,6 +311,7 @@ hr.divider{border:none;height:0;margin:0}
 <p>step should report a policy violation and block creation.</p>
 
 <h2 id="part-6-review-compliance">Part 6 – Review compliance</h2>
+<h3>Check policy compliance</h3>
 
 <ol><li><strong>Policy</strong> > <strong>Compliance</strong> — review the compliance state for your assignments</li></ol>
 <p>(state may take a few minutes to evaluate after assignment).</p>

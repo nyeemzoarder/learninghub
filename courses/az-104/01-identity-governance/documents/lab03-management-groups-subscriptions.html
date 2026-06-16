@@ -158,11 +158,25 @@ hr.divider{border:none;height:0;margin:0}
   .layout{display:block}
 }
 </style>
+/* Keyboard Navigation & Accessibility */
+a:focus-visible,
+button:focus-visible,
+.sidebar a:focus-visible,
+.sidebar summary:focus-visible,
+.site-nav summary:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+details:focus-visible > summary {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
 </head>
 <body>
-<nav class="site-nav">
+<nav class="site-nav" aria-label="Main site navigation">
   <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
-  <details class="nav-group">
+  <details class="nav-group" aria-label="Learning module selector">
     <summary>Learning Module</summary>
     <div class="nav-menu">
       <a href="../../00-prerequisites/documents/module-home.html">00 - Prerequisites</a>
@@ -220,6 +234,7 @@ hr.divider{border:none;height:0;margin:0}
 <hr class="divider">
 
 <h2 id="part-1-create-a-management-group-hierarchy">Part 1 – Create a management group hierarchy</h2>
+<h3>Set up the hierarchy structure</h3>
 
 <ol><li>Search for <strong>Management groups</strong>.</li>
 <li>Select <strong>Add management group</strong>. Set <strong>Management group ID</strong> to <code>mg-contoso</code></li></ol>
@@ -238,6 +253,7 @@ hr.divider{border:none;height:0;margin:0}
 <p></code>`<code></p>
 
 <h2 id="part-2-move-your-subscription-under-mg-sandbox">Part 2 – Move your subscription under mg-sandbox</h2>
+<h3>Complete the subscription move</h3>
 
 <ol><li><strong>Management groups</strong> > select </code>mg-sandbox<code> > <strong>Subscriptions</strong> tab.</li>
 <li>Select <strong>Add subscription</strong>, choose your subscription from the list, and</li></ol>
@@ -246,6 +262,7 @@ hr.divider{border:none;height:0;margin:0}
 <div class="callout"><p>Policies/RBAC assigned at </code>mg-contoso<code> or </code>mg-sandbox<code> now apply to this subscription.</p></div>
 
 <h2 id="part-3-resource-groups-and-tagging-strategy">Part 3 – Resource groups and tagging strategy</h2>
+<h3>Create a resource group with tags</h3>
 
 <ol><li>Search for <strong>Resource groups</strong> > <strong>Create</strong>.</li>
 <li><strong>Resource group</strong>: </code>rg-az104-lab03<code>. <strong>Region</strong>: </code>East US<code>.</li>
@@ -260,6 +277,7 @@ hr.divider{border:none;height:0;margin:0}
 <p>the name-value pairs > <strong>Save</strong>.</p>
 
 <h2 id="part-4-resource-locks">Part 4 – Resource locks</h2>
+<h3>Apply and test locks</h3>
 
 <ol><li>Open </code>rg-az104-lab03<code> > <strong>Locks</strong> (under <strong>Settings</strong>).</li>
 <li>Select <strong>Add</strong>. <strong>Lock name</strong>: </code>lock-no-delete<code>. <strong>Lock type</strong>: <strong>Delete</strong></li></ol>
@@ -276,6 +294,7 @@ hr.divider{border:none;height:0;margin:0}
 <p>interfere with other labs.</p>
 
 <h2 id="part-5-cost-management-basics">Part 5 – Cost Management basics</h2>
+<h3>Set up cost monitoring</h3>
 
 <ol><li>Go to <strong>Cost Management + Billing</strong> > <strong>Cost analysis</strong>. Filter by</li></ol>
 <p></code>rg-az104-lab03<code> using the <strong>Resource group</strong> filter.</p>

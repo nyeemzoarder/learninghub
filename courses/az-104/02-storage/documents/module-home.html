@@ -164,12 +164,27 @@ hr.divider{border:none;height:0;margin:0}
   .sidebar{display:none}
   .layout{display:block}
 }
+
+/* Keyboard Navigation & Accessibility */
+a:focus-visible,
+button:focus-visible,
+.sidebar a:focus-visible,
+.sidebar summary:focus-visible,
+.site-nav summary:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+details:focus-visible > summary {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
 </style>
 </head>
 <body>
-<nav class="site-nav">
+<nav class="site-nav" aria-label="Main site navigation">
   <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
-  <details class="nav-group">
+  <details class="nav-group" aria-label="Learning module selector">
     <summary>Learning Module</summary>
     <div class="nav-menu">
       <a href="../../00-prerequisites/documents/module-home.html">00 - Prerequisites</a>
@@ -182,13 +197,13 @@ hr.divider{border:none;height:0;margin:0}
   </details>
 </nav>
 <div class="layout">
-  <aside class="sidebar">
-    <details open>
+  <aside class="sidebar" aria-label="Page navigation">
+    <details open aria-label="Module concepts">
       <summary>▶ Module Concepts</summary>
       <div>
       </div>
     </details>
-    <details>
+    <details aria-label="Module labs">
       <summary>▶ Labs</summary>
       <div>
         <a href="lab04-storage-accounts.html">Lab 04 - Storage Accounts</a>
@@ -196,7 +211,7 @@ hr.divider{border:none;height:0;margin:0}
         <a href="lab06-azure-files-file-sync.html">Lab 06 - Azure Files & File Sync</a>
       </div>
     </details>
-    <details>
+    <details aria-label="On this page">
       <summary>▶ On This Page</summary>
       <div>
         <a href="#overview">Overview</a>

@@ -145,6 +145,22 @@ hr.divider{border:none;height:0;margin:0}
 .sidebar summary:hover{background:#f0f4ff}
 .sidebar a{display:block;padding:8px 12px;margin:2px 0;border-radius:8px;font-size:.88rem;font-weight:500;
   color:var(--text);border-bottom:none;border-left:3px solid transparent;line-height:1.4;transition:all 0.15s}
+.sidebar summary { transition: background 0.2s; }
+
+/* Keyboard Navigation & Accessibility */
+a:focus-visible,
+button:focus-visible,
+.sidebar a:focus-visible,
+.sidebar summary:focus-visible,
+.site-nav summary:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+details:focus-visible > summary {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
 .sidebar a:hover{background:#eef2ff;color:#1e2a78}
 .sidebar a.active{background:#eef2ff;color:#1735ad;font-weight:700;border-left-color:var(--primary)}
 .sidebar details > div{padding:0 0 8px 12px}
@@ -160,9 +176,9 @@ hr.divider{border:none;height:0;margin:0}
 </style>
 </head>
 <body>
-<nav class="site-nav">
+<nav class="site-nav" aria-label="Main site navigation">
   <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
-  <details class="nav-group">
+  <details class="nav-group" aria-label="Learning module selector">
     <summary>Learning Module</summary>
     <div class="nav-menu">
       <a href="../../00-prerequisites/documents/module-home.html">00 - Prerequisites</a>
@@ -224,6 +240,7 @@ hr.divider{border:none;height:0;margin:0}
 <hr class="divider">
 
 <h2 id="part-1-create-two-vnets-non-overlapping-address-spaces">Part 1 – Create two VNets (non-overlapping address spaces)</h2>
+<h3>Create VNets</h3>
 
 <ol><li>Search for <strong>Virtual networks</strong> > <strong>Create</strong>.</li></ol>
 <p>- <strong>Resource group</strong>: <strong>Create new</strong> <code>rg-az104-lab14</code></p>
@@ -238,6 +255,7 @@ hr.divider{border:none;height:0;margin:0}
 <p>- <strong>Create</strong>.</p>
 
 <h2 id="part-2-create-vnet-peering-both-directions">Part 2 – Create VNet peering (both directions)</h2>
+<h3>Configure peering</h3>
 
 <ol><li>Go to <strong>vnet-hub14</strong> > <strong>Peerings</strong> (under <strong>Settings</strong>) > <strong>+ Add</strong>.</li>
 <li><strong>Add peering</strong>:</li></ol>
@@ -257,6 +275,7 @@ hr.divider{border:none;height:0;margin:0}
 <p>Both peerings should now show <strong>Connected</strong> status.</p>
 
 <h2 id="part-3-test-connectivity">Part 3 – Test connectivity</h2>
+<h3>Verify peering works</h3>
 
 <ol><li>Create two VMs:</li></ol>
 <p>- <strong>Virtual machines</strong> > <strong>Create</strong> > <code>vm-hub</code>, <strong>Ubuntu 22.04 LTS</strong>,</p>
@@ -269,6 +288,7 @@ hr.divider{border:none;height:0;margin:0}
 <p>IPs, no public exposure needed).</p>
 
 <h2 id="part-4-peering-options-gateway-transit-forwarded-traffic">Part 4 – Peering options: gateway transit & forwarded traffic</h2>
+<h3>Configure advanced peering settings</h3>
 
 <ol><li>Go to </strong>hub-to-spoke<strong> peering > </strong>Edit peering<strong>:</li></ol>
 <p>- </strong>Allow forwarded traffic<strong>: </strong>Checked<strong> (lets traffic NOT originating in</p>
@@ -284,6 +304,7 @@ hr.divider{border:none;height:0;margin:0}
 <div class="callout"><p>transit + an NVA).</p></div>
 
 <h2 id="part-5-optional-site-to-site-vpn-gateway">Part 5 – (Optional) Site-to-Site VPN Gateway</h2>
+<h3>Set up VPN connectivity</h3>
 
 <p>This part provisions a real gateway — </strong>expensive and slow (~30 min)<strong>. Only</p>
 <p>do this if you want hands-on VPN experience; otherwise read through for concepts.</p>

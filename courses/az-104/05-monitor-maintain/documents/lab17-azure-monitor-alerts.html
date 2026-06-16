@@ -148,12 +148,30 @@ hr.divider{border:none;height:0;margin:0}
   .sidebar{display:none}
   .layout{display:block}
 }
+
+.sidebar a { transition: all 0.15s; }
+.sidebar summary { transition: background 0.2s; }
+
+/* Keyboard Navigation & Accessibility */
+a:focus-visible,
+button:focus-visible,
+.sidebar a:focus-visible,
+.sidebar summary:focus-visible,
+.site-nav summary:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+details:focus-visible > summary {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
 </style>
 </head>
 <body>
-<nav class="site-nav">
+<nav class="site-nav" aria-label="Main site navigation">
   <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
-  <details class="nav-group">
+  <details class="nav-group" aria-label="Learning module selector">
     <summary>Learning Module</summary>
     <div class="nav-menu">
       <a href="../../00-prerequisites/documents/module-home.html">00 - Prerequisites</a>
@@ -205,6 +223,7 @@ hr.divider{border:none;height:0;margin:0}
 <hr class="divider">
 
 <h2 id="part-1-setup-log-analytics-workspace">Part 1 – Setup: Log Analytics workspace</h2>
+<h3>Create workspace</h3>
 
 <ol><li>Search for <strong>Log Analytics workspaces</strong> > <strong>Create</strong>.</li>
 <li><strong>Basics</strong>:</li></ol>
@@ -214,6 +233,7 @@ hr.divider{border:none;height:0;margin:0}
 <p>- <strong>Create</strong>.</p>
 
 <h2 id="part-2-diagnostic-settings">Part 2 – Diagnostic settings</h2>
+<h3>Configure diagnostics</h3>
 
 <p>Send metrics/logs to the Log Analytics workspace:</p>
 
@@ -233,6 +253,7 @@ hr.divider{border:none;height:0;margin:0}
 <p>Diagnostic data now flows from the storage account to Log Analytics.</p>
 
 <h2 id="part-3-vm-insights-monitoring-on-a-vm">Part 3 – VM Insights (monitoring on a VM)</h2>
+<h3>Enable VM monitoring</h3>
 
 <ol><li>Create a VM:</li></ol>
 <p>- <strong>Virtual machines</strong> > <strong>Create</strong> > <code>vm-monitor01</code>, <strong>Ubuntu 22.04 LTS</strong>,</p>
@@ -247,6 +268,7 @@ hr.divider{border:none;height:0;margin:0}
 <p>After a few minutes, performance data (CPU, memory, disk) flows into Log Analytics.</p>
 
 <h2 id="part-4-kql-queries">Part 4 – KQL queries</h2>
+<h3>Query logs with KQL</h3>
 
 <ol><li>Go to <strong>law-az104lab17</strong> > <strong>Logs</strong> (under <strong>General</strong>).</li>
 <li>Run a query:</li></ol>
@@ -269,6 +291,7 @@ hr.divider{border:none;height:0;margin:0}
 <p>This aggregates CPU usage by 5-minute bins.</p>
 
 <h2 id="part-5-action-group">Part 5 – Action group</h2>
+<h3>Create action group</h3>
 
 <ol><li>Search for <strong>Action groups</strong> > <strong>Create</strong>.</li>
 <li><strong>Basics</strong>:</li></ol>
@@ -283,6 +306,7 @@ hr.divider{border:none;height:0;margin:0}
 <ol><li><strong>Review + create</strong> > <strong>Create</strong>.</li></ol>
 
 <h2 id="part-6-metric-alert">Part 6 – Metric alert</h2>
+<h3>Create alert rule</h3>
 
 <ol><li>Search for <strong>Alert rules</strong> > <strong>Create</strong> > <strong>Alert rule</strong>.</li>
 <li><strong>Condition</strong>:</li></ol>

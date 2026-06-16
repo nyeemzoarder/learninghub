@@ -148,12 +148,30 @@ hr.divider{border:none;height:0;margin:0}
   .sidebar{display:none}
   .layout{display:block}
 }
+
+.sidebar a { transition: all 0.15s; }
+.sidebar summary { transition: background 0.2s; }
+
+/* Keyboard Navigation & Accessibility */
+a:focus-visible,
+button:focus-visible,
+.sidebar a:focus-visible,
+.sidebar summary:focus-visible,
+.site-nav summary:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+details:focus-visible > summary {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
 </style>
 </head>
 <body>
-<nav class="site-nav">
+<nav class="site-nav" aria-label="Main site navigation">
   <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
-  <details class="nav-group">
+  <details class="nav-group" aria-label="Learning module selector">
     <summary>Learning Module</summary>
     <div class="nav-menu">
       <a href="../../00-prerequisites/documents/module-home.html">00 - Prerequisites</a>
@@ -204,6 +222,7 @@ hr.divider{border:none;height:0;margin:0}
 <hr class="divider">
 
 <h2 id="part-1-create-a-file-share">Part 1 – Create a file share</h2>
+<h3>Set up storage resources</h3>
 
 <ol><li>Search for <strong>Resource groups</strong> > <strong>Create</strong>. Name: <code>rg-az104-lab06</code>,</li></ol>
 <p>region: <code>East US</code>. <strong>Review + create</strong> > <strong>Create</strong>.</p>
@@ -216,6 +235,7 @@ hr.divider{border:none;height:0;margin:0}
 <p><strong>Tier</strong>: Transaction optimized. <strong>Create</strong>.</p>
 
 <h2 id="part-2-mount-the-share-from-a-windows-machine">Part 2 – Mount the share from a Windows machine</h2>
+<h3>Connect via SMB</h3>
 
 <ol><li>Open <strong>File shares</strong> > <code>teamshare</code> > <strong>Connect</strong> (top toolbar).</li>
 <li>Select the drive letter (e.g., <code>Z:</code>), choose <strong>Windows</strong>, and the Portal</li></ol>
@@ -232,6 +252,7 @@ hr.divider{border:none;height:0;margin:0}
 <div class="callout"><p>Use Azure VPN/ExpressRoute or Azure File Sync to avoid relying on port 445 over the internet.</p></div>
 
 <h2 id="part-3-snapshots">Part 3 – Snapshots</h2>
+<h3>Create and restore snapshots</h3>
 
 <ol><li>Open <strong>File shares</strong> > </code>teamshare<code> > <strong>Snapshots</strong> (left-hand menu) ></li></ol>
 <p><strong>+ Add snapshot</strong>.</p>
@@ -245,6 +266,7 @@ hr.divider{border:none;height:0;margin:0}
 <p>to listing share snapshots.</p>
 
 <h2 id="part-4-identity-based-access-entra-kerberos-overview">Part 4 – Identity-based access (Entra Kerberos) — overview</h2>
+<h3>Configure identity-based access</h3>
 
 <ol><li>Open the storage account > <strong>File shares</strong> > <strong>Configuration</strong> (or</li></ol>
 <p>account-level <strong>Data storage</strong> > <strong>File shares</strong> > <strong>Active directory</strong>).</p>
@@ -259,6 +281,7 @@ hr.divider{border:none;height:0;margin:0}
 <ol><li><em>(Full AD DS setup is out of scope for this lab — understand the concept and where it's configured.)</em></li></ol>
 
 <h2 id="part-5-azure-file-sync-conceptual-walkthrough">Part 5 – Azure File Sync (conceptual walkthrough)</h2>
+<h3>Understand Azure File Sync architecture</h3>
 
 <p>Azure File Sync requires a Windows Server VM registered as a "server endpoint" —</p>
 <p>deploying a full sync topology is heavy for a quick lab, so walk through the</p>

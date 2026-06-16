@@ -148,12 +148,30 @@ hr.divider{border:none;height:0;margin:0}
   .sidebar{display:none}
   .layout{display:block}
 }
+
+.sidebar a { transition: all 0.15s; }
+.sidebar summary { transition: background 0.2s; }
+
+/* Keyboard Navigation & Accessibility */
+a:focus-visible,
+button:focus-visible,
+.sidebar a:focus-visible,
+.sidebar summary:focus-visible,
+.site-nav summary:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+details:focus-visible > summary {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
 </style>
 </head>
 <body>
-<nav class="site-nav">
+<nav class="site-nav" aria-label="Main site navigation">
   <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
-  <details class="nav-group">
+  <details class="nav-group" aria-label="Learning module selector">
     <summary>Learning Module</summary>
     <div class="nav-menu">
       <a href="../../00-prerequisites/documents/module-home.html">00 - Prerequisites</a>
@@ -204,6 +222,7 @@ hr.divider{border:none;height:0;margin:0}
 <hr class="divider">
 
 <h2 id="part-1-create-the-resource-group-and-storage-account">Part 1 – Create the resource group and storage account</h2>
+<h3>Set up resources</h3>
 
 <ol><li>Search for <strong>Resource groups</strong> > <strong>Create</strong>. Name: <code>rg-az104-lab04</code>,</li></ol>
 <p>region: <code>East US</code>. <strong>Review + create</strong> > <strong>Create</strong>.</p>
@@ -219,6 +238,7 @@ hr.divider{border:none;height:0;margin:0}
 <li><strong>Review + create</strong> > <strong>Create</strong>.</li></ol>
 
 <h2 id="part-2-explore-redundancy-performance-options">Part 2 – Explore redundancy & performance options</h2>
+<h3>Compare storage options</h3>
 
 <ol><li>Open the storage account > <strong>Redundancy</strong> (under <strong>Data management</strong>).</li></ol>
 <p>Note options: LRS, ZRS, GRS, GZRS, RA-GRS, RA-GZRS.</p>
@@ -229,6 +249,7 @@ hr.divider{border:none;height:0;margin:0}
 <p>to Blob/StorageV2 accounts and can be changed in place.</p>
 
 <h2 id="part-3-containers-blobs-queues-tables-file-shares">Part 3 – Containers, blobs, queues, tables, file shares</h2>
+<h3>Create storage resources</h3>
 
 <ol><li>Open the storage account > <strong>Containers</strong> (under <strong>Data storage</strong>) ></li></ol>
 <p><strong>+ Container</strong>. Name: <code>demo-container</code>. <strong>Public access level</strong>: <strong>Private</strong>.</p>
@@ -240,6 +261,7 @@ hr.divider{border:none;height:0;margin:0}
 <p><code>demo-share</code>, <strong>Quota</strong>: 5 GiB, <strong>Tier</strong>: Transaction optimized.</p>
 
 <h2 id="part-4-access-keys-vs-sas-vs-microsoft-entra-authorization">Part 4 – Access keys vs SAS vs Microsoft Entra authorization</h2>
+<h3>Configure authorization methods</h3>
 
 <ol><li><strong>Access keys</strong> (under <strong>Security + networking</strong>) — note there are two</li></ol>
 <p>keys (<code>key1</code>/<code>key2</code>) so you can rotate one while the other is still in use.</p>
@@ -263,6 +285,7 @@ hr.divider{border:none;height:0;margin:0}
 <p>uses your Entra identity + RBAC instead of the account key.</p>
 
 <h2 id="part-5-network-rules">Part 5 – Network rules</h2>
+<h3>Restrict network access</h3>
 
 <ol><li><strong>Networking</strong> (under <strong>Security + networking</strong>) > <strong>Public network access</strong>:</li></ol>
 <p>select <strong>Enabled from selected virtual networks and IP addresses</strong>.</p>
@@ -274,6 +297,7 @@ hr.divider{border:none;height:0;margin:0}
 <ol><li>Re-enable <strong>All networks</strong> for lab simplicity afterward.</li></ol>
 
 <h2 id="part-6-copying-data-with-the-storage-browser">Part 6 – Copying data with the Storage browser</h2>
+<h3>Use storage browser tools</h3>
 
 <ol><li>Open the storage account > <strong>Storage browser</strong> > <strong>Blob containers</strong> ></li></ol>
 <p><code>demo-container</code>.</p>

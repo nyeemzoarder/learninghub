@@ -148,12 +148,30 @@ hr.divider{border:none;height:0;margin:0}
   .sidebar{display:none}
   .layout{display:block}
 }
+
+.sidebar a { transition: all 0.15s; }
+.sidebar summary { transition: background 0.2s; }
+
+/* Keyboard Navigation & Accessibility */
+a:focus-visible,
+button:focus-visible,
+.sidebar a:focus-visible,
+.sidebar summary:focus-visible,
+.site-nav summary:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+details:focus-visible > summary {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
 </style>
 </head>
 <body>
-<nav class="site-nav">
+<nav class="site-nav" aria-label="Main site navigation">
   <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
-  <details class="nav-group">
+  <details class="nav-group" aria-label="Learning module selector">
     <summary>Learning Module</summary>
     <div class="nav-menu">
       <a href="../../00-prerequisites/documents/module-home.html">00 - Prerequisites</a>
@@ -203,6 +221,7 @@ hr.divider{border:none;height:0;margin:0}
 <hr class="divider">
 
 <h2 id="part-1-resource-group-and-network">Part 1 – Resource group and network</h2>
+<h3>Create networking resources</h3>
 
 <ol><li>Search for <strong>Resource groups</strong> > <strong>Create</strong>. Name: <code>rg-az104-lab09</code>,</li></ol>
 <p>region: <code>East US</code>. <strong>Review + create</strong> > <strong>Create</strong>.</p>
@@ -211,6 +230,7 @@ hr.divider{border:none;height:0;margin:0}
 <p><strong>Subnets</strong> tab: <strong>subnet-vms</strong> with range <code>10.40.1.0/24</code>. <strong>Create</strong>.</p>
 
 <h2 id="part-2-availability-set">Part 2 – Availability Set</h2>
+<h3>Create VMs with availability set</h3>
 
 <ol><li>Search for <strong>Availability sets</strong> > <strong>Create</strong>. <strong>Resource group</strong>:</li></ol>
 <p><code>rg-az104-lab09</code>, <strong>Name</strong>: <code>avset-lab09</code>,</p>
@@ -224,6 +244,7 @@ hr.divider{border:none;height:0;margin:0}
 <p>maintenance window and power outage protection within the same datacenter.</p>
 
 <h2 id="part-3-availability-zones">Part 3 – Availability Zones</h2>
+<h3>Deploy VMs across zones</h3>
 
 <ol><li>Create two more Linux VMs, each in a different availability zone:</li></ol>
 <p>- <strong>Virtual machines</strong> > <strong>Create</strong> > <strong>Basics</strong>: <code>vm-zone1</code>, image <strong>Ubuntu</p>
@@ -235,6 +256,7 @@ hr.divider{border:none;height:0;margin:0}
 <div class="callout"><p>they're mutually exclusive. Not all regions/sizes support zones.</p></div>
 
 <h2 id="part-4-virtual-machine-scale-set">Part 4 – Virtual Machine Scale Set</h2>
+<h3>Create a scale set</h3>
 
 <ol><li>Search for <strong>Virtual machine scale sets</strong> > <strong>Create</strong>.</li>
 <li><strong>Basics</strong> tab:</li></ol>
@@ -254,6 +276,7 @@ hr.divider{border:none;height:0;margin:0}
 <li><strong>Review + create</strong> > <strong>Create</strong>.</li></ol>
 
 <h2 id="part-5-autoscale-rules">Part 5 – Autoscale rules</h2>
+<h3>Configure autoscaling</h3>
 
 <ol><li>Go to <strong>vmss-lab09</strong> > <strong>Scaling</strong> (under <strong>Settings</strong>) > <strong>Configure</li></ol>
 <p>autoscale</strong> (or go to <strong>Monitor</strong> > <strong>Autoscale settings</strong> for the VMSS</p>
@@ -274,6 +297,7 @@ hr.divider{border:none;height:0;margin:0}
 <ol><li><strong>Save</strong>.</li></ol>
 
 <h2 id="part-6-manual-scale-instance-management">Part 6 – Manual scale & instance management</h2>
+<h3>Control scale set manually</h3>
 
 <ol><li>Go to <strong>vmss-lab09</strong> > <strong>Scaling</strong> > set <strong>Custom autoscale</strong> to <strong>Off</strong></li></ol>
 <p>(to control manually), then set <strong>Instance count</strong> to 3 > <strong>Save</strong>.</p>

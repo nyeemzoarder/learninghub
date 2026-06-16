@@ -157,12 +157,27 @@ hr.divider{border:none;height:0;margin:0}
   .sidebar{display:none}
   .layout{display:block}
 }
+
+/* Keyboard Navigation & Accessibility */
+a:focus-visible,
+button:focus-visible,
+.sidebar a:focus-visible,
+.sidebar summary:focus-visible,
+.site-nav summary:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+details:focus-visible > summary {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
 </style>
 </head>
 <body>
-<nav class="site-nav">
+<nav class="site-nav" aria-label="Main site navigation">
   <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
-  <details class="nav-group">
+  <details class="nav-group" aria-label="Learning module selector">
     <summary>Learning Module</summary>
     <div class="nav-menu">
       <a href="../../00-prerequisites/documents/module-home.html" class="active">00 - Prerequisites</a>
@@ -175,8 +190,8 @@ hr.divider{border:none;height:0;margin:0}
   </details>
 </nav>
 <div class="layout">
-  <aside class="sidebar">
-    <details open>
+  <aside class="sidebar" aria-label="Page navigation">
+    <details open aria-label="Module concepts">
       <summary>▶ Module 00 - Prerequisites</summary>
       <div>
         <a href="01-cloud-computing-fundamentals.html">01 - Cloud Computing Fundamentals</a>
@@ -185,13 +200,13 @@ hr.divider{border:none;height:0;margin:0}
         <a href="04-azure-portal-navigation.html">04 - Azure Portal Navigation</a>
       </div>
     </details>
-    <details>
+    <details aria-label="Module labs">
       <summary>▶ Labs</summary>
       <div>
         <a href="lab00-azure-portal-navigation.html">Lab 00 - Portal Navigation</a>
       </div>
     </details>
-    <details>
+    <details aria-label="On this page">
       <summary>▶ On This Page</summary>
       <div>
         <a href="#ip-addresses-and-cidr-notation">IP Addresses &amp; CIDR</a>

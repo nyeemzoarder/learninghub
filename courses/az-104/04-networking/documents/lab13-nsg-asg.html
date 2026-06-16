@@ -149,6 +149,22 @@ hr.divider{border:none;height:0;margin:0}
 .sidebar a.active{background:#eef2ff;color:#1735ad;font-weight:700;border-left-color:var(--primary)}
 .sidebar details > div{padding:0 0 8px 12px}
 .sidebar hr.sidebar-divider{border:none;border-top:1px solid var(--border);margin:12px 0}
+
+/* Keyboard Navigation & Accessibility */
+a:focus-visible,
+button:focus-visible,
+.sidebar a:focus-visible,
+.sidebar summary:focus-visible,
+.site-nav summary:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+details:focus-visible > summary {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
 @media print{
   .site-nav{display:none}
   body{background:#fff}
@@ -160,9 +176,9 @@ hr.divider{border:none;height:0;margin:0}
 </style>
 </head>
 <body>
-<nav class="site-nav">
+<nav class="site-nav" aria-label="Main site navigation">
   <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
-  <details class="nav-group">
+  <details class="nav-group" aria-label="Learning module selector">
     <summary>Learning Module</summary>
     <div class="nav-menu">
       <a href="../../00-prerequisites/documents/module-home.html">00 - Prerequisites</a>
@@ -225,6 +241,7 @@ hr.divider{border:none;height:0;margin:0}
 <hr class="divider">
 
 <h2 id="part-1-setup">Part 1 – Setup</h2>
+<h3>Create resources</h3>
 
 <ol><li>Search for <strong>Resource groups</strong> > <strong>Create</strong>. Name: <code>rg-az104-lab13</code>,</li></ol>
 <p>region: <code>East US</code>. <strong>Review + create</strong> > <strong>Create</strong>.</p>
@@ -237,6 +254,7 @@ hr.divider{border:none;height:0;margin:0}
 <p>- Repeat for <code>vm-web02</code>.</p>
 
 <h2 id="part-2-create-an-nsg-and-rules">Part 2 – Create an NSG and rules</h2>
+<h3>Define security rules</h3>
 
 <ol><li>Search for <strong>Network security groups</strong> > <strong>Create</strong>.</li></ol>
 <p>- <strong>Resource group</strong>: <code>rg-az104-lab13</code></p>
@@ -273,6 +291,7 @@ hr.divider{border:none;height:0;margin:0}
 <p>- <strong>Add</strong></p>
 
 <h2 id="part-3-associate-nsg-to-subnet">Part 3 – Associate NSG to subnet</h2>
+<h3>Apply NSG to subnet</h3>
 
 <ol><li>Go to <strong>nsg-web</strong> > <strong>Subnets</strong> > <strong>+ Associate</strong>.</li>
 <li>Select <code>vnet-lab13</code> / <code>subnet-web</code> > <strong>OK</strong>.</li></ol>
@@ -280,6 +299,7 @@ hr.divider{border:none;height:0;margin:0}
 <p>The NSG is now applied at the subnet level, affecting all VMs in that subnet.</p>
 
 <h2 id="part-4-application-security-groups">Part 4 – Application Security Groups</h2>
+<h3>Use ASGs for rule management</h3>
 
 <ol><li>Search for <strong>Application security groups</strong> > <strong>Create</strong>.</li></ol>
 <p>- <strong>Resource group</strong>: <code>rg-az104-lab13</code></p>
@@ -307,6 +327,7 @@ hr.divider{border:none;height:0;margin:0}
 <p>without needing to hardcode IP addresses.</p>
 
 <h2 id="part-5-effective-security-rules-ip-flow-verify">Part 5 – Effective security rules & IP flow verify</h2>
+<h3>Diagnose security rules</h3>
 
 <ol><li>Go to </strong>vm-web01<strong> > </strong>Networking<strong> > select the NIC > </strong>Network Watcher<strong></li></ol>
 <p>(or search </strong>Network Watcher<strong>) > </strong>Effective security rules<strong> to see the</p>
@@ -323,6 +344,7 @@ hr.divider{border:none;height:0;margin:0}
 <ol><li>Repeat with port 22 from a non-allowed source IP — expect </strong>Deny<strong>.</li></ol>
 
 <h2 id="part-6-rule-priority-evaluation-order">Part 6 – Rule priority & evaluation order</h2>
+<h3>Understand rule evaluation</h3>
 
 <p>Discuss (no need to execute):</p>
 <ul><ol><li>Rules evaluated in </strong>priority order<strong> (100–4096, lower number = higher</li></ol></ul>
