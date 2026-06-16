@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 01 Labs – Identity &amp; Governance - AZ-104 Labs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f8fc;--card:#fff;--border:#d9e0ef;--text:#1f2937;--muted:#5b6678;
+  --primary:#151d63;--panel:#00004C;--panel-shadow:rgba(0,0,76,.18);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:Inter,-apple-system,'Segoe UI',sans-serif;color:var(--text)}
+.page{flex:1;min-width:0;padding:28px}
+
+h1{font-size:3.2rem;line-height:1.15;margin:0;color:var(--primary);font-weight:800;letter-spacing:-1px}
+.subtitle{font-size:1.4rem;font-weight:600;color:#2d3b77;margin-top:10px}
+
+.badges{display:flex;gap:12px;margin:20px 0 26px;flex-wrap:wrap}
+.badge{background:#eef2ff;border:1px solid #d8def7;color:#1e2a78;padding:10px 18px;border-radius:999px;font-weight:600;font-size:.95rem}
+
+.section{display:grid;grid-template-columns:42% 58%;gap:28px;padding:26px 0;border-top:1px solid var(--border)}
+.section.full{display:block;padding:26px 0;border-top:1px solid var(--border)}
+.section:first-of-type, .section.full:first-of-type{border-top:none}
+
+h2{font-size:2rem;margin:0 0 14px;color:var(--primary);font-weight:800}
+h3{font-size:1.4rem;margin:22px 0 10px;color:var(--primary);font-weight:700}
+h3:first-child{margin-top:0}
+h4{font-size:1.1rem;margin:16px 0 8px;color:#2d3b77;font-weight:700}
+
+p{font-size:1.05rem;line-height:1.65;margin:.5rem 0;color:var(--text)}
+
+ul, ol{margin:.6rem 0;padding-left:1.4rem}
+li{margin-bottom:6px;line-height:1.6;font-size:1.02rem}
+
+a{color:#1e2a78;text-decoration:none;border-bottom:1px solid transparent;font-weight:600}
+a:hover{border-bottom-color:#1e2a78}
+
+strong{color:var(--primary);font-weight:700}
+
+code{background:#eef2ff;color:#1735ad;padding:2px 6px;border-radius:6px;font:13px/1.4 'SF Mono',Consolas,'Courier New',monospace}
+th code,td code{font-size:.92em}
+
+.callout{margin-top:20px;background:#f3f7ff;border:1px solid #bfd0ff;border-radius:14px;padding:18px 22px}
+.callout strong{color:#1735ad}
+.callout p{margin:0}
+.callout p + p{margin-top:8px}
+
+.panel{
+  background:var(--panel);
+  color:#fff;border-radius:18px;padding:22px 26px;
+  box-shadow:0 12px 28px var(--panel-shadow);
+  font:15px/1.65 'SF Mono',Consolas,'Courier New',monospace;
+  white-space:pre-wrap;
+  overflow:auto;
+}
+.panel.small{font-size:13.5px;line-height:1.6}
+.panel + .panel{margin-top:18px}
+
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:14px 0}
+th,td{padding:14px;border:1px solid var(--border);text-align:left;font-size:.98rem}
+th{background:#eef2ff;color:var(--primary);font-weight:700}
+tr:hover td{background:#fafbff}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+
+.mistake-card{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:14px 0 8px}
+.mistake-card h4{margin-top:0}
+
+.tip{margin-top:20px;background:#eef4ff;border:1px solid #c8d5ff;border-radius:12px;padding:16px 20px;font-size:1.02rem}
+.tip strong{color:#1735ad}
+
+hr.divider{border:none;height:0;margin:0}
+
+.footer{margin-top:48px;padding-top:24px;border-top:1px solid var(--border);font-size:.9rem;color:var(--muted)}
+.footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px}
+.footer-item strong{display:block;color:var(--primary);margin-bottom:6px;font-size:.95rem}
+.footer-meta{margin-top:24px;padding-top:16px;border-top:1px solid var(--border);text-align:center;font-size:.85rem}
+
+@media (max-width:1000px){
+  .section,.grid2,.grid3,.grid4,.mistake-card{grid-template-columns:1fr}
+  h1{font-size:2.3rem}
+  .page{padding:16px}
+  .panel{font-size:13px}
+  .sidebar{display:none}
+  .layout{display:block}
+}
+
+/* ===== Site-wide Cross Navigation ===== */
+.site-nav{
+  position:sticky;top:0;z-index:1000;
+  background:var(--primary);color:#fff;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:12px 28px;font-size:.92rem;
+  box-shadow:0 2px 10px rgba(0,0,76,.18);
+  font-family:Inter,-apple-system,'Segoe UI',sans-serif;
+}
+.site-nav .nav-brand{font-weight:800;font-size:1.05rem;margin-right:auto;color:#fff}
+.site-nav details{position:relative}
+.site-nav summary{cursor:pointer;list-style:none;padding:7px 16px;border-radius:8px;background:rgba(255,255,255,.12);font-weight:600;color:#fff;user-select:none}
+.site-nav summary::-webkit-details-marker,.site-nav summary::marker{display:none;content:''}
+.site-nav details[open] summary{background:rgba(255,255,255,.24)}
+.site-nav .nav-menu{
+  position:absolute;top:calc(100% + 8px);left:0;
+  background:#fff;color:var(--text);
+  border:1px solid var(--border);border-radius:12px;
+  padding:8px;min-width:300px;box-shadow:0 16px 32px rgba(0,0,76,.22);
+  display:flex;flex-direction:column;gap:2px;z-index:1001;
+}
+.site-nav .nav-menu a{
+  display:block;padding:9px 14px;border-radius:8px;border-bottom:none;
+  color:var(--text);font-weight:500;font-size:.95rem;
+}
+.site-nav .nav-menu a:hover{background:#eef2ff;color:#1e2a78}
+.site-nav .nav-menu a.active{background:#eef2ff;color:#1735ad;font-weight:700}
+@media (max-width:768px){
+  .site-nav{padding:10px 16px}
+  .site-nav .nav-brand{font-size:.95rem}
+}
+/* ===== Page Sidebar (On This Page) ===== */
+.layout{max-width:1400px;margin:auto;display:flex;align-items:flex-start}
+.sidebar{
+  flex:0 0 260px;
+  position:sticky;top:88px;
+  max-height:calc(100vh - 108px);
+  overflow-y:auto;
+  margin:28px 0 28px 28px;
+  padding:20px 18px;
+  background:#fff;border:1px solid var(--border);border-radius:14px;
+  box-shadow:0 4px 16px rgba(21,29,99,.05);
+}
+.sidebar .toc-title{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 12px;padding:0 12px}
+.sidebar hr.sidebar-divider{border:none;border-top:1px solid var(--border);margin:14px 0}
+.sidebar .toc-title.module-title{margin-top:0}
+.sidebar a{display:block;padding:8px 12px;margin-bottom:2px;border-radius:8px;font-size:.88rem;font-weight:500;color:var(--text);border-bottom:none;border-left:3px solid transparent;line-height:1.4}
+.sidebar a:hover{background:#eef2ff;color:#1e2a78}
+.sidebar a.active{background:#eef2ff;color:#1735ad;font-weight:700;border-left-color:var(--primary)}
+@media print{
+  .site-nav{display:none}
+  body{background:#fff}
+  .page{padding:0}
+  .panel{box-shadow:none}
+  .sidebar{display:none}
+  .layout{display:block}
+}
+
+/* ===== Lab Card Styles ===== */
+.lab-card{
+  background:#fff;border:1px solid var(--border);border-radius:14px;
+  padding:24px;box-shadow:0 4px 16px rgba(21,29,99,.05);
+  transition:all .2s ease;display:flex;flex-direction:column;height:100%;
+}
+.lab-card:hover{
+  box-shadow:0 12px 28px rgba(21,29,99,.15);
+  border-color:#1735ad;
+  transform:translateY(-2px);
+}
+.lab-card .lab-number{
+  font-size:.8rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;
+  color:#1735ad;margin-bottom:6px;
+}
+.lab-card h3{
+  margin:0 0 12px;font-size:1.3rem;color:var(--primary);
+}
+.lab-card .lab-meta{
+  display:flex;gap:12px;margin:12px 0;flex-wrap:wrap;
+}
+.lab-card .meta-badge{
+  font-size:.8rem;padding:4px 10px;background:#f3f7ff;border:1px solid #bfd0ff;
+  border-radius:6px;color:#1735ad;font-weight:600;
+}
+.lab-card .difficulty{
+  font-size:.85rem;font-weight:600;margin:12px 0;color:#5b6678;
+}
+.lab-card .difficulty.beginner{color:#10b981}
+.lab-card .difficulty.intermediate{color:#f59e0b}
+.lab-card .difficulty.advanced{color:#ef4444}
+.lab-card p{
+  font-size:.95rem;line-height:1.6;margin:12px 0;color:var(--text);flex-grow:1;
+}
+.lab-card .start-btn{
+  display:inline-block;margin-top:16px;padding:12px 20px;
+  background:linear-gradient(135deg, #1735ad, #1e2a78);color:#fff;
+  border:none;border-radius:8px;font-weight:600;cursor:pointer;
+  text-decoration:none;text-align:center;transition:all .2s ease;
+  font-size:.95rem;
+}
+.lab-card .start-btn:hover{
+  background:linear-gradient(135deg, #1e2a78, #151d63);
+  box-shadow:0 8px 16px rgba(23,53,173,.3);
+  transform:translateY(-1px);
+}
+</style>
+</head>
+<body>
+<nav class="site-nav">
+  <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
+  <details class="nav-group">
+    <summary>Module 00 - Prerequisites</summary>
+    <div class="nav-menu">
+      <a href="../../00-prerequisites/documents/01-cloud-computing-fundamentals.html">01 - Cloud Computing Fundamentals</a>
+      <a href="../../00-prerequisites/documents/02-networking-basics.html">02 - Networking Basics</a>
+      <a href="../../00-prerequisites/documents/03-identity-and-access-fundamentals.html">03 - Identity &amp; Access Fundamentals</a>
+      <a href="../../00-prerequisites/documents/04-azure-portal-navigation.html">04 - Azure Portal Navigation</a>
+    </div>
+  </details>
+  <details class="nav-group">
+    <summary>Module 01 - Identity &amp; Governance</summary>
+    <div class="nav-menu">
+      <a href="01-entra-id-overview.html">01 - Entra ID Overview</a>
+      <a href="02-rbac-fundamentals.html">02 - RBAC Fundamentals</a>
+      <a href="03-management-groups-and-azure-policy.html">03 - Management Groups &amp; Azure Policy</a>
+      <a href="04-access-control-scenarios.html">04 - Access Control Scenarios</a>
+      <a href="05-identity-best-practices.html">05 - Identity Best Practices</a>
+      <a href="labs-index.html" class="active">Labs</a>
+    </div>
+  </details>
+</nav>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="toc-title module-title">Module 01 - Identity &amp; Governance</div>
+    <a href="01-entra-id-overview.html">01 - Entra ID Overview</a>
+    <a href="02-rbac-fundamentals.html">02 - RBAC Fundamentals</a>
+    <a href="03-management-groups-and-azure-policy.html">03 - Management Groups &amp; Azure Policy</a>
+    <a href="04-access-control-scenarios.html">04 - Access Control Scenarios</a>
+    <a href="05-identity-best-practices.html">05 - Identity Best Practices</a>
+    <hr class="sidebar-divider">
+    <div class="toc-title">Labs</div>
+    <a href="lab01-entra-users-groups.html">Lab 01 - Entra Users &amp; Groups</a>
+    <a href="lab02-rbac-azure-policy.html">Lab 02 - RBAC &amp; Azure Policy</a>
+    <a href="lab03-management-groups-subscriptions.html">Lab 03 - Management Groups</a>
+  </aside>
+  <div class="page">
+
+  <h1>Module 01 – Identity &amp; Governance: Hands-On Labs</h1>
+  <div class="subtitle">Practical exercises to master Entra ID, RBAC, and access control</div>
+
+  <div class="badges">
+    <span class="badge">📚 3 Labs</span>
+    <span class="badge">⏱ ~2.5 Hours Total</span>
+    <span class="badge">🎯 Intermediate</span>
+  </div>
+
+  <div class="callout">
+    <strong>Before You Start</strong>
+    <p>Make sure you've read the concept documents (01-05) for this module. Each lab builds on the foundational knowledge, and they're designed to be completed in order. You'll need an Azure subscription with Global Administrator or User Administrator role to complete these labs.</p>
+  </div>
+
+  <!-- Labs Overview -->
+  <div class="section full" id="labs-overview">
+    <h2>Labs Overview</h2>
+    <p>These hands-on labs give you practical experience with the identity and governance concepts from the module. You'll work directly in Azure to create real-world scenarios, delegate permissions, and implement access controls.</p>
+  </div>
+
+  <!-- Lab Cards Grid -->
+  <div class="grid3">
+    <div class="lab-card">
+      <div class="lab-number">Lab 01</div>
+      <h3>Entra ID Users &amp; Groups</h3>
+      <div class="lab-meta">
+        <span class="meta-badge">⏱ 50 min</span>
+        <span class="meta-badge">🟡 Intermediate</span>
+      </div>
+      <p>Create users and groups in Microsoft Entra ID, then use Administrative Units to delegate management permissions to department heads. Learn the critical difference between groups (WHO) and admin units (WHERE).</p>
+      <a href="lab01-entra-users-groups.html" class="start-btn">Start Lab →</a>
+    </div>
+
+    <div class="lab-card">
+      <div class="lab-number">Lab 02</div>
+      <h3>RBAC &amp; Azure Policy</h3>
+      <div class="lab-meta">
+        <span class="meta-badge">⏱ 60 min</span>
+        <span class="meta-badge">🟡 Intermediate</span>
+      </div>
+      <p>Assign role-based access control roles to users and groups at different scopes. Implement Azure Policy to enforce organizational standards and prevent misconfigurations at scale.</p>
+      <a href="lab02-rbac-azure-policy.html" class="start-btn">Start Lab →</a>
+    </div>
+
+    <div class="lab-card">
+      <div class="lab-number">Lab 03</div>
+      <h3>Management Groups &amp; Subscriptions</h3>
+      <div class="lab-meta">
+        <span class="meta-badge">⏱ 40 min</span>
+        <span class="meta-badge">🟡 Intermediate</span>
+      </div>
+      <p>Organize multiple subscriptions with management groups and apply policies at scale. Practice applying role assignments and policies across your entire organizational hierarchy.</p>
+      <a href="lab03-management-groups-subscriptions.html" class="start-btn">Start Lab →</a>
+    </div>
+  </div>
+
+  <!-- Lab Sequence -->
+  <div class="section full" id="recommended-sequence">
+    <h2>Recommended Sequence</h2>
+    <p>Complete the labs in order. Each lab builds on concepts from the previous one:</p>
+    <table>
+      <tr><th>Sequence</th><th>Lab</th><th>Duration</th><th>Key Skills</th></tr>
+      <tr><td>1</td><td><a href="lab01-entra-users-groups.html">Lab 01 – Entra ID Users &amp; Groups</a></td><td>50 min</td><td>User &amp; group management, Admin Units, delegated administration</td></tr>
+      <tr><td>2</td><td><a href="lab02-rbac-azure-policy.html">Lab 02 – RBAC &amp; Azure Policy</a></td><td>60 min</td><td>Role assignments, scope levels, policy definitions, policy effects</td></tr>
+      <tr><td>3</td><td><a href="lab03-management-groups-subscriptions.html">Lab 03 – Management Groups &amp; Subscriptions</a></td><td>40 min</td><td>Subscription organization, hierarchical governance, policy inheritance</td></tr>
+    </table>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-grid">
+      <div class="footer-item">
+        <strong>Azure AZ-104</strong>
+        Hands-On Labs
+      </div>
+      <div class="footer-item">
+        <strong>Module</strong>
+        01 — Identity &amp; Governance
+      </div>
+      <div class="footer-item">
+        <strong>Generated</strong>
+        June 16, 2026
+      </div>
+    </div>
+    <div class="footer-meta">&copy; 2026 — AZ-104 Learning Hub. For study purposes only.</div>
+  </div>
+
+</div>
+</div>
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.sidebar a'));
+  var sections = [];
+  links.forEach(function(a){
+    var el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) sections.push({link:a, el:el});
+  });
+  if (!sections.length || !('IntersectionObserver' in window)) return;
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (!entry.isIntersecting) return;
+      var match = sections.find(function(s){ return s.el === entry.target; });
+      if (!match) return;
+      links.forEach(function(a){ a.classList.remove('active'); });
+      match.link.classList.add('active');
+    });
+  }, { rootMargin: '-100px 0px -70% 0px', threshold: 0 });
+  sections.forEach(function(s){ observer.observe(s.el); });
+})();
+</script>
+</body>
+</html>

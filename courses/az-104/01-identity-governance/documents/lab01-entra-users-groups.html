@@ -171,15 +171,26 @@ hr.divider{border:none;height:0;margin:0}
       <a href="../../01-identity-governance/documents/03-management-groups-and-azure-policy.html">03 - Management Groups &amp; Policy</a>
       <a href="../../01-identity-governance/documents/04-access-control-scenarios.html">04 - Access Control Scenarios</a>
       <a href="../../01-identity-governance/documents/05-identity-best-practices.html">05 - Identity Best Practices</a>
-      <a href="../../01-identity-governance/documents/lab01-entra-users-groups.html">Lab 01 - Entra ID Users</a>
-      <a href="../../01-identity-governance/documents/lab02-rbac-azure-policy.html">Lab 02 - RBAC &amp; Policy</a>
+      <a href="../../01-identity-governance/documents/labs-index.html">Labs</a>
     </div>
   </details>
 </nav>
 <div class="layout">
   <aside class="sidebar">
     <div class="toc-title module-title">Module 01 - Identity &amp; Governance</div>
-    <a href="#real-life-scenario">Real-Life Scenario</a>
+    <a href="01-entra-id-overview.html">01 - Entra ID Overview</a>
+<a href="02-rbac-fundamentals.html">02 - RBAC Fundamentals</a>
+<a href="03-management-groups-and-azure-policy.html">03 - Management Groups &amp; Azure Policy</a>
+<a href="04-access-control-scenarios.html">04 - Access Control Scenarios</a>
+<a href="05-identity-best-practices.html">05 - Identity Best Practices</a>
+<hr class="sidebar-divider">
+<div class="toc-title">Labs</div>
+<a href="lab01-entra-users-groups.html">Lab 01 - Entra Users &amp; Groups</a>
+<a href="lab02-rbac-azure-policy.html">Lab 02 - RBAC &amp; Azure Policy</a>
+<a href="lab03-management-groups-subscriptions.html">Lab 03 - Management Groups</a>
+<hr class="sidebar-divider">
+<div class="toc-title">On This Page</div>
+<a href="#real-life-scenario">Real-Life Scenario</a>
 <a href="#objectives">Objectives</a>
 <a href="#prerequisites">Prerequisites</a>
 <a href="#estimated-time">Estimated Time</a>
@@ -191,56 +202,54 @@ hr.divider{border:none;height:0;margin:0}
 <a href="#validation-checklist">Validation Checklist</a>
 <a href="#cleanup-if-needed">Cleanup (If Needed)</a>
 <a href="#key-takeaways-from-this-lab">Key Takeaways from This Lab</a>
-<hr class="sidebar-divider">
-<div class="toc-title">On This Page</div>
   </aside>
   <div class="page">
   <h1>Lab 01 – Microsoft Entra ID: Users, Groups & Administrative Units</h1>
 
-<h2 id="$(Convert-TitleToId Real-Life Scenario)">Real-Life Scenario</h2>
+<h2 id="real-life-scenario">Real-Life Scenario</h2>
 
 <p><strong>Company: Contoso Ltd</strong></p>
 
 <p>Contoso is a mid-sized company with 100 employees across three departments:</p>
-<ul><ol><li><strong>Sales:</strong> 30 employees</li></ol></ul>
-<ul><ol><li><strong>Finance:</strong> 20 employees  </li></ol></ul>
-<ul><ol><li><strong>IT:</strong> 10 employees</li></ol></ul>
+<ul><ol><li><strong>Sales:</strong> 30 employees</li>
+<li><strong>Finance:</strong> 20 employees  </li>
+<li><strong>IT:</strong> 10 employees</li></ol></ul>
 
 <p><strong>The Challenge:</strong></p>
 <p>The IT department is overwhelmed with password reset requests. Instead of IT handling ALL password resets company-wide, you need to:</p>
-<ol><li><strong>Empower department heads</strong> to reset passwords for their own team members (delegation)</li></ol>
-<ol><li><strong>Restrict their power</strong> so Sales lead can ONLY manage Sales users, Finance lead can ONLY manage Finance users</li></ol>
-<ol><li>Use <strong>Groups</strong> to identify who they are (Sales lead, Finance lead, IT staff)</li></ol>
-<ol><li>Use <strong>Admin Units</strong> to limit where they can use their power (Sales department only, Finance department only)</li></ol>
+<ol><li><strong>Empower department heads</strong> to reset passwords for their own team members (delegation)</li>
+<li><strong>Restrict their power</strong> so Sales lead can ONLY manage Sales users, Finance lead can ONLY manage Finance users</li>
+<li>Use <strong>Groups</strong> to identify who they are (Sales lead, Finance lead, IT staff)</li>
+<li>Use <strong>Admin Units</strong> to limit where they can use their power (Sales department only, Finance department only)</li></ol>
 
 <hr class="divider">
 
-<h2 id="$(Convert-TitleToId Objectives)">Objectives</h2>
+<h2 id="objectives">Objectives</h2>
 
-<ul><ol><li>Create users representing real departments (Sales, Finance, IT)</li></ol></ul>
-<ul><ol><li>Organize users into groups by department</li></ol></ul>
-<ul><ol><li>Understand <strong>Groups = WHO (identify role)</strong> vs <strong>Admin Units = WHERE (limit scope)</strong></li></ol></ul>
-<ul><ol><li>Create administrative units scoped to each department</li></ol></ul>
-<ul><ol><li>Delegate User Administrator role with admin unit scope</li></ol></ul>
-<ul><ol><li>Verify that scoped admins can manage only their own department</li></ol></ul>
+<ul><ol><li>Create users representing real departments (Sales, Finance, IT)</li>
+<li>Organize users into groups by department</li>
+<li>Understand <strong>Groups = WHO (identify role)</strong> vs <strong>Admin Units = WHERE (limit scope)</strong></li>
+<li>Create administrative units scoped to each department</li>
+<li>Delegate User Administrator role with admin unit scope</li>
+<li>Verify that scoped admins can manage only their own department</li></ol></ul>
 
-<h2 id="$(Convert-TitleToId Prerequisites)">Prerequisites</h2>
+<h2 id="prerequisites">Prerequisites</h2>
 
-<ul><ol><li>An Entra ID tenant with Global Administrator or User Administrator role</li></ol></ul>
-<ul><ol><li>Signed in at <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
+<ul><ol><li>An Entra ID tenant with Global Administrator or User Administrator role</li>
+<li>Signed in at <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
 
-<h2 id="$(Convert-TitleToId Estimated Time)">Estimated Time</h2>
+<h2 id="estimated-time">Estimated Time</h2>
 
 <p>50 minutes</p>
 
 <hr class="divider">
 
-<h2 id="$(Convert-TitleToId Part 1 – Create Users (Represent Real Employees))">Part 1 – Create Users (Represent Real Employees)</h2>
+<h2 id="part-1-create-users-represent-real-employees">Part 1 – Create Users (Represent Real Employees)</h2>
 
-<h3 id="$(Convert-TitleToId Create Sales Department Users)">Create Sales Department Users</h3>
+<h3 id="create-sales-department-users">Create Sales Department Users</h3>
 
-<ol><li>Go to <strong>Microsoft Entra ID</strong> > <strong>Users</strong> > <strong>New user</strong> > <strong>Create new user</strong>.</li></ol>
-<ol><li>Create three Sales users:</li></ol>
+<ol><li>Go to <strong>Microsoft Entra ID</strong> > <strong>Users</strong> > <strong>New user</strong> > <strong>Create new user</strong>.</li>
+<li>Create three Sales users:</li></ol>
 <p>- <strong>Display name:</strong> Sarah Chen | <strong>Username:</strong> sarah.chen@\<yourtenant\>.onmicrosoft.com | <strong>Department:</strong> Sales</p>
 <p>- <strong>Display name:</strong> Tom Wilson | <strong>Username:</strong> tom.wilson@\<yourtenant\>.onmicrosoft.com | <strong>Department:</strong> Sales</p>
 <p>- <strong>Display name:</strong> Lisa Brown | <strong>Username:</strong> lisa.brown@\<yourtenant\>.onmicrosoft.com | <strong>Department:</strong> Sales</p>
@@ -251,7 +260,7 @@ hr.divider{border:none;height:0;margin:0}
 <p>- Set <strong>Usage location</strong> to your country (required for licensing)</p>
 <p>- <strong>Important:</strong> Set <strong>Department</strong> field to "Sales" (this will be used for dynamic grouping later)</p>
 
-<h3 id="$(Convert-TitleToId Create Finance Department Users)">Create Finance Department Users</h3>
+<h3 id="create-finance-department-users">Create Finance Department Users</h3>
 
 <ol><li>Create three Finance users:</li></ol>
 <p>- <strong>Display name:</strong> Bob Johnson | <strong>Username:</strong> bob.johnson@\<yourtenant\>.onmicrosoft.com | <strong>Department:</strong> Finance</p>
@@ -260,7 +269,7 @@ hr.divider{border:none;height:0;margin:0}
 
 <ol><li>Set Department to "Finance" for each.</li></ol>
 
-<h3 id="$(Convert-TitleToId Create Department Administrators)">Create Department Administrators</h3>
+<h3 id="create-department-administrators">Create Department Administrators</h3>
 
 <ol><li>Create two admin users who will manage their departments:</li></ol>
 <p>- <strong>Display name:</strong> James Park (Sales Manager) | <strong>Username:</strong> james.park@\<yourtenant\>.onmicrosoft.com | <strong>Department:</strong> Sales</p>
@@ -268,55 +277,55 @@ hr.divider{border:none;height:0;margin:0}
 
 <ol><li><strong>Verification:</strong> Go to <strong>Microsoft Entra ID</strong> > <strong>Users</strong>. Confirm all 8 users appear in the list.</li></ol>
 
-<h2 id="$(Convert-TitleToId Part 2 – Create Groups by Department (Identify WHO))">Part 2 – Create Groups by Department (Identify WHO)</h2>
+<h2 id="part-2-create-groups-by-department-identify-who">Part 2 – Create Groups by Department (Identify WHO)</h2>
 
 <p><strong>Why Groups?</strong> Groups answer the question: "WHO is this person?" They tell you their role or department.</p>
-<ul><ol><li><code>grp-sales</code> → "These people are in Sales" (Sales team members)</li></ol></ul>
-<ul><ol><li><code>grp-sales-admins</code> → "These people are Sales managers" (Sales team leads who can help with password resets)</li></ol></ul>
-<ul><ol><li><code>grp-finance</code> → "These people are in Finance"</li></ol></ul>
-<ul><ol><li><code>grp-finance-admins</code> → "These people are Finance managers"</li></ol></ul>
+<ul><ol><li><code>grp-sales</code> → "These people are in Sales" (Sales team members)</li>
+<li><code>grp-sales-admins</code> → "These people are Sales managers" (Sales team leads who can help with password resets)</li>
+<li><code>grp-finance</code> → "These people are in Finance"</li>
+<li><code>grp-finance-admins</code> → "These people are Finance managers"</li></ol></ul>
 
-<h3 id="$(Convert-TitleToId Step 1: Create the Sales Department Group)">Step 1: Create the Sales Department Group</h3>
+<h3 id="step-1-create-the-sales-department-group">Step 1: Create the Sales Department Group</h3>
 
-<ol><li>Go to <strong>Entra ID</strong> > <strong>Groups</strong> > <strong>New group</strong>.</li></ol>
-<ol><li>Fill in:</li></ol>
+<ol><li>Go to <strong>Entra ID</strong> > <strong>Groups</strong> > <strong>New group</strong>.</li>
+<li>Fill in:</li></ol>
 <p>- <strong>Group type:</strong> Security</p>
 <p>- <strong>Group name:</strong> <code>grp-sales</code></p>
 <p>- <strong>Membership type:</strong> Assigned</p>
 <p>- <strong>Members:</strong> Add Sarah Chen, Tom Wilson, Lisa Brown (the Sales employees)</p>
 <ol><li>Click <strong>Create</strong>.</li></ol>
 
-<h3 id="$(Convert-TitleToId Step 2: Create the Sales Admins Group (The managers))">Step 2: Create the Sales Admins Group (The managers)</h3>
+<h3 id="step-2-create-the-sales-admins-group-the-managers">Step 2: Create the Sales Admins Group (The managers)</h3>
 
-<ol><li>Go to <strong>Groups</strong> > <strong>New group</strong>.</li></ol>
-<ol><li>Fill in:</li></ol>
+<ol><li>Go to <strong>Groups</strong> > <strong>New group</strong>.</li>
+<li>Fill in:</li></ol>
 <p>- <strong>Group type:</strong> Security</p>
 <p>- <strong>Group name:</strong> <code>grp-sales-admins</code></p>
 <p>- <strong>Membership type:</strong> Assigned</p>
 <p>- <strong>Members:</strong> Add James Park (Sales Manager)</p>
 <ol><li>Click <strong>Create</strong>.</li></ol>
 
-<h3 id="$(Convert-TitleToId Step 3: Create the Finance Department Group)">Step 3: Create the Finance Department Group</h3>
+<h3 id="step-3-create-the-finance-department-group">Step 3: Create the Finance Department Group</h3>
 
-<ol><li>Go to <strong>Groups</strong> > <strong>New group</strong>.</li></ol>
-<ol><li>Fill in:</li></ol>
+<ol><li>Go to <strong>Groups</strong> > <strong>New group</strong>.</li>
+<li>Fill in:</li></ol>
 <p>- <strong>Group type:</strong> Security</p>
 <p>- <strong>Group name:</strong> <code>grp-finance</code></p>
 <p>- <strong>Membership type:</strong> Assigned</p>
 <p>- <strong>Members:</strong> Add Bob Johnson, Emma Davis, Mike Lopez (the Finance employees)</p>
 <ol><li>Click <strong>Create</strong>.</li></ol>
 
-<h3 id="$(Convert-TitleToId Step 4: Create the Finance Admins Group)">Step 4: Create the Finance Admins Group</h3>
+<h3 id="step-4-create-the-finance-admins-group">Step 4: Create the Finance Admins Group</h3>
 
-<ol><li>Go to <strong>Groups</strong> > <strong>New group</strong>.</li></ol>
-<ol><li>Fill in:</li></ol>
+<ol><li>Go to <strong>Groups</strong> > <strong>New group</strong>.</li>
+<li>Fill in:</li></ol>
 <p>- <strong>Group type:</strong> Security</p>
 <p>- <strong>Group name:</strong> <code>grp-finance-admins</code></p>
 <p>- <strong>Membership type:</strong> Assigned</p>
 <p>- <strong>Members:</strong> Add Rachel Green (Finance Manager)</p>
 <ol><li>Click <strong>Create</strong>.</li></ol>
 
-<h3 id="$(Convert-TitleToId Step 5: Verification)">Step 5: Verification</h3>
+<h3 id="step-5-verification">Step 5: Verification</h3>
 
 <ol><li>Go to <strong>Entra ID</strong> > <strong>Groups</strong> and confirm all four groups exist:</li></ol>
 <p>- ✅ <code>grp-sales</code> (3 members: Sarah, Tom, Lisa)</p>
@@ -324,83 +333,83 @@ hr.divider{border:none;height:0;margin:0}
 <p>- ✅ <code>grp-finance</code> (3 members: Bob, Emma, Mike)</p>
 <p>- ✅ <code>grp-finance-admins</code> (1 member: Rachel)</p>
 
-<h2 id="$(Convert-TitleToId Part 3 – Optional: Dynamic Groups (Auto-manage Membership))">Part 3 – Optional: Dynamic Groups (Auto-manage Membership)</h2>
+<h2 id="part-3-optional-dynamic-groups-auto-manage-membership">Part 3 – Optional: Dynamic Groups (Auto-manage Membership)</h2>
 
 <p><strong>Why Dynamic Groups?</strong> Instead of manually adding/removing users, let rules handle it. When someone's department changes, they're automatically added/removed.</p>
 
 <p><strong>Note:</strong> This requires <strong>Entra ID P1/P2 licensing</strong>. Skip if your tenant doesn't have it.</p>
 
-<ol><li>Go to <strong>Groups</strong> > <strong>New group</strong> > <strong>Membership type: Dynamic User</strong>.</li></ol>
-<ol><li><strong>Group name:</strong> <code>grp-all-employees-dynamic</code></li></ol>
-<ol><li>Add a rule: <code>(user.accountEnabled -eq true)</code> (all enabled users automatically join)</li></ol>
-<ol><li>Click <strong>Create</strong>.</li></ol>
+<ol><li>Go to <strong>Groups</strong> > <strong>New group</strong> > <strong>Membership type: Dynamic User</strong>.</li>
+<li><strong>Group name:</strong> <code>grp-all-employees-dynamic</code></li>
+<li>Add a rule: <code>(user.accountEnabled -eq true)</code> (all enabled users automatically join)</li>
+<li>Click <strong>Create</strong>.</li></ol>
 
 <p><strong>Real-world value:</strong> When Contoso hires a new Sales person, they don't need to manually add them to <code>grp-sales</code>. A dynamic rule like <code>(user.department -eq "Sales")</code> would do it automatically.</p>
 
 <p>If dynamic groups aren't available in your tenant, just understand the concept and move to Part 4.</p>
 
-<h2 id="$(Convert-TitleToId Part 4 – Administrative Units: Limit WHERE Admins Can Use Their Power)">Part 4 – Administrative Units: Limit WHERE Admins Can Use Their Power</h2>
+<h2 id="part-4-administrative-units-limit-where-admins-can-use-their-power">Part 4 – Administrative Units: Limit WHERE Admins Can Use Their Power</h2>
 
 <p><strong>Critical Concept:</strong></p>
-<ul><ol><li><strong>Groups</strong> told us WHO (James is in <code>grp-sales-admins</code> → he's a Sales manager)</li></ol></ul>
-<ul><ol><li><strong>Admin Units</strong> tell us WHERE (James can reset passwords only in the Sales department)</li></ol></ul>
+<ul><ol><li><strong>Groups</strong> told us WHO (James is in <code>grp-sales-admins</code> → he's a Sales manager)</li>
+<li><strong>Admin Units</strong> tell us WHERE (James can reset passwords only in the Sales department)</li></ol></ul>
 
 <p>Without Admin Units, James would be able to reset passwords for ANYONE (dangerous). With Admin Units, he can only manage Sales users.</p>
 
-<h3 id="$(Convert-TitleToId Step 1: Create Admin Unit for Sales Department)">Step 1: Create Admin Unit for Sales Department</h3>
+<h3 id="step-1-create-admin-unit-for-sales-department">Step 1: Create Admin Unit for Sales Department</h3>
 
-<ol><li>Go to <strong>Entra ID</strong> > <strong>Roles & administrators</strong> > <strong>Administrative units</strong> > <strong>+ New administrative unit</strong>.</li></ol>
-<ol><li>Fill in:</li></ol>
+<ol><li>Go to <strong>Entra ID</strong> > <strong>Roles & administrators</strong> > <strong>Administrative units</strong> > <strong>+ New administrative unit</strong>.</li>
+<li>Fill in:</li></ol>
 <p>- <strong>Name:</strong> <code>au-sales</code></p>
 <p>- <strong>Description:</strong> "Sales department scope — for Sales manager delegation"</p>
 <ol><li>Click <strong>Create</strong>.</li></ol>
 
-<h3 id="$(Convert-TitleToId Step 2: Add Sales Users to the Admin Unit)">Step 2: Add Sales Users to the Admin Unit</h3>
+<h3 id="step-2-add-sales-users-to-the-admin-unit">Step 2: Add Sales Users to the Admin Unit</h3>
 
-<ol><li>Open <code>au-sales</code> > <strong>Members</strong> > <strong>+ Add members</strong>.</li></ol>
-<ol><li>Add the Sales users: <strong>Sarah Chen, Tom Wilson, Lisa Brown</strong> (the Sales team members).</li></ol>
+<ol><li>Open <code>au-sales</code> > <strong>Members</strong> > <strong>+ Add members</strong>.</li>
+<li>Add the Sales users: <strong>Sarah Chen, Tom Wilson, Lisa Brown</strong> (the Sales team members).</li></ol>
 <p>- Note: You DON'T add James Park here — he's the admin, not a member being managed.</p>
 <ol><li>Click <strong>Add</strong>.</li></ol>
 
-<h3 id="$(Convert-TitleToId Step 3: Create Admin Unit for Finance Department)">Step 3: Create Admin Unit for Finance Department</h3>
+<h3 id="step-3-create-admin-unit-for-finance-department">Step 3: Create Admin Unit for Finance Department</h3>
 
-<ol><li>Go back to <strong>Administrative units</strong> > <strong>+ New administrative unit</strong>.</li></ol>
-<ol><li>Fill in:</li></ol>
+<ol><li>Go back to <strong>Administrative units</strong> > <strong>+ New administrative unit</strong>.</li>
+<li>Fill in:</li></ol>
 <p>- <strong>Name:</strong> <code>au-finance</code></p>
 <p>- <strong>Description:</strong> "Finance department scope — for Finance manager delegation"</p>
 <ol><li>Click <strong>Create</strong>.</li></ol>
 
-<h3 id="$(Convert-TitleToId Step 4: Add Finance Users to the Finance Admin Unit)">Step 4: Add Finance Users to the Finance Admin Unit</h3>
+<h3 id="step-4-add-finance-users-to-the-finance-admin-unit">Step 4: Add Finance Users to the Finance Admin Unit</h3>
 
-<ol><li>Open <code>au-finance</code> > <strong>Members</strong> > <strong>+ Add members</strong>.</li></ol>
-<ol><li>Add the Finance users: <strong>Bob Johnson, Emma Davis, Mike Lopez</strong> (the Finance team members).</li></ol>
-<ol><li>Click <strong>Add</strong>.</li></ol>
+<ol><li>Open <code>au-finance</code> > <strong>Members</strong> > <strong>+ Add members</strong>.</li>
+<li>Add the Finance users: <strong>Bob Johnson, Emma Davis, Mike Lopez</strong> (the Finance team members).</li>
+<li>Click <strong>Add</strong>.</li></ol>
 
-<h3 id="$(Convert-TitleToId Step 5: Assign Scoped Admin Role to Sales Manager (THE KEY PART))">Step 5: Assign Scoped Admin Role to Sales Manager (THE KEY PART)</h3>
+<h3 id="step-5-assign-scoped-admin-role-to-sales-manager-the-key-part">Step 5: Assign Scoped Admin Role to Sales Manager (THE KEY PART)</h3>
 
 <p><strong>This is where Groups and Admin Units work together:</strong></p>
 
-<ol><li>In <code>au-sales</code>, go to <strong>Roles and administrators</strong> > <strong>+ Add assignments</strong>.</li></ol>
-<ol><li>Search for and select <strong>User Administrator</strong> role.</li></ol>
-<ol><li><strong>Assign to:</strong> James Park (Sales Manager).</li></ol>
-<ol><li>Click <strong>Assign</strong>.</li></ol>
+<ol><li>In <code>au-sales</code>, go to <strong>Roles and administrators</strong> > <strong>+ Add assignments</strong>.</li>
+<li>Search for and select <strong>User Administrator</strong> role.</li>
+<li><strong>Assign to:</strong> James Park (Sales Manager).</li>
+<li>Click <strong>Assign</strong>.</li></ol>
 
 <p><strong>Result:</strong> James Park now has the "User Administrator" role, but ONLY scoped to <code>au-sales</code>. This means:</p>
-<ul><ol><li>✅ James CAN reset passwords for Sarah, Tom, Lisa (Sales users in au-sales)</li></ol></ul>
-<ul><ol><li>✅ James CAN unlock accounts for Sales users</li></ol></ul>
-<ul><ol><li>❌ James CANNOT reset Finance passwords</li></ol></ul>
-<ul><ol><li>❌ James CANNOT see Finance users in his admin scope</li></ol></ul>
+<ul><ol><li>✅ James CAN reset passwords for Sarah, Tom, Lisa (Sales users in au-sales)</li>
+<li>✅ James CAN unlock accounts for Sales users</li>
+<li>❌ James CANNOT reset Finance passwords</li>
+<li>❌ James CANNOT see Finance users in his admin scope</li></ol></ul>
 
-<h3 id="$(Convert-TitleToId Step 6: Assign Scoped Admin Role to Finance Manager)">Step 6: Assign Scoped Admin Role to Finance Manager</h3>
+<h3 id="step-6-assign-scoped-admin-role-to-finance-manager">Step 6: Assign Scoped Admin Role to Finance Manager</h3>
 
-<ol><li>In <code>au-finance</code>, go to <strong>Roles and administrators</strong> > <strong>+ Add assignments</strong>.</li></ol>
-<ol><li>Search for and select <strong>User Administrator</strong> role.</li></ol>
-<ol><li><strong>Assign to:</strong> Rachel Green (Finance Manager).</li></ol>
-<ol><li>Click <strong>Assign</strong>.</li></ol>
+<ol><li>In <code>au-finance</code>, go to <strong>Roles and administrators</strong> > <strong>+ Add assignments</strong>.</li>
+<li>Search for and select <strong>User Administrator</strong> role.</li>
+<li><strong>Assign to:</strong> Rachel Green (Finance Manager).</li>
+<li>Click <strong>Assign</strong>.</li></ol>
 
 <p><strong>Result:</strong> Rachel now has the same power as James, but scoped to Finance only.</p>
 
-<h3 id="$(Convert-TitleToId Step 7: Verification (The Proof It Works))">Step 7: Verification (The Proof It Works)</h3>
+<h3 id="step-7-verification-the-proof-it-works">Step 7: Verification (The Proof It Works)</h3>
 
 <ol><li>Go to <strong>Entra ID</strong> > <strong>Roles & administrators</strong> > <strong>Administrative units</strong>.</li></ol>
 <p>- ✅ <code>au-sales</code> exists with 3 members (Sarah, Tom, Lisa)</p>
@@ -410,21 +419,21 @@ hr.divider{border:none;height:0;margin:0}
 
 <ol><li><strong>Optional:</strong> Sign in as James Park and navigate to <strong>Entra ID</strong> > <strong>Users</strong>. Notice he only sees Sales users — Finance users are hidden from his view. This is the power of Admin Units!</li></ol>
 
-<h2 id="$(Convert-TitleToId Part 5 – Self-Service Password Reset (SSPR) for Employees)">Part 5 – Self-Service Password Reset (SSPR) for Employees</h2>
+<h2 id="part-5-self-service-password-reset-sspr-for-employees">Part 5 – Self-Service Password Reset (SSPR) for Employees</h2>
 
 <p>Now that we have scoped admins (James and Rachel), employees should be able to reset their own passwords without waiting for IT.</p>
 
-<ol><li>Go to <strong>Entra ID</strong> > <strong>Password reset</strong>.</li></ol>
-<ol><li>Set <strong>Self-service password reset enabled</strong> to <strong>Selected</strong>.</li></ol>
-<ol><li>Under <strong>Select group</strong>, choose <strong>All</strong> (all users can reset their own passwords) OR select just <code>grp-sales</code> and <code>grp-finance</code> to limit it.</li></ol>
-<ol><li>Review the <strong>Authentication methods</strong> (email, mobile app, security questions, etc.).</li></ol>
-<ol><li>Click <strong>Save</strong>.</li></ol>
+<ol><li>Go to <strong>Entra ID</strong> > <strong>Password reset</strong>.</li>
+<li>Set <strong>Self-service password reset enabled</strong> to <strong>Selected</strong>.</li>
+<li>Under <strong>Select group</strong>, choose <strong>All</strong> (all users can reset their own passwords) OR select just <code>grp-sales</code> and <code>grp-finance</code> to limit it.</li>
+<li>Review the <strong>Authentication methods</strong> (email, mobile app, security questions, etc.).</li>
+<li>Click <strong>Save</strong>.</li></ol>
 
 <p><strong>Real-world benefit:</strong> Sarah from Sales can reset her own password without contacting James. This reduces administrative burden on scoped admins.</p>
 
 <hr class="divider">
 
-<h2 id="$(Convert-TitleToId Validation Checklist)">Validation Checklist</h2>
+<h2 id="validation-checklist">Validation Checklist</h2>
 
 <ul><ol><li>[ ] <strong>Users Created:</strong> Go to <strong>Entra ID</strong> > <strong>Users</strong> and verify 8 users exist:</li></ol></ul>
 <p>- Sales employees: Sarah Chen, Tom Wilson, Lisa Brown</p>
@@ -449,21 +458,21 @@ hr.divider{border:none;height:0;margin:0}
 
 <hr class="divider">
 
-<h2 id="$(Convert-TitleToId Cleanup (If Needed))">Cleanup (If Needed)</h2>
+<h2 id="cleanup-if-needed">Cleanup (If Needed)</h2>
 
 <p>To delete all lab resources:</p>
 
-<ol><li>Go to <strong>Entra ID</strong> > <strong>Users</strong> > select all 8 users > <strong>Delete</strong>.</li></ol>
+<ol><li>Go to <strong>Entra ID</strong> > <strong>Users</strong> > select all 8 users > <strong>Delete</strong>.</li>
 
-<ol><li>Go to <strong>Entra ID</strong> > <strong>Groups</strong> > select <code>grp-sales</code>, <code>grp-sales-admins</code>, <code>grp-finance</code>, <code>grp-finance-admins</code> > <strong>Delete</strong>.</li></ol>
+<li>Go to <strong>Entra ID</strong> > <strong>Groups</strong> > select <code>grp-sales</code>, <code>grp-sales-admins</code>, <code>grp-finance</code>, <code>grp-finance-admins</code> > <strong>Delete</strong>.</li>
 
-<ol><li>Go to <strong>Entra ID</strong> > <strong>Roles & administrators</strong> > <strong>Administrative units</strong> > select <code>au-sales</code> and <code>au-finance</code> > <strong>Delete</strong>.</li></ol>
+<li>Go to <strong>Entra ID</strong> > <strong>Roles & administrators</strong> > <strong>Administrative units</strong> > select <code>au-sales</code> and <code>au-finance</code> > <strong>Delete</strong>.</li></ol>
 
 <hr class="divider">
 
-<h2 id="$(Convert-TitleToId Key Takeaways from This Lab)">Key Takeaways from This Lab</h2>
+<h2 id="key-takeaways-from-this-lab">Key Takeaways from This Lab</h2>
 
-<h3 id="$(Convert-TitleToId Groups vs Admin Units (The Most Important Concept))">Groups vs Admin Units (The Most Important Concept)</h3>
+<h3 id="groups-vs-admin-units-the-most-important-concept">Groups vs Admin Units (The Most Important Concept)</h3>
 
 <table>
 <p><tr></p>
@@ -499,18 +508,18 @@ hr.divider{border:none;height:0;margin:0}
 <p></table></p>
 
 
-<h3 id="$(Convert-TitleToId Exam Tips)">Exam Tips</h3>
+<h3 id="exam-tips">Exam Tips</h3>
 
-<ul><ol><li><strong>Groups = WHO (identity)</strong> — Answer "What role/department is this person?"</li></ol></ul>
-<ul><ol><li><strong>Admin Units = WHERE (scope)</strong> — Answer "What users can this admin manage?"</li></ol></ul>
-<ul><ol><li><strong>Difference between Assigned vs Dynamic groups:</strong></li></ol></ul>
+<ul><ol><li><strong>Groups = WHO (identity)</strong> — Answer "What role/department is this person?"</li>
+<li><strong>Admin Units = WHERE (scope)</strong> — Answer "What users can this admin manage?"</li>
+<li><strong>Difference between Assigned vs Dynamic groups:</strong></li></ol></ul>
 <p>- <strong>Assigned:</strong> Manually add/remove members (good for small, stable teams)</p>
 <p>- <strong>Dynamic:</strong> Rules auto-add/remove members (good for scale, e.g., all Sales dept)</p>
-<ul><ol><li><strong>Admin Units scope</strong> admin roles, NOT resource access. RBAC (Lab 02) scopes resource access.</li></ol></ul>
-<ul><ol><li><strong>Group-based licensing</strong> auto-assigns/removes licenses as membership changes.</li></ol></ul>
-<ul><ol><li>A user can be in MULTIPLE groups AND multiple admin units.</li></ol></ul>
-<ul><ol><li>Without Admin Units, any admin role is tenant-wide and unrestricted (security risk).</li></ol></ul>
-<ul><ol><li>Admin Units are essential for delegating admin tasks in large organizations.</li></ol></ul>
+<ul><ol><li><strong>Admin Units scope</strong> admin roles, NOT resource access. RBAC (Lab 02) scopes resource access.</li>
+<li><strong>Group-based licensing</strong> auto-assigns/removes licenses as membership changes.</li>
+<li>A user can be in MULTIPLE groups AND multiple admin units.</li>
+<li>Without Admin Units, any admin role is tenant-wide and unrestricted (security risk).</li>
+<li>Admin Units are essential for delegating admin tasks in large organizations.</li></ol></ul>
 
   </div>
 </div>

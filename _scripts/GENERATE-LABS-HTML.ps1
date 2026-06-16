@@ -47,8 +47,19 @@ function Convert-MarkdownToHTML {
 
     # Headings (must be done in order from highest to lowest)
     $html = [regex]::Replace($html, '(?m)^# (.+?)$', '<h1>$1</h1>')
-    $html = [regex]::Replace($html, '(?m)^## (.+?)$', '<h2 id="$(Convert-TitleToId $1)">$1</h2>')
-    $html = [regex]::Replace($html, '(?m)^### (.+?)$', '<h3 id="$(Convert-TitleToId $1)">$1</h3>')
+    # H2 and H3 with IDs require MatchEvaluator for dynamic ID generation
+    $html = [regex]::Replace($html, '(?m)^## (.+?)$', {
+        param($match)
+        $title = $match.Groups[1].Value
+        $id = Convert-TitleToId $title
+        return "<h2 id=""$id"">$title</h2>"
+    })
+    $html = [regex]::Replace($html, '(?m)^### (.+?)$', {
+        param($match)
+        $title = $match.Groups[1].Value
+        $id = Convert-TitleToId $title
+        return "<h3 id=""$id"">$title</h3>"
+    })
     $html = [regex]::Replace($html, '(?m)^#### (.+?)$', '<h4>$1</h4>')
     $html = [regex]::Replace($html, '(?m)^##### (.+?)$', '<h5>$1</h5>')
 
@@ -75,13 +86,15 @@ function Convert-MarkdownToHTML {
     # Blockquote (> ...)
     $html = [regex]::Replace($html, '(?m)^> (.+?)$', '<div class="callout"><p>$1</p></div>')
 
-    # Lists (unordered)
+    # Lists (unordered) - Convert markdown list items to li tags
     $html = [regex]::Replace($html, '(?m)^- (.+?)$', '<li>$1</li>')
-    $html = [regex]::Replace($html, '(?m)(<li>.*?</li>)', '<ul>$1</ul>')
+    # Wrap consecutive li tags in ul (don't nest)
+    $html = [regex]::Replace($html, '(?m)(<li>.*?</li>(\s*<li>.*?</li>)*)', '<ul>$0</ul>')
 
-    # Lists (ordered)
+    # Lists (ordered) - Convert markdown numbered items to li tags
     $html = [regex]::Replace($html, '(?m)^\d+\. (.+?)$', '<li>$1</li>')
-    $html = [regex]::Replace($html, '(?m)(<li>.*?</li>)', '<ol>$1</ol>')
+    # Wrap consecutive li tags in ol (don't nest)
+    $html = [regex]::Replace($html, '(?m)(<li>.*?</li>(\s*<li>.*?</li>)*)', '<ol>$0</ol>')
 
     # Horizontal rules
     $html = [regex]::Replace($html, '(?m)^---+$', '<hr class="divider">')
@@ -113,7 +126,7 @@ function Convert-MarkdownToHTML {
     $pageTitle = if ($titleMatch.Success) { $titleMatch.Groups[1].Value } else { $LabTitle }
 
     # Generate TOC
-    $tocHtml = Generate-TableOfContents -Sections $sections -ModuleName $ModuleName
+    $tocHtml = Generate-TableOfContents -Sections $sections -ModuleName $ModuleName -ModuleDir $moduleDir
 
     # Generate navigation
     $navHtml = Generate-Navigation -ModuleName $ModuleName
@@ -322,21 +335,91 @@ function Convert-TitleToId {
 function Generate-TableOfContents {
     param(
         [PSCustomObject[]]$Sections,
-        [string]$ModuleName
+        [string]$ModuleName,
+        [string]$ModuleDir = ""
     )
 
     $toc = @()
 
+    # Add concept document links based on module
+    $conceptLinks = Get-ConceptLinks $ModuleDir
+    foreach ($link in $conceptLinks) {
+        $toc += $link
+    }
+
+    # Add lab divider if there are labs
+    $toc += '<hr class="sidebar-divider">'
+    $toc += '<div class="toc-title">Labs</div>'
+
+    # Add lab links based on module
+    $labLinks = Get-LabLinks $ModuleDir
+    foreach ($link in $labLinks) {
+        $toc += $link
+    }
+
+    # Add divider and on-this-page section
+    $toc += '<hr class="sidebar-divider">'
+    $toc += '<div class="toc-title">On This Page</div>'
+
+    # Add page-specific TOC
     foreach ($section in $Sections | Where-Object { $_.Level -eq 2 }) {
         $toc += "<a href=`"#$($section.Id)`">$($section.Title)</a>"
     }
 
-    if ($toc.Count -gt 0) {
-        $toc += '<hr class="sidebar-divider">'
-        $toc += '<div class="toc-title">On This Page</div>'
+    return $toc -join "`n"
+}
+
+function Get-ConceptLinks {
+    param([string]$ModuleDir)
+
+    $links = @()
+
+    # Map module directories to concept links
+    $conceptMap = @{
+        "00-prerequisites" = @(
+            '<a href="01-cloud-computing-fundamentals.html">01 - Cloud Computing Fundamentals</a>',
+            '<a href="02-networking-basics.html">02 - Networking Basics</a>',
+            '<a href="03-identity-and-access-fundamentals.html">03 - Identity &amp; Access Fundamentals</a>',
+            '<a href="04-azure-portal-navigation.html">04 - Azure Portal Navigation</a>'
+        )
+        "01-identity-governance" = @(
+            '<a href="01-entra-id-overview.html">01 - Entra ID Overview</a>',
+            '<a href="02-rbac-fundamentals.html">02 - RBAC Fundamentals</a>',
+            '<a href="03-management-groups-and-azure-policy.html">03 - Management Groups &amp; Azure Policy</a>',
+            '<a href="04-access-control-scenarios.html">04 - Access Control Scenarios</a>',
+            '<a href="05-identity-best-practices.html">05 - Identity Best Practices</a>'
+        )
     }
 
-    return $toc -join "`n"
+    if ($conceptMap.ContainsKey($ModuleDir)) {
+        $links = $conceptMap[$ModuleDir]
+    }
+
+    return $links
+}
+
+function Get-LabLinks {
+    param([string]$ModuleDir)
+
+    $links = @()
+
+    # Map module directories to lab links
+    $labMap = @{
+        "00-prerequisites" = @(
+            '<a href="lab00-azure-portal-navigation.html">Lab 00 - Portal Navigation</a>'
+        )
+        "01-identity-governance" = @(
+            '<a href="lab01-entra-users-groups.html">Lab 01 - Entra Users &amp; Groups</a>',
+            '<a href="lab02-rbac-azure-policy.html">Lab 02 - RBAC &amp; Azure Policy</a>',
+            '<a href="lab03-management-groups-subscriptions.html">Lab 03 - Management Groups</a>'
+        )
+    }
+
+    if ($labMap.ContainsKey($ModuleDir)) {
+        $links = $labMap[$ModuleDir]
+    }
+
+    return $links
 }
 
 function Generate-Navigation {
@@ -363,8 +446,7 @@ function Generate-Navigation {
       <a href="../../01-identity-governance/documents/03-management-groups-and-azure-policy.html">03 - Management Groups &amp; Policy</a>
       <a href="../../01-identity-governance/documents/04-access-control-scenarios.html">04 - Access Control Scenarios</a>
       <a href="../../01-identity-governance/documents/05-identity-best-practices.html">05 - Identity Best Practices</a>
-      <a href="../../01-identity-governance/documents/lab01-entra-users-groups.html">Lab 01 - Entra ID Users</a>
-      <a href="../../01-identity-governance/documents/lab02-rbac-azure-policy.html">Lab 02 - RBAC &amp; Policy</a>
+      <a href="../../01-identity-governance/documents/labs-index.html">Labs</a>
     </div>
   </details>
 </nav>

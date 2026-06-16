@@ -171,15 +171,26 @@ hr.divider{border:none;height:0;margin:0}
       <a href="../../01-identity-governance/documents/03-management-groups-and-azure-policy.html">03 - Management Groups &amp; Policy</a>
       <a href="../../01-identity-governance/documents/04-access-control-scenarios.html">04 - Access Control Scenarios</a>
       <a href="../../01-identity-governance/documents/05-identity-best-practices.html">05 - Identity Best Practices</a>
-      <a href="../../01-identity-governance/documents/lab01-entra-users-groups.html">Lab 01 - Entra ID Users</a>
-      <a href="../../01-identity-governance/documents/lab02-rbac-azure-policy.html">Lab 02 - RBAC &amp; Policy</a>
+      <a href="../../01-identity-governance/documents/labs-index.html">Labs</a>
     </div>
   </details>
 </nav>
 <div class="layout">
   <aside class="sidebar">
     <div class="toc-title module-title">Module 01 - Identity &amp; Governance</div>
-    <a href="#objectives">Objectives</a>
+    <a href="01-entra-id-overview.html">01 - Entra ID Overview</a>
+<a href="02-rbac-fundamentals.html">02 - RBAC Fundamentals</a>
+<a href="03-management-groups-and-azure-policy.html">03 - Management Groups &amp; Azure Policy</a>
+<a href="04-access-control-scenarios.html">04 - Access Control Scenarios</a>
+<a href="05-identity-best-practices.html">05 - Identity Best Practices</a>
+<hr class="sidebar-divider">
+<div class="toc-title">Labs</div>
+<a href="lab01-entra-users-groups.html">Lab 01 - Entra Users &amp; Groups</a>
+<a href="lab02-rbac-azure-policy.html">Lab 02 - RBAC &amp; Azure Policy</a>
+<a href="lab03-management-groups-subscriptions.html">Lab 03 - Management Groups</a>
+<hr class="sidebar-divider">
+<div class="toc-title">On This Page</div>
+<a href="#objectives">Objectives</a>
 <a href="#prerequisites">Prerequisites</a>
 <a href="#estimated-time">Estimated time</a>
 <a href="#part-1-create-a-management-group-hierarchy">Part 1 – Create a management group hierarchy</a>
@@ -190,31 +201,29 @@ hr.divider{border:none;height:0;margin:0}
 <a href="#validation">Validation</a>
 <a href="#cleanup">Cleanup</a>
 <a href="#exam-tips">Exam Tips</a>
-<hr class="sidebar-divider">
-<div class="toc-title">On This Page</div>
   </aside>
   <div class="page">
   <h1>Lab 03 – Management Groups, Subscriptions & Resource Organization</h1>
 
-<h2 id="$(Convert-TitleToId Objectives)">Objectives</h2>
-<ul><ol><li>Create a management group hierarchy</li></ol></ul>
-<ul><ol><li>Move a subscription into a management group</li></ol></ul>
-<ul><ol><li>Organize resources using resource groups, tags, and locks</li></ol></ul>
-<ul><ol><li>Understand cost management basics (budgets, cost analysis)</li></ol></ul>
+<h2 id="objectives">Objectives</h2>
+<ul><ol><li>Create a management group hierarchy</li>
+<li>Move a subscription into a management group</li>
+<li>Organize resources using resource groups, tags, and locks</li>
+<li>Understand cost management basics (budgets, cost analysis)</li></ol></ul>
 
-<h2 id="$(Convert-TitleToId Prerequisites)">Prerequisites</h2>
-<ul><ol><li>Global Administrator or User Access Administrator with root management group access</li></ol></ul>
-<ul><ol><li>Signed in at <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul><ol><li>Global Administrator or User Access Administrator with root management group access</li>
+<li>Signed in at <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
 
-<h2 id="$(Convert-TitleToId Estimated time)">Estimated time</h2>
+<h2 id="estimated-time">Estimated time</h2>
 <p>30 minutes</p>
 
 <hr class="divider">
 
-<h2 id="$(Convert-TitleToId Part 1 – Create a management group hierarchy)">Part 1 – Create a management group hierarchy</h2>
+<h2 id="part-1-create-a-management-group-hierarchy">Part 1 – Create a management group hierarchy</h2>
 
-<ol><li>Search for <strong>Management groups</strong>.</li></ol>
-<ol><li>Select <strong>Add management group</strong>. Set <strong>Management group ID</strong> to <code>mg-contoso</code></li></ol>
+<ol><li>Search for <strong>Management groups</strong>.</li>
+<li>Select <strong>Add management group</strong>. Set <strong>Management group ID</strong> to <code>mg-contoso</code></li></ol>
 <p>and a display name, then <strong>Save</strong>.</p>
 <ol><li>Select <strong>Add management group</strong> again for <code>mg-corp</code>. After it's created,</li></ol>
 <p>open it, go to <strong>Details</strong>, select <strong>Change parent</strong>, and set the parent to</p>
@@ -229,19 +238,19 @@ hr.divider{border:none;height:0;margin:0}
 <p>└── mg-sandbox</p>
 <p></code>`<code></p>
 
-<h2 id="$(Convert-TitleToId Part 2 – Move your subscription under mg-sandbox)">Part 2 – Move your subscription under mg-sandbox</h2>
+<h2 id="part-2-move-your-subscription-under-mg-sandbox">Part 2 – Move your subscription under mg-sandbox</h2>
 
-<ol><li><strong>Management groups</strong> > select </code>mg-sandbox<code> > <strong>Subscriptions</strong> tab.</li></ol>
-<ol><li>Select <strong>Add subscription</strong>, choose your subscription from the list, and</li></ol>
+<ol><li><strong>Management groups</strong> > select </code>mg-sandbox<code> > <strong>Subscriptions</strong> tab.</li>
+<li>Select <strong>Add subscription</strong>, choose your subscription from the list, and</li></ol>
 <p>confirm the move.</p>
 
 <div class="callout"><p>Policies/RBAC assigned at </code>mg-contoso<code> or </code>mg-sandbox<code> now apply to this subscription.</p></div>
 
-<h2 id="$(Convert-TitleToId Part 3 – Resource groups and tagging strategy)">Part 3 – Resource groups and tagging strategy</h2>
+<h2 id="part-3-resource-groups-and-tagging-strategy">Part 3 – Resource groups and tagging strategy</h2>
 
-<ol><li>Search for <strong>Resource groups</strong> > <strong>Create</strong>.</li></ol>
-<ol><li><strong>Resource group</strong>: </code>rg-az104-lab03<code>. <strong>Region</strong>: </code>East US<code>.</li></ol>
-<ol><li>On the <strong>Tags</strong> tab, add:</li></ol>
+<ol><li>Search for <strong>Resource groups</strong> > <strong>Create</strong>.</li>
+<li><strong>Resource group</strong>: </code>rg-az104-lab03<code>. <strong>Region</strong>: </code>East US<code>.</li>
+<li>On the <strong>Tags</strong> tab, add:</li></ol>
 <p>- </code>Environment<code> = </code>Lab<code></p>
 <p>- </code>CostCenter<code> = </code>Training<code></p>
 <p>- </code>Owner<code> = </code>yourname<code></p>
@@ -251,13 +260,13 @@ hr.divider{border:none;height:0;margin:0}
 <p>the resource group > <strong>Tags</strong> (left-hand menu or <strong>Overview</strong> page) > add/edit</p>
 <p>the name-value pairs > <strong>Save</strong>.</p>
 
-<h2 id="$(Convert-TitleToId Part 4 – Resource locks)">Part 4 – Resource locks</h2>
+<h2 id="part-4-resource-locks">Part 4 – Resource locks</h2>
 
-<ol><li>Open </code>rg-az104-lab03<code> > <strong>Locks</strong> (under <strong>Settings</strong>).</li></ol>
-<ol><li>Select <strong>Add</strong>. <strong>Lock name</strong>: </code>lock-no-delete<code>. <strong>Lock type</strong>: <strong>Delete</strong></li></ol>
+<ol><li>Open </code>rg-az104-lab03<code> > <strong>Locks</strong> (under <strong>Settings</strong>).</li>
+<li>Select <strong>Add</strong>. <strong>Lock name</strong>: </code>lock-no-delete<code>. <strong>Lock type</strong>: <strong>Delete</strong></li></ol>
 <p>(this is the Portal's label for <strong>CanNotDelete</strong>).</p>
-<ol><li><strong>OK</strong>.</li></ol>
-<ol><li>Try to delete the resource group: <strong>Overview</strong> > <strong>Delete resource group</strong>,</li></ol>
+<ol><li><strong>OK</strong>.</li>
+<li>Try to delete the resource group: <strong>Overview</strong> > <strong>Delete resource group</strong>,</li></ol>
 <p>type the name to confirm, and select <strong>Delete</strong>. It should fail with a</p>
 <p>message that the resource group is locked.</p>
 <ol><li>To explore the other lock type, select a single resource (e.g., the storage</li></ol>
@@ -267,7 +276,7 @@ hr.divider{border:none;height:0;margin:0}
 <ol><li>Remove the <strong>Read-only</strong> lock from that resource afterwards so it doesn't</li></ol>
 <p>interfere with other labs.</p>
 
-<h2 id="$(Convert-TitleToId Part 5 – Cost Management basics)">Part 5 – Cost Management basics</h2>
+<h2 id="part-5-cost-management-basics">Part 5 – Cost Management basics</h2>
 
 <ol><li>Go to <strong>Cost Management + Billing</strong> > <strong>Cost analysis</strong>. Filter by</li></ol>
 <p></code>rg-az104-lab03<code> using the <strong>Resource group</strong> filter.</p>
@@ -275,19 +284,19 @@ hr.divider{border:none;height:0;margin:0}
 <p></code>rg-az104-lab03<code>, with an alert at 80% via email.</p>
 <ol><li>Review <strong>Advisor</strong> > <strong>Cost</strong> recommendations (may be empty in a new sandbox).</li></ol>
 
-<h2 id="$(Convert-TitleToId Validation)">Validation</h2>
+<h2 id="validation">Validation</h2>
 <ul><ol><li>[ ] Management group hierarchy </code>mg-contoso > mg-corp, mg-sandbox<code> exists</li></ol></ul>
 <p>(<strong>Management groups</strong> view)</p>
-<ul><ol><li>[ ] Subscription is a child of </code>mg-sandbox<code></li></ol></ul>
-<ul><ol><li>[ ] </code>rg-az104-lab03<code> has </code>Environment<code>/</code>CostCenter<code>/</code>Owner<code> tags (check the</li></ol></ul>
+<ul><ol><li>[ ] Subscription is a child of </code>mg-sandbox<code></li>
+<li>[ ] </code>rg-az104-lab03<code> has </code>Environment<code>/</code>CostCenter<code>/</code>Owner<code> tags (check the</li></ol></ul>
 <p><strong>Tags</strong> page)</p>
-<ul><ol><li>[ ] </code>lock-no-delete<code> (<strong>Delete</strong> lock) prevents resource group deletion</li></ol></ul>
-<ul><ol><li>[ ] A budget alert exists for </code>rg-az104-lab03<code> (<strong>Cost Management + Billing</strong> ></li></ol></ul>
+<ul><ol><li>[ ] </code>lock-no-delete<code> (<strong>Delete</strong> lock) prevents resource group deletion</li>
+<li>[ ] A budget alert exists for </code>rg-az104-lab03<code> (<strong>Cost Management + Billing</strong> ></li></ol></ul>
 <p><strong>Budgets</strong>)</p>
 
-<h2 id="$(Convert-TitleToId Cleanup)">Cleanup</h2>
-<ol><li></code>rg-az104-lab03<code> > <strong>Locks</strong> > select </code>lock-no-delete<code> > <strong>Delete</strong>.</li></ol>
-<ol><li><strong>Resource groups</strong> > select </code>rg-az104-lab03<code> > <strong>Delete resource group</strong></li></ol>
+<h2 id="cleanup">Cleanup</h2>
+<ol><li></code>rg-az104-lab03<code> > <strong>Locks</strong> > select </code>lock-no-delete<code> > <strong>Delete</strong>.</li>
+<li><strong>Resource groups</strong> > select </code>rg-az104-lab03<code> > <strong>Delete resource group</strong></li></ol>
 <p>(type the name to confirm).</p>
 <ol><li>(Optional) <strong>Management groups</strong> > </code>mg-sandbox<code> > <strong>Subscriptions</strong> tab ></li></ol>
 <p>move your subscription back to the tenant root group.</p>
@@ -295,11 +304,11 @@ hr.divider{border:none;height:0;margin:0}
 <p>(children first) > <strong>Details</strong> > <strong>Delete</strong>.</p>
 <ol><li>Remove the budget via <strong>Cost Management + Billing</strong> > <strong>Budgets</strong>.</li></ol>
 
-<h2 id="$(Convert-TitleToId Exam Tips)">Exam Tips</h2>
-<ul><ol><li>Management group hierarchy max depth: 6 levels (excluding root and subscription/resource levels).</li></ol></ul>
-<ul><ol><li>A subscription can only belong to <strong>one</strong> management group at a time.</li></ol></ul>
-<ul><ol><li>Lock types: <strong>Read-only</strong> (no writes/deletes) vs <strong>Delete</strong>/</code>CanNotDelete<code> (writes ok, no delete). Locks apply to child resources too and override RBAC permissions (even Owners are blocked).</li></ol></ul>
-<ul><ol><li>Tags don't inherit automatically from RG to resources unless you use Azure Policy </code>Modify<code>/</code>Inherit a tag` policies.</li></ol></ul>
+<h2 id="exam-tips">Exam Tips</h2>
+<ul><ol><li>Management group hierarchy max depth: 6 levels (excluding root and subscription/resource levels).</li>
+<li>A subscription can only belong to <strong>one</strong> management group at a time.</li>
+<li>Lock types: <strong>Read-only</strong> (no writes/deletes) vs <strong>Delete</strong>/</code>CanNotDelete<code> (writes ok, no delete). Locks apply to child resources too and override RBAC permissions (even Owners are blocked).</li>
+<li>Tags don't inherit automatically from RG to resources unless you use Azure Policy </code>Modify<code>/</code>Inherit a tag` policies.</li></ol></ul>
 
   </div>
 </div>

@@ -171,15 +171,26 @@ hr.divider{border:none;height:0;margin:0}
       <a href="../../01-identity-governance/documents/03-management-groups-and-azure-policy.html">03 - Management Groups &amp; Policy</a>
       <a href="../../01-identity-governance/documents/04-access-control-scenarios.html">04 - Access Control Scenarios</a>
       <a href="../../01-identity-governance/documents/05-identity-best-practices.html">05 - Identity Best Practices</a>
-      <a href="../../01-identity-governance/documents/lab01-entra-users-groups.html">Lab 01 - Entra ID Users</a>
-      <a href="../../01-identity-governance/documents/lab02-rbac-azure-policy.html">Lab 02 - RBAC &amp; Policy</a>
+      <a href="../../01-identity-governance/documents/labs-index.html">Labs</a>
     </div>
   </details>
 </nav>
 <div class="layout">
   <aside class="sidebar">
     <div class="toc-title module-title">Module 01 - Identity &amp; Governance</div>
-    <a href="#objectives">Objectives</a>
+    <a href="01-entra-id-overview.html">01 - Entra ID Overview</a>
+<a href="02-rbac-fundamentals.html">02 - RBAC Fundamentals</a>
+<a href="03-management-groups-and-azure-policy.html">03 - Management Groups &amp; Azure Policy</a>
+<a href="04-access-control-scenarios.html">04 - Access Control Scenarios</a>
+<a href="05-identity-best-practices.html">05 - Identity Best Practices</a>
+<hr class="sidebar-divider">
+<div class="toc-title">Labs</div>
+<a href="lab01-entra-users-groups.html">Lab 01 - Entra Users &amp; Groups</a>
+<a href="lab02-rbac-azure-policy.html">Lab 02 - RBAC &amp; Azure Policy</a>
+<a href="lab03-management-groups-subscriptions.html">Lab 03 - Management Groups</a>
+<hr class="sidebar-divider">
+<div class="toc-title">On This Page</div>
+<a href="#objectives">Objectives</a>
 <a href="#prerequisites">Prerequisites</a>
 <a href="#estimated-time">Estimated time</a>
 <a href="#part-1-create-a-resource-group-for-this-lab">Part 1 – Create a resource group for this lab</a>
@@ -191,49 +202,47 @@ hr.divider{border:none;height:0;margin:0}
 <a href="#validation">Validation</a>
 <a href="#cleanup">Cleanup</a>
 <a href="#exam-tips">Exam Tips</a>
-<hr class="sidebar-divider">
-<div class="toc-title">On This Page</div>
   </aside>
   <div class="page">
   <h1>Lab 02 – Role-Based Access Control (RBAC) & Azure Policy</h1>
 
-<h2 id="$(Convert-TitleToId Objectives)">Objectives</h2>
-<ul><ol><li>Assign built-in roles at different scopes (subscription, RG, resource)</li></ol></ul>
-<ul><ol><li>Create a custom RBAC role</li></ol></ul>
-<ul><ol><li>Create and assign an Azure Policy definition and an initiative</li></ol></ul>
-<ul><ol><li>Use Policy to enforce tagging and allowed locations</li></ol></ul>
+<h2 id="objectives">Objectives</h2>
+<ul><ol><li>Assign built-in roles at different scopes (subscription, RG, resource)</li>
+<li>Create a custom RBAC role</li>
+<li>Create and assign an Azure Policy definition and an initiative</li>
+<li>Use Policy to enforce tagging and allowed locations</li></ol></ul>
 
-<h2 id="$(Convert-TitleToId Prerequisites)">Prerequisites</h2>
-<ul><ol><li>Owner or User Access Administrator on the subscription</li></ol></ul>
-<ul><ol><li>Lab 01 users/groups (optional, can use any test user)</li></ol></ul>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul><ol><li>Owner or User Access Administrator on the subscription</li>
+<li>Lab 01 users/groups (optional, can use any test user)</li></ol></ul>
 
-<h2 id="$(Convert-TitleToId Estimated time)">Estimated time</h2>
+<h2 id="estimated-time">Estimated time</h2>
 <p>45 minutes</p>
 
 <hr class="divider">
 
-<h2 id="$(Convert-TitleToId Part 1 – Create a resource group for this lab)">Part 1 – Create a resource group for this lab</h2>
+<h2 id="part-1-create-a-resource-group-for-this-lab">Part 1 – Create a resource group for this lab</h2>
 
-<ol><li>Search for <strong>Resource groups</strong> > <strong>Create</strong>.</li></ol>
-<ol><li><strong>Subscription</strong>: your subscription. <strong>Resource group</strong>: <code>rg-az104-lab02</code>.</li></ol>
+<ol><li>Search for <strong>Resource groups</strong> > <strong>Create</strong>.</li>
+<li><strong>Subscription</strong>: your subscription. <strong>Resource group</strong>: <code>rg-az104-lab02</code>.</li></ol>
 <p><strong>Region</strong>: <code>East US</code>.</p>
 <ol><li>Select <strong>Review + create</strong> > <strong>Create</strong>.</li></ol>
 
-<h2 id="$(Convert-TitleToId Part 2 – Assign built-in roles)">Part 2 – Assign built-in roles</h2>
+<h2 id="part-2-assign-built-in-roles">Part 2 – Assign built-in roles</h2>
 
-<ol><li>Go to <strong>rg-az104-lab02</strong> > <strong>Access control (IAM)</strong> > <strong>Add</strong> > <strong>Add role assignment</strong>.</li></ol>
-<ol><li>Role tab: select <strong>Reader</strong>. Select <strong>Next</strong>.</li></ol>
-<ol><li>Members tab: <strong>Assign access to</strong> = <strong>User, group, or service principal</strong> ></li></ol>
+<ol><li>Go to <strong>rg-az104-lab02</strong> > <strong>Access control (IAM)</strong> > <strong>Add</strong> > <strong>Add role assignment</strong>.</li>
+<li>Role tab: select <strong>Reader</strong>. Select <strong>Next</strong>.</li>
+<li>Members tab: <strong>Assign access to</strong> = <strong>User, group, or service principal</strong> ></li></ol>
 <p><strong>Select members</strong> > choose <code>grp-az104-lab</code> (from Lab 01).</p>
-<ol><li><strong>Review + assign</strong>.</li></ol>
-<ol><li>Repeat at the <strong>resource</strong> level: create a storage account (see Lab 04 if not</li></ol>
+<ol><li><strong>Review + assign</strong>.</li>
+<li>Repeat at the <strong>resource</strong> level: create a storage account (see Lab 04 if not</li></ol>
 <p>yet created). Open the storage account > <strong>Access control (IAM)</strong> > <strong>Add role</p>
 <p>assignment</strong> > Role = <strong>Storage Blob Data Contributor</strong> > assign to Bob —</p>
 <p>this grants Bob access only at the storage account scope, not the whole RG.</p>
 <ol><li>To list current assignments at any scope, open <strong>Access control (IAM)</strong> ></li></ol>
 <p><strong>Role assignments</strong> tab and filter as needed.</p>
 
-<h2 id="$(Convert-TitleToId Part 3 – Create a custom role)">Part 3 – Create a custom role</h2>
+<h2 id="part-3-create-a-custom-role">Part 3 – Create a custom role</h2>
 
 <ol><li>Go to the subscription (or <code>rg-az104-lab02</code>) > <strong>Access control (IAM)</strong> ></li></ol>
 <p><strong>Add</strong> > <strong>Add custom role</strong>.</p>
@@ -254,37 +263,37 @@ hr.divider{border:none;height:0;margin:0}
 <p></code>`<code></p>
 <ol><li><strong>Assignable scopes</strong> tab: confirm the scope is your subscription (or narrow</li></ol>
 <p>it to </code>rg-az104-lab02<code> using <strong>+ Add assignable scopes</strong>).</p>
-<ol><li><strong>Review + create</strong> > <strong>Create</strong>.</li></ol>
-<ol><li>Assign the new role: <strong>Access control (IAM)</strong> > <strong>Add role assignment</strong> ></li></ol>
+<ol><li><strong>Review + create</strong> > <strong>Create</strong>.</li>
+<li>Assign the new role: <strong>Access control (IAM)</strong> > <strong>Add role assignment</strong> ></li></ol>
 <p>search for <strong>VM Operator (Start/Stop only)</strong> under <strong>Custom roles</strong> > assign</p>
 <p>it to </code>carol@<yourtenant>.onmicrosoft.com<code> at the </code>rg-az104-lab02<code> scope.</p>
 
-<h2 id="$(Convert-TitleToId Part 4 – Azure Policy: deny resources without a tag)">Part 4 – Azure Policy: deny resources without a tag</h2>
+<h2 id="part-4-azure-policy-deny-resources-without-a-tag">Part 4 – Azure Policy: deny resources without a tag</h2>
 
 <ol><li>Search for <strong>Policy</strong> > <strong>Definitions</strong> > search the built-in definition</li></ol>
 <p><strong>"Require a tag on resource groups"</strong>.</p>
-<ol><li>Select it > <strong>Assign</strong>.</li></ol>
-<ol><li><strong>Basics</strong> tab: <strong>Scope</strong> = your subscription.</li></ol>
-<ol><li><strong>Parameters</strong> tab: set </code>Tag Name<code> = </code>CostCenter<code>.</li></ol>
-<ol><li>Confirm the <strong>Effect</strong> parameter (shown on the Parameters tab, or under</li></ol>
+<ol><li>Select it > <strong>Assign</strong>.</li>
+<li><strong>Basics</strong> tab: <strong>Scope</strong> = your subscription.</li>
+<li><strong>Parameters</strong> tab: set </code>Tag Name<code> = </code>CostCenter<code>.</li>
+<li>Confirm the <strong>Effect</strong> parameter (shown on the Parameters tab, or under</li></ol>
 <p><strong>Advanced</strong> depending on the definition) is set to <strong>Deny</strong>.</p>
-<ol><li><strong>Review + create</strong> > <strong>Create</strong>.</li></ol>
-<ol><li>Test it: go to <strong>Resource groups</strong> > <strong>Create</strong>, name it </code>rg-policy-test<code>,</li></ol>
+<ol><li><strong>Review + create</strong> > <strong>Create</strong>.</li>
+<li>Test it: go to <strong>Resource groups</strong> > <strong>Create</strong>, name it </code>rg-policy-test<code>,</li></ol>
 <p>region </code>East US<code>, and select <strong>Review + create</strong>. Expect a policy validation</p>
 <p>error (</code>RequestDisallowedByPolicy<code>) because the </code>CostCenter<code> tag is missing —</p>
 <p>do not proceed past this point.</p>
 
-<h2 id="$(Convert-TitleToId Part 5 – Azure Policy: allowed locations initiative)">Part 5 – Azure Policy: allowed locations initiative</h2>
+<h2 id="part-5-azure-policy-allowed-locations-initiative">Part 5 – Azure Policy: allowed locations initiative</h2>
 
-<ol><li><strong>Policy</strong> > <strong>Assignments</strong> > <strong>Assign initiative</strong> > search <strong>"Allowed locations"</strong>.</li></ol>
-<ol><li><strong>Scope</strong>: </code>rg-az104-lab02<code>. <strong>Parameters</strong> tab: <strong>Allowed locations</strong> =</li></ol>
+<ol><li><strong>Policy</strong> > <strong>Assignments</strong> > <strong>Assign initiative</strong> > search <strong>"Allowed locations"</strong>.</li>
+<li><strong>Scope</strong>: </code>rg-az104-lab02<code>. <strong>Parameters</strong> tab: <strong>Allowed locations</strong> =</li></ol>
 <p></code>East US<code>, </code>East US 2<code>.</p>
-<ol><li><strong>Review + create</strong> > <strong>Create</strong>.</li></ol>
-<ol><li>Test it: try to create a resource (e.g., a new storage account) inside</li></ol>
+<ol><li><strong>Review + create</strong> > <strong>Create</strong>.</li>
+<li>Test it: try to create a resource (e.g., a new storage account) inside</li></ol>
 <p></code>rg-az104-lab02<code> with <strong>Region</strong> set to </code>West US<code>. The <strong>Review + create</strong></p>
 <p>step should report a policy violation and block creation.</p>
 
-<h2 id="$(Convert-TitleToId Part 6 – Review compliance)">Part 6 – Review compliance</h2>
+<h2 id="part-6-review-compliance">Part 6 – Review compliance</h2>
 
 <ol><li><strong>Policy</strong> > <strong>Compliance</strong> — review the compliance state for your assignments</li></ol>
 <p>(state may take a few minutes to evaluate after assignment).</p>
@@ -292,16 +301,16 @@ hr.divider{border:none;height:0;margin:0}
 <p>policies (e.g., auto-enabling diagnostic settings) to bring <em>existing</em></p>
 <p>non-compliant resources into compliance.</p>
 
-<h2 id="$(Convert-TitleToId Validation)">Validation</h2>
+<h2 id="validation">Validation</h2>
 <ul><ol><li>[ ] </code>grp-az104-lab<code> has <strong>Reader</strong> on </code>rg-az104-lab02<code> (check via <strong>Access</li></ol></ul>
 <p>control (IAM)</strong> > <strong>Role assignments</strong>)</p>
-<ul><ol><li>[ ] Bob has <strong>Storage Blob Data Contributor</strong> scoped to the storage account only</li></ol></ul>
-<ul><ol><li>[ ] Custom role <strong>VM Operator (Start/Stop only)</strong> exists under <strong>Access control</li></ol></ul>
+<ul><ol><li>[ ] Bob has <strong>Storage Blob Data Contributor</strong> scoped to the storage account only</li>
+<li>[ ] Custom role <strong>VM Operator (Start/Stop only)</strong> exists under <strong>Access control</li></ol></ul>
 <p>(IAM)</strong> > <strong>Roles</strong> (filter by <strong>Custom roles</strong>) and is assigned to Carol</p>
-<ul><ol><li>[ ] Creating </code>rg-policy-test<code> without a </code>CostCenter<code> tag is denied</li></ol></ul>
-<ul><ol><li>[ ] Creating a resource in </code>West US<code> within </code>rg-az104-lab02<code> is denied</li></ol></ul>
+<ul><ol><li>[ ] Creating </code>rg-policy-test<code> without a </code>CostCenter<code> tag is denied</li>
+<li>[ ] Creating a resource in </code>West US<code> within </code>rg-az104-lab02<code> is denied</li></ol></ul>
 
-<h2 id="$(Convert-TitleToId Cleanup)">Cleanup</h2>
+<h2 id="cleanup">Cleanup</h2>
 <ol><li><strong>Policy</strong> > <strong>Assignments</strong> > delete the <strong>"Require a tag on resource</li></ol>
 <p>groups"</strong> assignment and the <strong>"Allowed locations"</strong> initiative assignment.</p>
 <ol><li><strong>rg-az104-lab02</strong> > <strong>Access control (IAM)</strong> > <strong>Role assignments</strong> > remove</li></ol>
@@ -312,11 +321,11 @@ hr.divider{border:none;height:0;margin:0}
 <p>(type the name to confirm).</p>
 <ol><li>If </code>rg-policy-test<code> was somehow created, delete it the same way.</li></ol>
 
-<h2 id="$(Convert-TitleToId Exam Tips)">Exam Tips</h2>
-<ul><ol><li>RBAC = <strong>who can do what</strong> (data plane/management plane access). Policy = <strong>what configurations are allowed</strong>, regardless of who.</li></ol></ul>
-<ul><ol><li>Role assignments are inherited down the hierarchy: Management Group → Subscription → Resource Group → Resource.</li></ol></ul>
-<ul><ol><li>Deny policies block non-compliant <em>new</em> resources; </code>audit<code> only flags; </code>DeployIfNotExists<code>/</code>Modify` need remediation tasks for <em>existing</em> resources.</li></ol></ul>
-<ul><ol><li>Custom roles need <strong>Assignable scopes</strong> — without the right scope, the role can't be assigned where you need it.</li></ol></ul>
+<h2 id="exam-tips">Exam Tips</h2>
+<ul><ol><li>RBAC = <strong>who can do what</strong> (data plane/management plane access). Policy = <strong>what configurations are allowed</strong>, regardless of who.</li>
+<li>Role assignments are inherited down the hierarchy: Management Group → Subscription → Resource Group → Resource.</li>
+<li>Deny policies block non-compliant <em>new</em> resources; </code>audit<code> only flags; </code>DeployIfNotExists<code>/</code>Modify` need remediation tasks for <em>existing</em> resources.</li>
+<li>Custom roles need <strong>Assignable scopes</strong> — without the right scope, the role can't be assigned where you need it.</li></ol></ul>
 
   </div>
 </div>
