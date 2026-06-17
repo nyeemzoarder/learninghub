@@ -46,6 +46,28 @@ strong{color:var(--primary);font-weight:700}
 .callout p{margin:0}
 .callout p + p{margin-top:8px}
 
+.magnify-btn{
+  position:absolute;top:12px;right:12px;background:rgba(255,255,255,0.9);border:2px solid var(--border);
+  color:var(--primary);padding:10px 12px;border-radius:8px;font-size:1.3rem;cursor:pointer;
+  transition:all 0.2s ease;box-shadow:0 2px 8px rgba(0,0,0,0.08);z-index:10;font-family:inherit
+}
+.magnify-btn:hover{background:#f0f4ff;border-color:#60a5fa;box-shadow:0 4px 12px rgba(96,165,250,0.2)}
+.magnify-btn:active{transform:scale(0.95)}
+
+.modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);
+  z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(2px);padding:20px
+}
+.modal-overlay.active{display:flex}
+.modal-content{background:#fff;border-radius:12px;padding:0;width:90vw;height:90vh;
+  overflow:auto;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.3)
+}
+.modal-content svg{width:100% !important;height:auto !important}
+.modal-close{position:absolute;top:16px;right:16px;background:transparent;border:none;
+  color:var(--primary);font-size:2rem;cursor:pointer;padding:0;width:40px;height:40px;
+  display:flex;align-items:center;justify-content:center;transition:all 0.2s;z-index:1001
+}
+.modal-close:hover{transform:scale(1.1)}
+
 .panel{
   background:var(--panel);
   color:#fff;border-radius:18px;padding:22px 26px;
@@ -298,25 +320,218 @@ details:focus-visible > summary {
   </div>
 
   <!-- The Hierarchy -->
-  <div class="section" id="the-hierarchy-azure-s-organizational-structure">
-    <div>
-      <h2>The Hierarchy: Azure's Organizational Structure</h2>
-      <h3>The Full Chain (Top to Bottom)</h3>
-      <p><strong>Key insight:</strong> Permissions and policies flow <strong>downward</strong>. If you set a policy on a management group, it applies to all subscriptions below it.</p>
+  <div class="section full" id="the-hierarchy-azure-s-organizational-structure">
+    <h2>The Hierarchy: Azure's Organizational Structure</h2>
+    <h3>The Full Chain (Top to Bottom)</h3>
+    <p><strong>Key insight:</strong> Permissions and policies flow <strong>downward</strong>. If you set a policy on a management group, it applies to all subscriptions below it.</p>
+    <div id="chart-container" style="transform-origin:top left;transition:transform 0.3s ease;border:2px solid var(--border);border-radius:10px;background:#fff;padding:30px;margin:20px 0;position:relative">
+    <button class="magnify-btn" onclick="openChartModal()" title="View fullscreen">🔍</button>
+    <svg viewBox="0 0 1800 900" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block">
+      <style>
+        .hierarchy-node{fill:#dbeafe;stroke:#60a5fa;stroke-width:3.5}
+        .hierarchy-text{font-size:20px;font-weight:800;text-anchor:middle;fill:var(--primary)}
+        .hierarchy-sub{font-size:15px;text-anchor:middle;fill:#0369a1;font-weight:600}
+        .hierarchy-icon{font-size:32px;text-anchor:middle;dominant-baseline:middle}
+        .hierarchy-line{stroke:#60a5fa;stroke-width:3;fill:none}
+      </style>
+      <!-- Connectors -->
+      <line class="hierarchy-line" x1="900" y1="95" x2="900" y2="145"/>
+      <line class="hierarchy-line" x1="900" y1="235" x2="900" y2="295"/>
+      <line class="hierarchy-line" x1="350" y1="295" x2="350" y2="365"/><line class="hierarchy-line" x1="900" y1="295" x2="900" y2="365"/><line class="hierarchy-line" x1="1450" y1="295" x2="1450" y2="365"/>
+      <line class="hierarchy-line" x1="350" y1="295" x2="1450" y2="295"/>
+      <line class="hierarchy-line" x1="350" y1="425" x2="350" y2="485"/><line class="hierarchy-line" x1="100" y1="485" x2="100" y2="555"/><line class="hierarchy-line" x1="600" y1="485" x2="600" y2="555"/>
+      <line class="hierarchy-line" x1="100" y1="485" x2="600" y2="485"/><line class="hierarchy-line" x1="900" y1="425" x2="900" y2="485"/><line class="hierarchy-line" x1="900" y1="485" x2="900" y2="555"/>
+      <line class="hierarchy-line" x1="1450" y1="425" x2="1450" y2="485"/><line class="hierarchy-line" x1="1200" y1="485" x2="1200" y2="555"/><line class="hierarchy-line" x1="1700" y1="485" x2="1700" y2="555"/>
+      <line class="hierarchy-line" x1="1200" y1="485" x2="1700" y2="485"/><line class="hierarchy-line" x1="100" y1="625" x2="100" y2="685"/><line class="hierarchy-line" x1="600" y1="625" x2="600" y2="685"/>
+      <line class="hierarchy-line" x1="900" y1="625" x2="900" y2="685"/><line class="hierarchy-line" x1="1200" y1="625" x2="1200" y2="685"/><line class="hierarchy-line" x1="1700" y1="625" x2="1700" y2="685"/>
+
+      <!-- Level 1: Tenant -->
+      <rect class="hierarchy-node" x="750" y="20" width="300" height="75" rx="10"/>
+      <text class="hierarchy-icon" x="820" y="60">🏢</text>
+      <text class="hierarchy-text" x="930" y="55">Azure Tenant</text>
+      <text class="hierarchy-sub" x="930" y="78">Organization</text>
+
+      <!-- Level 2: Root MG -->
+      <rect class="hierarchy-node" x="750" y="145" width="300" height="75" rx="10"/>
+      <text class="hierarchy-icon" x="820" y="185">📦</text>
+      <text class="hierarchy-text" x="930" y="180">Root MG</text>
+      <text class="hierarchy-sub" x="930" y="203">Management Group</text>
+
+      <!-- Level 3: Management Groups -->
+      <rect class="hierarchy-node" x="175" y="365" width="350" height="75" rx="10"/>
+      <text class="hierarchy-icon" x="270" y="405">💼</text>
+      <text class="hierarchy-text" x="425" y="400">IT Department</text>
+      <text class="hierarchy-sub" x="425" y="423">Management Group</text>
+
+      <rect class="hierarchy-node" x="725" y="365" width="350" height="75" rx="10"/>
+      <text class="hierarchy-icon" x="820" y="405">📊</text>
+      <text class="hierarchy-text" x="975" y="400">Business Dept</text>
+      <text class="hierarchy-sub" x="975" y="423">Management Group</text>
+
+      <rect class="hierarchy-node" x="1275" y="365" width="350" height="75" rx="10"/>
+      <text class="hierarchy-icon" x="1370" y="405">🌍</text>
+      <text class="hierarchy-text" x="1525" y="400">Location Dept</text>
+      <text class="hierarchy-sub" x="1525" y="423">Management Group</text>
+
+      <!-- Level 4: Subscriptions -->
+      <rect class="hierarchy-node" x="10" y="555" width="280" height="75" rx="10"/>
+      <text class="hierarchy-icon" x="85" y="595">🔑</text>
+      <text class="hierarchy-text" x="165" y="590">IT_Core</text>
+      <text class="hierarchy-sub" x="165" y="613">Subscription</text>
+
+      <rect class="hierarchy-node" x="460" y="555" width="280" height="75" rx="10"/>
+      <text class="hierarchy-icon" x="535" y="595">🔑</text>
+      <text class="hierarchy-text" x="615" y="590">IT_IaaS</text>
+      <text class="hierarchy-sub" x="615" y="613">Subscription</text>
+
+      <rect class="hierarchy-node" x="760" y="555" width="280" height="75" rx="10"/>
+      <text class="hierarchy-icon" x="835" y="595">🔑</text>
+      <text class="hierarchy-text" x="915" y="590">Business_Prod</text>
+      <text class="hierarchy-sub" x="915" y="613">Subscription</text>
+
+      <rect class="hierarchy-node" x="1060" y="555" width="280" height="75" rx="10"/>
+      <text class="hierarchy-icon" x="1135" y="595">🔑</text>
+      <text class="hierarchy-text" x="1215" y="590">Loc_US</text>
+      <text class="hierarchy-sub" x="1215" y="613">Subscription</text>
+
+      <rect class="hierarchy-node" x="1510" y="555" width="280" height="75" rx="10"/>
+      <text class="hierarchy-icon" x="1585" y="595">🔑</text>
+      <text class="hierarchy-text" x="1665" y="590">Loc_EU</text>
+      <text class="hierarchy-sub" x="1665" y="613">Subscription</text>
+
+      <!-- Level 5: Resources -->
+      <rect class="hierarchy-node" x="10" y="685" width="280" height="85" rx="10"/>
+      <text class="hierarchy-icon" x="85" y="730">📂</text>
+      <text class="hierarchy-text" x="165" y="728">Resource</text>
+      <text class="hierarchy-text" x="165" y="748">Groups</text>
+
+      <rect class="hierarchy-node" x="460" y="685" width="280" height="85" rx="10"/>
+      <text class="hierarchy-icon" x="535" y="730">💻</text>
+      <text class="hierarchy-text" x="615" y="728">Virtual</text>
+      <text class="hierarchy-text" x="615" y="748">Machines</text>
+
+      <rect class="hierarchy-node" x="760" y="685" width="280" height="85" rx="10"/>
+      <text class="hierarchy-icon" x="835" y="730">🗄️</text>
+      <text class="hierarchy-text" x="915" y="728">Databases</text>
+      <text class="hierarchy-text" x="915" y="748">(SQL, NoSQL)</text>
+
+      <rect class="hierarchy-node" x="1060" y="685" width="280" height="85" rx="10"/>
+      <text class="hierarchy-icon" x="1135" y="730">💾</text>
+      <text class="hierarchy-text" x="1215" y="728">Storage</text>
+      <text class="hierarchy-text" x="1215" y="748">(Blob, Files)</text>
+
+      <rect class="hierarchy-node" x="1510" y="685" width="280" height="85" rx="10"/>
+      <text class="hierarchy-icon" x="1585" y="730">🐳</text>
+      <text class="hierarchy-text" x="1665" y="728">Containers</text>
+      <text class="hierarchy-text" x="1665" y="748">(AKS, ACI)</text>
+    </svg>
     </div>
-    <div class="panel">┌─────────────────────────────────┐
-│    Tenant (Entra Directory)     │  (Your entire Azure organization)
-├─────────────────────────────────┤
-│ Root Management Group            │  (All subscriptions in your org)
-├─────────────────────────────────┤
-│ Management Groups (optional)     │  (Finance, Engineering, Ops, etc.)
-├─────────────────────────────────┤
-│ Subscriptions                    │  (Individual billing units)
-├─────────────────────────────────┤
-│ Resource Groups                  │  (Logical containers of resources)
-├─────────────────────────────────┤
-│ Resources                        │  (VMs, Storage, Databases, etc.)
-└─────────────────────────────────┘</div>
+  </div>
+
+  <!-- Chart Modal -->
+  <div id="chartModal" class="modal-overlay" onclick="closeChartModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeChartModal()">✕</button>
+      <svg viewBox="0 0 1800 900" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;padding:40px">
+        <style>
+          .hierarchy-node{fill:#dbeafe;stroke:#60a5fa;stroke-width:3.5}
+          .hierarchy-text{font-size:20px;font-weight:800;text-anchor:middle;fill:#151d63}
+          .hierarchy-sub{font-size:15px;text-anchor:middle;fill:#0369a1;font-weight:600}
+          .hierarchy-icon{font-size:32px;text-anchor:middle;dominant-baseline:middle}
+          .hierarchy-line{stroke:#60a5fa;stroke-width:3;fill:none}
+        </style>
+        <!-- Connectors -->
+        <line class="hierarchy-line" x1="900" y1="95" x2="900" y2="145"/>
+        <line class="hierarchy-line" x1="900" y1="235" x2="900" y2="295"/>
+        <line class="hierarchy-line" x1="350" y1="295" x2="350" y2="365"/><line class="hierarchy-line" x1="900" y1="295" x2="900" y2="365"/><line class="hierarchy-line" x1="1450" y1="295" x2="1450" y2="365"/>
+        <line class="hierarchy-line" x1="350" y1="295" x2="1450" y2="295"/>
+        <line class="hierarchy-line" x1="350" y1="425" x2="350" y2="485"/><line class="hierarchy-line" x1="100" y1="485" x2="100" y2="555"/><line class="hierarchy-line" x1="600" y1="485" x2="600" y2="555"/>
+        <line class="hierarchy-line" x1="100" y1="485" x2="600" y2="485"/><line class="hierarchy-line" x1="900" y1="425" x2="900" y2="485"/><line class="hierarchy-line" x1="900" y1="485" x2="900" y2="555"/>
+        <line class="hierarchy-line" x1="1450" y1="425" x2="1450" y2="485"/><line class="hierarchy-line" x1="1200" y1="485" x2="1200" y2="555"/><line class="hierarchy-line" x1="1700" y1="485" x2="1700" y2="555"/>
+        <line class="hierarchy-line" x1="1200" y1="485" x2="1700" y2="485"/><line class="hierarchy-line" x1="100" y1="625" x2="100" y2="685"/><line class="hierarchy-line" x1="600" y1="625" x2="600" y2="685"/>
+        <line class="hierarchy-line" x1="900" y1="625" x2="900" y2="685"/><line class="hierarchy-line" x1="1200" y1="625" x2="1200" y2="685"/><line class="hierarchy-line" x1="1700" y1="625" x2="1700" y2="685"/>
+
+        <!-- Level 1: Tenant -->
+        <rect class="hierarchy-node" x="750" y="20" width="300" height="75" rx="10"/>
+        <text class="hierarchy-icon" x="820" y="60">🏢</text>
+        <text class="hierarchy-text" x="930" y="55">Azure Tenant</text>
+        <text class="hierarchy-sub" x="930" y="78">Organization</text>
+
+        <!-- Level 2: Root MG -->
+        <rect class="hierarchy-node" x="750" y="145" width="300" height="75" rx="10"/>
+        <text class="hierarchy-icon" x="820" y="185">📦</text>
+        <text class="hierarchy-text" x="930" y="180">Root MG</text>
+        <text class="hierarchy-sub" x="930" y="203">Management Group</text>
+
+        <!-- Level 3: Management Groups -->
+        <rect class="hierarchy-node" x="175" y="365" width="350" height="75" rx="10"/>
+        <text class="hierarchy-icon" x="270" y="405">💼</text>
+        <text class="hierarchy-text" x="425" y="400">IT Department</text>
+        <text class="hierarchy-sub" x="425" y="423">Management Group</text>
+
+        <rect class="hierarchy-node" x="725" y="365" width="350" height="75" rx="10"/>
+        <text class="hierarchy-icon" x="820" y="405">📊</text>
+        <text class="hierarchy-text" x="975" y="400">Business Dept</text>
+        <text class="hierarchy-sub" x="975" y="423">Management Group</text>
+
+        <rect class="hierarchy-node" x="1275" y="365" width="350" height="75" rx="10"/>
+        <text class="hierarchy-icon" x="1370" y="405">🌍</text>
+        <text class="hierarchy-text" x="1525" y="400">Location Dept</text>
+        <text class="hierarchy-sub" x="1525" y="423">Management Group</text>
+
+        <!-- Level 4: Subscriptions -->
+        <rect class="hierarchy-node" x="10" y="555" width="280" height="75" rx="10"/>
+        <text class="hierarchy-icon" x="85" y="595">🔑</text>
+        <text class="hierarchy-text" x="165" y="590">IT_Core</text>
+        <text class="hierarchy-sub" x="165" y="613">Subscription</text>
+
+        <rect class="hierarchy-node" x="460" y="555" width="280" height="75" rx="10"/>
+        <text class="hierarchy-icon" x="535" y="595">🔑</text>
+        <text class="hierarchy-text" x="615" y="590">IT_IaaS</text>
+        <text class="hierarchy-sub" x="615" y="613">Subscription</text>
+
+        <rect class="hierarchy-node" x="760" y="555" width="280" height="75" rx="10"/>
+        <text class="hierarchy-icon" x="835" y="595">🔑</text>
+        <text class="hierarchy-text" x="915" y="590">Business_Prod</text>
+        <text class="hierarchy-sub" x="915" y="613">Subscription</text>
+
+        <rect class="hierarchy-node" x="1060" y="555" width="280" height="75" rx="10"/>
+        <text class="hierarchy-icon" x="1135" y="595">🔑</text>
+        <text class="hierarchy-text" x="1215" y="590">Loc_US</text>
+        <text class="hierarchy-sub" x="1215" y="613">Subscription</text>
+
+        <rect class="hierarchy-node" x="1510" y="555" width="280" height="75" rx="10"/>
+        <text class="hierarchy-icon" x="1585" y="595">🔑</text>
+        <text class="hierarchy-text" x="1665" y="590">Loc_EU</text>
+        <text class="hierarchy-sub" x="1665" y="613">Subscription</text>
+
+        <!-- Level 5: Resources -->
+        <rect class="hierarchy-node" x="10" y="685" width="280" height="85" rx="10"/>
+        <text class="hierarchy-icon" x="85" y="730">📂</text>
+        <text class="hierarchy-text" x="165" y="728">Resource</text>
+        <text class="hierarchy-text" x="165" y="748">Groups</text>
+
+        <rect class="hierarchy-node" x="460" y="685" width="280" height="85" rx="10"/>
+        <text class="hierarchy-icon" x="535" y="730">💻</text>
+        <text class="hierarchy-text" x="615" y="728">Virtual</text>
+        <text class="hierarchy-text" x="615" y="748">Machines</text>
+
+        <rect class="hierarchy-node" x="760" y="685" width="280" height="85" rx="10"/>
+        <text class="hierarchy-icon" x="835" y="730">🗄️</text>
+        <text class="hierarchy-text" x="915" y="728">Databases</text>
+        <text class="hierarchy-text" x="915" y="748">(SQL, NoSQL)</text>
+
+        <rect class="hierarchy-node" x="1060" y="685" width="280" height="85" rx="10"/>
+        <text class="hierarchy-icon" x="1135" y="730">💾</text>
+        <text class="hierarchy-text" x="1215" y="728">Storage</text>
+        <text class="hierarchy-text" x="1215" y="748">(Blob, Files)</text>
+
+        <rect class="hierarchy-node" x="1510" y="685" width="280" height="85" rx="10"/>
+        <text class="hierarchy-icon" x="1585" y="730">🐳</text>
+        <text class="hierarchy-text" x="1665" y="728">Containers</text>
+        <text class="hierarchy-text" x="1665" y="748">(AKS, ACI)</text>
+      </svg>
+    </div>
   </div>
 
   <!-- How Management Groups Work -->
@@ -673,6 +888,21 @@ Team calls admin: "This policy is breaking our work!"</div>
   }, { rootMargin: '-100px 0px -70% 0px', threshold: 0 });
   sections.forEach(function(s){ observer.observe(s.el); });
 })();
+
+function openChartModal() {
+  document.getElementById('chartModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeChartModal(event) {
+  if (event && event.target.id !== 'chartModal') return;
+  document.getElementById('chartModal').classList.remove('active');
+  document.body.style.overflow = 'auto';
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeChartModal();
+});
 </script>
 </body>
 </html>
