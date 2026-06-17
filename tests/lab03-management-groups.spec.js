@@ -288,4 +288,50 @@ test.describe('Lab 03 - Management Groups & Azure Policy', () => {
     // Should have no critical errors
     expect(errors.length).toBe(0);
   });
+
+  test('should not have right-side cutoff in SVG', async ({ page }) => {
+    const chartContainer = page.locator('#chart-container');
+    const svg = chartContainer.locator('svg').first();
+
+    // Get viewBox dimensions
+    const viewBox = await svg.getAttribute('viewBox');
+    const [, , viewBoxWidth, viewBoxHeight] = viewBox.split(' ').map(Number);
+
+    // Get all rectangles and check they're within viewBox
+    const rects = svg.locator('rect');
+    const rectCount = await rects.count();
+
+    for (let i = 0; i < rectCount; i++) {
+      const rect = rects.nth(i);
+      const x = parseFloat(await rect.getAttribute('x'));
+      const width = parseFloat(await rect.getAttribute('width'));
+      const rightEdge = x + width;
+
+      // All elements should fit within viewBox width with 10px padding
+      expect(rightEdge).toBeLessThanOrEqual(viewBoxWidth);
+    }
+  });
+
+  test('should not have bottom cutoff in SVG', async ({ page }) => {
+    const chartContainer = page.locator('#chart-container');
+    const svg = chartContainer.locator('svg').first();
+
+    // Get viewBox dimensions
+    const viewBox = await svg.getAttribute('viewBox');
+    const [, , viewBoxWidth, viewBoxHeight] = viewBox.split(' ').map(Number);
+
+    // Get all rectangles and check they're within viewBox
+    const rects = svg.locator('rect');
+    const rectCount = await rects.count();
+
+    for (let i = 0; i < rectCount; i++) {
+      const rect = rects.nth(i);
+      const y = parseFloat(await rect.getAttribute('y'));
+      const height = parseFloat(await rect.getAttribute('height'));
+      const bottomEdge = y + height;
+
+      // All elements should fit within viewBox height
+      expect(bottomEdge).toBeLessThanOrEqual(viewBoxHeight);
+    }
+  });
 });
