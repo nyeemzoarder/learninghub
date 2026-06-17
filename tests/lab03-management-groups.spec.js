@@ -48,9 +48,9 @@ test.describe('Lab 03 - Management Groups & Azure Policy', () => {
     const svg = page.locator('#chart-container svg');
     await expect(svg).toBeVisible();
 
-    // Check SVG has the correct viewBox
+    // Check SVG has the correct viewBox (2300 width for no right-side cutoff)
     const viewBox = await svg.getAttribute('viewBox');
-    expect(viewBox).toBe('0 0 2200 800');
+    expect(viewBox).toBe('0 0 2300 800');
   });
 
   test('should display all hierarchy levels in the chart', async ({ page }) => {
@@ -144,7 +144,7 @@ test.describe('Lab 03 - Management Groups & Azure Policy', () => {
     // Check modal SVG
     const modalSvg = page.locator('#chartModal svg');
     const viewBox = await modalSvg.getAttribute('viewBox');
-    expect(viewBox).toBe('0 0 2200 800');
+    expect(viewBox).toBe('0 0 2300 800');
   });
 
   test('should close modal when close button is clicked', async ({ page }) => {
@@ -333,5 +333,60 @@ test.describe('Lab 03 - Management Groups & Azure Policy', () => {
       // All elements should fit within viewBox height
       expect(bottomEdge).toBeLessThanOrEqual(viewBoxHeight);
     }
+  });
+
+  test('should have resource groups properly aligned under subscriptions', async ({ page }) => {
+    const chartContainer = page.locator('#chart-container');
+    const svg = chartContainer.locator('svg').first();
+
+    // Get all text elements to find subscriptions and RGs
+    const texts = svg.locator('text');
+    const textCount = await texts.count();
+
+    const subscriptions = {};
+    const resourceGroups = {};
+
+    // Collect subscription and RG positions
+    for (let i = 0; i < textCount; i++) {
+      const text = texts.nth(i);
+      const content = await text.textContent();
+      const xPos = parseFloat(await text.getAttribute('x'));
+
+      if (content === 'IT_Core' || content === 'IT_IaaS' ||
+          content === 'Business_Prod' || content === 'Loc_US' || content === 'Loc_EU') {
+        subscriptions[content] = xPos;
+      }
+
+      if (content && content.startsWith('RG-')) {
+        if (!resourceGroups[content]) {
+          resourceGroups[content] = xPos;
+        }
+      }
+    }
+
+    // Verify RGs are aligned with their subscriptions
+    // RG-Core and RG-Mgmt should be centered under IT_Core (x=165)
+    const itCoreX = subscriptions['IT_Core'];
+    expect(Math.abs(resourceGroups['RG-Core'] - itCoreX)).toBeLessThan(100);
+    expect(Math.abs(resourceGroups['RG-Mgmt'] - itCoreX)).toBeLessThan(100);
+
+    // RG-IaaS and RG-Dev should be centered under IT_IaaS (x=655)
+    const itIaaSX = subscriptions['IT_IaaS'];
+    expect(Math.abs(resourceGroups['RG-IaaS'] - itIaaSX)).toBeLessThan(100);
+    expect(Math.abs(resourceGroups['RG-Dev'] - itIaaSX)).toBeLessThan(100);
+
+    // RG-Prod should be under Business_Prod (x=1115)
+    const businessProdX = subscriptions['Business_Prod'];
+    expect(Math.abs(resourceGroups['RG-Prod'] - businessProdX)).toBeLessThan(100);
+
+    // RG-US and RG-US-2 should be under Loc_US (x=1635)
+    const locUSX = subscriptions['Loc_US'];
+    expect(Math.abs(resourceGroups['RG-US'] - locUSX)).toBeLessThan(100);
+    expect(Math.abs(resourceGroups['RG-US-2'] - locUSX)).toBeLessThan(100);
+
+    // RG-EU and RG-EU2 should be under Loc_EU (x=2115)
+    const locEUX = subscriptions['Loc_EU'];
+    expect(Math.abs(resourceGroups['RG-EU'] - locEUX)).toBeLessThan(100);
+    expect(Math.abs(resourceGroups['RG-EU2'] - locEUX)).toBeLessThan(100);
   });
 });
