@@ -421,4 +421,70 @@ test.describe('Lab 03 - Management Groups & Azure Policy', () => {
       expect(foundRGs).toContain(expectedRG);
     }
   });
+
+  test('should diagnose RG alignment - capture coordinates for debugging', async ({ page }) => {
+    const svg = page.locator('#chart-container svg').first();
+    const texts = svg.locator('text');
+    const textCount = await texts.count();
+
+    const subscriptions = {};
+    const resourceGroups = {};
+    const rgNodes = {};
+
+    // Collect all positions
+    for (let i = 0; i < textCount; i++) {
+      const text = texts.nth(i);
+      const content = await text.textContent();
+      const x = parseFloat(await text.getAttribute('x'));
+      const y = parseFloat(await text.getAttribute('y'));
+
+      if (content === 'IT_Core' || content === 'IT_IaaS' ||
+          content === 'Business_Prod' || content === 'Loc_US' || content === 'Loc_EU') {
+        subscriptions[content] = { x, y };
+      }
+
+      if (content && content.startsWith('RG-')) {
+        resourceGroups[content] = { x, y };
+      }
+    }
+
+    // Get RG node rectangles for centering analysis
+    const rects = svg.locator('.rg-node');
+    const rectCount = await rects.count();
+
+    for (let i = 0; i < rectCount; i++) {
+      const rect = rects.nth(i);
+      const x = parseFloat(await rect.getAttribute('x'));
+      const width = parseFloat(await rect.getAttribute('width'));
+      const centerX = x + width / 2;
+
+      // Get the text label within this rect to identify it
+      const rectParent = await rect.evaluate(el => el.parentElement);
+      // Store node center positions
+      if (i === 0) rgNodes['RG-Core'] = { x, width, centerX };
+      if (i === 1) rgNodes['RG-Mgmt'] = { x, width, centerX };
+      if (i === 2) rgNodes['RG-IaaS'] = { x, width, centerX };
+      if (i === 3) rgNodes['RG-Dev'] = { x, width, centerX };
+      if (i === 4) rgNodes['RG-Prod'] = { x, width, centerX };
+      if (i === 5) rgNodes['RG-US'] = { x, width, centerX };
+      if (i === 6) rgNodes['RG-US-2'] = { x, width, centerX };
+      if (i === 7) rgNodes['RG-EU'] = { x, width, centerX };
+      if (i === 8) rgNodes['RG-EU2'] = { x, width, centerX };
+    }
+
+    console.log('Subscriptions:', subscriptions);
+    console.log('Resource Groups (text):', resourceGroups);
+    console.log('RG Nodes (boxes):', rgNodes);
+
+    // Log for debugging alignment issues
+    console.log('\n=== ALIGNMENT ANALYSIS ===');
+
+    // IT_Core check
+    const itCoreSubX = subscriptions['IT_Core']?.x;
+    const rgCoreNodeX = rgNodes['RG-Core']?.centerX;
+    const rgMgmtNodeX = rgNodes['RG-Mgmt']?.centerX;
+    console.log(`IT_Core subscription at x=${itCoreSubX}`);
+    console.log(`RG-Core node center at x=${rgCoreNodeX}, diff=${Math.abs(itCoreSubX - rgCoreNodeX)}`);
+    console.log(`RG-Mgmt node center at x=${rgMgmtNodeX}, diff=${Math.abs(itCoreSubX - rgMgmtNodeX)}`);
+  });
 });
