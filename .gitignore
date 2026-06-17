@@ -11,3 +11,12 @@ Thumbs.db
 # Editor files
 .vscode/
 *.swp
+
+# Node and dependencies
+node_modules/
+package-lock.json
+
+# Playwright test artifacts
+test-results/
+playwright-report/
+.playwright/
