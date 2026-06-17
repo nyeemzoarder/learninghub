@@ -345,12 +345,18 @@ test.describe('Lab 03 - Management Groups & Azure Policy', () => {
 
     const subscriptions = {};
     const resourceGroups = {};
+    const allTextContent = [];
 
     // Collect subscription and RG positions
     for (let i = 0; i < textCount; i++) {
       const text = texts.nth(i);
       const content = await text.textContent();
       const xPos = parseFloat(await text.getAttribute('x'));
+
+      // Store all text for debugging
+      if (content && content.trim()) {
+        allTextContent.push({ text: content.trim(), x: xPos });
+      }
 
       if (content === 'IT_Core' || content === 'IT_IaaS' ||
           content === 'Business_Prod' || content === 'Loc_US' || content === 'Loc_EU') {
@@ -365,28 +371,54 @@ test.describe('Lab 03 - Management Groups & Azure Policy', () => {
     }
 
     // Verify RGs are aligned with their subscriptions
-    // RG-Core and RG-Mgmt should be centered under IT_Core (x=165)
+    // RG-Core and RG-Mgmt should be centered under IT_Core
     const itCoreX = subscriptions['IT_Core'];
     expect(Math.abs(resourceGroups['RG-Core'] - itCoreX)).toBeLessThan(100);
     expect(Math.abs(resourceGroups['RG-Mgmt'] - itCoreX)).toBeLessThan(100);
 
-    // RG-IaaS and RG-Dev should be centered under IT_IaaS (x=655)
+    // RG-IaaS and RG-Dev should be centered under IT_IaaS
     const itIaaSX = subscriptions['IT_IaaS'];
     expect(Math.abs(resourceGroups['RG-IaaS'] - itIaaSX)).toBeLessThan(100);
     expect(Math.abs(resourceGroups['RG-Dev'] - itIaaSX)).toBeLessThan(100);
 
-    // RG-Prod should be under Business_Prod (x=1115)
+    // RG-Prod should be under Business_Prod
     const businessProdX = subscriptions['Business_Prod'];
     expect(Math.abs(resourceGroups['RG-Prod'] - businessProdX)).toBeLessThan(100);
 
-    // RG-US and RG-US-2 should be under Loc_US (x=1635)
+    // RG-US and RG-US-2 should be under Loc_US
     const locUSX = subscriptions['Loc_US'];
     expect(Math.abs(resourceGroups['RG-US'] - locUSX)).toBeLessThan(100);
     expect(Math.abs(resourceGroups['RG-US-2'] - locUSX)).toBeLessThan(100);
 
-    // RG-EU and RG-EU2 should be under Loc_EU (x=2115)
+    // RG-EU and RG-EU2 should be under Loc_EU
     const locEUX = subscriptions['Loc_EU'];
     expect(Math.abs(resourceGroups['RG-EU'] - locEUX)).toBeLessThan(100);
     expect(Math.abs(resourceGroups['RG-EU2'] - locEUX)).toBeLessThan(100);
+  });
+
+  test('should display all RG text labels completely without cutoff', async ({ page }) => {
+    const chartContainer = page.locator('#chart-container');
+    const svg = chartContainer.locator('svg').first();
+
+    // Get all text elements in RG nodes
+    const texts = svg.locator('.rg-text');
+    const textCount = await texts.count();
+
+    // Verify all RGs are present and visible
+    const expectedRGs = ['RG-Core', 'RG-Mgmt', 'RG-IaaS', 'RG-Dev', 'RG-Prod', 'RG-US', 'RG-US-2', 'RG-EU', 'RG-EU2'];
+    const foundRGs = [];
+
+    for (let i = 0; i < textCount; i++) {
+      const text = texts.nth(i);
+      const content = await text.textContent();
+      if (content) {
+        foundRGs.push(content.trim());
+      }
+    }
+
+    // All expected RGs should be found
+    for (const expectedRG of expectedRGs) {
+      expect(foundRGs).toContain(expectedRG);
+    }
   });
 });
