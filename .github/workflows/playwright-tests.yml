@@ -1,0 +1,127 @@
+name: Playwright Tests
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'courses/**/*.html'
+      - 'tests/**'
+      - 'package.json'
+      - 'playwright.config.js'
+      - '.github/workflows/playwright-tests.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'courses/**/*.html'
+      - 'tests/**'
+      - 'package.json'
+      - 'playwright.config.js'
+
+jobs:
+  test:
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright tests
+        run: npm test
+        continue-on-error: false
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ matrix.node-version }}
+          path: playwright-report/
+          retention-days: 30
+
+      - name: Upload test failures
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-failures-${{ matrix.node-version }}
+          path: test-results/
+          retention-days: 7
+
+      - name: Test Summary
+        if: always()
+        run: |
+          echo "## Playwright Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ -f "playwright-report/index.html" ]; then
+            echo "✅ Tests completed - see artifacts for detailed report" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ No test report generated" >> $GITHUB_STEP_SUMMARY
+          fi
+
+  test-lab03:
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Lab 03 tests
+        run: npm run test:lab03
+
+      - name: Upload Lab 03 test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lab03-test-report
+          path: playwright-report/
+          retention-days: 30
+
+  report:
+    name: Test Report
+    needs: [test, test-lab03]
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+      - name: Download test results
+        uses: actions/download-artifact@v4
+        with:
+          name: playwright-report-20.x
+          path: test-report
+
+      - name: Publish test report
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: Playwright Test Results
+          path: 'test-results/**/*.json'
+          reporter: 'jest-junit'
+          fail-on-error: false
