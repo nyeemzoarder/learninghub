@@ -161,8 +161,9 @@ test.describe('Lab 03 - Management Groups & Azure Policy', () => {
     await closeBtn.click();
 
     // Verify modal is closed (no .active class)
-    const closedModal = page.locator('#chartModal:not(.active)');
-    await expect(closedModal).toBeVisible();
+    const closedModal = page.locator('#chartModal');
+    const hasActiveClass = await closedModal.evaluate(el => el.classList.contains('active'));
+    expect(hasActiveClass).toBe(false);
   });
 
   test('should close modal when clicking outside (backdrop)', async ({ page }) => {
@@ -174,9 +175,10 @@ test.describe('Lab 03 - Management Groups & Azure Policy', () => {
     const overlay = page.locator('#chartModal');
     await overlay.click({ position: { x: 10, y: 10 } });
 
-    // Verify modal closed
-    const closedModal = page.locator('#chartModal:not(.active)');
-    await expect(closedModal).toBeVisible();
+    // Verify modal closed (no .active class)
+    const closedModal = page.locator('#chartModal');
+    const hasActiveClass = await closedModal.evaluate(el => el.classList.contains('active'));
+    expect(hasActiveClass).toBe(false);
   });
 
   test('should close modal when Escape key is pressed', async ({ page }) => {
@@ -191,9 +193,10 @@ test.describe('Lab 03 - Management Groups & Azure Policy', () => {
     // Press Escape key
     await page.keyboard.press('Escape');
 
-    // Verify modal is closed
-    const closedModal = page.locator('#chartModal:not(.active)');
-    await expect(closedModal).toBeVisible();
+    // Verify modal is closed (no .active class)
+    const closedModal = page.locator('#chartModal');
+    const hasActiveClass = await closedModal.evaluate(el => el.classList.contains('active'));
+    expect(hasActiveClass).toBe(false);
   });
 
   test('should have all hierarchy levels properly aligned', async ({ page }) => {
