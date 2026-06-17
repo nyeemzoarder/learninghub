@@ -422,7 +422,28 @@ test.describe('Lab 03 - Management Groups & Azure Policy', () => {
     }
   });
 
-  test('should diagnose RG alignment - capture coordinates for debugging', async ({ page }) => {
+  test('should capture visual screenshot for alignment analysis', async ({ page }) => {
+    // Scroll to chart section
+    const chartContainer = page.locator('#chart-container');
+    await chartContainer.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(500);
+
+    // Take screenshot of just the chart area
+    const boundingBox = await chartContainer.boundingBox();
+    if (boundingBox) {
+      await page.screenshot({
+        path: 'rg-alignment-screenshot.png',
+        clip: {
+          x: boundingBox.x - 20,
+          y: boundingBox.y - 20,
+          width: boundingBox.width + 40,
+          height: boundingBox.height + 40
+        }
+      });
+    }
+  });
+
+  test('should diagnose RG alignment - detailed visual analysis', async ({ page }) => {
     const svg = page.locator('#chart-container svg').first();
     const texts = svg.locator('text');
     const textCount = await texts.count();
@@ -431,7 +452,7 @@ test.describe('Lab 03 - Management Groups & Azure Policy', () => {
     const resourceGroups = {};
     const rgNodes = {};
 
-    // Collect all positions
+    // Collect all text positions (text centers)
     for (let i = 0; i < textCount; i++) {
       const text = texts.nth(i);
       const content = await text.textContent();
@@ -458,9 +479,6 @@ test.describe('Lab 03 - Management Groups & Azure Policy', () => {
       const width = parseFloat(await rect.getAttribute('width'));
       const centerX = x + width / 2;
 
-      // Get the text label within this rect to identify it
-      const rectParent = await rect.evaluate(el => el.parentElement);
-      // Store node center positions
       if (i === 0) rgNodes['RG-Core'] = { x, width, centerX };
       if (i === 1) rgNodes['RG-Mgmt'] = { x, width, centerX };
       if (i === 2) rgNodes['RG-IaaS'] = { x, width, centerX };
@@ -472,19 +490,40 @@ test.describe('Lab 03 - Management Groups & Azure Policy', () => {
       if (i === 8) rgNodes['RG-EU2'] = { x, width, centerX };
     }
 
-    console.log('Subscriptions:', subscriptions);
-    console.log('Resource Groups (text):', resourceGroups);
-    console.log('RG Nodes (boxes):', rgNodes);
+    console.log('\n=== DETAILED VISUAL ALIGNMENT ANALYSIS ===\n');
 
-    // Log for debugging alignment issues
-    console.log('\n=== ALIGNMENT ANALYSIS ===');
+    // Analyze each group
+    const groups = [
+      { name: 'IT_Core', rgList: ['RG-Core', 'RG-Mgmt'] },
+      { name: 'IT_IaaS', rgList: ['RG-IaaS', 'RG-Dev'] },
+      { name: 'Business_Prod', rgList: ['RG-Prod'] },
+      { name: 'Loc_US', rgList: ['RG-US', 'RG-US-2'] },
+      { name: 'Loc_EU', rgList: ['RG-EU', 'RG-EU2'] }
+    ];
 
-    // IT_Core check
-    const itCoreSubX = subscriptions['IT_Core']?.x;
-    const rgCoreNodeX = rgNodes['RG-Core']?.centerX;
-    const rgMgmtNodeX = rgNodes['RG-Mgmt']?.centerX;
-    console.log(`IT_Core subscription at x=${itCoreSubX}`);
-    console.log(`RG-Core node center at x=${rgCoreNodeX}, diff=${Math.abs(itCoreSubX - rgCoreNodeX)}`);
-    console.log(`RG-Mgmt node center at x=${rgMgmtNodeX}, diff=${Math.abs(itCoreSubX - rgMgmtNodeX)}`);
+    for (const group of groups) {
+      const subText = subscriptions[group.name];
+      console.log(`\n${group.name} subscription text center: x=${subText.x}`);
+
+      let minX = Infinity, maxX = -Infinity;
+      for (const rgName of group.rgList) {
+        const rgNode = rgNodes[rgName];
+        const diff = rgNode.centerX - subText.x;
+        console.log(`  ${rgName}: box center=${rgNode.centerX}, diff=${diff.toFixed(1)}px ${diff < 0 ? 'LEFT' : 'RIGHT'}`);
+        minX = Math.min(minX, rgNode.x);
+        maxX = Math.max(maxX, rgNode.x + rgNode.width);
+      }
+
+      const rgGroupCenter = (minX + maxX) / 2;
+      const rgGroupCenterDiff = rgGroupCenter - subText.x;
+      console.log(`  RG group span: ${minX} to ${maxX}, center=${rgGroupCenter.toFixed(1)}, diff from sub text=${rgGroupCenterDiff.toFixed(1)}px`);
+
+      if (group.rgList.length === 2) {
+        const rg1 = rgNodes[group.rgList[0]];
+        const rg2 = rgNodes[group.rgList[1]];
+        const spacing = rg2.x - (rg1.x + rg1.width);
+        console.log(`  Spacing between RG boxes: ${spacing}px`);
+      }
+    }
   });
 });
