@@ -199,11 +199,153 @@
   <div class="section-time"><span class="icon">⏱️</span> 10 minutes</div>
 </div>
 
+<!-- Storage Redundancy Visual Diagram -->
+<div style="position:relative;margin:24px 0;background:#fff;border-radius:14px;padding:20px;border:1px solid #e2e8f0;box-shadow:0 2px 8px rgba(0,0,0,0.04)">
+  <button onclick="toggleStorageModal()" style="position:absolute;top:20px;right:20px;background:#dbeafe;border:2px solid #1e40af;color:#1e40af;padding:8px 12px;border-radius:6px;cursor:pointer;font-size:18px;font-weight:bold">🔍</button>
+
+  <div id="storage-chart-container" style="overflow-x:auto;margin-bottom:10px">
+    <svg viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;min-height:350px">
+      <defs>
+        <style>
+          .storage-title { font-family:Inter,sans-serif;font-size:16px;font-weight:700;text-anchor:middle;fill:#1a202c }
+          .storage-datacenter { fill:#e0e7ff;stroke:#1e40af;stroke-width:2 }
+          .storage-region { fill:#dbeafe;stroke:#0ea5e9;stroke-width:2 }
+          .storage-zone { fill:#f3f4f6;stroke:#6b7280;stroke-width:1.5 }
+        </style>
+      </defs>
+
+      <text x="600" y="25" class="storage-title">Azure Storage Redundancy Patterns</text>
+
+      <text x="150" y="65" style="font-size:13px;font-weight:700;fill:#1e40af">LRS: 1 Datacenter</text>
+      <text x="150" y="82" style="font-size:11px;fill:#6b7280">3 copies, local only</text>
+
+      <rect class="storage-datacenter" x="80" y="100" width="140" height="100" rx="6"/>
+      <circle cx="110" cy="145" r="15" fill="#fbbf24" stroke="#f59e0b" stroke-width="2"/>
+      <circle cx="150" cy="145" r="15" fill="#fbbf24" stroke="#f59e0b" stroke-width="2"/>
+      <circle cx="190" cy="145" r="15" fill="#fbbf24" stroke="#f59e0b" stroke-width="2"/>
+      <text x="150" y="180" style="font-size:10px;text-anchor:middle;fill:#1e40af;font-weight:600">East US DC</text>
+      <text x="150" y="195" style="font-size:11px;text-anchor:middle;fill:#6b7280">Cost: $ Low</text>
+
+      <text x="600" y="65" style="font-size:13px;font-weight:700;fill:#1e40af">ZRS: 3 Availability Zones</text>
+      <text x="600" y="82" style="font-size:11px;fill:#6b7280">3 copies, 1 region</text>
+
+      <rect class="storage-zone" x="520" y="100" width="50" height="100" rx="4"/>
+      <text x="545" y="118" style="font-size:10px;text-anchor:middle;fill:#6b7280;font-weight:600">AZ 1</text>
+      <circle cx="545" cy="150" r="12" fill="#10b981" stroke="#059669" stroke-width="2"/>
+
+      <rect class="storage-zone" x="580" y="100" width="50" height="100" rx="4"/>
+      <text x="605" y="118" style="font-size:10px;text-anchor:middle;fill:#6b7280;font-weight:600">AZ 2</text>
+      <circle cx="605" cy="150" r="12" fill="#10b981" stroke="#059669" stroke-width="2"/>
+
+      <rect class="storage-zone" x="640" y="100" width="50" height="100" rx="4"/>
+      <text x="665" y="118" style="font-size:10px;text-anchor:middle;fill:#6b7280;font-weight:600">AZ 3</text>
+      <circle cx="665" cy="150" r="12" fill="#10b981" stroke="#059669" stroke-width="2"/>
+
+      <text x="600" y="195" style="font-size:11px;text-anchor:middle;fill:#6b7280">Cost: $$ Medium | Resilience: High</text>
+
+      <text x="1050" y="65" style="font-size:13px;font-weight:700;fill:#1e40af">GRS: 2 Regions</text>
+      <text x="1050" y="82" style="font-size:11px;fill:#6b7280">6 copies, replicated</text>
+
+      <rect class="storage-region" x="960" y="100" width="90" height="90" rx="4"/>
+      <text x="1005" y="120" style="font-size:10px;text-anchor:middle;fill:#0c4a6e;font-weight:600">Primary</text>
+      <circle cx="985" cy="150" r="10" fill="#06b6d4" stroke="#0891b2" stroke-width="2"/>
+      <circle cx="1025" cy="150" r="10" fill="#06b6d4" stroke="#0891b2" stroke-width="2"/>
+
+      <rect class="storage-region" x="1060" y="100" width="90" height="90" rx="4"/>
+      <text x="1105" y="120" style="font-size:10px;text-anchor:middle;fill:#0c4a6e;font-weight:600">Secondary</text>
+      <circle cx="1085" cy="150" r="10" fill="#7dd3fc" stroke="#0ea5e9" stroke-width="2"/>
+      <circle cx="1125" cy="150" r="10" fill="#7dd3fc" stroke="#0ea5e9" stroke-width="2"/>
+
+      <text x="1050" y="195" style="font-size:11px;text-anchor:middle;fill:#6b7280">Cost: $$$ High | Resilience: Max</text>
+
+      <text x="100" y="230" style="font-size:11px;fill:#1f2937">✓ LRS: Dev/Test (cheapest)</text>
+      <text x="100" y="250" style="font-size:11px;fill:#1f2937">✓ ZRS: Production, same region</text>
+      <text x="100" y="270" style="font-size:11px;fill:#1f2937">✓ GRS: Disaster recovery</text>
+    </svg>
+  </div>
+</div>
+
+<!-- Storage Modal -->
+<div id="storageModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:9999;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:16px;width:90%;max-width:1000px;max-height:90vh;overflow:auto;position:relative">
+    <button onclick="toggleStorageModal()" style="position:absolute;top:15px;right:15px;background:none;border:none;font-size:32px;cursor:pointer;color:#666">×</button>
+    <div style="padding:40px">
+      <svg viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block">
+        <defs>
+          <style>
+            .storage-title { font-family:Inter,sans-serif;font-size:16px;font-weight:700;text-anchor:middle;fill:#1a202c }
+            .storage-datacenter { fill:#e0e7ff;stroke:#1e40af;stroke-width:2 }
+            .storage-region { fill:#dbeafe;stroke:#0ea5e9;stroke-width:2 }
+            .storage-zone { fill:#f3f4f6;stroke:#6b7280;stroke-width:1.5 }
+          </style>
+        </defs>
+
+        <text x="600" y="25" class="storage-title">Azure Storage Redundancy Patterns</text>
+
+        <text x="150" y="65" style="font-size:13px;font-weight:700;fill:#1e40af">LRS: 1 Datacenter</text>
+        <text x="150" y="82" style="font-size:11px;fill:#6b7280">3 copies, local only</text>
+
+        <rect class="storage-datacenter" x="80" y="100" width="140" height="100" rx="6"/>
+        <circle cx="110" cy="145" r="15" fill="#fbbf24" stroke="#f59e0b" stroke-width="2"/>
+        <circle cx="150" cy="145" r="15" fill="#fbbf24" stroke="#f59e0b" stroke-width="2"/>
+        <circle cx="190" cy="145" r="15" fill="#fbbf24" stroke="#f59e0b" stroke-width="2"/>
+        <text x="150" y="180" style="font-size:10px;text-anchor:middle;fill:#1e40af;font-weight:600">East US DC</text>
+        <text x="150" y="195" style="font-size:11px;text-anchor:middle;fill:#6b7280">Cost: $ Low</text>
+
+        <text x="600" y="65" style="font-size:13px;font-weight:700;fill:#1e40af">ZRS: 3 Availability Zones</text>
+        <text x="600" y="82" style="font-size:11px;fill:#6b7280">3 copies, 1 region</text>
+
+        <rect class="storage-zone" x="520" y="100" width="50" height="100" rx="4"/>
+        <text x="545" y="118" style="font-size:10px;text-anchor:middle;fill:#6b7280;font-weight:600">AZ 1</text>
+        <circle cx="545" cy="150" r="12" fill="#10b981" stroke="#059669" stroke-width="2"/>
+
+        <rect class="storage-zone" x="580" y="100" width="50" height="100" rx="4"/>
+        <text x="605" y="118" style="font-size:10px;text-anchor:middle;fill:#6b7280;font-weight:600">AZ 2</text>
+        <circle cx="605" cy="150" r="12" fill="#10b981" stroke="#059669" stroke-width="2"/>
+
+        <rect class="storage-zone" x="640" y="100" width="50" height="100" rx="4"/>
+        <text x="665" y="118" style="font-size:10px;text-anchor:middle;fill:#6b7280;font-weight:600">AZ 3</text>
+        <circle cx="665" cy="150" r="12" fill="#10b981" stroke="#059669" stroke-width="2"/>
+
+        <text x="600" y="195" style="font-size:11px;text-anchor:middle;fill:#6b7280">Cost: $$ Medium | Resilience: High</text>
+
+        <text x="1050" y="65" style="font-size:13px;font-weight:700;fill:#1e40af">GRS: 2 Regions</text>
+        <text x="1050" y="82" style="font-size:11px;fill:#6b7280">6 copies, replicated</text>
+
+        <rect class="storage-region" x="960" y="100" width="90" height="90" rx="4"/>
+        <text x="1005" y="120" style="font-size:10px;text-anchor:middle;fill:#0c4a6e;font-weight:600">Primary</text>
+        <circle cx="985" cy="150" r="10" fill="#06b6d4" stroke="#0891b2" stroke-width="2"/>
+        <circle cx="1025" cy="150" r="10" fill="#06b6d4" stroke="#0891b2" stroke-width="2"/>
+
+        <rect class="storage-region" x="1060" y="100" width="90" height="90" rx="4"/>
+        <text x="1105" y="120" style="font-size:10px;text-anchor:middle;fill:#0c4a6e;font-weight:600">Secondary</text>
+        <circle cx="1085" cy="150" r="10" fill="#7dd3fc" stroke="#0ea5e9" stroke-width="2"/>
+        <circle cx="1125" cy="150" r="10" fill="#7dd3fc" stroke="#0ea5e9" stroke-width="2"/>
+
+        <text x="1050" y="195" style="font-size:11px;text-anchor:middle;fill:#6b7280">Cost: $$$ High | Resilience: Max</text>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleStorageModal() {
+  const modal = document.getElementById("storageModal");
+  modal.style.display = modal.style.display === "none" ? "flex" : "none";
+}
+document.getElementById("storageModal").addEventListener("click", function(e) {
+  if (e.target === this) this.style.display = "none";
+});
+document.addEventListener("keydown", function(e) {
+  if (e.key === "Escape") document.getElementById("storageModal").style.display = "none";
+});
+</script>
+
 <div class="callout-box callout-tip">
   <span class="callout-icon">ℹ️</span>
   <div class="callout-content">
     <h4>Understanding Redundancy</h4>
-    <p>Redundancy determines how many copies of your data exist and where. LRS is cheap (1 datacenter), while GRS protects across regions. You'll explore the options your storage account supports.</p>
+    <p>Redundancy determines how many copies of your data exist and where. LRS is cheap (1 datacenter), while GRS protects across regions. You'll explore the options your storage account supports. Click the 🔍 magnifying glass above to zoom in on the diagram.</p>
   </div>
 </div>
 
