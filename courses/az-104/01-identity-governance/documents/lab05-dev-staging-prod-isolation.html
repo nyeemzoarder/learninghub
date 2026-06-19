@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab 05 – Environment Segregation: Dev, Staging & Production Isolation - AZ-104 Labs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Professional Lab Template - Embedded CSS for local file:// access */
+:root{--bg:#f7f9fd;--card:#fff;--border:#e2e8f0;--text:#1a202c;--muted:#64748b;--primary:#1e3a8a;--panel:#0f172a;--panel-shadow:rgba(15,23,42,.12);--section-gap:48px;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,-apple-system,'Segoe UI',sans-serif;color:var(--text);line-height:1.6}.page{flex:1;min-width:0;padding:48px;max-width:1100px;margin:0 auto}
+h1{font-size:3.4rem;line-height:1.2;margin:0 0 12px 0;color:var(--primary);font-weight:800;letter-spacing:-0.5px}h2{font-size:2.2rem;margin:0 0 24px 0;color:var(--primary);font-weight:800;letter-spacing:-0.5px}h3{font-size:1.45rem;margin:32px 0 16px 0;color:var(--primary);font-weight:700;letter-spacing:-0.3px}h3:first-child{margin-top:0}h4{font-size:1.1rem;margin:20px 0 12px 0;color:#1e3a8a;font-weight:700}
+p{font-size:1.05rem;line-height:1.7;margin:12px 0;color:var(--text)}ul,ol{margin:16px 0;padding-left:24px}li{margin-bottom:10px;line-height:1.7;font-size:1.03rem;color:var(--text)}
+a{color:#1e40af;text-decoration:none;border-bottom:2px solid transparent;font-weight:600;transition:border-color 0.2s}a:hover{border-bottom-color:#1e40af}strong{color:var(--primary);font-weight:700}code{background:#f0f4ff;color:#1e40af;padding:4px 8px;border-radius:6px;font:13px/1.5 'SF Mono',Consolas,'Courier New',monospace;font-weight:500}
+.task-box{margin:24px 0;padding:0;background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(30,64,175,.06);transition:box-shadow 0.2s,border-color 0.2s}.task-box:hover{box-shadow:0 4px 12px rgba(30,64,175,.12);border-color:#c7d2fe}
+.task-header{display:flex;align-items:center;gap:12px;padding:18px 20px;background:linear-gradient(135deg,#dbeafe 0%,#eff6ff 100%);border-bottom:1px solid var(--border)}.task-header .task-icon{font-size:1.4rem;color:#1e40af}.task-header h3{margin:0;font-size:1.2rem;color:var(--primary);font-weight:700}.task-content{padding:20px}
+.code-block{position:relative;margin:24px 0;background:#0f172a;border-radius:10px;overflow:hidden;border:1px solid #1e293b;box-shadow:0 4px 12px rgba(15,23,42,.25)}.code-block pre{margin:0;padding:20px 48px 20px 20px;color:#e2e8f0;font-family:'SF Mono',Consolas,'Courier New',monospace;font-size:0.92rem;line-height:1.7;overflow-x:auto}
+.code-copy-btn{position:absolute;top:12px;right:12px;padding:8px 14px;background:#1e293b;color:#60a5fa;border:1px solid #334155;border-radius:6px;cursor:pointer;font-size:0.85rem;font-weight:600;transition:all 0.2s;user-select:none;box-shadow:0 1px 3px rgba(0,0,0,.2)}.code-copy-btn:hover{background:#334155;color:#93c5fd;border-color:#475569}.code-block .keyword{color:#569cd6}.code-block .string{color:#ce9178}.code-block .comment{color:#6a9955}.code-block .operator{color:#d4d4d4}.code-block .function{color:#dcdcaa}.code-block .property{color:#9cdcfe}
+.callout-box{margin:24px 0;padding:18px 20px;border-radius:10px;border-left:4px solid;display:flex;gap:14px;box-shadow:0 1px 3px rgba(0,0,0,.05)}.callout-icon{font-size:1.5rem;flex-shrink:0;min-width:28px;text-align:center}.callout-content{flex:1}.callout-content h4{margin:0 0 8px 0;font-size:1.08rem;font-weight:700}.callout-content p{margin:8px 0;line-height:1.7;font-size:1.02rem}.callout-content p:first-child{margin-top:0}
+.callout-tip{background:#eff6ff;border-color:#3b82f6}.callout-tip .callout-icon{color:#1e40af}.callout-tip h4{color:#1e40af}.callout-warning{background:#fefce8;border-color:#eab308}.callout-warning .callout-icon{color:#ca8a04}.callout-warning h4{color:#92400e}.callout-important{background:#fee2e2;border-color:#ef4444}.callout-important .callout-icon{color:#dc2626}.callout-important h4{color:#991b1b}
+.section-time{background:#dbeafe;border:1px solid #93c5fd;border-radius:8px;padding:10px 16px;font-size:0.95rem;font-weight:600;color:#1e40af;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}.layout{max-width:1500px;margin:auto;display:flex;align-items:flex-start;gap:32px}.sidebar{flex:0 0 280px;position:sticky;top:88px;max-height:calc(100vh - 108px);overflow-y:auto;padding:24px;background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 2px 8px rgba(30,64,175,.06)}.sidebar summary{cursor:pointer;list-style:none;padding:10px 12px;border-radius:8px;font-weight:600;font-size:.93rem;color:var(--primary);user-select:none;transition:all 0.2s}.sidebar summary::-webkit-details-marker{display:none}.sidebar details[open]>summary{background:#dbeafe}.sidebar summary:hover{background:#eff6ff}.sidebar a{display:block;padding:9px 12px;margin-bottom:2px;border-radius:8px;font-size:.89rem;font-weight:500;color:var(--text);border-bottom:none;border-left:3px solid transparent;line-height:1.5;transition:all 0.15s;text-decoration:none;color:#1a202c}.sidebar a:hover{background:#eff6ff;color:var(--primary)}.site-nav{position:sticky;top:0;z-index:1000;background:var(--primary);color:#fff;display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:14px 32px;font-size:.93rem;box-shadow:0 4px 12px rgba(0,0,0,.1);font-family:Inter,-apple-system,'Segoe UI',sans-serif}.site-nav .nav-brand{font-weight:800;font-size:1.1rem;margin-right:auto;color:#fff;letter-spacing:-0.3px}.site-nav summary{cursor:pointer;list-style:none;padding:8px 16px;border-radius:8px;background:rgba(255,255,255,.12);font-weight:600;color:#fff;user-select:none;transition:background 0.2s}
+</style>
+</head>
+<body>
+<nav class="site-nav" aria-label="Main site navigation">
+  <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
+  <details class="nav-group" aria-label="Learning module selector">
+    <summary>Learning Module</summary>
+    <div class="nav-menu">
+      <a href="../../00-prerequisites/documents/module-home.html">00 - Prerequisites</a>
+      <a href="../../01-identity-governance/documents/module-home.html">01 - Identity &amp; Governance</a>
+      <a href="../../02-storage/documents/module-home.html">02 - Storage</a>
+      <a href="../../03-compute/documents/module-home.html">03 - Compute</a>
+      <a href="../../04-networking/documents/module-home.html">04 - Networking</a>
+      <a href="../../05-monitor-maintain/documents/module-home.html">05 - Monitor &amp; Maintain</a>
+    </div>
+  </details>
+</nav>
+<div class="layout">
+  <aside class="sidebar" aria-label="Page navigation">
+    <details open>
+      <summary>▶ Module 01 - Identity &amp; Governance</summary>
+      <div>
+        <a href="01-entra-id-overview.html">01 - Entra ID Overview</a>
+<a href="02-rbac-fundamentals.html">02 - RBAC Fundamentals</a>
+<a href="03-management-groups-and-azure-policy.html">03 - Management Groups &amp; Azure Policy</a>
+<a href="04-access-control-scenarios.html">04 - Access Control Scenarios</a>
+<a href="05-identity-best-practices.html">05 - Identity Best Practices</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ Labs</summary>
+      <div>
+        <a href="lab01-entra-users-groups.html">Lab 01 - Entra Users &amp; Groups</a>
+<a href="lab02-rbac-azure-policy.html">Lab 02 - RBAC &amp; Azure Policy</a>
+<a href="lab03-management-groups-subscriptions.html">Lab 03 - Management Groups</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ On This Page</summary>
+      <div>
+        <a href="#real-life-scenario">Real-Life Scenario</a>
+<a href="#prerequisites">Prerequisites</a>
+<a href="#estimated-time">Estimated Time</a>
+<a href="#part-1-set-up-subscriptions-entra-groups">Part 1 – Set Up Subscriptions & Entra Groups</a>
+<a href="#part-2-configure-rbac-per-environment">Part 2 – Configure RBAC Per Environment</a>
+<a href="#part-3-create-environment-specific-policies">Part 3 – Create Environment-Specific Policies</a>
+<a href="#part-4-test-access-controls">Part 4 – Test Access Controls</a>
+<a href="#part-5-verify-policies-prevent-mistakes">Part 5 – Verify Policies Prevent Mistakes</a>
+<a href="#final-assessment-environment-isolation-checklist">Final Assessment: Environment Isolation Checklist</a>
+<a href="#key-takeaways">Key Takeaways</a>
+<a href="#real-world-application">Real-World Application</a>
+<a href="#next-steps">Next Steps</a>
+      </div>
+    </details>
+  </aside>
+  <div class="page">
+  <h1>Lab 05 – Environment Segregation: Dev, Staging & Production Isolation</h1>
+
+<h2 id="real-life-scenario">Real-Life Scenario</h2>
+
+<p><strong>Company: TechCorp Inc</strong></p>
+
+<p>TechCorp is a fast-growing SaaS company with 50+ engineers shipping new features daily. Last month, a junior developer accidentally deleted the production database because they had Owner access everywhere.</p>
+
+<p><strong>The Problem:</strong></p>
+<ul><ol><li>10 junior developers: Full access everywhere (can accidentally delete prod)</li>
+<li>5 senior developers: Full access everywhere (no peer review on prod changes)</li>
+<li>3 DevOps engineers: Manual deployments, no control over who changes what</li>
+<li>Result: <strong>Risk of production outages from human error</strong></li></ol></ul>
+
+<p><strong>Your Challenge:</strong> Design and implement environment-based access control</p>
+
+<p><strong>The Solution You'll Build:</strong></p>
+<div class='code-block'><pre>DEV Subscription (Junior Playground)
+<p>├─ Junior devs: Full Contributor access (create, delete, experiment)</p>
+<p>├─ Senior devs: Full Contributor access</p>
+<p>├─ DevOps: Full Contributor access</p>
+<p>└─ Policy: None (safe to break things here)</p>
+
+<p>STAGING Subscription (Validated Changes)</p>
+<p>├─ Junior devs: Read-only (can&#39;t touch)</p>
+<p>├─ Senior devs: Full Contributor access (test changes)</p>
+<p>├─ DevOps: Full Contributor access</p>
+<p>└─ Policy: Enforce backup tags, encryption</p>
+
+<p>PROD Subscription (Locked Down)</p>
+<p>├─ Junior devs: Read-only (observe only)</p>
+<p>├─ Senior devs: Read-only (can&#39;t modify directly)</p>
+<p>├─ DevOps: Full Contributor access (deploy via pipeline)</p>
+<p>└─ Policies:</p>
+<p>├─ Deny VM deletion</p>
+<p>├─ Deny database deletion</p>
+<p>├─ Require encryption</p>
+<p>├─ Require backup tags</p>
+<p>├─ Require premium VM types</p>
+<p>└─ Audit all changes</pre></div></p>
+
+<p><strong>Success Criteria:</strong></p>
+<ul><ol><li>Junior dev can create resources in Dev, cannot touch Prod</li>
+<li>Senior dev can see but not modify Prod</li>
+<li>DevOps can deploy to Prod with full audit trail</li>
+<li>Policies prevent dangerous operations</li>
+<li>All access changes logged</li></ol></ul>
+
+<hr class="divider">
+
+<h2 id="prerequisites">Prerequisites</h2>
+
+<p><strong>Required Knowledge:</strong></p>
+<ul><ol><li><a href="lab01-entra-users-groups.md">Lab 01: Entra ID - Users & Groups</a></li>
+<li><a href="lab02-rbac-azure-policy.md">Lab 02: RBAC & Azure Policy</a></li>
+<li><a href="lab03-management-groups-subscriptions.md">Lab 03: Management Groups & Subscriptions</a></li></ol></ul>
+
+<p><strong>Required Permissions:</strong></p>
+<ul><ol><li>Multiple Azure subscriptions (or ability to create 3 new ones)</li>
+<li>Owner role on all subscriptions</li>
+<li>Global Administrator or User Administrator in Entra ID</li></ol></ul>
+
+<p><strong>Cost Note:</strong> This lab uses 3 subscriptions. Even if empty, some charges may apply. Use free trial subscriptions if possible.</p>
+
+<hr class="divider">
+
+<h2 id="estimated-time">Estimated Time</h2>
+
+<p><strong>Total: 120 minutes</strong></p>
+<ul><ol><li>Part 1: Set up subscriptions & groups (20 min)</li>
+<li>Part 2: Configure RBAC per environment (30 min)</li>
+<li>Part 3: Create environment-specific policies (25 min)</li>
+<li>Part 4: Test access controls (25 min)</li>
+<li>Part 5: Verify policies prevent mistakes (20 min)</li></ol></ul>
+
+<p><strong>Difficulty: Advanced</strong></p>
+
+<hr class="divider">
+
+<h2 id="part-1-set-up-subscriptions-entra-groups">Part 1 – Set Up Subscriptions & Entra Groups</h2>
+
+<h3 id="the-challenge">The Challenge</h3>
+
+<p>You need 3 isolated environments with different access rules.</p>
+
+<h3 id="what-youll-learn">What You'll Learn</h3>
+
+<ul><ol><li>How to organize subscriptions by environment</li>
+<li>How to create groups for different roles</li>
+<li>How to plan access before implementing</li></ol></ul>
+
+<h3 id="step-by-step-tasks">Step-by-Step Tasks</h3>
+
+<p><strong>Step 1: Create or Identify Three Subscriptions</strong></p>
+
+<p>You need 3 subscriptions (one for each environment):</p>
+
+<div class='code-block'><pre>Dev Subscription:
+<p>├─ Name: TechCorp-Dev-Sub or dev-environment</p>
+<p>├─ Purpose: Junior developer playground</p>
+<p>└─ Existing subscription ID: ____________&lt;em&gt;&lt;strong&gt;</p>
+
+<p>Staging Subscription:</p>
+<p>├─ Name: TechCorp-Staging-Sub or staging-environment</p>
+<p>├─ Purpose: Pre-production testing</p>
+<p>└─ Existing subscription ID: &lt;/strong&gt;&lt;/em&gt;_________&lt;em&gt;&lt;strong&gt;</p>
+
+<p>Prod Subscription:</p>
+<p>├─ Name: TechCorp-Prod-Sub or prod-environment</p>
+<p>├─ Purpose: Live customer data</p>
+<p>└─ Existing subscription ID: &lt;/strong&gt;&lt;/em&gt;_________&lt;em&gt;&lt;strong&gt;</pre></div></p>
+
+<p>If you don't have 3 subscriptions:</p>
+<ol><li>Go to <strong>Subscriptions</strong> > <strong>Add subscription</strong></li>
+<li>Create 3 new subscriptions (free trial subscriptions work)</li>
+<li>Name them appropriately</li></ol>
+
+<p><strong>Step 2: Document Subscription IDs</strong></p>
+
+<p>For each subscription:</p>
+<ol><li>Go to <strong>Subscriptions</strong> blade</li>
+<li>Find the subscription ID (36-character UUID)</li>
+<li>Record it:</li></ol>
+
+<div class='code-block'><pre>Dev Subscription ID: &lt;/strong&gt;&lt;/em&gt;__________________________&lt;em&gt;&lt;strong&gt;
+<p>Staging Subscription ID: &lt;/strong&gt;&lt;/em&gt;__________________________&lt;em&gt;&lt;strong&gt;</p>
+<p>Prod Subscription ID: &lt;/strong&gt;&lt;/em&gt;__________________________&lt;em&gt;&lt;strong&gt;</pre></div></p>
+
+<p><strong>Step 3: Create Entra Groups for Developer Tiers</strong></p>
+
+<p>These groups will determine who gets what access:</p>
+
+<ol><li>Go to <strong>Entra ID</strong> > <strong>Groups</strong> > <strong>New group</strong></li>
+
+<li>Create Group 1: Junior Developers</li></ol>
+<div class='code-block'><pre>Name: grp-junior-developers
+<p>Type: Security</p>
+<p>Description: Entry-level developers (limited to Dev environment)</p>
+<p>Members: [Add test users representing junior devs]</pre></div></p>
+
+<ol><li>Create Group 2: Senior Developers</li></ol>
+<div class='code-block'><pre>Name: grp-senior-developers
+<p>Type: Security</p>
+<p>Description: Senior developers (all environments, Prod read-only)</p>
+<p>Members: [Add test users representing senior devs]</pre></div></p>
+
+<ol><li>Create Group 3: DevOps Engineers</li></ol>
+<div class='code-block'><pre>Name: grp-devops-engineers
+<p>Type: Security</p>
+<p>Description: DevOps team (full access all environments for deployment)</p>
+<p>Members: [Add test users representing DevOps team]</pre></div></p>
+
+<ol><li>Create Group 4: Developers (All)</li></ol>
+<div class='code-block'><pre>Name: grp-all-developers
+<p>Type: Security</p>
+<p>Description: All developers (for nested group management)</p>
+<p>Members: grp-junior-developers + grp-senior-developers</pre></div></p>
+
+<p><strong>Step 4: Document Your Setup</strong></p>
+
+<p>Create a reference table:</p>
+
+<div class='code-block'><pre>SUBSCRIPTION &amp; GROUP MAPPING
+<p>═════════════════════════════════════════════════════════════</p>
+
+<p>SUBSCRIPTIONS:</p>
+<p>├─ Dev: [ID] &lt;/strong&gt;&lt;/em&gt;______________&lt;em&gt;&lt;strong&gt;</p>
+<p>├─ Staging: [ID] &lt;/strong&gt;&lt;/em&gt;______________&lt;em&gt;&lt;strong&gt;</p>
+<p>└─ Prod: [ID] &lt;/strong&gt;&lt;/em&gt;______________&lt;em&gt;&lt;strong&gt;</p>
+
+<p>ENTRA GROUPS:</p>
+<p>├─ grp-junior-developers (Members: &lt;/strong&gt;&lt;/em&gt;&lt;strong&gt; people)</p>
+<p>├─ grp-senior-developers (Members: &lt;/strong&gt;&lt;em&gt;&lt;strong&gt; people)</p>
+<p>├─ grp-devops-engineers (Members: &lt;/strong&gt;&lt;/em&gt;_&lt;em&gt; people)</p>
+<p>└─ grp-all-developers (nested group)</p>
+
+<p>READY FOR NEXT STEP: ☐ Yes ☐ No</pre></div></p>
+
+<h3 id="validation-checklist">Validation Checklist</h3>
+
+<ul><ol><li>[ ] 3 subscriptions identified/created</li>
+<li>[ ] Subscription IDs documented</li>
+<li>[ ] 4 Entra groups created</li>
+<li>[ ] Groups have appropriate members</li>
+<li>[ ] Groups documented for reference</li></ol></ul>
+
+<h3 id="success-criteria">Success Criteria</h3>
+
+<p>✅ Complete: All 3 subscriptions accessible</p>
+<p>✅ All 4 groups created with correct members</p>
+<p>✅ Ready to assign RBAC roles</p>
+
+<hr class="divider">
+
+<h2 id="part-2-configure-rbac-per-environment">Part 2 – Configure RBAC Per Environment</h2>
+
+<h3 id="the-challenge">The Challenge</h3>
+
+<p>Assign roles so that each group has the right access for their environment.</p>
+
+<h3 id="what-youll-learn">What You'll Learn</h3>
+
+<ul><ol><li>How to assign different roles per subscription</li>
+<li>How to implement environment-based access control</li>
+<li>How to enforce separation of duties</li></ol></ul>
+
+<h3 id="step-by-step-tasks">Step-by-Step Tasks</h3>
+
+<p><strong>Step 1: Configure DEV Subscription Access</strong></p>
+
+<p>Dev is a playground - minimal restrictions.</p>
+
+<div class='code-block'><pre>DEV SUBSCRIPTION: Full access for development
+
+<p>grp-junior-developers:</p>
+<p>├─ Role: Contributor</p>
+<p>├─ Scope: Dev subscription</p>
+<p>├─ Effect: Can create, modify, DELETE resources</p>
+<p>└─ Reason: Safe to experiment; mistakes are acceptable here</p>
+
+<p>grp-senior-developers:</p>
+<p>├─ Role: Contributor</p>
+<p>├─ Scope: Dev subscription</p>
+<p>├─ Effect: Same as juniors in Dev</p>
+<p>└─ Reason: Collaborate with juniors, review their code</p>
+
+<p>grp-devops-engineers:</p>
+<p>├─ Role: Contributor</p>
+<p>├─ Scope: Dev subscription</p>
+<p>├─ Effect: Full access</p>
+<p>└─ Reason: Test deployment automation</pre></div></p>
+
+<p><strong>To implement:</strong></p>
+
+<ol><li>Go to <strong>Dev Subscription</strong> > <strong>Access control (IAM)</strong> > <strong>Add role assignment</strong></li>
+<li>For <strong>grp-junior-developers</strong>:</li></ol>
+<p>- Role: <strong>Contributor</strong></p>
+<p>- Scope: <strong>Dev Subscription</strong></p>
+<p>- Click Assign</p>
+<ol><li>Repeat for <strong>grp-senior-developers</strong> and <strong>grp-devops-engineers</strong></li></ol>
+
+<p><strong>Step 2: Configure STAGING Subscription Access</strong></p>
+
+<p>Staging is controlled - only seniors and DevOps can modify.</p>
+
+<div class='code-block'><pre>STAGING SUBSCRIPTION: Controlled changes only
+
+<p>grp-junior-developers:</p>
+<p>├─ Role: Reader</p>
+<p>├─ Scope: Staging subscription</p>
+<p>├─ Effect: Can VIEW but NOT MODIFY</p>
+<p>└─ Reason: Juniors learn by observing, can&#39;t break staging</p>
+
+<p>grp-senior-developers:</p>
+<p>├─ Role: Contributor</p>
+<p>├─ Scope: Staging subscription</p>
+<p>├─ Effect: Can create, modify, test before prod</p>
+<p>└─ Reason: Validate changes in staging before production</p>
+
+<p>grp-devops-engineers:</p>
+<p>├─ Role: Contributor</p>
+<p>├─ Scope: Staging subscription</p>
+<p>├─ Effect: Full access</p>
+<p>└─ Reason: Test deployment pipeline</pre></div></p>
+
+<p><strong>To implement:</strong></p>
+
+<ol><li>Go to <strong>Staging Subscription</strong> > <strong>Access control (IAM)</strong> > <strong>Add role assignment</strong></li>
+<li>For <strong>grp-junior-developers</strong>:</li></ol>
+<p>- Role: <strong>Reader</strong></p>
+<p>- Click Assign</p>
+<ol><li>For <strong>grp-senior-developers</strong>:</li></ol>
+<p>- Role: <strong>Contributor</strong></p>
+<p>- Click Assign</p>
+<ol><li>For <strong>grp-devops-engineers</strong>:</li></ol>
+<p>- Role: <strong>Contributor</strong></p>
+<p>- Click Assign</p>
+
+<p><strong>Step 3: Configure PROD Subscription Access</strong></p>
+
+<p>Prod is locked down - only DevOps can deploy, everyone else read-only.</p>
+
+<div class='code-block'><pre>PROD SUBSCRIPTION: Locked down - view-only except DevOps
+
+<p>grp-junior-developers:</p>
+<p>├─ Role: Reader</p>
+<p>├─ Scope: Prod subscription</p>
+<p>├─ Effect: Can VIEW customer data (for debugging)</p>
+<p>├─ Cannot: Modify, delete, change anything</p>
+<p>└─ Reason: Developers can troubleshoot production issues</p>
+
+<p>grp-senior-developers:</p>
+<p>├─ Role: Reader</p>
+<p>├─ Scope: Prod subscription</p>
+<p>├─ Effect: Can VIEW (same as juniors)</p>
+<p>├─ Cannot: Modify directly (must go through DevOps)</p>
+<p>└─ Reason: Code review → DevOps deploys → senior verifies</p>
+
+<p>grp-devops-engineers:</p>
+<p>├─ Role: Contributor</p>
+<p>├─ Scope: Prod subscription</p>
+<p>├─ Effect: FULL ACCESS (only them!)</p>
+<p>├─ Deploy via pipeline ← Automated, audited</p>
+<p>└─ Reason: Controlled deployments with full audit trail</pre></div></p>
+
+<p><strong>To implement:</strong></p>
+
+<ol><li>Go to <strong>Prod Subscription</strong> > <strong>Access control (IAM)</strong> > <strong>Add role assignment</strong></li>
+<li>For <strong>grp-junior-developers</strong>:</li></ol>
+<p>- Role: <strong>Reader</strong></p>
+<p>- Click Assign</p>
+<ol><li>For <strong>grp-senior-developers</strong>:</li></ol>
+<p>- Role: <strong>Reader</strong></p>
+<p>- Click Assign</p>
+<ol><li>For <strong>grp-devops-engineers</strong>:</li></ol>
+<p>- Role: <strong>Contributor</strong></p>
+<p>- Click Assign</p>
+
+<p><strong>Step 4: Create a RBAC Matrix (Documentation)</strong></p>
+
+<p>Document what you just configured:</p>
+
+<div class='code-block'><pre>RBAC ASSIGNMENT MATRIX
+<p>═════════════════════════════════════════════════════════════</p>
+
+<p>┌──────────────────────┬──────────┬─────────┬──────┐</p>
+<p>│ Group                │   Dev    │ Staging │ Prod │</p>
+<p>├──────────────────────┼──────────┼─────────┼──────┤</p>
+<p>│ Junior Developers    │ Contrib  │ Reader  │ Read │</p>
+<p>│ Senior Developers    │ Contrib  │ Contrib │ Read │</p>
+<p>│ DevOps Engineers     │ Contrib  │ Contrib │ Cont │</p>
+<p>└──────────────────────┴──────────┴─────────┴──────┘</p>
+
+<p>Legend: Contrib = Contributor, Read = Reader, Cont = Contributor</p>
+
+<p>RESULT:</p>
+<p>├─ Dev: Everyone has full access (playground)</p>
+<p>├─ Staging: Seniors + DevOps can modify, juniors observe</p>
+<p>└─ Prod: Only DevOps can modify, everyone else read-only</pre></div></p>
+
+<h3 id="validation-checklist">Validation Checklist</h3>
+
+<ul><ol><li>[ ] Dev subscription: All 3 groups have Contributor role</li>
+<li>[ ] Staging subscription: Juniors = Reader, Seniors/DevOps = Contributor</li>
+<li>[ ] Prod subscription: Juniors/Seniors = Reader, DevOps = Contributor</li>
+<li>[ ] RBAC matrix documented</li>
+<li>[ ] Access assignments verified in IAM</li></ol></ul>
+
+<h3 id="success-criteria">Success Criteria</h3>
+
+<p>✅ Complete: Environment-based RBAC implemented</p>
+<p>✅ Junior devs have different access in each environment</p>
+<p>✅ DevOps is only one with Prod Contributor access</p>
+<p>✅ All assignments documented</p>
+
+<hr class="divider">
+
+<h2 id="part-3-create-environment-specific-policies">Part 3 – Create Environment-Specific Policies</h2>
+
+<h3 id="the-challenge">The Challenge</h3>
+
+<p>Policies provide safety guardrails - prevent dangerous operations even if someone tries to do them.</p>
+
+<h3 id="what-youll-learn">What You'll Learn</h3>
+
+<ul><ol><li>How to create policies scoped to specific subscriptions</li>
+<li>How to prevent specific dangerous operations</li>
+<li>How to enforce compliance in production</li></ol></ul>
+
+<h3 id="step-by-step-tasks">Step-by-Step Tasks</h3>
+
+<p><strong>Step 1: Create Dev Policies (Minimal)</strong></p>
+
+<p>Dev is a sandbox - allow anything:</p>
+
+<ol><li>Go to <strong>Dev Subscription</strong> > <strong>Policies</strong> > <strong>Definitions</strong></li>
+<li>No mandatory policies needed for Dev (allow experimentation)</li></ol>
+
+<p><strong>Step 2: Create Staging Policies (Moderate)</strong></p>
+
+<p>Staging needs to match Prod characteristics:</p>
+
+<ol><li>Go to <strong>Staging Subscription</strong> > <strong>Policies</strong> > <strong>Assignments</strong></li>
+<li>Click <strong>Assign policy</strong></li></ol>
+
+<p><strong>Policy 1: Require backup tag</strong></p>
+<div class='code-block'><pre>Name: Require-Backup-Tag-Staging
+<p>Effect: Deny</p>
+<p>Condition: Resources without tag &quot;backup&quot; = &quot;enabled&quot;</p>
+<p>Result: Cannot create resources without backup tag</p>
+<p>Reason: Staging must be recoverable</pre></div></p>
+
+<p><strong>Policy 2: Enforce encryption</strong></p>
+<div class='code-block'><pre>Name: Require-Encryption-Staging
+<p>Effect: Modify (auto-enable)</p>
+<p>Condition: Storage accounts without encryption</p>
+<p>Result: Auto-enables encryption if missing</p>
+<p>Reason: Prepare for Prod&#39;s encryption requirement</pre></div></p>
+
+<p><strong>Step 3: Create Prod Policies (Strict)</strong></p>
+
+<p>Production needs maximum protection:</p>
+
+<ol><li>Go to <strong>Prod Subscription</strong> > <strong>Policies</strong> > <strong>Assignments</strong></li></ol>
+
+<p><strong>Policy 1: Deny resource deletion</strong></p>
+<div class='code-block'><pre>Name: Deny-Dangerous-Deletes-Prod
+<p>Effect: Deny</p>
+<p>Conditions:</p>
+<p>├─ Deny deletion of Virtual Machines</p>
+<p>├─ Deny deletion of SQL Databases</p>
+<p>├─ Deny deletion of Storage Accounts</p>
+<p>└─ Deny deletion of Key Vaults</p>
+<p>Exceptions: DevOps group only (requires override)</p>
+<p>Result: Accidental deletion impossible</pre></div></p>
+
+<p><strong>Policy 2: Require backup tags</strong></p>
+<div class='code-block'><pre>Name: Require-Backup-Tag-Prod
+<p>Effect: Deny</p>
+<p>Condition: Resources without tag &quot;backup&quot; = &quot;enabled&quot;</p>
+<p>Result: Cannot deploy without backup protection</pre></div></p>
+
+<p><strong>Policy 3: Enforce encryption</strong></p>
+<div class='code-block'><pre>Name: Enforce-Encryption-Prod
+<p>Effect: Modify</p>
+<p>Conditions:</p>
+<p>├─ Auto-enable storage account encryption</p>
+<p>├─ Auto-enable disk encryption on VMs</p>
+<p>└─ Auto-enable database encryption</p>
+<p>Result: All Prod data encrypted by default</pre></div></p>
+
+<p><strong>Policy 4: Require premium VM types</strong></p>
+<div class='code-block'><pre>Name: Limit-VM-Types-Prod
+<p>Effect: Deny</p>
+<p>Condition: Deny non-premium VM sizes</p>
+<p>Allowed: Standard&lt;/em&gt;D2s&lt;em&gt;v3, Standard&lt;/em&gt;D4s&lt;em&gt;v3, Standard&lt;/em&gt;D8s&lt;em&gt;v3</p>
+<p>Result: Prevent slow VMs in production</pre></div></p>
+
+<p><strong>Policy 5: Enforce region restriction</strong></p>
+<div class='code-block'><pre>Name: Prod-US-Regions-Only
+<p>Effect: Deny</p>
+<p>Condition: Deny resources outside US regions</p>
+<p>Allowed regions: eastus, eastus2, westus, westus2</p>
+<p>Result: Keep customer data in US (compliance)</pre></div></p>
+
+<p><strong>Step 4: Document Policies</strong></p>
+
+<div class='code-block'><pre>POLICY ENFORCEMENT BY ENVIRONMENT
+<p>════════════════════════════════════════════════════════════</p>
+
+<p>DEV SUBSCRIPTION:</p>
+<p>├─ Policies: None (experimental environment)</p>
+<p>├─ Philosophy: Fail fast, learn from mistakes</p>
+<p>└─ Result: Junior devs can try anything</p>
+
+<p>STAGING SUBSCRIPTION:</p>
+<p>├─ Policy: Require backup tag</p>
+<p>├─ Policy: Enforce encryption (auto-enable)</p>
+<p>└─ Result: Staging mirrors Prod safety</p>
+
+<p>PROD SUBSCRIPTION:</p>
+<p>├─ Policy: Deny dangerous deletes (VM, DB, storage)</p>
+<p>├─ Policy: Require backup tag</p>
+<p>├─ Policy: Enforce encryption</p>
+<p>├─ Policy: Premium VM types only</p>
+<p>├─ Policy: US regions only</p>
+<p>└─ Result: Production protected from common mistakes</pre></div></p>
+
+<h3 id="validation-checklist">Validation Checklist</h3>
+
+<ul><ol><li>[ ] Staging policies created (2 minimum)</li>
+<li>[ ] Prod policies created (5 as outlined)</li>
+<li>[ ] All policies tested (verify they exist)</li>
+<li>[ ] Policy scope verified (correct subscriptions)</li>
+<li>[ ] Policy effects confirmed (Deny or Modify)</li></ol></ul>
+
+<h3 id="success-criteria">Success Criteria</h3>
+
+<p>✅ Complete: Policies prevent dangerous operations</p>
+<p>✅ Staging has moderate policies</p>
+<p>✅ Prod has strict protective policies</p>
+<p>✅ All policies documented</p>
+
+<hr class="divider">
+
+<h2 id="part-4-test-access-controls">Part 4 – Test Access Controls</h2>
+
+<h3 id="the-challenge">The Challenge</h3>
+
+<p>Verify that access control actually works. Don't trust configuration - test it!</p>
+
+<h3 id="what-youll-learn">What You'll Learn</h3>
+
+<ul><ol><li>How to test access from different user perspectives</li>
+<li>How to verify RBAC is working</li>
+<li>How to detect access control problems early</li></ol></ul>
+
+<h3 id="step-by-step-tasks">Step-by-Step Tasks</h3>
+
+<p><strong>Step 1: Test Junior Developer Access</strong></p>
+
+<p>Simulate a junior developer signing in:</p>
+
+<div class='code-block'><pre>TEST SCENARIO: Junior dev trying to access each environment
+
+<p>Option 1: Use a test junior dev account</p>
+<p>├─ Sign in as junior developer user</p>
+<p>├─ Navigate to each subscription</p>
+<p>└─ Record what you see</p>
+
+<p>Option 2: Use Access Control (IAM) &gt; &quot;Check access&quot;</p>
+<p>├─ Go to each subscription</p>
+<p>├─ Click Check access</p>
+<p>├─ Enter junior dev user name</p>
+<p>└─ View what they can access</pre></div></p>
+
+<p><strong>Expected Results:</strong></p>
+<div class='code-block'><pre>Dev Subscription:
+<p>├─ Can see: All resources ✓</p>
+<p>├─ Can create: Resources ✓</p>
+<p>├─ Can delete: Resources ✓</p>
+<p>└─ Result: PASS ✓</p>
+
+<p>Staging Subscription:</p>
+<p>├─ Can see: All resources ✓</p>
+<p>├─ Can create: Resources ✗ (Denied - Reader role)</p>
+<p>├─ Can delete: Resources ✗ (Denied - Reader role)</p>
+<p>└─ Result: PASS ✓</p>
+
+<p>Prod Subscription:</p>
+<p>├─ Can see: All resources ✓</p>
+<p>├─ Can create: Resources ✗ (Denied - Reader role)</p>
+<p>├─ Can delete: Resources ✗ (Denied - Reader role)</p>
+<p>└─ Result: PASS ✓</pre></div></p>
+
+<p>Document results:</p>
+<div class='code-block'><pre>Junior Developer Access Test: &lt;/em&gt;&lt;strong&gt; PASS ✓ &lt;/strong&gt;&lt;em&gt; FAIL ✗
+
+<p>Expected: Full in Dev, Read-only in Staging/Prod</p>
+<p>Actual: [Your results]</pre></div></p>
+
+<p><strong>Step 2: Test Senior Developer Access</strong></p>
+
+<div class='code-block'><pre>TEST SCENARIO: Senior dev accessing all environments
+
+<p>Expected Results:</p>
+<p>Dev: Contributor (create, modify, delete) ✓</p>
+<p>Staging: Contributor (create, modify, delete) ✓</p>
+<p>Prod: Reader (view only, cannot modify) ✓</p>
+
+<p>Verification Method:</p>
+<p>├─ Check access for senior dev in IAM</p>
+<p>└─ Record findings</pre></div></p>
+
+<p><strong>Step 3: Test DevOps Engineer Access</strong></p>
+
+<div class='code-block'><pre>TEST SCENARIO: DevOps engineer deploying to all environments
+
+<p>Expected Results:</p>
+<p>Dev: Contributor ✓</p>
+<p>Staging: Contributor ✓</p>
+<p>Prod: Contributor (can deploy) ✓</p>
+
+<p>Verification: DevOps should have full access everywhere</pre></div></p>
+
+<p><strong>Step 4: Create Access Test Report</strong></p>
+
+<div class='code-block'><pre>ACCESS CONTROL TEST REPORT
+<p>════════════════════════════════════════════════════════════</p>
+
+<p>Test Date: &lt;/em&gt;___________&lt;em&gt;&lt;strong&gt;</p>
+<p>Tester: &lt;/strong&gt;&lt;/em&gt;_________&lt;em&gt;&lt;strong&gt;</p>
+
+<p>GROUP: Junior Developers</p>
+<p>├─ Dev Access: PASS ✓ / FAIL ✗</p>
+<p>├─ Staging Access: PASS ✓ / FAIL ✗</p>
+<p>└─ Prod Access: PASS ✓ / FAIL ✗</p>
+
+<p>GROUP: Senior Developers</p>
+<p>├─ Dev Access: PASS ✓ / FAIL ✗</p>
+<p>├─ Staging Access: PASS ✓ / FAIL ✗</p>
+<p>└─ Prod Access: PASS ✓ / FAIL ✗</p>
+
+<p>GROUP: DevOps Engineers</p>
+<p>├─ Dev Access: PASS ✓ / FAIL ✗</p>
+<p>├─ Staging Access: PASS ✓ / FAIL ✗</p>
+<p>└─ Prod Access: PASS ✓ / FAIL ✗</p>
+
+<p>OVERALL: ALL PASS ✓ / SOME FAIL ✗</pre></div></p>
+
+<h3 id="validation-checklist">Validation Checklist</h3>
+
+<ul><ol><li>[ ] Tested junior dev access to all 3 subscriptions</li>
+<li>[ ] Tested senior dev access to all 3 subscriptions</li>
+<li>[ ] Tested DevOps engineer access to all 3 subscriptions</li>
+<li>[ ] All access levels match expected configuration</li>
+<li>[ ] Access test report completed</li></ol></ul>
+
+<h3 id="success-criteria">Success Criteria</h3>
+
+<p>✅ Complete: All access controls verified working</p>
+<p>✅ Junior devs: Full in Dev, read-only elsewhere</p>
+<p>✅ Senior devs: Contributor in Dev/Staging, read-only in Prod</p>
+<p>✅ DevOps: Full access all environments</p>
+
+<hr class="divider">
+
+<h2 id="part-5-verify-policies-prevent-mistakes">Part 5 – Verify Policies Prevent Mistakes</h2>
+
+<h3 id="the-challenge">The Challenge</h3>
+
+<p>Policies only work if they actually stop dangerous operations. Test them!</p>
+
+<h3 id="what-youll-learn">What You'll Learn</h3>
+
+<ul><ol><li>How to verify policies are enforced</li>
+<li>How to understand policy denial messages</li>
+<li>How to handle policy overrides (if needed)</li></ol></ul>
+
+<h3 id="step-by-step-tasks">Step-by-Step Tasks</h3>
+
+<p><strong>Step 1: Test Prod Policy - Deny VM Deletion</strong></p>
+
+<p>Attempt to delete a VM in Prod (should be blocked):</p>
+
+<ol><li>Create a test VM in Prod subscription (if one exists)</li>
+<li>Attempt to delete it:</li></ol>
+<p>- Go to <strong>Prod Subscription</strong> > <strong>Virtual Machines</strong> > [VM]</p>
+<p>- Click <strong>Delete</strong></p>
+<p>- Expected: Policy blocks deletion with message</p>
+
+<p><strong>Expected Denial Message:</strong></p>
+<div class='code-block'><pre>Policy denied this operation:
+<p>Name: Deny-Dangerous-Deletes-Prod</p>
+<p>Effect: VM deletion denied in Prod</p>
+<p>Reason: Production safety guardrail</p>
+
+<p>To override:</p>
+<p>├─ Must be DevOps engineer</p>
+<p>├─ Must have override permissions</p>
+<p>└─ Deletion tracked in audit logs</pre></div></p>
+
+<p><strong>Document result:</strong></p>
+<div class='code-block'><pre>Policy Test: VM Deletion in Prod
+<p>├─ Attempted: Delete VM</p>
+<p>├─ Expected: Denied by policy</p>
+<p>├─ Actual: &lt;/strong&gt;&lt;/em&gt; Denied ✓ &lt;em&gt;&lt;strong&gt; Allowed ✗</p>
+<p>├─ Message: &lt;/strong&gt;&lt;/em&gt;_________&lt;em&gt;&lt;strong&gt;</p>
+<p>└─ Result: PASS ✓ / FAIL ✗</pre></div></p>
+
+<p><strong>Step 2: Test Prod Policy - Backup Tag Requirement</strong></p>
+
+<p>Attempt to create a resource without backup tag (should be denied):</p>
+
+<ol><li>Go to <strong>Prod Subscription</strong> > <strong>Storage accounts</strong> > <strong>Create</strong></li>
+<li>Fill in basic details</li>
+<li>Skip the "backup" tag</li>
+<li>Attempt to create:</li></ol>
+<p>- Expected: Policy denies creation</p>
+
+<p><strong>Document result:</strong></p>
+<div class='code-block'><pre>Policy Test: Missing Backup Tag in Prod
+<p>├─ Attempted: Create storage without backup tag</p>
+<p>├─ Expected: Denied</p>
+<p>├─ Actual: &lt;/strong&gt;&lt;/em&gt; Denied ✓ &lt;em&gt;&lt;strong&gt; Allowed ✗</p>
+<p>└─ Result: PASS ✓ / FAIL ✗</pre></div></p>
+
+<p><strong>Step 3: Test Policy Enforcement Success</strong></p>
+
+<p>Create a resource WITH all required tags (should succeed):</p>
+
+<ol><li>Create a storage account in Prod with:</li></ol>
+<p>- Name: test-storage-[timestamp]</p>
+<p>- Add tags: backup=enabled</p>
+<ol><li>Expected: Creation succeeds</li></ol>
+
+<p><strong>Document result:</strong></p>
+<div class='code-block'><pre>Policy Test: Resource with Required Tags
+<p>├─ Created: Storage account with backup tag</p>
+<p>├─ Expected: Success</p>
+<p>├─ Actual: &lt;/strong&gt;&lt;/em&gt; Success ✓ &lt;em&gt;&lt;strong&gt; Denied ✗</p>
+<p>└─ Result: PASS ✓ / FAIL ✗</pre></div></p>
+
+<p><strong>Step 4: Create Policy Verification Report</strong></p>
+
+<div class='code-block'><pre>POLICY VERIFICATION REPORT
+<p>════════════════════════════════════════════════════════════</p>
+
+<p>DENIAL TESTS (Verify policies block dangerous operations)</p>
+<p>├─ Deny VM Deletion: PASS ✓ / FAIL ✗</p>
+<p>├─ Deny DB Deletion: PASS ✓ / FAIL ✗</p>
+<p>├─ Deny Untagged Resources: PASS ✓ / FAIL ✗</p>
+<p>└─ Overall Denial Tests: &lt;/strong&gt;&lt;/em&gt; All Pass &lt;em&gt;&lt;strong&gt; Some Fail</p>
+
+<p>ENFORCEMENT TESTS (Verify creation with proper tags succeeds)</p>
+<p>├─ Storage with backup tag: PASS ✓ / FAIL ✗</p>
+<p>├─ VM with encryption: PASS ✓ / FAIL ✗</p>
+<p>└─ Overall Enforcement: &lt;/strong&gt;&lt;/em&gt; All Pass &lt;em&gt;&lt;strong&gt; Some Fail</p>
+
+<p>CONCLUSION:</p>
+<p>Policies are: &lt;/strong&gt;&lt;/em&gt; Working Correctly &lt;em&gt;&lt;strong&gt; Need Adjustment</pre></div></p>
+
+<h3 id="validation-checklist">Validation Checklist</h3>
+
+<ul><ol><li>[ ] Attempted to delete resource in Prod (was denied)</li>
+<li>[ ] Attempted to create resource without tags (was denied)</li>
+<li>[ ] Created resource with proper tags (succeeded)</li>
+<li>[ ] Denial messages documented</li>
+<li>[ ] Policy verification report completed</li></ol></ul>
+
+<h3 id="success-criteria">Success Criteria</h3>
+
+<p>✅ Complete: All policy tests performed</p>
+<p>✅ Policies successfully block dangerous operations</p>
+<p>✅ Compliant resources can be created</p>
+<p>✅ Audit trail shows enforcement</p>
+
+<hr class="divider">
+
+<h2 id="final-assessment-environment-isolation-checklist">Final Assessment: Environment Isolation Checklist</h2>
+
+<p>After completing all 5 parts, verify everything is in place:</p>
+
+<div class='code-block'><pre>ENVIRONMENT SEGREGATION FINAL CHECKLIST
+<p>════════════════════════════════════════════════════════════</p>
+
+<p>SUBSCRIPTIONS &amp; GROUPS</p>
+<p>├─ [ ] 3 subscriptions (Dev, Staging, Prod) created</p>
+<p>├─ [ ] 4 Entra groups created</p>
+<p>├─ [ ] Groups populated with test members</p>
+<p>└─ [ ] All documented</p>
+
+<p>RBAC CONFIGURATION</p>
+<p>├─ [ ] Dev: All groups = Contributor</p>
+<p>├─ [ ] Staging: Juniors=Reader, Seniors+DevOps=Contributor</p>
+<p>├─ [ ] Prod: Juniors+Seniors=Reader, DevOps=Contributor</p>
+<p>└─ [ ] All assignments verified in IAM</p>
+
+<p>POLICIES</p>
+<p>├─ [ ] Dev: No mandatory policies (sandbox)</p>
+<p>├─ [ ] Staging: Backup tag + encryption policies</p>
+<p>├─ [ ] Prod: 5 strict policies (deny deletes, require tags, etc.)</p>
+<p>└─ [ ] All policies tested and verified</p>
+
+<p>ACCESS TESTING</p>
+<p>├─ [ ] Junior dev: Full→Read→Read (Dev→Staging→Prod) ✓</p>
+<p>├─ [ ] Senior dev: Full→Full→Read (Dev→Staging→Prod) ✓</p>
+<p>├─ [ ] DevOps: Full→Full→Full (all environments) ✓</p>
+<p>└─ [ ] All tests documented</p>
+
+<p>POLICY ENFORCEMENT</p>
+<p>├─ [ ] Attempted VM deletion in Prod: Denied ✓</p>
+<p>├─ [ ] Attempted resource without tags: Denied ✓</p>
+<p>├─ [ ] Created resource with proper tags: Success ✓</p>
+<p>└─ [ ] All policy tests documented</p>
+
+<p>DOCUMENTATION</p>
+<p>├─ [ ] Subscription IDs recorded</p>
+<p>├─ [ ] RBAC matrix created</p>
+<p>├─ [ ] Policy list documented</p>
+<p>├─ [ ] Access test report completed</p>
+<p>└─ [ ] All findings summarized</p>
+
+<p>OVERALL COMPLETION: &lt;/strong&gt;&lt;/em&gt; 100% ___ Partial (identify gaps)</pre></div></p>
+
+<hr class="divider">
+
+<h2 id="key-takeaways">Key Takeaways</h2>
+
+<p>✅ <strong>Environment isolation prevents production incidents</strong> - Different access per environment catches mistakes before they reach customers</p>
+<p>✅ <strong>RBAC enforces role-based access</strong> - Junior devs can't accidentally touch Prod</p>
+<p>✅ <strong>Policies provide safety guardrails</strong> - Even if someone bypasses RBAC, policies protect critical resources</p>
+<p>✅ <strong>Three-tier approach scales</strong> - Dev/Staging/Prod is the industry standard</p>
+<p>✅ <strong>Testing is critical</strong> - Don't assume RBAC works, verify it</p>
+
+<hr class="divider">
+
+<h2 id="real-world-application">Real-World Application</h2>
+
+<p>You've now implemented the pattern used by:</p>
+<ul><ol><li><strong>Google, Amazon, Microsoft</strong>: Dev/Staging/Prod per team</li>
+<li><strong>DevOps teams everywhere</strong>: Environment-based access control</li>
+<li><strong>Enterprise cloud strategies</strong>: Production safety guardrails</li>
+<li><strong>SaaS companies</strong>: Preventing customer data incidents</li></ol></ul>
+
+<hr class="divider">
+
+<h2 id="next-steps">Next Steps</h2>
+
+<ol><li><strong>Review</strong> your complete access control configuration</li>
+<li><strong>Document</strong> the setup for your team (share this lab guide)</li>
+<li><strong>Monitor</strong> access logs to verify policies are working</li>
+<li><strong>Train</strong> team members on the access control model</li>
+<li><strong>Iterate</strong> as needed (add more policies, refine RBAC)</li>
+<li><strong>Apply to real workloads</strong> when confident in the setup</li></ol>
+
+
+  </div>
+</div>
+<script>
+/* Sidebar Active Link Tracking */
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.sidebar a'));
+  var sections = [];
+  links.forEach(function(a){
+    var el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) sections.push({link:a, el:el});
+  });
+  if (!sections.length || !('IntersectionObserver' in window)) return;
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (!entry.isIntersecting) return;
+      var match = sections.find(function(s){ return s.el === entry.target; });
+      if (!match) return;
+      links.forEach(function(a){ a.classList.remove('active'); });
+      match.link.classList.add('active');
+    });
+  }, { rootMargin: '-100px 0px -70% 0px', threshold: 0 });
+  sections.forEach(function(s){ observer.observe(s.el); });
+})();
+
+/* Code Block Copy Button Functionality */
+document.addEventListener('DOMContentLoaded', function(){
+  var codeBlocks = document.querySelectorAll('.code-block');
+  codeBlocks.forEach(function(block){
+    var pre = block.querySelector('pre');
+    if (!pre) return;
+
+    var btn = document.createElement('button');
+    btn.className = 'code-copy-btn';
+    btn.textContent = 'Copy';
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'Copy code to clipboard');
+
+    btn.addEventListener('click', function(){
+      var code = pre.textContent;
+      navigator.clipboard.writeText(code).then(function(){
+        var original = btn.textContent;
+        btn.textContent = '✓ Copied!';
+        btn.classList.add('copied');
+        setTimeout(function(){
+          btn.textContent = original;
+          btn.classList.remove('copied');
+        }, 2000);
+      }).catch(function(){
+        alert('Failed to copy code');
+      });
+    });
+
+    block.appendChild(btn);
+  });
+});
+</script>
+</body>
+</html>

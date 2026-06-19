@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab 06 – Cost Management & Chargeback by Department - AZ-104 Labs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Professional Lab Template - Embedded CSS for local file:// access */
+:root{--bg:#f7f9fd;--card:#fff;--border:#e2e8f0;--text:#1a202c;--muted:#64748b;--primary:#1e3a8a;--panel:#0f172a;--panel-shadow:rgba(15,23,42,.12);--section-gap:48px;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,-apple-system,'Segoe UI',sans-serif;color:var(--text);line-height:1.6}.page{flex:1;min-width:0;padding:48px;max-width:1100px;margin:0 auto}
+h1{font-size:3.4rem;line-height:1.2;margin:0 0 12px 0;color:var(--primary);font-weight:800;letter-spacing:-0.5px}h2{font-size:2.2rem;margin:0 0 24px 0;color:var(--primary);font-weight:800;letter-spacing:-0.5px}h3{font-size:1.45rem;margin:32px 0 16px 0;color:var(--primary);font-weight:700;letter-spacing:-0.3px}h3:first-child{margin-top:0}h4{font-size:1.1rem;margin:20px 0 12px 0;color:#1e3a8a;font-weight:700}
+p{font-size:1.05rem;line-height:1.7;margin:12px 0;color:var(--text)}ul,ol{margin:16px 0;padding-left:24px}li{margin-bottom:10px;line-height:1.7;font-size:1.03rem;color:var(--text)}
+a{color:#1e40af;text-decoration:none;border-bottom:2px solid transparent;font-weight:600;transition:border-color 0.2s}a:hover{border-bottom-color:#1e40af}strong{color:var(--primary);font-weight:700}code{background:#f0f4ff;color:#1e40af;padding:4px 8px;border-radius:6px;font:13px/1.5 'SF Mono',Consolas,'Courier New',monospace;font-weight:500}
+.task-box{margin:24px 0;padding:0;background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(30,64,175,.06);transition:box-shadow 0.2s,border-color 0.2s}.task-box:hover{box-shadow:0 4px 12px rgba(30,64,175,.12);border-color:#c7d2fe}
+.task-header{display:flex;align-items:center;gap:12px;padding:18px 20px;background:linear-gradient(135deg,#dbeafe 0%,#eff6ff 100%);border-bottom:1px solid var(--border)}.task-header .task-icon{font-size:1.4rem;color:#1e40af}.task-header h3{margin:0;font-size:1.2rem;color:var(--primary);font-weight:700}.task-content{padding:20px}
+.code-block{position:relative;margin:24px 0;background:#0f172a;border-radius:10px;overflow:hidden;border:1px solid #1e293b;box-shadow:0 4px 12px rgba(15,23,42,.25)}.code-block pre{margin:0;padding:20px 48px 20px 20px;color:#e2e8f0;font-family:'SF Mono',Consolas,'Courier New',monospace;font-size:0.92rem;line-height:1.7;overflow-x:auto}
+.code-copy-btn{position:absolute;top:12px;right:12px;padding:8px 14px;background:#1e293b;color:#60a5fa;border:1px solid #334155;border-radius:6px;cursor:pointer;font-size:0.85rem;font-weight:600;transition:all 0.2s;user-select:none;box-shadow:0 1px 3px rgba(0,0,0,.2)}.code-copy-btn:hover{background:#334155;color:#93c5fd;border-color:#475569}.code-block .keyword{color:#569cd6}.code-block .string{color:#ce9178}.code-block .comment{color:#6a9955}.code-block .operator{color:#d4d4d4}.code-block .function{color:#dcdcaa}.code-block .property{color:#9cdcfe}
+.callout-box{margin:24px 0;padding:18px 20px;border-radius:10px;border-left:4px solid;display:flex;gap:14px;box-shadow:0 1px 3px rgba(0,0,0,.05)}.callout-icon{font-size:1.5rem;flex-shrink:0;min-width:28px;text-align:center}.callout-content{flex:1}.callout-content h4{margin:0 0 8px 0;font-size:1.08rem;font-weight:700}.callout-content p{margin:8px 0;line-height:1.7;font-size:1.02rem}.callout-content p:first-child{margin-top:0}
+.callout-tip{background:#eff6ff;border-color:#3b82f6}.callout-tip .callout-icon{color:#1e40af}.callout-tip h4{color:#1e40af}.callout-warning{background:#fefce8;border-color:#eab308}.callout-warning .callout-icon{color:#ca8a04}.callout-warning h4{color:#92400e}.callout-important{background:#fee2e2;border-color:#ef4444}.callout-important .callout-icon{color:#dc2626}.callout-important h4{color:#991b1b}
+.section-time{background:#dbeafe;border:1px solid #93c5fd;border-radius:8px;padding:10px 16px;font-size:0.95rem;font-weight:600;color:#1e40af;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}.layout{max-width:1500px;margin:auto;display:flex;align-items:flex-start;gap:32px}.sidebar{flex:0 0 280px;position:sticky;top:88px;max-height:calc(100vh - 108px);overflow-y:auto;padding:24px;background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 2px 8px rgba(30,64,175,.06)}.sidebar summary{cursor:pointer;list-style:none;padding:10px 12px;border-radius:8px;font-weight:600;font-size:.93rem;color:var(--primary);user-select:none;transition:all 0.2s}.sidebar summary::-webkit-details-marker{display:none}.sidebar details[open]>summary{background:#dbeafe}.sidebar summary:hover{background:#eff6ff}.sidebar a{display:block;padding:9px 12px;margin-bottom:2px;border-radius:8px;font-size:.89rem;font-weight:500;color:var(--text);border-bottom:none;border-left:3px solid transparent;line-height:1.5;transition:all 0.15s;text-decoration:none;color:#1a202c}.sidebar a:hover{background:#eff6ff;color:var(--primary)}.site-nav{position:sticky;top:0;z-index:1000;background:var(--primary);color:#fff;display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:14px 32px;font-size:.93rem;box-shadow:0 4px 12px rgba(0,0,0,.1);font-family:Inter,-apple-system,'Segoe UI',sans-serif}.site-nav .nav-brand{font-weight:800;font-size:1.1rem;margin-right:auto;color:#fff;letter-spacing:-0.3px}.site-nav summary{cursor:pointer;list-style:none;padding:8px 16px;border-radius:8px;background:rgba(255,255,255,.12);font-weight:600;color:#fff;user-select:none;transition:background 0.2s}
+</style>
+</head>
+<body>
+<nav class="site-nav" aria-label="Main site navigation">
+  <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
+  <details class="nav-group" aria-label="Learning module selector">
+    <summary>Learning Module</summary>
+    <div class="nav-menu">
+      <a href="../../00-prerequisites/documents/module-home.html">00 - Prerequisites</a>
+      <a href="../../01-identity-governance/documents/module-home.html">01 - Identity &amp; Governance</a>
+      <a href="../../02-storage/documents/module-home.html">02 - Storage</a>
+      <a href="../../03-compute/documents/module-home.html">03 - Compute</a>
+      <a href="../../04-networking/documents/module-home.html">04 - Networking</a>
+      <a href="../../05-monitor-maintain/documents/module-home.html">05 - Monitor &amp; Maintain</a>
+    </div>
+  </details>
+</nav>
+<div class="layout">
+  <aside class="sidebar" aria-label="Page navigation">
+    <details open>
+      <summary>▶ Module 01 - Identity &amp; Governance</summary>
+      <div>
+        <a href="01-entra-id-overview.html">01 - Entra ID Overview</a>
+<a href="02-rbac-fundamentals.html">02 - RBAC Fundamentals</a>
+<a href="03-management-groups-and-azure-policy.html">03 - Management Groups &amp; Azure Policy</a>
+<a href="04-access-control-scenarios.html">04 - Access Control Scenarios</a>
+<a href="05-identity-best-practices.html">05 - Identity Best Practices</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ Labs</summary>
+      <div>
+        <a href="lab01-entra-users-groups.html">Lab 01 - Entra Users &amp; Groups</a>
+<a href="lab02-rbac-azure-policy.html">Lab 02 - RBAC &amp; Azure Policy</a>
+<a href="lab03-management-groups-subscriptions.html">Lab 03 - Management Groups</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ On This Page</summary>
+      <div>
+        <a href="#real-life-scenario">Real-Life Scenario</a>
+<a href="#prerequisites">Prerequisites</a>
+<a href="#estimated-time">Estimated Time</a>
+<a href="#part-1-design-cost-allocation-tagging-strategy">Part 1 – Design Cost Allocation Tagging Strategy</a>
+<a href="#part-2-enforce-tags-with-policies">Part 2 – Enforce Tags with Policies</a>
+<a href="#part-3-set-up-budgets-cost-anomaly-alerts">Part 3 – Set Up Budgets & Cost Anomaly Alerts</a>
+<a href="#part-4-analyze-costs-by-department">Part 4 – Analyze Costs by Department</a>
+<a href="#part-5-prevent-expensive-mistakes-with-policies">Part 5 – Prevent Expensive Mistakes with Policies</a>
+<a href="#final-assessment-cost-management-checklist">Final Assessment: Cost Management Checklist</a>
+<a href="#key-takeaways">Key Takeaways</a>
+<a href="#real-world-application">Real-World Application</a>
+<a href="#next-steps">Next Steps</a>
+      </div>
+    </details>
+  </aside>
+  <div class="page">
+  <h1>Lab 06 – Cost Management & Chargeback by Department</h1>
+
+<h2 id="real-life-scenario">Real-Life Scenario</h2>
+
+<p><strong>Company: TechCorp Financial Services</strong></p>
+
+<p>TechCorp's Azure bill grew from $5K/month to $47K/month in 6 months. The CFO is asking:</p>
+
+<p><strong>"Who's spending what? Why is it so high? Can we control it?"</strong></p>
+
+<p><strong>The Problem:</strong></p>
+<ul><ol><li>No visibility into spending by department</li>
+<li>No way to charge back costs to project owners</li>
+<li>Expensive resources running idle (forgotten test VMs)</li>
+<li>No budget controls (surprised by end-of-month bills)</li>
+<li>No cost forecasting</li>
+<li>Result: <strong>Uncontrolled cloud spend + no accountability</strong></li></ol></ul>
+
+<p><strong>Your Challenge:</strong> Implement cost allocation, budgets, and controls</p>
+
+<p><strong>The Solution You'll Build:</strong></p>
+<div class='code-block'><pre>COST ALLOCATION BY DEPARTMENT:
+<p>├─ Finance Department: $15K/month</p>
+<p>│  ├─ Production databases: $10K</p>
+<p>│  ├─ Development environment: $3K</p>
+<p>│  └─ Disaster recovery: $2K</p>
+<p>│</p>
+<p>├─ Engineering Department: $28K/month</p>
+<p>│  ├─ Microservices (Prod): $18K</p>
+<p>│  ├─ Kubernetes cluster: $7K</p>
+<p>│  └─ Development/Testing: $3K</p>
+<p>│</p>
+<p>└─ Operations: $4K/month</p>
+<p>├─ Infrastructure: $3K</p>
+<p>└─ Monitoring &amp; Backup: $1K</p>
+
+<p>TOTAL: $47K/month with full visibility ✓</pre></div></p>
+
+<p><strong>Budget Controls:</strong></p>
+<div class='code-block'><pre>Department Budgets:
+<p>├─ Finance: Budget $16K/month → Alert at $14.4K (90%)</p>
+<p>├─ Engineering: Budget $30K/month → Alert at $27K (90%)</p>
+<p>├─ Operations: Budget $5K/month → Alert at $4.5K (90%)</p>
+<p>└─ Each department owns their costs</pre></div></p>
+
+<p><strong>Cost Optimization:</strong></p>
+<div class='code-block'><pre>Policies Prevent Expensive Mistakes:
+<p>├─ Only allow Standard&lt;em&gt;B and Standard&lt;/em&gt;D VMs (block Premium)</p>
+<p>├─ Only allow LRS/ZRS storage (block expensive GRS)</p>
+<p>├─ Limit resources to cost-optimized regions</p>
+<p>└─ Require resource owners to tag everything</pre></div></p>
+
+<hr class="divider">
+
+<h2 id="prerequisites">Prerequisites</h2>
+
+<p><strong>Required Knowledge:</strong></p>
+<ul><ol><li><a href="lab01-entra-users-groups.md">Lab 01: Entra ID - Users & Groups</a></li>
+<li><a href="lab02-rbac-azure-policy.md">Lab 02: RBAC & Azure Policy</a></li>
+<li><a href="lab03-management-groups-subscriptions.md">Lab 03: Management Groups & Subscriptions</a></li></ol></ul>
+
+<p><strong>Required Permissions:</strong></p>
+<ul><ol><li>Owner role on at least one subscription</li>
+<li>Access to Azure Cost Management + Billing</li>
+<li>Ability to create policies</li>
+<li>Ability to create budget alerts</li></ol></ul>
+
+<p><strong>Cost Note:</strong> This lab uses existing resources (creates no new costs). Uses free Cost Management features.</p>
+
+<hr class="divider">
+
+<h2 id="estimated-time">Estimated Time</h2>
+
+<p><strong>Total: 90 minutes</strong></p>
+<ul><ol><li>Part 1: Design tagging strategy (15 min)</li>
+<li>Part 2: Enforce tags with policies (20 min)</li>
+<li>Part 3: Set up budgets & alerts (20 min)</li>
+<li>Part 4: Analyze costs by department (20 min)</li>
+<li>Part 5: Prevent expensive mistakes (15 min)</li></ol></ul>
+
+<p><strong>Difficulty: Intermediate</strong></p>
+
+<hr class="divider">
+
+<h2 id="part-1-design-cost-allocation-tagging-strategy">Part 1 – Design Cost Allocation Tagging Strategy</h2>
+
+<h3 id="the-challenge">The Challenge</h3>
+
+<p>Before you can track costs, you need a consistent tagging strategy. Every resource must be tagged the same way.</p>
+
+<h3 id="what-youll-learn">What You'll Learn</h3>
+
+<ul><ol><li>How to design a tagging strategy</li>
+<li>Why tag names/values matter for cost allocation</li>
+<li>How to document tagging standards</li></ol></ul>
+
+<h3 id="step-by-step-tasks">Step-by-Step Tasks</h3>
+
+<p><strong>Step 1: Define Tagging Standards</strong></p>
+
+<p>Create a company-wide tagging standard that covers:</p>
+
+<div class='code-block'><pre>REQUIRED TAGS FOR ALL RESOURCES:
+<p>════════════════════════════════════════════════════════════</p>
+
+<p>Tag 1: CostCenter</p>
+<p>├─ Purpose: Chargeback to department</p>
+<p>├─ Values: Finance, Engineering, Operations, Training</p>
+<p>├─ Example: CostCenter = Engineering</p>
+<p>└─ Why: Bills can be grouped by cost center</p>
+
+<p>Tag 2: Environment</p>
+<p>├─ Purpose: Separate prod/dev costs</p>
+<p>├─ Values: Production, Staging, Development</p>
+<p>├─ Example: Environment = Production</p>
+<p>└─ Why: Production usually costs 5x more than Dev</p>
+
+<p>Tag 3: Owner</p>
+<p>├─ Purpose: Know who to ask about resource</p>
+<p>├─ Values: Email addresses of resource owners</p>
+<p>├─ Example: Owner = john.smith@techcorp.com</p>
+<p>└─ Why: Accountability for resource decisions</p>
+
+<p>Tag 4: Project</p>
+<p>├─ Purpose: Track costs per application/project</p>
+<p>├─ Values: ProjectName (e.g., CustomerPortal, DataPipeline)</p>
+<p>├─ Example: Project = CustomerPortal</p>
+<p>└─ Why: Know which projects are expensive</p>
+
+<p>Tag 5: LifeCycle</p>
+<p>├─ Purpose: Know if resource is temporary or permanent</p>
+<p>├─ Values: Permanent, Temporary, Trial</p>
+<p>├─ Example: LifeCycle = Temporary</p>
+<p>└─ Why: Clean up temporary test resources</pre></div></p>
+
+<p><strong>Step 2: Create Tagging Documentation</strong></p>
+
+<p>Document your tagging standard so everyone uses it consistently:</p>
+
+<div class='code-block'><pre>TAGGING STANDARD - TECHCORP
+<p>════════════════════════════════════════════════════════════</p>
+
+<p>All resources MUST have these tags (5 required tags):</p>
+
+<p>Resource Template:</p>
+<p>├─ Name: [resource-type]-[environment]-[project]</p>
+<p>├─ CostCenter: [Finance|Engineering|Operations|Training]</p>
+<p>├─ Environment: [Production|Staging|Development]</p>
+<p>├─ Owner: your.email@techcorp.com</p>
+<p>├─ Project: ProjectName</p>
+<p>└─ LifeCycle: [Permanent|Temporary|Trial]</p>
+
+<p>Example - Production Database:</p>
+<p>├─ Name: sql-prod-customerdb</p>
+<p>├─ CostCenter: Finance</p>
+<p>├─ Environment: Production</p>
+<p>├─ Owner: data-team@techcorp.com</p>
+<p>├─ Project: CustomerPortal</p>
+<p>└─ LifeCycle: Permanent</p>
+
+<p>Example - Development VM:</p>
+<p>├─ Name: vm-dev-testing</p>
+<p>├─ CostCenter: Engineering</p>
+<p>├─ Environment: Development</p>
+<p>├─ Owner: dev-team@techcorp.com</p>
+<p>├─ Project: DataPipeline</p>
+<p>└─ LifeCycle: Temporary (delete after 30 days)</p>
+
+<p>FAILURE TO TAG = Resource cannot be created (policy will deny)</pre></div></p>
+
+<p><strong>Step 3: Review Current Resources (Audit)</strong></p>
+
+<p>Check what resources exist and how they're currently tagged:</p>
+
+<ol><li>Go to <strong>Subscriptions</strong> > <strong>Resources</strong></li>
+<li>Filter by resource type (e.g., Virtual Machines, Storage accounts)</li>
+<li>Check which ones have tags and which don't</li>
+<li>Document findings:</li></ol>
+
+<div class='code-block'><pre>CURRENT TAGGING AUDIT
+<p>═════════════════════════════════════════════════════════════</p>
+
+<p>Resource Type: Virtual Machines</p>
+<p>├─ Total: 12 VMs</p>
+<p>├─ Properly tagged: 3 (25%)</p>
+<p>├─ Missing tags: 9 (75%)</p>
+<p>└─ Action: Need to retroactively tag</p>
+
+<p>Resource Type: Storage Accounts</p>
+<p>├─ Total: 8 accounts</p>
+<p>├─ Properly tagged: 2 (25%)</p>
+<p>├─ Missing tags: 6 (75%)</p>
+<p>└─ Action: Need to retroactively tag</p>
+
+<p>Resource Type: SQL Databases</p>
+<p>├─ Total: 4 databases</p>
+<p>├─ Properly tagged: 0 (0%)</p>
+<p>├─ Missing tags: 4 (100%)</p>
+<p>└─ Action: Tag immediately</p>
+
+<p>SUMMARY:</p>
+<p>├─ Total resources: 24</p>
+<p>├─ Properly tagged: 5 (21%)</p>
+<p>├─ Need tagging: 19 (79%)</p>
+<p>└─ Priority: HIGH - most resources untagged</pre></div></p>
+
+<p><strong>Step 4: Tag Existing Resources</strong></p>
+
+<p>Update existing resources with proper tags:</p>
+
+<p>For each resource without tags:</p>
+<ol><li>Go to <strong>Resource</strong> > <strong>Tags</strong></li>
+<li>Add the 5 required tags:</li></ol>
+<p>- CostCenter</p>
+<p>- Environment</p>
+<p>- Owner</p>
+<p>- Project</p>
+<p>- LifeCycle</p>
+<ol><li>Click <strong>Save</strong></li></ol>
+
+<p>Example PowerShell script to tag resources in bulk:</p>
+
+<div class='code-block'><pre>&lt;h1&gt;Tag all resources in a resource group&lt;/h1&gt;
+<p>$rg = Get<span class="operator">-</span><span class="property">AzResourceGroup</span> <span class="operator">-</span><span class="property">Name</span> &quot;rg<span class="operator">-</span><span class="property">production</span>&quot;</p>
+<p>$tags = @{</p>
+<p>&quot;CostCenter&quot; = &quot;Engineering&quot;</p>
+<p>&quot;Environment&quot; = &quot;Production&quot;</p>
+<p>&quot;Owner&quot; = &quot;engineering<span class="operator">-</span><span class="property">team</span>@techcorp.com&quot;</p>
+<p>&quot;Project&quot; = &quot;CustomerPortal&quot;</p>
+<p>&quot;LifeCycle&quot; = &quot;Permanent&quot;</p>
+<p>}</p>
+
+<p>$resources = <span class=<span class="string">"function"</span>>Get<span class="operator">-</span><span class="property">AzResource</span></span> <span class="operator">-</span><span class="property">ResourceGroupName</span> $rg.ResourceGroupName</p>
+<p>foreach ($resource in $resources) {</p>
+<p>Update<span class="operator">-</span><span class="property">AzTag</span> <span class="operator">-</span><span class="property">ResourceId</span> $resource.ResourceId <span class="operator">-</span><span class="property">Tag</span> $tags <span class="operator">-</span><span class="property">Operation</span> Merge</p>
+<p>}</pre></div></p>
+
+<p><strong>Step 5: Document Tagging Completion</strong></p>
+
+<div class='code-block'><pre>TAGGING COMPLETION SUMMARY
+<p>═════════════════════════════════════════════════════════════</p>
+
+<p>Resource Type: VMs</p>
+<p>├─ Total: 12</p>
+<p>├─ Tagged: 12 (100%)</p>
+<p>└─ Status: ✓ Complete</p>
+
+<p>Resource Type: Storage</p>
+<p>├─ Total: 8</p>
+<p>├─ Tagged: 8 (100%)</p>
+<p>└─ Status: ✓ Complete</p>
+
+<p>Resource Type: SQL Databases</p>
+<p>├─ Total: 4</p>
+<p>├─ Tagged: 4 (100%)</p>
+<p>└─ Status: ✓ Complete</p>
+
+<p>OVERALL: 24/24 resources properly tagged (100%) ✓</pre></div></p>
+
+<h3 id="validation-checklist">Validation Checklist</h3>
+
+<ul><ol><li>[ ] Tagging standard documented (5 tags defined)</li>
+<li>[ ] Tag values documented for each tag</li>
+<li>[ ] Current resources audited for tagging</li>
+<li>[ ] Untagged resources retroactively tagged</li>
+<li>[ ] 100% of resources now have required tags</li>
+<li>[ ] Tagging documentation shared with team</li></ol></ul>
+
+<h3 id="success-criteria">Success Criteria</h3>
+
+<p>✅ Complete: All resources tagged consistently</p>
+<p>✅ Tagging standard documented</p>
+<p>✅ 100% resource coverage</p>
+<p>✅ Ready for cost allocation</p>
+
+<hr class="divider">
+
+<h2 id="part-2-enforce-tags-with-policies">Part 2 – Enforce Tags with Policies</h2>
+
+<h3 id="the-challenge">The Challenge</h3>
+
+<p>You can document tagging standards, but humans forget. Use policies to enforce tagging automatically.</p>
+
+<h3 id="what-youll-learn">What You'll Learn</h3>
+
+<ul><ol><li>How to create policies that enforce tags</li>
+<li>How to prevent untagged resources from being created</li>
+<li>How to auto-tag resources</li></ol></ul>
+
+<h3 id="step-by-step-tasks">Step-by-Step Tasks</h3>
+
+<p><strong>Step 1: Create Policy - Require CostCenter Tag</strong></p>
+
+<p>This policy denies creation of resources without a CostCenter tag:</p>
+
+<ol><li>Go to <strong>Policy</strong> > <strong>Definitions</strong> > <strong>Create Policy Definition</strong></li>
+
+<li>Configure:</li></ol>
+<div class='code-block'><pre>Name: Require-CostCenter-Tag
+<p>Description: All resources must have CostCenter tag (Finance, Engineering, Operations, Training)</p>
+<p>Policy Type: Built-in</p>
+
+<p>Effect: Deny (prevent creation without tag)</p>
+
+<p>Condition:</p>
+<p>├─ Field: tags[&#39;CostCenter&#39;]</p>
+<p>├─ Operator: exists</p>
+<p>└─ Value: false → DENY (no tag) → ALLOW (tag exists)</p>
+
+<p>Result: Cannot create resources without CostCenter tag</pre></div></p>
+
+<p><strong>Step 2: Create Policy - Require Environment Tag</strong></p>
+
+<p>Similar to Step 1:</p>
+
+<div class='code-block'><pre>Name: Require-Environment-Tag
+<p>Description: All resources must have Environment tag (Production, Staging, Development)</p>
+<p>Effect: Deny</p>
+<p>Result: Cannot create without Environment tag</pre></div></p>
+
+<p><strong>Step 3: Create Policy - Require Owner Tag</strong></p>
+
+<div class='code-block'><pre>Name: Require-Owner-Tag
+<p>Description: All resources must have Owner tag (email of resource owner)</p>
+<p>Effect: Deny</p>
+<p>Result: Cannot create without Owner tag</pre></div></p>
+
+<p><strong>Step 4: Create Policy - Prevent Expensive VM Types</strong></p>
+
+<p>This prevents developers from accidentally creating expensive VMs:</p>
+
+<div class='code-block'><pre>Name: Deny-Premium-VM-Types
+<p>Description: Only allow Standard&lt;em&gt;B and Standard&lt;/em&gt;D VM types (cost optimization)</p>
+<p>Effect: Deny</p>
+
+<p>Condition:</p>
+<p>├─ Resource type: Microsoft.Compute/virtualMachines</p>
+<p>├─ Field: sku.name</p>
+<p>├─ Values: Block Premium&lt;em&gt;, Deluxe&lt;/em&gt;, etc.</p>
+<p>├─ Allowed: Standard&lt;em&gt;B1s, Standard&lt;/em&gt;B2s, Standard&lt;em&gt;D2s&lt;/em&gt;v3, etc.</p>
+
+<p>Result:</p>
+<p>├─ Engineer tries to create Premium&lt;em&gt;D64s&lt;/em&gt;v3</p>
+<p>├─ Policy blocks it</p>
+<p>├─ Must request exception through proper channels</p>
+<p>└─ Forces cost-conscious decisions</pre></div></p>
+
+<p><strong>Step 5: Create Policy - Prevent Expensive Storage</strong></p>
+
+<div class='code-block'><pre>Name: Deny-Expensive-Storage-Replication
+<p>Description: Only allow LRS/ZRS, deny GRS/RA-GRS (cost control)</p>
+<p>Effect: Deny</p>
+
+<p>Condition:</p>
+<p>├─ Resource type: Microsoft.Storage/storageAccounts</p>
+<p>├─ Field: sku.name</p>
+<p>├─ Blocked: Premium&lt;em&gt;GRS, Standard&lt;/em&gt;GZRS, Standard&lt;em&gt;RA-GZRS</p>
+<p>├─ Allowed: Standard&lt;/em&gt;LRS, Standard&lt;em&gt;ZRS</p>
+
+<p>Result:</p>
+<p>├─ LRS: 1 datacenter (cheapest, acceptable for dev)</p>
+<p>├─ ZRS: 3 zones (good for staging)</p>
+<p>├─ GRS: 2 regions (expensive, requires exception)</p>
+<p>└─ Prevents unintended expensive replication</pre></div></p>
+
+<p><strong>Step 6: Assign Policies to Subscription</strong></p>
+
+<p>For each policy created:</p>
+
+<ol><li>Go to <strong>Policy</strong> > <strong>Assignments</strong> > <strong>Assign Policy</strong></li>
+<li>Select policy name</li>
+<li>Choose scope: <strong>Your subscription</strong></li>
+<li>Set effect: <strong>Deny</strong> (enforce)</li>
+<li>Click <strong>Assign</strong></li></ol>
+
+<p><strong>Step 7: Test Policies Are Working</strong></p>
+
+<p>Attempt to create a resource without tags:</p>
+
+<ol><li>Try to create a VM in the portal</li>
+<li>Omit the CostCenter tag</li>
+<li>Attempt to create:</li></ol>
+<p>- Expected: Policy blocks creation with message</p>
+<p>- Message: "Required tag 'CostCenter' not found"</p>
+
+<p>Document result:</p>
+<div class='code-block'><pre>POLICY ENFORCEMENT TEST
+<p>═════════════════════════════════════════════════════════════</p>
+
+<p>Test 1: Create VM without CostCenter tag</p>
+<p>├─ Attempted: Create VM without tag</p>
+<p>├─ Expected: Denied</p>
+<p>├─ Actual: &lt;/em&gt;&lt;strong&gt; Denied ✓ &lt;/strong&gt;&lt;em&gt; Allowed ✗</p>
+<p>└─ Result: PASS ✓ / FAIL ✗</p>
+
+<p>Test 2: Create Premium VM</p>
+<p>├─ Attempted: Create Premium&lt;/em&gt;D64s&lt;em&gt;v3 VM</p>
+<p>├─ Expected: Denied</p>
+<p>├─ Actual: &lt;/em&gt;&lt;strong&gt; Denied ✓ &lt;/strong&gt;&lt;em&gt; Allowed ✗</p>
+<p>└─ Result: PASS ✓ / FAIL ✗</p>
+
+<p>Test 3: Create resource WITH proper tags</p>
+<p>├─ Attempted: Create Standard&lt;/em&gt;D2s&lt;em&gt;v3 VM with all tags</p>
+<p>├─ Expected: Success</p>
+<p>├─ Actual: &lt;/em&gt;&lt;strong&gt; Success ✓ &lt;/strong&gt;&lt;em&gt; Denied ✗</p>
+<p>└─ Result: PASS ✓ / FAIL ✗</pre></div></p>
+
+<h3 id="validation-checklist">Validation Checklist</h3>
+
+<ul><ol><li>[ ] Created 3 tag-requirement policies</li>
+<li>[ ] Created 2 cost-prevention policies</li>
+<li>[ ] All 5 policies assigned to subscription</li>
+<li>[ ] Tested policy enforcement (resource without tags denied)</li>
+<li>[ ] Tested compliant creation (proper tags allowed)</li>
+<li>[ ] Tested VM type policy (Premium denied)</li></ol></ul>
+
+<h3 id="success-criteria">Success Criteria</h3>
+
+<p>✅ Complete: All policies enforced</p>
+<p>✅ Untagged resources cannot be created</p>
+<p>✅ Expensive VMs/storage blocked</p>
+<p>✅ Cost-conscious defaults enforced</p>
+
+<hr class="divider">
+
+<h2 id="part-3-set-up-budgets-cost-anomaly-alerts">Part 3 – Set Up Budgets & Cost Anomaly Alerts</h2>
+
+<h3 id="the-challenge">The Challenge</h3>
+
+<p>Budgets tell you how much you can spend. Alerts tell you when you're going over budget.</p>
+
+<h3 id="what-youll-learn">What You'll Learn</h3>
+
+<ul><ol><li>How to set up budget alerts</li>
+<li>How to configure anomaly detection</li>
+<li>How to establish cost accountability</li></ol></ul>
+
+<h3 id="step-by-step-tasks">Step-by-Step Tasks</h3>
+
+<p><strong>Step 1: Create Budget for Engineering Department</strong></p>
+
+<p>Engineering usually spends the most. Set a reasonable budget:</p>
+
+<ol><li>Go to <strong>Cost Management + Billing</strong> > <strong>Budgets</strong> > <strong>Create budget</strong></li>
+
+<li>Configure:</li></ol>
+<div class='code-block'><pre>Budget Name: Engineering-Team-Monthly-Budget
+<p>Scope: Select subscription used by Engineering</p>
+<p>Budget Amount: $30,000 (monthly)</p>
+<p>Time Period: Monthly (resets each month)</p>
+<p>Reset Date: 1st of each month</pre></div></p>
+
+<ol><li>Configure <strong>Alerts</strong>:</li></ol>
+<div class='code-block'><pre>Alert 1: 90% of budget
+<p>├─ Threshold: $27,000</p>
+<p>├─ Recipients: engineering-manager@techcorp.com</p>
+<p>└─ Triggers when spending hits $27K</p>
+
+<p>Alert 2: 100% of budget</p>
+<p>├─ Threshold: $30,000</p>
+<p>├─ Recipients: engineering-manager@techcorp.com, cfo@techcorp.com</p>
+<p>└─ Triggers at limit (alerts executives)</p>
+
+<p>Alert 3: 110% of budget (overrun)</p>
+<p>├─ Threshold: $33,000</p>
+<p>├─ Recipients: cfo@techcorp.com, finance@techcorp.com</p>
+<p>└─ Triggers if over budget (escalation)</pre></div></p>
+
+<ol><li>Click <strong>Create</strong></li></ol>
+
+<p><strong>Step 2: Create Budget for Finance Department</strong></p>
+
+<p>Finance department manages customer data (lower cost than Engineering):</p>
+
+<div class='code-block'><pre>Budget Name: Finance-Team-Monthly-Budget
+<p>Budget Amount: $16,000</p>
+<p>Alerts:</p>
+<p>├─ 90%: $14,400 → engineering-manager</p>
+<p>├─ 100%: $16,000 → manager + CFO</p>
+<p>└─ 110%: $17,600 → CFO + Finance</pre></div></p>
+
+<p><strong>Step 3: Create Budget for Operations</strong></p>
+
+<p>Operations manages infrastructure (lowest cost):</p>
+
+<div class='code-block'><pre>Budget Name: Operations-Monthly-Budget
+<p>Budget Amount: $5,000</p>
+<p>Alerts:</p>
+<p>├─ 90%: $4,500 → ops-manager</p>
+<p>├─ 100%: $5,000 → ops-manager + CFO</p>
+<p>└─ 110%: $5,500 → CFO</pre></div></p>
+
+<p><strong>Step 4: Create Organization-Wide Budget</strong></p>
+
+<p>Total budget for entire company:</p>
+
+<div class='code-block'><pre>Budget Name: TechCorp-Total-Azure-Budget
+<p>Budget Amount: $51,000 (Total: Finance $16K + Engineering $30K + Ops $5K)</p>
+<p>Alerts:</p>
+<p>├─ 80%: $40,800 → CFO (early warning)</p>
+<p>├─ 90%: $45,900 → CFO</p>
+<p>├─ 100%: $51,000 → CFO + CEO</p>
+<p>└─ 110%: $56,100 → CFO + CEO (escalation)</p>
+
+<p>Purpose: Company-level cost control</pre></div></p>
+
+<p><strong>Step 5: Set Up Cost Anomaly Alert</strong></p>
+
+<p>Azure can automatically detect unusual spending:</p>
+
+<ol><li>Go to <strong>Cost Management</strong> > <strong>Alerts</strong> > <strong>Cost anomaly</strong></li>
+
+<li>Configure:</li></ol>
+<div class='code-block'><pre>Alert Name: Unusual-Spending-Detection
+<p>Scope: All subscriptions</p>
+<p>Sensitivity: Medium (balance false positives vs real anomalies)</p>
+<p>Frequency: Daily checks</p>
+
+<p>Triggers when:</p>
+<p>├─ Spending deviates significantly from historical average</p>
+<p>├─ Example: Usually $1,500/day, suddenly $5,000/day</p>
+<p>└─ Indicates: Resource leak, forgotten test environment, attack</p>
+
+<p>Recipients:</p>
+<p>├─ cfo@techcorp.com</p>
+<p>├─ ops-manager@techcorp.com</p>
+<p>└─ All team leads</pre></div></p>
+
+<p><strong>Step 6: Document Budget Configuration</strong></p>
+
+<div class='code-block'><pre>BUDGET &amp; ALERT CONFIGURATION SUMMARY
+<p>════════════════════════════════════════════════════════════</p>
+
+<p>DEPARTMENT BUDGETS:</p>
+
+<p>Engineering Department:</p>
+<p>├─ Budget: $30,000/month</p>
+<p>├─ Alert 1 (90%): $27,000</p>
+<p>├─ Alert 2 (100%): $30,000</p>
+<p>├─ Alert 3 (110%): $33,000</p>
+<p>└─ Recipients: engineering-manager, CFO, Finance</p>
+
+<p>Finance Department:</p>
+<p>├─ Budget: $16,000/month</p>
+<p>├─ Alert 1 (90%): $14,400</p>
+<p>├─ Alert 2 (100%): $16,000</p>
+<p>├─ Alert 3 (110%): $17,600</p>
+<p>└─ Recipients: finance-manager, CFO</p>
+
+<p>Operations:</p>
+<p>├─ Budget: $5,000/month</p>
+<p>├─ Alert 1 (90%): $4,500</p>
+<p>├─ Alert 2 (100%): $5,000</p>
+<p>├─ Alert 3 (110%): $5,500</p>
+<p>└─ Recipients: ops-manager, CFO</p>
+
+<p>ORGANIZATION TOTAL:</p>
+<p>├─ Budget: $51,000/month</p>
+<p>├─ Alert 1 (80%): $40,800 (early warning)</p>
+<p>├─ Alert 2 (90%): $45,900</p>
+<p>├─ Alert 3 (100%): $51,000 (limit reached)</p>
+<p>└─ Recipients: CFO, CEO</p>
+
+<p>ANOMALY DETECTION:</p>
+<p>├─ Status: Enabled</p>
+<p>├─ Sensitivity: Medium</p>
+<p>├─ Frequency: Daily</p>
+<p>└─ Recipients: CFO, Ops Manager, Team Leads</p>
+
+<p>All budgets and alerts configured: ✓</pre></div></p>
+
+<h3 id="validation-checklist">Validation Checklist</h3>
+
+<ul><ol><li>[ ] Created 3 department budgets</li>
+<li>[ ] Created 1 organization-wide budget</li>
+<li>[ ] Configured 3-tier alerts per budget (90%, 100%, 110%)</li>
+<li>[ ] Set appropriate recipients for each alert level</li>
+<li>[ ] Enabled cost anomaly detection</li>
+<li>[ ] All budgets configured and active</li></ol></ul>
+
+<h3 id="success-criteria">Success Criteria</h3>
+
+<p>✅ Complete: All budgets and alerts in place</p>
+<p>✅ Departments have spending limits</p>
+<p>✅ Escalation path defined (90%→100%→110%)</p>
+<p>✅ Anomaly detection enabled</p>
+
+<hr class="divider">
+
+<h2 id="part-4-analyze-costs-by-department">Part 4 – Analyze Costs by Department</h2>
+
+<h3 id="the-challenge">The Challenge</h3>
+
+<p>Now that budgets are in place, analyze actual spending to understand patterns.</p>
+
+<h3 id="what-youll-learn">What You'll Learn</h3>
+
+<ul><ol><li>How to use Azure Cost Analysis tools</li>
+<li>How to break down costs by tag/dimension</li>
+<li>How to identify expensive resources</li>
+<li>How to forecast future spending</li></ol></ul>
+
+<h3 id="step-by-step-tasks">Step-by-Step Tasks</h3>
+
+<p><strong>Step 1: Analyze Costs by Cost Center</strong></p>
+
+<ol><li>Go to <strong>Cost Management + Billing</strong> > <strong>Cost Analysis</strong></li>
+
+<li>Configure view:</li></ol>
+<div class='code-block'><pre>Group by: Tag (CostCenter)
+<p>Time range: Last 30 days</p>
+<p>View: Pie chart or bar chart</pre></div></p>
+
+<ol><li>Expected results:</li></ol>
+<div class='code-block'><pre>Cost Breakdown by Department:
+<p>├─ Engineering: $28,000 (60%)</p>
+<p>├─ Finance: $15,000 (32%)</p>
+<p>├─ Operations: $4,000 (8%)</p>
+<p>└─ Total: $47,000</p>
+
+<p>This tells you:</p>
+<p>├─ Engineering spends most (expected - many microservices)</p>
+<p>├─ Finance next (critical databases)</p>
+<p>├─ Operations least (shared infrastructure)</pre></div></p>
+
+<p><strong>Step 2: Analyze Costs by Environment</strong></p>
+
+<div class='code-block'><pre>Group by: Tag (Environment)
+<p>Time range: Last 30 days</p>
+
+<p>Expected results:</p>
+<p>├─ Production: $38,000 (81%)</p>
+<p>├─ Staging: $6,000 (13%)</p>
+<p>├─ Development: $3,000 (6%)</p>
+<p>└─ Total: $47,000</p>
+
+<p>This tells you:</p>
+<p>├─ Prod costs ~6-7x more than Dev (normal)</p>
+<p>├─ Staging costs are reasonable</p>
+<p>├─ Dev costs seem high - investigate unused resources?</pre></div></p>
+
+<p><strong>Step 3: Analyze Costs by Resource Type</strong></p>
+
+<div class='code-block'><pre>Group by: Resource type
+<p>Time range: Last 30 days</p>
+
+<p>Expected results:</p>
+<p>├─ Virtual Machines: $20,000 (43%)</p>
+<p>├─ SQL Databases: $12,000 (26%)</p>
+<p>├─ Storage: $8,000 (17%)</p>
+<p>├─ Bandwidth: $5,000 (11%)</p>
+<p>├─ Other: $2,000 (3%)</p>
+<p>└─ Total: $47,000</p>
+
+<p>This tells you:</p>
+<p>├─ VMs are biggest cost (scale-down opportunities?)</p>
+<p>├─ Databases next (query optimization?)</p>
+<p>├─ Storage acceptable</p>
+<p>├─ Bandwidth could be reduced with CDN</pre></div></p>
+
+<p><strong>Step 4: Identify Expensive Resources</strong></p>
+
+<ol><li>Go to <strong>Cost Management</strong> > <strong>Actual costs</strong> > <strong>Resources</strong></li>
+<li>Sort by cost (highest first)</li>
+<li>Look for:</li></ol>
+<p>- Idle resources (Dev VMs running 24/7?)</p>
+<p>- Oversized resources (do we really need Premium VMs?)</p>
+<p>- Untagged resources (why weren't they tagged?)</p>
+
+<p>Example findings:</p>
+<div class='code-block'><pre>Top 10 Most Expensive Resources:
+<ol><li>sql-prod-main DB: $6,500/month</li></ol>
+<p>└─ Tagged: ✓ Needed: ✓ Status: OK</p>
+
+<ol><li>vm-prod-api-1 (Premium&lt;/em&gt;D64): $3,200/month</li></ol>
+<p>└─ Tagged: ✓ But: Why Premium? Could use Standard&lt;em&gt;D4?</p>
+<p>└─ Potential saving: $1,000/month (if downsize)</p>
+
+<ol><li>storage-prod-backups: $2,800/month</li></ol>
+<p>└─ Tagged: ✓ Status: Correct (GRS for disaster recovery)</p>
+
+<ol><li>vm-dev-testing-01: $1,500/month</li></ol>
+<p>└─ Tagged: ✗ (UNTAGGED - violation!)</p>
+<p>└─ Owner: Unknown</p>
+<p>└─ Action: Tag and investigate if still needed</p>
+
+<ol><li>appService-prod-api: $1,200/month</li></ol>
+<p>└─ Tagged: ✓ Needed: ✓ Status: OK</pre></div></p>
+
+<p><strong>Step 5: Forecast Future Spending</strong></p>
+
+<ol><li>Go to <strong>Cost Management</strong> > <strong>Forecast</strong></li>
+<li>View 12-month projection</li></ol>
+
+<p>Expected:</p>
+<div class='code-block'><pre>12-Month Cost Forecast:
+<p>├─ Current (Jun): $47K</p>
+<p>├─ Projected (Jul-Dec): ~$50K/month (5% growth)</p>
+<p>├─ Projected (Next year): ~$52K/month</p>
+<p>└─ Annual cost: ~$600K</p>
+
+<p>This tells you:</p>
+<p>├─ Costs are growing at ~5%/month</p>
+<p>├─ Without action, will hit $60K+/month in 1 year</p>
+<p>├─ Need to optimize or budget will be exceeded</p>
+<p>├─ Identify cost-saving opportunities NOW</pre></div></p>
+
+<p><strong>Step 6: Create Cost Analysis Report</strong></p>
+
+<div class='code-block'><pre>MONTHLY COST ANALYSIS REPORT
+<p>════════════════════════════════════════════════════════════</p>
+
+<p>PERIOD: Last 30 days</p>
+<p>TOTAL SPEND: $47,000</p>
+
+<p>BY DEPARTMENT:</p>
+<p>├─ Engineering: $28,000 (60%)</p>
+<p>├─ Finance: $15,000 (32%)</p>
+<p>└─ Operations: $4,000 (8%)</p>
+
+<p>BY ENVIRONMENT:</p>
+<p>├─ Production: $38,000 (81%)</p>
+<p>├─ Staging: $6,000 (13%)</p>
+<p>└─ Development: $3,000 (6%)</p>
+
+<p>BY RESOURCE TYPE:</p>
+<p>├─ Virtual Machines: $20,000 (43%)</p>
+<p>├─ SQL Databases: $12,000 (26%)</p>
+<p>├─ Storage: $8,000 (17%)</p>
+<p>└─ Other: $7,000 (15%)</p>
+
+<p>TOP COST DRIVERS:</p>
+<ol><li>sql-prod-main: $6,500 ✓ Justified</li>
+<li>vm-prod-api-1: $3,200 ⚠ Review sizing</li>
+<li>storage-backups: $2,800 ✓ Justified</li>
+<li>vm-dev-testing: $1,500 ⚠ Untagged, investigate</li>
+<li>appService-api: $1,200 ✓ Justified</li></ol>
+
+<p>COST ANOMALIES:</p>
+<p>└─ vm-dev-testing-01: Untagged VM costing $1,500/month</p>
+<p>└─ Owner: Unknown</p>
+<p>└─ Action: Tag or shutdown if not needed</p>
+<p>└─ Potential saving: $1,500/month if deleted</p>
+
+<p>FORECAST:</p>
+<p>├─ Current trend: +5%/month growth</p>
+<p>├─ 12-month projection: $600K+ annually</p>
+<p>└─ Recommendation: Implement cost optimization initiatives</p>
+
+<p>BUDGET STATUS:</p>
+<p>├─ Total budget: $51,000</p>
+<p>├─ Actual: $47,000</p>
+<p>├─ Remaining: $4,000 (8% buffer)</p>
+<p>└─ Status: On track (but tight)</pre></div></p>
+
+<h3 id="validation-checklist">Validation Checklist</h3>
+
+<ul><ol><li>[ ] Analyzed costs by CostCenter tag</li>
+<li>[ ] Analyzed costs by Environment tag</li>
+<li>[ ] Analyzed costs by resource type</li>
+<li>[ ] Identified top 5 most expensive resources</li>
+<li>[ ] Identified anomalies (untagged, idle resources)</li>
+<li>[ ] Generated cost forecast for 12 months</li>
+<li>[ ] Created cost analysis report</li></ol></ul>
+
+<h3 id="success-criteria">Success Criteria</h3>
+
+<p>✅ Complete: Full cost visibility by department</p>
+<p>✅ Anomalies identified</p>
+<p>✅ Forecast generated</p>
+<p>✅ Cost optimization opportunities found</p>
+
+<hr class="divider">
+
+<h2 id="part-5-prevent-expensive-mistakes-with-policies">Part 5 – Prevent Expensive Mistakes with Policies</h2>
+
+<h3 id="the-challenge">The Challenge</h3>
+
+<p>Besides budgets, use policies to make cost-smart defaults.</p>
+
+<h3 id="what-youll-learn">What You'll Learn</h3>
+
+<ul><ol><li>How policies prevent expensive mistakes</li>
+<li>How to enforce cost optimization</li>
+<li>How to give developers guardrails</li></ol></ul>
+
+<h3 id="step-by-step-tasks">Step-by-Step Tasks</h3>
+
+<p><strong>Step 1: Limit VM Sizes to Cost-Optimized Options</strong></p>
+
+<p>Create a policy that only allows certain VM types:</p>
+
+<div class='code-block'><pre>Policy Name: Approved-VM-Sizes-Only
+<p>Description: Only allow Standard&lt;/em&gt;B and Standard&lt;em&gt;D series (cost optimization)</p>
+<p>Effect: Deny</p>
+
+<p>Allowed VM Types:</p>
+<p>├─ Standard&lt;/em&gt;B1s, Standard&lt;em&gt;B2s, Standard&lt;/em&gt;B4ms (burstable, cheap)</p>
+<p>├─ Standard&lt;em&gt;D2s&lt;/em&gt;v3, Standard&lt;em&gt;D4s&lt;/em&gt;v3, Standard&lt;em&gt;D8s&lt;/em&gt;v3 (balanced)</p>
+<p>└─ Standard&lt;em&gt;E2s&lt;/em&gt;v3 (for databases needing memory)</p>
+
+<p>Denied VM Types:</p>
+<p>├─ Premium&lt;em&gt;D64s&lt;/em&gt;v3 (too expensive)</p>
+<p>├─ Premium&lt;em&gt;E64s&lt;/em&gt;v3 (extremely expensive)</p>
+<p>├─ Any AMD-based SKUs (test the need first)</p>
+<p>└─ Isolated sizes (reserved for special cases)</p>
+
+<p>Result:</p>
+<p>├─ Developer tries to create Premium VM</p>
+<p>├─ Policy blocks: &quot;Not in approved list&quot;</p>
+<p>├─ Developer must request exception (creates approval process)</p>
+<p>└─ Forces cost-conscious decisions</pre></div></p>
+
+<p><strong>Step 2: Limit Storage Redundancy</strong></p>
+
+<div class='code-block'><pre>Policy Name: Limit-Storage-Redundancy-LRS
+<p>Description: Default to LRS, require justification for GRS</p>
+<p>Effect: Deny</p>
+
+<p>Rules:</p>
+<p>├─ LRS: Always allowed (1 datacenter, cheapest)</p>
+<p>├─ ZRS: Allowed in Staging/Prod (3 zones, moderate cost)</p>
+<p>├─ GRS: Deny by default (must request exception)</p>
+<p>├─ RA-GRS: Deny (very expensive, rare need)</p>
+
+<p>Result:</p>
+<p>├─ Default to cheapest option (LRS)</p>
+<p>├─ Force business justification for expensive options</p>
+<p>├─ No accidental GRS creation</p>
+<p>└─ Potential savings: $500/month/storage account</pre></div></p>
+
+<p><strong>Step 3: Enforce Resource Deletion Timeouts for Temporary Resources</strong></p>
+
+<div class='code-block'><pre>Policy Name: Auto-Shutdown-Temporary-Resources
+<p>Description: Resources tagged LifeCycle=Temporary shutdown after 30 days</p>
+<p>Effect: Audit + Modify</p>
+
+<p>Result:</p>
+<p>├─ Tag resource: LifeCycle = Temporary</p>
+<p>├─ Policy tracks creation date</p>
+<p>├─ After 30 days: Automatically deallocates/stops</p>
+<p>├─ Prevents forgotten test resources</p>
+<p>└─ Typical savings: $2-5K/month (forgotten test VMs)</pre></div></p>
+
+<p><strong>Step 4: Test Cost-Prevention Policies</strong></p>
+
+<p>Attempt to create an expensive resource (should be denied):</p>
+
+<ol><li>Try to create Premium<em>D64s</em>v3 VM:</li></ol>
+<div class='code-block'><pre>Action: Attempt VM creation
+<p>VM Type: Premium&lt;em&gt;D64s&lt;/em&gt;v3</p>
+<p>Expected: Policy blocks</p>
+<p>Message: &quot;VM type not in approved list&quot;</p>
+<p>Result: PASS ✓</p>
+<p>``<code></p>
+
+<ol><li>Try to create GRS storage:</li></ol>
+<p></code>`<code></p>
+<p>Action: Attempt storage account</p>
+<p>Redundancy: GRS (Geo-Redundant)</p>
+<p>Expected: Policy blocks</p>
+<p>Message: &quot;Storage redundancy not approved&quot;</p>
+<p>Result: PASS ✓</p>
+<p></code>`<code></p>
+
+<ol><li>Create compliant resource (should succeed):</li></ol>
+<p></code>`<code></p>
+<p>Action: Create Standard&lt;em&gt;D4s&lt;/em&gt;v3 VM with all tags</p>
+<p>Expected: Success ✓</p>
+<p>Message: &quot;VM created successfully&quot;</p>
+<p>Result: PASS ✓</p>
+<p></code>`<code></p>
+
+<p>&lt;strong&gt;Step 5: Document Cost Prevention&lt;/strong&gt;</pre></div></p>
+<p>COST-PREVENTION POLICY SUMMARY</p>
+<p>════════════════════════════════════════════════════════════</p>
+
+<p>POLICIES IMPLEMENTED:</p>
+
+<ol><li>Approved VM Sizes</li></ol>
+<p>├─ Enforces: Only Standard<em>B/D series</p>
+<p>├─ Prevents: Premium/expensive SKUs</p>
+<p>├─ Potential savings: $100-1,000/month per violation</p>
+
+<ol><li>Storage Redundancy</li></ol>
+<p>├─ Enforces: LRS default, GRS requires exception</p>
+<p>├─ Prevents: Accidental expensive replication</p>
+<p>├─ Potential savings: $500/month per account</p>
+
+<ol><li>Temporary Resource Shutdown</li></ol>
+<p>├─ Enforces: Auto-shutdown after 30 days</p>
+<p>├─ Prevents: Forgotten test resources</p>
+<p>├─ Potential savings: $2,000-5,000/month</p>
+
+<p>MONTHLY IMPACT:</p>
+<p>├─ VM cost reduction: ~$500/month</p>
+<p>├─ Storage cost reduction: ~$1,000/month</p>
+<p>├─ Shutdown forgotten resources: ~$2,000/month</p>
+<p>└─ Total potential savings: ~$3,500/month</p>
+
+<p>ANNUAL IMPACT:</p>
+<p>└─ Annual savings: ~$42,000/year</p>
+<div class='code-block'><pre>&lt;h3 id=&quot;validation-checklist&quot;&gt;Validation Checklist&lt;/h3&gt;
+
+<ul><ol><li>[ ] Created VM size approval policy</li>
+<li>[ ] Created storage redundancy policy</li>
+<li>[ ] Created temporary resource shutdown policy</li>
+<li>[ ] Tested VM policy (expensive VM denied)</li>
+<li>[ ] Tested storage policy (GRS denied)</li>
+<li>[ ] Tested compliant creation (success)</li>
+<li>[ ] Documented all policies and savings</li></ol></ul>
+
+<p>&lt;h3 id=&quot;success-criteria&quot;&gt;Success Criteria&lt;/h3&gt;</p>
+
+<p>✅ Complete: Cost-prevention policies enforced</p>
+<p>✅ Expensive mistakes prevented automatically</p>
+<p>✅ Developers have cost-smart guardrails</p>
+<p>✅ Annual savings estimated</p>
+
+<hr class="divider">
+
+<p>&lt;h2 id=&quot;final-assessment-cost-management-checklist&quot;&gt;Final Assessment: Cost Management Checklist&lt;/h2&gt;</p>
+
+<p>After completing all 5 parts, verify everything is in place:</pre></div></p>
+<p>COST MANAGEMENT & CHARGEBACK FINAL CHECKLIST</p>
+<p>════════════════════════════════════════════════════════════</p>
+
+<p>TAGGING STRATEGY</p>
+<p>├─ [ ] 5 required tags defined (CostCenter, Environment, Owner, Project, LifeCycle)</p>
+<p>├─ [ ] Tagging standard documented</p>
+<p>├─ [ ] All existing resources tagged (100%)</p>
+<p>└─ [ ] Tagging status: ✓ COMPLETE</p>
+
+<p>POLICY ENFORCEMENT</p>
+<p>├─ [ ] 3 tag-requirement policies created and assigned</p>
+<p>├─ [ ] 2 cost-prevention policies created (VM sizes, storage)</p>
+<p>├─ [ ] Temporary resource shutdown policy created</p>
+<p>├─ [ ] All policies tested and working</p>
+<p>└─ [ ] Policy status: ✓ COMPLETE</p>
+
+<p>BUDGETS & ALERTS</p>
+<p>├─ [ ] Engineering budget: $30,000/month with 3 alerts</p>
+<p>├─ [ ] Finance budget: $16,000/month with 3 alerts</p>
+<p>├─ [ ] Operations budget: $5,000/month with 3 alerts</p>
+<p>├─ [ ] Organization budget: $51,000/month with 4 alerts</p>
+<p>├─ [ ] Anomaly detection enabled</p>
+<p>└─ [ ] Budget status: ✓ COMPLETE</p>
+
+<p>COST ANALYSIS</p>
+<p>├─ [ ] Analyzed costs by department (CostCenter tag)</p>
+<p>├─ [ ] Analyzed costs by environment</p>
+<p>├─ [ ] Analyzed costs by resource type</p>
+<p>├─ [ ] Identified top expensive resources</p>
+<p>├─ [ ] Identified anomalies and optimization opportunities</p>
+<p>├─ [ ] Generated 12-month forecast</p>
+<p>└─ [ ] Analysis status: ✓ COMPLETE</p>
+
+<p>DOCUMENTATION</p>
+<p>├─ [ ] Tagging standard documented</p>
+<p>├─ [ ] Budget configuration summarized</p>
+<p>├─ [ ] Cost analysis report created</p>
+<p>├─ [ ] Policy summary with savings calculated</p>
+<p>└─ [ ] Documentation status: ✓ COMPLETE</p>
+
+<p>COST MANAGEMENT MATURITY:</p>
+<p>├─ Month 1: No visibility ($47K, no tracking)</p>
+<p>└─ Post-Lab: Full visibility, budgets, policies ($42K+ annual savings)</p>
+
+<p>OVERALL COMPLETION: </em><strong> 100% </strong>_ Partial (identify gaps)</p>
+<p></code>``</p>
+
+<hr class="divider">
+
+<h2 id="key-takeaways">Key Takeaways</h2>
+
+<p>✅ <strong>Tags enable cost allocation</strong> - CostCenter tags let you charge back costs to departments</p>
+<p>✅ <strong>Policies enforce standards</strong> - Cost-prevention policies prevent expensive mistakes</p>
+<p>✅ <strong>Budgets create accountability</strong> - Teams own their budgets and manage to them</p>
+<p>✅ <strong>Visibility prevents surprises</strong> - Monthly cost analysis prevents "sticker shock"</p>
+<p>✅ <strong>Forecasting enables planning</strong> - Know future costs so you can prepare</p>
+<p>✅ <strong>Automation saves money</strong> - Temporary resource shutdown prevents waste</p>
+
+<hr class="divider">
+
+<h2 id="real-world-application">Real-World Application</h2>
+
+<p>You've now implemented cost management patterns used by:</p>
+<ul><ol><li><strong>Google, Amazon, Microsoft</strong>: Tag-based cost allocation</li>
+<li><strong>FinOps teams everywhere</strong>: Budget-driven cost control</li>
+<li><strong>Enterprise cloud centers</strong>: Department chargeback</li>
+<li><strong>Fast-growing startups</strong>: Cost discipline from day 1</li></ol></ul>
+
+<hr class="divider">
+
+<h2 id="next-steps">Next Steps</h2>
+
+<ol><li><strong>Monitor budgets</strong> - Review actual spending vs. budget weekly</li>
+<li><strong>Act on anomalies</strong> - Investigate unexpected cost spikes</li>
+<li><strong>Optimize continuously</strong> - Look for resources to downsize/shutdown</li>
+<li><strong>Review quarterly</strong> - Full cost analysis with leadership</li>
+<li><strong>Adjust forecasts</strong> - Use actual data to refine spending projections</li>
+<li><strong>Share findings</strong> - Help teams understand their costs</li></ol>
+
+
+  </div>
+</div>
+<script>
+/* Sidebar Active Link Tracking */
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.sidebar a'));
+  var sections = [];
+  links.forEach(function(a){
+    var el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) sections.push({link:a, el:el});
+  });
+  if (!sections.length || !('IntersectionObserver' in window)) return;
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (!entry.isIntersecting) return;
+      var match = sections.find(function(s){ return s.el === entry.target; });
+      if (!match) return;
+      links.forEach(function(a){ a.classList.remove('active'); });
+      match.link.classList.add('active');
+    });
+  }, { rootMargin: '-100px 0px -70% 0px', threshold: 0 });
+  sections.forEach(function(s){ observer.observe(s.el); });
+})();
+
+/* Code Block Copy Button Functionality */
+document.addEventListener('DOMContentLoaded', function(){
+  var codeBlocks = document.querySelectorAll('.code-block');
+  codeBlocks.forEach(function(block){
+    var pre = block.querySelector('pre');
+    if (!pre) return;
+
+    var btn = document.createElement('button');
+    btn.className = 'code-copy-btn';
+    btn.textContent = 'Copy';
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'Copy code to clipboard');
+
+    btn.addEventListener('click', function(){
+      var code = pre.textContent;
+      navigator.clipboard.writeText(code).then(function(){
+        var original = btn.textContent;
+        btn.textContent = '✓ Copied!';
+        btn.classList.add('copied');
+        setTimeout(function(){
+          btn.textContent = original;
+          btn.classList.remove('copied');
+        }, 2000);
+      }).catch(function(){
+        alert('Failed to copy code');
+      });
+    });
+
+    block.appendChild(btn);
+  });
+});
+</script>
+</body>
+</html>
