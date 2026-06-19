@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab 04 – Identity Security Hardening & Best Practices - AZ-104 Labs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Professional Lab Template - Embedded CSS for local file:// access */
+:root{--bg:#f7f9fd;--card:#fff;--border:#e2e8f0;--text:#1a202c;--muted:#64748b;--primary:#1e3a8a;--panel:#0f172a;--panel-shadow:rgba(15,23,42,.12);--section-gap:48px;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,-apple-system,'Segoe UI',sans-serif;color:var(--text);line-height:1.6}.page{flex:1;min-width:0;padding:48px;max-width:1100px;margin:0 auto}
+h1{font-size:3.4rem;line-height:1.2;margin:0 0 12px 0;color:var(--primary);font-weight:800;letter-spacing:-0.5px}h2{font-size:2.2rem;margin:0 0 24px 0;color:var(--primary);font-weight:800;letter-spacing:-0.5px}h3{font-size:1.45rem;margin:32px 0 16px 0;color:var(--primary);font-weight:700;letter-spacing:-0.3px}h3:first-child{margin-top:0}h4{font-size:1.1rem;margin:20px 0 12px 0;color:#1e3a8a;font-weight:700}
+p{font-size:1.05rem;line-height:1.7;margin:12px 0;color:var(--text)}ul,ol{margin:16px 0;padding-left:24px}li{margin-bottom:10px;line-height:1.7;font-size:1.03rem;color:var(--text)}
+a{color:#1e40af;text-decoration:none;border-bottom:2px solid transparent;font-weight:600;transition:border-color 0.2s}a:hover{border-bottom-color:#1e40af}strong{color:var(--primary);font-weight:700}code{background:#f0f4ff;color:#1e40af;padding:4px 8px;border-radius:6px;font:13px/1.5 'SF Mono',Consolas,'Courier New',monospace;font-weight:500}
+.task-box{margin:24px 0;padding:0;background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(30,64,175,.06);transition:box-shadow 0.2s,border-color 0.2s}.task-box:hover{box-shadow:0 4px 12px rgba(30,64,175,.12);border-color:#c7d2fe}
+.task-header{display:flex;align-items:center;gap:12px;padding:18px 20px;background:linear-gradient(135deg,#dbeafe 0%,#eff6ff 100%);border-bottom:1px solid var(--border)}.task-header .task-icon{font-size:1.4rem;color:#1e40af}.task-header h3{margin:0;font-size:1.2rem;color:var(--primary);font-weight:700}.task-content{padding:20px}
+.code-block{position:relative;margin:24px 0;background:#0f172a;border-radius:10px;overflow:hidden;border:1px solid #1e293b;box-shadow:0 4px 12px rgba(15,23,42,.25)}.code-block pre{margin:0;padding:20px 48px 20px 20px;color:#e2e8f0;font-family:'SF Mono',Consolas,'Courier New',monospace;font-size:0.92rem;line-height:1.7;overflow-x:auto}
+.code-copy-btn{position:absolute;top:12px;right:12px;padding:8px 14px;background:#1e293b;color:#60a5fa;border:1px solid #334155;border-radius:6px;cursor:pointer;font-size:0.85rem;font-weight:600;transition:all 0.2s;user-select:none;box-shadow:0 1px 3px rgba(0,0,0,.2)}.code-copy-btn:hover{background:#334155;color:#93c5fd;border-color:#475569}.code-block .keyword{color:#569cd6}.code-block .string{color:#ce9178}.code-block .comment{color:#6a9955}.code-block .operator{color:#d4d4d4}.code-block .function{color:#dcdcaa}.code-block .property{color:#9cdcfe}
+.callout-box{margin:24px 0;padding:18px 20px;border-radius:10px;border-left:4px solid;display:flex;gap:14px;box-shadow:0 1px 3px rgba(0,0,0,.05)}.callout-icon{font-size:1.5rem;flex-shrink:0;min-width:28px;text-align:center}.callout-content{flex:1}.callout-content h4{margin:0 0 8px 0;font-size:1.08rem;font-weight:700}.callout-content p{margin:8px 0;line-height:1.7;font-size:1.02rem}.callout-content p:first-child{margin-top:0}
+.callout-tip{background:#eff6ff;border-color:#3b82f6}.callout-tip .callout-icon{color:#1e40af}.callout-tip h4{color:#1e40af}.callout-warning{background:#fefce8;border-color:#eab308}.callout-warning .callout-icon{color:#ca8a04}.callout-warning h4{color:#92400e}.callout-important{background:#fee2e2;border-color:#ef4444}.callout-important .callout-icon{color:#dc2626}.callout-important h4{color:#991b1b}
+.section-time{background:#dbeafe;border:1px solid #93c5fd;border-radius:8px;padding:10px 16px;font-size:0.95rem;font-weight:600;color:#1e40af;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}.layout{max-width:1500px;margin:auto;display:flex;align-items:flex-start;gap:32px}.sidebar{flex:0 0 280px;position:sticky;top:88px;max-height:calc(100vh - 108px);overflow-y:auto;padding:24px;background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 2px 8px rgba(30,64,175,.06)}.sidebar summary{cursor:pointer;list-style:none;padding:10px 12px;border-radius:8px;font-weight:600;font-size:.93rem;color:var(--primary);user-select:none;transition:all 0.2s}.sidebar summary::-webkit-details-marker{display:none}.sidebar details[open]>summary{background:#dbeafe}.sidebar summary:hover{background:#eff6ff}.sidebar a{display:block;padding:9px 12px;margin-bottom:2px;border-radius:8px;font-size:.89rem;font-weight:500;color:var(--text);border-bottom:none;border-left:3px solid transparent;line-height:1.5;transition:all 0.15s;text-decoration:none;color:#1a202c}.sidebar a:hover{background:#eff6ff;color:var(--primary)}.site-nav{position:sticky;top:0;z-index:1000;background:var(--primary);color:#fff;display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:14px 32px;font-size:.93rem;box-shadow:0 4px 12px rgba(0,0,0,.1);font-family:Inter,-apple-system,'Segoe UI',sans-serif}.site-nav .nav-brand{font-weight:800;font-size:1.1rem;margin-right:auto;color:#fff;letter-spacing:-0.3px}.site-nav summary{cursor:pointer;list-style:none;padding:8px 16px;border-radius:8px;background:rgba(255,255,255,.12);font-weight:600;color:#fff;user-select:none;transition:background 0.2s}
+</style>
+</head>
+<body>
+<nav class="site-nav" aria-label="Main site navigation">
+  <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
+  <details class="nav-group" aria-label="Learning module selector">
+    <summary>Learning Module</summary>
+    <div class="nav-menu">
+      <a href="../../00-prerequisites/documents/module-home.html">00 - Prerequisites</a>
+      <a href="../../01-identity-governance/documents/module-home.html">01 - Identity &amp; Governance</a>
+      <a href="../../02-storage/documents/module-home.html">02 - Storage</a>
+      <a href="../../03-compute/documents/module-home.html">03 - Compute</a>
+      <a href="../../04-networking/documents/module-home.html">04 - Networking</a>
+      <a href="../../05-monitor-maintain/documents/module-home.html">05 - Monitor &amp; Maintain</a>
+    </div>
+  </details>
+</nav>
+<div class="layout">
+  <aside class="sidebar" aria-label="Page navigation">
+    <details open>
+      <summary>▶ Module 01 - Identity &amp; Governance</summary>
+      <div>
+        <a href="01-entra-id-overview.html">01 - Entra ID Overview</a>
+<a href="02-rbac-fundamentals.html">02 - RBAC Fundamentals</a>
+<a href="03-management-groups-and-azure-policy.html">03 - Management Groups &amp; Azure Policy</a>
+<a href="04-access-control-scenarios.html">04 - Access Control Scenarios</a>
+<a href="05-identity-best-practices.html">05 - Identity Best Practices</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ Labs</summary>
+      <div>
+        <a href="lab01-entra-users-groups.html">Lab 01 - Entra Users &amp; Groups</a>
+<a href="lab02-rbac-azure-policy.html">Lab 02 - RBAC &amp; Azure Policy</a>
+<a href="lab03-management-groups-subscriptions.html">Lab 03 - Management Groups</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ On This Page</summary>
+      <div>
+        <a href="#real-life-scenario">Real-Life Scenario</a>
+<a href="#prerequisites">Prerequisites</a>
+<a href="#estimated-time">Estimated Time</a>
+<a href="#part-1-least-privilege-assessment-remediation">Part 1 – Least Privilege Assessment & Remediation</a>
+<a href="#part-2-quarterly-access-review-orphaned-account-cleanup">Part 2 – Quarterly Access Review & Orphaned Account Cleanup</a>
+<a href="#part-3-enable-mfa-conditional-access-policies">Part 3 – Enable MFA & Conditional Access Policies</a>
+<a href="#part-4-sign-in-monitoring-security-alerts">Part 4 – Sign-in Monitoring & Security Alerts</a>
+<a href="#part-5-group-based-access-governance">Part 5 – Group-Based Access Governance</a>
+<a href="#part-6-approval-workflows-entitlement-management">Part 6 – Approval Workflows & Entitlement Management</a>
+<a href="#part-7-secure-offboarding-account-cleanup">Part 7 – Secure Offboarding & Account Cleanup</a>
+<a href="#part-8-app-authentication-best-practices">Part 8 – App Authentication Best Practices</a>
+<a href="#final-assessment-security-hardening-checklist">Final Assessment: Security Hardening Checklist</a>
+<a href="#key-takeaways">Key Takeaways</a>
+<a href="#success-indicators">Success Indicators</a>
+<a href="#next-steps">Next Steps</a>
+      </div>
+    </details>
+  </aside>
+  <div class="page">
+  <h1>Lab 04 – Identity Security Hardening & Best Practices</h1>
+
+<h2 id="real-life-scenario">Real-Life Scenario</h2>
+
+<p><strong>Company: Acme Corporation</strong></p>
+
+<p>Acme Corp is a mid-sized SaaS company with 500+ employees and Azure infrastructure managing critical customer data. Last month, their annual security audit revealed <strong>serious identity and access control gaps:</strong></p>
+
+<p><strong>Audit Findings:</strong></p>
+<ul><ol><li>47 users with Owner role who only need Reader/Contributor</li>
+<li>23 inactive employee accounts still have active access</li>
+<li>Zero MFA protection on administrative accounts</li>
+<li>No alerting for suspicious sign-in patterns</li>
+<li>180+ individual role assignments (should be group-based)</li>
+<li>No formal approval process for privilege elevation</li>
+<li>8 departing employees with lingering access credentials</li>
+<li>12 apps using hardcoded passwords instead of managed identities</li></ol></ul>
+
+<p><strong>Your Role:</strong> Identity Security Engineer</p>
+
+<p><strong>Mission:</strong> Implement all 8 best practices to remediate these findings and pass a follow-up audit.</p>
+
+<p><strong>Success Criteria:</strong> Complete all parts, implement all best practices, document findings.</p>
+
+<hr class="divider">
+
+<h2 id="prerequisites">Prerequisites</h2>
+
+<p><strong>Required Knowledge:</strong></p>
+<ul><ol><li><a href="lab01-entra-users-groups.md">Lab 01: Entra ID - Users & Groups</a></li>
+<li><a href="lab02-rbac-azure-policy.md">Lab 02: RBAC & Azure Policy</a></li>
+<li><a href="lab03-management-groups-subscriptions.md">Lab 03: Management Groups & Subscriptions</a></li></ol></ul>
+
+<p><strong>Required Permissions:</strong></p>
+<ul><ol><li>Global Administrator or User Administrator role in Entra ID</li>
+<li>Owner role on test subscription</li>
+<li>Access to Azure Portal</li></ol></ul>
+
+<hr class="divider">
+
+<h2 id="estimated-time">Estimated Time</h2>
+
+<p><strong>Total: 250 minutes (~4+ hours)</strong></p>
+<ul><ol><li>Part 1: 30 minutes</li>
+<li>Part 2: 30 minutes</li>
+<li>Part 3: 40 minutes</li>
+<li>Part 4: 30 minutes</li>
+<li>Part 5: 30 minutes</li>
+<li>Part 6: 40 minutes</li>
+<li>Part 7: 20 minutes</li>
+<li>Part 8: 30 minutes</li></ol></ul>
+
+<p><strong>Difficulty: Advanced</strong></p>
+
+<hr class="divider">
+
+<h2 id="part-1-least-privilege-assessment-remediation">Part 1 – Least Privilege Assessment & Remediation</h2>
+
+<h3 id="the-challenge">The Challenge</h3>
+
+<p>Acme Corp has a "just give them Owner role" culture. Your first task: identify over-privileged users and reduce their access to minimum required.</p>
+
+<h3 id="what-youll-learn">What You'll Learn</h3>
+
+<ul><ol><li>How to audit current RBAC assignments</li>
+<li>How to identify over-privileged roles</li>
+<li>How to create custom roles for specific needs</li>
+<li>How to reduce attack surface</li></ol></ul>
+
+<h3 id="step-by-step-tasks">Step-by-Step Tasks</h3>
+
+<p><strong>Step 1: Audit Current Role Assignments</strong></p>
+
+<ol><li>Navigate to <strong>Azure Portal</strong> > <strong>Subscriptions</strong> > <strong>Access control (IAM)</strong></li>
+<li>Review all role assignments at subscription level</li>
+<li>Document users with each role:</li></ol>
+<p>- Owner roles (should be <5 people)</p>
+<p>- Contributor roles (should be business-justified)</p>
+<p>- Reader roles (should be majority)</p>
+<ol><li>Identify candidates for privilege reduction</li></ol>
+
+<p><strong>Example Documentation Format:</strong></p>
+<div class='code-block'><pre>Current State Analysis:
+<p>├─ Owner (10 users - reduce to 3)</p>
+<p>│  ├─ Alice Smith (CTO) - KEEP</p>
+<p>│  ├─ Bob Johnson (DevOps Lead) - REDUCE to Contributor</p>
+<p>│  └─ Charlie Lee (Developer) - REDUCE to specific contributor role</p>
+<p>├─ Contributor (35 users - acceptable)</p>
+<p>├─ Reader (80 users - acceptable)</p>
+<p>└─ Custom Roles (0 - NEED TO CREATE)</pre></div></p>
+
+<p><strong>Step 2: Identify Principle of Least Privilege Violations</strong></p>
+
+<p>Create a table with each user and recommended action:</p>
+
+<div class='code-block'><pre>| User | Current Role | Job Function | Recommended Role | Justification |
+<table>
+<p><tr></p>
+<p><th>------</th></p>
+<p><th>-------------</th></p>
+<p><th>--------------</th></p>
+<p><th>------------------</th></p>
+<p><th>---------------</th></p>
+<p></tr></p>
+<p></table></p>
+
+<p>| Charlie Lee | Owner | Debug issues | Reader + VM Contributor (staging only) | Should not have production access |</pre></div></p>
+
+<p><strong>Step 3: Create Custom Roles (If Needed)</strong></p>
+
+<p>For users needing specific permissions that don't fit built-in roles:</p>
+
+<ol><li>Navigate to <strong>Azure Portal</strong> > <strong>Subscriptions</strong> > <strong>Access control (IAM)</strong> > <strong>Roles</strong></li>
+<li>Click <strong>Create a custom role</strong></li>
+<li>Example: "Blob Storage Operator" role</li></ol>
+<p>- Permissions: Read blobs, Upload blobs, Delete own blobs</p>
+<p>- Exclude: Delete storage account, Change access policies</p>
+<ol><li>Name: <code>Storage Blob Operator - Development</code></li>
+<li>Assign to specific user/group</li></ol>
+
+<p><strong>Step 4: Remove Over-Privileged Access</strong></p>
+
+<p>For each user identified in Step 1:</p>
+
+<ol><li>Go to <strong>Access control (IAM)</strong></li>
+<li>Click the user's current role (e.g., Owner)</li>
+<li>Select <strong>Remove</strong></li>
+<li>Confirm removal</li>
+<li>Add appropriate lower-privilege role</li></ol>
+
+<p>Example actions:</p>
+<div class='code-block'><pre>Alice Smith: Owner (KEEP) - CEO needs full access
+<p>Bob Johnson: Owner → Contributor (reduce from Owner, keep deployment capability)</p>
+<p>Charlie Lee: Owner → Container Registry Acrpush role (only push images)</p>
+<p>Diana Park: Contributor → Reader + Virtual Machine Contributor (read-only, can only manage VMs)</pre></div></p>
+
+<h3 id="validation-checklist">Validation Checklist</h3>
+
+<ul><ol><li>[ ] Documented all current role assignments</li>
+<li>[ ] Identified at least 3 users with excessive privileges</li>
+<li>[ ] Created at least 1 custom role for specific needs</li>
+<li>[ ] Reduced privilege for 2+ over-privileged users</li>
+<li>[ ] Verified reduced users can still perform their jobs</li>
+<li>[ ] No Owner roles remain except for essential administrators</li></ol></ul>
+
+<h3 id="success-criteria">Success Criteria</h3>
+
+<p>✅ Complete: Privilege surface reduced by minimum 40%</p>
+<p>✅ All Owner roles are business-justified</p>
+<p>✅ Custom roles created for specific job functions</p>
+<p>✅ Access changes documented with justification</p>
+
+<hr class="divider">
+
+<h2 id="part-2-quarterly-access-review-orphaned-account-cleanup">Part 2 – Quarterly Access Review & Orphaned Account Cleanup</h2>
+
+<h3 id="the-challenge">The Challenge</h3>
+
+<p>Acme has 23 inactive employee accounts with active access. Find and clean up orphaned accounts and permission creep.</p>
+
+<h3 id="what-youll-learn">What You'll Learn</h3>
+
+<ul><ol><li>How to identify inactive users</li>
+<li>How to review access by user</li>
+<li>How to disable and remove access safely</li>
+<li>How to clean up permission creep</li></ol></ul>
+
+<h3 id="step-by-step-tasks">Step-by-Step Tasks</h3>
+
+<p><strong>Step 1: Identify Inactive Accounts</strong></p>
+
+<ol><li>Go to <strong>Azure Portal</strong> > <strong>Entra ID</strong> > <strong>Users</strong></li>
+<li>Create a list of users with:</li></ol>
+<p>- Last sign-in date > 90 days ago (or never signed in)</p>
+<p>- Still assigned to groups/roles</p>
+<p>- Status: Active (should be Disabled if not needed)</p>
+
+<ol><li>For each inactive user, document:</li></ol>
+<p>- Name</p>
+<p>- Department</p>
+<p>- Last sign-in date</p>
+<p>- Current groups</p>
+<p>- Current role assignments</p>
+
+<p><strong>Example Inactive Accounts Found:</strong></p>
+<div class='code-block'><pre>Michael Brown
+<p>├─ Department: Engineering (transferred to DevOps)</p>
+<p>├─ Last Sign-in: 180 days ago</p>
+<p>├─ Groups: grp-engineers-deploy, grp-production-access</p>
+<p>├─ Roles: Contributor (test subscription)</p>
+<p>└─ Status: INACTIVE - should be disabled</p>
+
+<p>Sarah Davis</p>
+<p>├─ Department: Marketing (left company 6 months ago)</p>
+<p>├─ Last Sign-in: 200 days ago</p>
+<p>├─ Groups: grp-all-users, grp-marketing</p>
+<p>├─ Roles: Reader (production)</p>
+<p>└─ Status: ORPHANED - should be deleted</pre></div></p>
+
+<p><strong>Step 2: Conduct Quarterly Access Review</strong></p>
+
+<p>For each user with access, ask:</p>
+
+<div class='code-block'><pre>Access Review Questionnaire:
+<ol><li>Is this user still employed? → If NO, disable/delete</li>
+<li>Are they in the correct role for their current job? → If NO, update</li>
+<li>When was their access last used? → If &gt;90 days, question necessity</li>
+<li>Do they still need each group membership? → If NO, remove</li>
+<li>Any suspicious activity on this account? → If YES, investigate</pre></div></li></ol>
+
+<p><strong>Step 3: Remediate Findings</strong></p>
+
+<p>For each finding:</p>
+
+<p><strong>If User is Inactive (>90 days, employed):</strong></p>
+<ol><li>Contact manager: "Does [user] need [role] for [resource]?"</li>
+<li>If NO: Remove from groups and role assignments</li>
+<li>If MAYBE: Add calendar reminder for follow-up in 30 days</li>
+<li>Document decision</li></ol>
+
+<p><strong>If User Has Left Company:</strong></p>
+<ol><li>Go to <strong>Entra ID</strong> > <strong>Users</strong></li>
+<li>Find user</li>
+<li>Click <strong>Delete user</strong></li>
+<li>Confirm deletion (this removes all group memberships and roles)</li></ol>
+
+<p><strong>If Permission Creep (user has many roles they don't need):</strong></p>
+<ol><li>Review each role assignment</li>
+<li>Ask: "Is this still needed?"</li>
+<li>Remove unnecessary assignments</li></ol>
+
+<p><strong>Step 4: Document Access Review</strong></p>
+
+<p>Create a summary:</p>
+<div class='code-block'><pre>Q2 2024 Access Review Summary
+<p>────────────────────────────</p>
+
+<p>Actions Taken:</p>
+<p>├─ 6 inactive users: Removed from groups and roles</p>
+<p>├─ 4 departed employees: Accounts deleted</p>
+<p>├─ 12 users: Updated roles to match current job</p>
+<p>├─ 8 users: Removed from unnecessary groups</p>
+
+<p>Permission Creep Eliminated:</p>
+<p>├─ 23 unnecessary role assignments removed</p>
+<p>├─ 15 obsolete group memberships cleaned</p>
+
+<p>Next Steps:</p>
+<p>└─ Schedule Q3 review for [date]</pre></div></p>
+
+<h3 id="validation-checklist">Validation Checklist</h3>
+
+<ul><ol><li>[ ] Identified all inactive accounts (>90 days)</li>
+<li>[ ] Reviewed access for minimum 15 users</li>
+<li>[ ] Documented access review findings</li>
+<li>[ ] Removed access for at least 2 inactive users</li>
+<li>[ ] Deleted at least 1 orphaned account</li>
+<li>[ ] Created remediation summary with dates</li></ol></ul>
+
+<h3 id="success-criteria">Success Criteria</h3>
+
+<p>✅ Complete: Removed access for all orphaned accounts</p>
+<p>✅ Cleaned up minimum 20 unnecessary role assignments</p>
+<p>✅ Documented quarterly review process</p>
+<p>✅ Established future review schedule</p>
+
+<hr class="divider">
+
+<h2 id="part-3-enable-mfa-conditional-access-policies">Part 3 – Enable MFA & Conditional Access Policies</h2>
+
+<h3 id="the-challenge">The Challenge</h3>
+
+<p>Zero MFA protection on 12 administrative accounts. Implement MFA and configure conditional access for risk-based authentication.</p>
+
+<h3 id="what-youll-learn">What You'll Learn</h3>
+
+<ul><ol><li>How to enforce MFA for admin roles</li>
+<li>How to configure Conditional Access policies</li>
+<li>How to set up risk-based authentication</li>
+<li>How to balance security with usability</li></ol></ul>
+
+<h3 id="step-by-step-tasks">Step-by-Step Tasks</h3>
+
+<p><strong>Step 1: Configure MFA for Global Admin Roles</strong></p>
+
+<ol><li>Navigate to <strong>Azure Portal</strong> > <strong>Entra ID</strong> > <strong>Security</strong> > <strong>Conditional Access</strong></li>
+<li>Click <strong>+ New policy</strong></li>
+<li>Name: "Require MFA for Global Admins"</li>
+
+<li>Configure:</li></ol>
+<p>- <strong>Users</strong>: Select role: Global Administrator</p>
+<p>- <strong>Cloud apps or actions</strong>: All cloud apps</p>
+<p>- <strong>Conditions</strong>: None required (applies to all sign-ins)</p>
+<p>- <strong>Grant</strong>: Require multi-factor authentication</p>
+
+<ol><li>Enable: <strong>On</strong></li>
+<li>Click <strong>Create</strong></li></ol>
+
+<p><strong>Step 2: Test MFA Enforcement</strong></p>
+
+<ol><li>Sign out of Azure Portal</li>
+<li>Sign in with a Global Admin account</li>
+<li>Verify MFA prompt appears</li>
+<li>Complete MFA challenge (use Authenticator app, Windows Hello, or FIDO2)</li>
+<li>Verify successful sign-in</li></ol>
+
+<p><strong>Step 3: Configure Risk-Based Conditional Access</strong></p>
+
+<p>Create a policy that requires MFA only for risky sign-ins:</p>
+
+<ol><li><strong>New policy</strong>: "Risk-Based MFA for All Users"</li>
+
+<li>Configure:</li></ol>
+<p>- <strong>Users</strong>: All users</p>
+<p>- <strong>Cloud apps</strong>: All cloud apps</p>
+<p>- <strong>Conditions</strong>:</p>
+<p>- Sign-in risk: High, Medium</p>
+<p>- <strong>Grant</strong>: Require multi-factor authentication</p>
+
+<ol><li>Enable and Create</li></ol>
+
+<p><strong>Step 4: Set Up Unusual Location Detection</strong></p>
+
+<ol><li><strong>New policy</strong>: "Block or Require MFA for Unusual Locations"</li>
+
+<li>Configure:</li></ol>
+<p>- <strong>Users</strong>: All users (except emergency access accounts)</p>
+<p>- <strong>Cloud apps</strong>: All cloud apps</p>
+<p>- <strong>Conditions</strong>:</p>
+<p>- Locations: Exclude Trusted locations, Include All other locations</p>
+<p>- New/Unfamiliar locations: Yes</p>
+<p>- <strong>Grant</strong>: Require multi-factor authentication</p>
+
+<ol><li>Enable and Create</li></ol>
+
+<p><strong>Step 5: Test Conditional Access Policies</strong></p>
+
+<p>Test scenarios:</p>
+<ul><ol><li>[ ] Sign in from normal location → No MFA required</li>
+<li>[ ] Sign in from new/unusual location → MFA required</li>
+<li>[ ] Admin sign-in → MFA always required</li>
+<li>[ ] Risky sign-in (multiple failed attempts) → MFA required</li></ol></ul>
+
+<p><strong>Step 6: Register MFA Methods for All Users</strong></p>
+
+<p>For successful MFA, users need registered devices:</p>
+
+<ol><li><strong>Entra ID</strong> > <strong>Users</strong> > <strong>Per-user MFA</strong></li>
+<li>For each admin user:</li></ol>
+<p>- Send them: "Please register MFA: https://aka.ms/setupsecurityinfo"</p>
+<p>- Ask them to register:</p>
+<p>- Primary: Authenticator app (Microsoft Authenticator)</p>
+<p>- Backup: Windows Hello or FIDO2 key</p>
+
+<h3 id="validation-checklist">Validation Checklist</h3>
+
+<ul><ol><li>[ ] MFA required policy created for Global Admins</li>
+<li>[ ] Tested MFA prompt on admin sign-in</li>
+<li>[ ] Risk-based MFA policy configured</li>
+<li>[ ] Unusual location policy configured</li>
+<li>[ ] All admin users have registered MFA method</li>
+<li>[ ] Conditional Access policies enabled and tested</li></ol></ul>
+
+<h3 id="success-criteria">Success Criteria</h3>
+
+<p>✅ Complete: All admins require MFA on every sign-in</p>
+<p>✅ Risk-based MFA configured for all users</p>
+<p>✅ Unusual location detection active</p>
+<p>✅ MFA methods registered and tested</p>
+
+<hr class="divider">
+
+<h2 id="part-4-sign-in-monitoring-security-alerts">Part 4 – Sign-in Monitoring & Security Alerts</h2>
+
+<h3 id="the-challenge">The Challenge</h3>
+
+<p>No alerting for suspicious sign-ins. Configure monitoring to detect breach patterns and create alerts.</p>
+
+<h3 id="what-youll-learn">What You'll Learn</h3>
+
+<ul><ol><li>How to review sign-in logs</li>
+<li>How to identify suspicious patterns</li>
+<li>How to set up Azure Monitor alerts</li>
+<li>How to create action plans for incidents</li></ol></ul>
+
+<h3 id="step-by-step-tasks">Step-by-Step Tasks</h3>
+
+<p><strong>Step 1: Review Sign-in Logs</strong></p>
+
+<ol><li>Navigate to <strong>Azure Portal</strong> > <strong>Entra ID</strong> > <strong>Sign-in logs</strong></li>
+<li>Review last 7 days of sign-ins</li>
+<li>Look for:</li></ol>
+<p>- Failed sign-in attempts (>5 from same user)</p>
+<p>- Sign-ins from unusual locations</p>
+<p>- Sign-ins outside business hours</p>
+<p>- Bulk changes by unusual users</p>
+<p>- Access to sensitive resources</p>
+
+<ol><li>Document suspicious patterns:</li></ol>
+<div class='code-block'><pre>Sign-In Analysis (Last 7 Days)
+<p>────────────────────────────</p>
+
+<p>High Risk Findings:</p>
+<p>├─ User: john.smith@acme.com</p>
+<p>│  ├─ Failed attempts: 12 in 1 hour (password guessing attempt?)</p>
+<p>│  ├─ Location: Unknown (VPN detected)</p>
+<p>│  ├─ Time: 2:00 AM (unusual)</p>
+<p>│  └─ Action: INVESTIGATE - potential compromise</p>
+<p>│</p>
+<p>├─ User: admin@acme.com</p>
+<p>│  ├─ Bulk access changes: Added to 5 sensitive groups</p>
+<p>│  ├─ Location: Malaysia (company is US-based)</p>
+<p>│  ├─ Time: Outside business hours</p>
+<p>│  └─ Action: VERIFY - possible unauthorized access</pre></div></p>
+
+<p><strong>Step 2: Create Azure Monitor Alerts</strong></p>
+
+<ol><li>Go to <strong>Azure Portal</strong> > <strong>Monitor</strong> > <strong>Alerts</strong> > <strong>Create</strong> > <strong>Alert Rule</strong></li>
+
+<li><strong>Alert 1: Failed Sign-in Attempts</strong></li></ol>
+<p>- <strong>Resource</strong>: Entra ID</p>
+<p>- <strong>Signal</strong>: Sign-in activity (Entra ID logs)</p>
+<p>- <strong>Condition</strong>:</p>
+<p>- > 5 failed sign-in attempts</p>
+<p>- Within 5 minutes</p>
+<p>- <strong>Action</strong>: Email to security team</p>
+
+<ol><li><strong>Alert 2: Sign-in from Unusual Location</strong></li></ol>
+<p>- <strong>Condition</strong>:</p>
+<p>- Sign-in risk level = High</p>
+<p>- Unfamiliar location detected</p>
+<p>- <strong>Action</strong>: Email admin, create ticket</p>
+
+<ol><li><strong>Alert 3: Bulk Changes by One User</strong></li></ol>
+<p>- <strong>Condition</strong>:</p>
+<p>- Multiple role assignments by single user</p>
+<p>- Multiple group membership changes by single user</p>
+<p>- <strong>Action</strong>: Require manual review before completion</p>
+
+<ol><li>Test alerts:</li></ol>
+<li><input type="checkbox"  " disabled> Attempt multiple failed sign-ins → Alert triggers
+<li><input type="checkbox"  " disabled> Sign in from VPN/new location → Alert triggers
+
+<p><strong>Step 3: Create Incident Response Playbook</strong></p>
+
+<p>Document what to do when alerts fire:</p>
+
+<div class='code-block'><pre>Incident Response Playbook
+<p>═══════════════════════════</p>
+
+<p>Alert: Multiple Failed Sign-in Attempts</p>
+<p>──────────────────────────────</p>
+<ol><li>Check alert: How many failed attempts?</li>
+<li>Contact user: &quot;Is this you? Any account issues?&quot;</li>
+<li>If user: &quot;Use password reset or MFA recovery&quot;</li>
+<li>If compromised: Lock account immediately</li>
+<li>Document: When, who, what actions taken</li></ol>
+
+<p>Alert: Sign-in from Unusual Location</p>
+<p>──────────────────────────────</p>
+<ol><li>Check alert: Where is the location?</li>
+<li>Contact user: &quot;Did you sign in from [location]?&quot;</li>
+<li>If YES: Approve and add location to trusted list (optional)</li>
+<li>If NO: Password reset + full account audit</li>
+<li>Document: Security incident</li></ol>
+
+<p>Alert: Bulk Changes by User</p>
+<p>──────────────────────────────</p>
+<ol><li>Review: What changes were made?</li>
+<li>Verify: Are they legitimate/authorized?</li>
+<li>If legitimate: Document business reason</li>
+<li>If suspicious: Roll back changes immediately</li>
+<li>Contact user: Investigate if account compromised</pre></div></li></ol>
+
+<p><strong>Step 4: Test Monitoring & Alerts</strong></p>
+
+<p>Simulate suspicious activity:</p>
+
+<ol><li><strong>Test Failed Sign-ins</strong>: Attempt to sign in with wrong password 6 times</li></ol>
+<p>- Verify: Account locks after 5 failed attempts</p>
+<p>- Verify: Alert fires</p>
+<p>- Verify: Email received</p>
+
+<ol><li><strong>Test Unusual Location</strong>: Use a VPN to sign in</li></ol>
+<p>- Verify: Location shows differently</p>
+<p>- Verify: Conditional Access triggers MFA</p>
+<p>- Verify: Alert created (if configured)</p>
+
+<h3 id="validation-checklist">Validation Checklist</h3>
+
+<ul><ol><li>[ ] Reviewed sign-in logs and documented findings</li>
+<li>[ ] Created at least 2 monitor alert rules</li>
+<li>[ ] Tested alert by triggering suspicious activity</li>
+<li>[ ] Received alert notification (email/Teams)</li>
+<li>[ ] Created incident response playbook</li>
+<li>[ ] Established escalation process</li></ol></ul>
+
+<h3 id="success-criteria">Success Criteria</h3>
+
+<p>✅ Complete: Monitor alerts detect suspicious sign-in patterns</p>
+<p>✅ All alerts configured and tested</p>
+<p>✅ Incident response procedures documented</p>
+<p>✅ Security team knows escalation process</p>
+
+<hr class="divider">
+
+<h2 id="part-5-group-based-access-governance">Part 5 – Group-Based Access Governance</h2>
+
+<h3 id="the-challenge">The Challenge</h3>
+
+<p>180+ individual role assignments instead of group-based. Migrate all human access to groups for scalability.</p>
+
+<h3 id="what-youll-learn">What You'll Learn</h3>
+
+<ul><ol><li>How to create security groups for access management</li>
+<li>How to migrate individual assignments to groups</li>
+<li>How to implement group-based RBAC</li>
+<li>How to audit group membership at scale</li></ol></ul>
+
+<h3 id="step-by-step-tasks">Step-by-Step Tasks</h3>
+
+<p><strong>Step 1: Plan Group Structure</strong></p>
+
+<p>Create a group naming scheme and structure:</p>
+
+<div class='code-block'><pre>Group Naming Convention: grp-[department]-[role]
+
+<p>Examples:</p>
+<p>├─ grp-engineering-contributors (Contributor role)</p>
+<p>├─ grp-engineering-readers (Reader role)</p>
+<p>├─ grp-operations-admins (Owner role on OPS resources)</p>
+<p>├─ grp-marketing-readers (Reader role)</p>
+<p>├─ grp-finance-auditors (Reader role on billing)</p>
+<p>├─ grp-support-vm-managers (VM Operator role)</p>
+<p>└─ grp-security-admins (Global Admin)</pre></div></p>
+
+<p><strong>Step 2: Create Security Groups</strong></p>
+
+<ol><li>Go to <strong>Azure Portal</strong> > <strong>Entra ID</strong> > <strong>Groups</strong> > <strong>New group</strong></li>
+<li>Create security groups based on your plan:</li></ol>
+
+<p>For each group:</p>
+<ul><ol><li><strong>Group type</strong>: Security</li>
+<li><strong>Group name</strong>: grp-[department]-[role]</li>
+<li><strong>Description</strong>: "Access [resource] with [role] for [department]"</li>
+<li><strong>Membership</strong>: Start empty (add users in next step)</li></ol></ul>
+
+<p>Example creation:</p>
+<div class='code-block'><pre>Group: grp-engineering-contributors
+<p>├─ Type: Security</p>
+<p>├─ Description: Engineering team with Contributor role on development resources</p>
+<p>├─ Members: (to be populated)</p>
+<p>└─ Owners: Engineering Lead + Security Team</pre></div></p>
+
+<p><strong>Step 3: Populate Groups</strong></p>
+
+<ol><li>For each group, identify current users with that role</li>
+<li>Add them to appropriate group:</li></ol>
+<p>- Go to <strong>Entra ID</strong> > <strong>Groups</strong> > [Group Name]</p>
+<p>- Click <strong>Members</strong> > <strong>Add members</strong></p>
+<p>- Select all users needing that role</p>
+<p>- Click <strong>Select</strong></p>
+
+<ol><li>Document migration:</li></ol>
+<div class='code-block'><pre>Migration Plan
+<p>──────────────</p>
+
+<p>grp-engineering-contributors:</p>
+<p>├─ From: 15 individual Contributor assignments</p>
+<p>├─ To: grp-engineering-contributors (15 members)</p>
+<p>├─ Verification: Each member can still perform their job</p>
+<p>└─ Status: ✅ Migrated</p>
+
+<p>grp-operations-admins:</p>
+<p>├─ From: 8 individual Owner assignments</p>
+<p>├─ To: grp-operations-admins (8 members)</p>
+<p>├─ Verification: OPS team confirms access</p>
+<p>└─ Status: ✅ Migrated</pre></div></p>
+
+<p><strong>Step 4: Assign Roles to Groups</strong></p>
+
+<ol><li>Go to <strong>Azure Portal</strong> > <strong>Subscriptions</strong> > <strong>Access control (IAM)</strong></li>
+<li>Click <strong>+ Add</strong> > <strong>Add role assignment</strong></li>
+<li>For each group:</li></ol>
+<p>- <strong>Role</strong>: [Appropriate role - e.g., Contributor]</p>
+<p>- <strong>Assign access to</strong>: Groups</p>
+<p>- <strong>Members</strong>: Select group (e.g., grp-engineering-contributors)</p>
+<p>- <strong>Click Assign</strong></p>
+
+<ol><li>Verify group now has the role:</li></ol>
+<p>- Go back to <strong>Access control (IAM)</strong></p>
+<p>- Confirm group appears with assigned role</p>
+
+<p><strong>Step 5: Remove Individual Assignments</strong></p>
+
+<p>Once groups are in place and tested:</p>
+
+<ol><li>Go to <strong>Access control (IAM)</strong></li>
+<li>For each individual user with a role:</li></ol>
+<p>- If they're now in a group with same role: Remove individual assignment</p>
+<p>- Click their role, select <strong>Remove</strong></p>
+<p>- Confirm removal</p>
+
+<ol><li>Document removals:</li></ol>
+<div class='code-block'><pre>Individual Assignments Removed:
+<p>├─ Alice Smith: Removed Contributor (now in grp-engineering-contributors)</p>
+<p>├─ Bob Johnson: Removed Contributor (now in grp-operations-admins)</p>
+<p>├─ Charlie Lee: Removed Reader (now in grp-marketing-readers)</p>
+<p>└─ Total: 45 individual assignments removed</pre></div></p>
+
+<p><strong>Step 6: Audit Group Membership</strong></p>
+
+<p>Create a process for regular group audits:</p>
+
+<ol><li>Monthly group review:</li></ol>
+<div class='code-block'><pre>Group Audit Checklist (Monthly)
+<p>──────────────────────────────</p>
+
+<p>For each group:</p>
+<li><input type="checkbox"  " disabled> Review member list
+<li><input type="checkbox"  " disabled> Verify each member still needs the role
+<li><input type="checkbox"  " disabled> Verify no one is missing who should be in it
+<li><input type="checkbox"  " disabled> Check owner is still appropriate person
+<li><input type="checkbox"  " disabled> Document any changes
+<p>``<code></p>
+
+<p>&lt;h3 id=&quot;validation-checklist&quot;&gt;Validation Checklist&lt;/h3&gt;</p>
+
+<ul><ol><li>[ ] Created at least 5 security groups</li>
+<li>[ ] Migrated minimum 50 individual assignments to groups</li>
+<li>[ ] Assigned groups to appropriate roles</li>
+<li>[ ] Removed individual assignments (groups in place)</li>
+<li>[ ] Verified group members can still perform their jobs</li>
+<li>[ ] Zero individual user role assignments remain (except service principals)</li></ol></ul>
+
+<p>&lt;h3 id=&quot;success-criteria&quot;&gt;Success Criteria&lt;/h3&gt;</p>
+
+<p>✅ Complete: All human access is group-based</p>
+<p>✅ All individual assignments migrated</p>
+<p>✅ Group audit process established</p>
+<p>✅ Scalable, auditable access model in place</p>
+
+<hr class="divider">
+
+<p>&lt;h2 id=&quot;part-6-approval-workflows-entitlement-management&quot;&gt;Part 6 – Approval Workflows &amp; Entitlement Management&lt;/h2&gt;</p>
+
+<p>&lt;h3 id=&quot;the-challenge&quot;&gt;The Challenge&lt;/h3&gt;</p>
+
+<p>No formal approval process. Implement Entitlement Management so privileged roles require proper authorization.</p>
+
+<p>&lt;h3 id=&quot;what-youll-learn&quot;&gt;What You&#39;ll Learn&lt;/h3&gt;</p>
+
+<ul><ol><li>How to set up Entitlement Management</li>
+<li>How to create access packages</li>
+<li>How to configure approval workflows</li>
+<li>How to enforce separation of duty</li></ol></ul>
+
+<p>&lt;h3 id=&quot;step-by-step-tasks&quot;&gt;Step-by-Step Tasks&lt;/h3&gt;</p>
+
+<p>&lt;strong&gt;Step 1: Enable Entitlement Management&lt;/strong&gt;</p>
+
+<ol><li>Go to &lt;strong&gt;Azure Portal&lt;/strong&gt; &gt; &lt;strong&gt;Entra ID&lt;/strong&gt; &gt; &lt;strong&gt;Identity Governance&lt;/strong&gt; &gt; &lt;strong&gt;Entitlement Management&lt;/strong&gt;</li>
+<li>If not already enabled, click &lt;strong&gt;Enable&lt;/strong&gt;</li>
+<li>Confirm you want to enable Entitlement Management for your tenant</li></ol>
+
+<p>&lt;strong&gt;Step 2: Create Sensitive Role Access Package&lt;/strong&gt;</p>
+
+<ol><li>Click &lt;strong&gt;Access packages&lt;/strong&gt; &gt; &lt;strong&gt;New access package&lt;/strong&gt;</li>
+<li>Create access package for sensitive roles:</li></ol>
+
+<p>&lt;strong&gt;Access Package 1: Production Contributor Access&lt;/strong&gt;</pre></div></p>
+<p>Name: Production-Contributor-Access</p>
+<p>Description: Request Contributor role on production subscription</p>
+<p>Purpose: Deploy and manage production resources</p>
+
+<p>Catalog: Default</p>
+
+<p>Resources:</p>
+<p>├─ Subscription: Production (Add)</p>
+<p>├─ Role: Contributor</p>
+<p>└─ Scope: Subscription</p>
+
+<p>Who can request:</p>
+<p>├─ Users: All employees (members)</p>
+<p>├─ Admin: All employees (members)</p>
+
+<p>Approval Policy:</p>
+<p>├─ Approver 1: Direct manager (auto)</p>
+<p>├─ Approver 2: Security team (manual)</p>
+<p>├─ Approver 3: Resource owner (manual)</p>
+<p>├─ Same person cannot approve own request</p>
+<p>├─ Auto-denial if no approval in 7 days</p>
+
+<p>Access period:</p>
+<p>├─ Duration: 90 days</p>
+<p>├─ Auto-review: Yes (before expiration)</p>
+<p>├─ Recertification: Quarterly</p>
+<div class='code-block'><pre>&lt;strong&gt;Step 3: Set Up Approval Workflow Details&lt;/strong&gt;
+
+<p>For each access package, define:</pre></div></p>
+<p>Approval Workflow: Production Contributor Access</p>
+<p>═════════════════════════════════════════════════</p>
+
+<p>Request Submission:</p>
+<ol><li>User submits: "I need Contributor role on Production for project X"</li>
+<li>System captures: Who, What, When, Business justification</li></ol>
+
+<p>Approval Stage 1 - Manager Review (24 hrs):</p>
+<p>├─ Approver: Direct manager</p>
+<p>├─ Question: "Does [user] need this for their job?"</p>
+<p>├─ Options: Approve / Deny / Request more info</p>
+<p>├─ If Approved: → Go to Stage 2</p>
+<p>├─ If Denied: → Notify user, process ends</p>
+
+<p>Approval Stage 2 - Security Review (48 hrs):</p>
+<p>├─ Approver: Security team</p>
+<p>├─ Question: "Are there security concerns with this assignment?"</p>
+<p>├─ Review: User's history, role sensitivity, usage patterns</p>
+<p>├─ If Approved: → Go to Stage 3</p>
+<p>├─ If Denied: → Notify user and manager, process ends</p>
+
+<p>Approval Stage 3 - Resource Owner Review (48 hrs):</p>
+<p>├─ Approver: Production subscription owner</p>
+<p>├─ Question: "Should this person have access to production?"</p>
+<p>├─ If Approved: → Provision access</p>
+<p>├─ If Denied: → Deny request, process ends</p>
+
+<p>Provisioning:</p>
+<p>├─ System auto-assigns group to Contributor role</p>
+<p>├─ Start date: Immediately (or scheduled)</p>
+<p>├─ Expiration date: 90 days from approval</p>
+<p>├─ Notification: User + manager + approvers</p>
+
+<p>Post-Approval:</p>
+<p>├─ Day 60: Reminder to user access expires in 30 days</p>
+<p>├─ Day 85: Auto-review reminder for everyone</p>
+<p>├─ Day 90: Access expires, role automatically removed</p>
+<p>├─ User can re-request for extension (repeats approval process)</p>
+<div class='code-block'><pre>&lt;strong&gt;Step 4: Test Approval Workflow&lt;/strong&gt;
+
+<ol><li>Create a test user account (or have colleague test)</li>
+<li>Request access: Go to &lt;strong&gt;Access packages&lt;/strong&gt; (as test user)</li>
+<li>Find: &quot;Production-Contributor-Access&quot;</li>
+<li>Click &lt;strong&gt;Request access&lt;/strong&gt;</li>
+<li>Submit request with business justification</li></ol>
+
+<p>Track approval flow:</p>
+<ul><ol><li>[ ] Manager receives approval request</li>
+<li>[ ] Manager approves (or denies)</li>
+<li>[ ] Security team receives approval request</li>
+<li>[ ] Security team approves</li>
+<li>[ ] Resource owner receives approval request</li>
+<li>[ ] Resource owner approves</li>
+<li>[ ] Access provisioned automatically</li>
+<li>[ ] User can now access production</li></ol></ul>
+
+<p>&lt;strong&gt;Step 5: Document Approval Audit Trail&lt;/strong&gt;</p>
+
+<p>Verify audit trail is captured:</p>
+
+<ol><li>Go to &lt;strong&gt;Entitlement Management&lt;/strong&gt; &gt; &lt;strong&gt;Catalogs&lt;/strong&gt; &gt; &lt;strong&gt;Default&lt;/strong&gt;</li>
+<li>Click &lt;strong&gt;Access package&lt;/strong&gt;: Production-Contributor-Access</li>
+<li>Review request history:</li></ol>
+<p>- Requester</p>
+<p>- What was requested</p>
+<p>- Approval chain</p>
+<p>- Who approved when</p>
+<p>- When access was provisioned</p>
+<p>- When access expires</p>
+
+<p>Document in audit log:</pre></div></p>
+<p>Access Request Audit Trail Example</p>
+<p>───────────────────────────────────</p>
+
+<p>Request #1 - Production Contributor Access</p>
+<p>├─ Requester: John Smith (john@acme.com)</p>
+<p>├─ Submitted: 2024-06-15 10:30 AM</p>
+<p>├─ Business Justification: "Deploy new feature to production API"</p>
+<p>├─ Approval 1: Manager (Sarah Johnson) - Approved 2024-06-15 11:00 AM</p>
+<p>├─ Approval 2: Security (sec-team@acme.com) - Approved 2024-06-15 2:30 PM</p>
+<p>├─ Approval 3: Owner (ops-lead@acme.com) - Approved 2024-06-15 3:45 PM</p>
+<p>├─ Provisioning: 2024-06-15 3:50 PM</p>
+<p>├─ Access Type: Group membership in grp-production-contributors</p>
+<p>├─ Expiration: 2024-09-13</p>
+<p>└─ Status: ✅ Approved & Provisioned</p>
+
+<p>(Full audit trail available for compliance/investigation)</p>
+<div class='code-block'><pre>&lt;h3 id=&quot;validation-checklist&quot;&gt;Validation Checklist&lt;/h3&gt;
+
+<ul><ol><li>[ ] Entitlement Management enabled</li>
+<li>[ ] Created access package for sensitive role</li>
+<li>[ ] Configured 3-stage approval workflow</li>
+<li>[ ] Assigned approvers for each stage</li>
+<li>[ ] Tested request submission</li>
+<li>[ ] Tested approval process (all 3 stages)</li>
+<li>[ ] Verified access provisioned after approval</li>
+<li>[ ] Reviewed audit trail</li></ol></ul>
+
+<p>&lt;h3 id=&quot;success-criteria&quot;&gt;Success Criteria&lt;/h3&gt;</p>
+
+<p>✅ Complete: Formal approval process for all privileged access</p>
+<p>✅ Separation of duty enforced (no self-approval)</p>
+<p>✅ All approvals logged with full audit trail</p>
+<p>✅ Access automatically expires after 90 days</p>
+
+<hr class="divider">
+
+<p>&lt;h2 id=&quot;part-7-secure-offboarding-account-cleanup&quot;&gt;Part 7 – Secure Offboarding &amp; Account Cleanup&lt;/h2&gt;</p>
+
+<p>&lt;h3 id=&quot;the-challenge&quot;&gt;The Challenge&lt;/h3&gt;</p>
+
+<p>Former employees still have access. Implement rapid offboarding process to disable accounts within 24 hours.</p>
+
+<p>&lt;h3 id=&quot;what-youll-learn&quot;&gt;What You&#39;ll Learn&lt;/h3&gt;</p>
+
+<ul><ol><li>How to disable user accounts safely</li>
+<li>How to remove all access in bulk</li>
+<li>How to audit for orphaned accounts</li>
+<li>How to create offboarding checklist</li></ol></ul>
+
+<p>&lt;h3 id=&quot;step-by-step-tasks&quot;&gt;Step-by-Step Tasks&lt;/h3&gt;</p>
+
+<p>&lt;strong&gt;Step 1: Create Offboarding Process&lt;/strong&gt;</p>
+
+<ol><li>Document offboarding checklist to give to HR/managers:</pre></div></li></ol>
+<p>Employee Offboarding Checklist</p>
+<p>═══════════════════════════════</p>
+
+<p>Employee Name: _____________<em><strong></p>
+<p>Department: </strong></em>__________<em><strong></p>
+<p>Last Day: </strong></em>__________<em><strong></p>
+<p>Departure Date: </strong></em>_____________</p>
+
+<p>BEFORE Last Day (Day -1):</p>
+<p>├─ [ ] Request IT to disable account access</p>
+<p>├─ [ ] Collect company laptop, phone, badges</p>
+<p>├─ [ ] Transfer file ownership (OneDrive, Teams)</p>
+<p>├─ [ ] Download/backup employee data</p>
+
+<p>ON Last Day (Day 0):</p>
+<p>├─ [ ] Disable Entra ID account (immediately)</p>
+<p>├─ [ ] Revoke group memberships</p>
+<p>├─ [ ] Remove role assignments</p>
+<p>├─ [ ] Disable MFA phone/app</p>
+<p>├─ [ ] Revoke Teams/Office 365 access</p>
+
+<p>AFTER Last Day (Day +30):</p>
+<p>├─ [ ] If not needed: Delete Entra ID account</p>
+<p>├─ [ ] Audit for any remaining access</p>
+<p>├─ [ ] Verify mailbox retention policy active</p>
+<p>└─ [ ] Mark as complete in audit log</p>
+<div class='code-block'><pre>&lt;strong&gt;Step 2: Disable Account (Immediate)&lt;/strong&gt;
+
+<p>Simulate offboarding for a test user:</p>
+
+<ol><li>Go to &lt;strong&gt;Entra ID&lt;/strong&gt; &gt; &lt;strong&gt;Users&lt;/strong&gt;</li>
+<li>Find employee to offboard</li>
+<li>Click their name</li>
+<li>Click &lt;strong&gt;Disable account&lt;/strong&gt;</li>
+<li>Confirm: Account is now disabled</li></ol>
+
+<p>Verify disabled:</p>
+<ul><ol><li>[ ] User cannot sign in</li>
+<li>[ ] All Sessions are signed out</li>
+<li>[ ] User marked &quot;Blocked Sign in&quot; = Yes</li></ol></ul>
+
+<p>&lt;strong&gt;Step 3: Remove All Access&lt;/strong&gt;</p>
+
+<p>For the disabled user, remove:</p>
+
+<p>&lt;strong&gt;Remove from Groups:&lt;/strong&gt;</p>
+<ol><li>Go to &lt;strong&gt;Entra ID&lt;/strong&gt; &gt; &lt;strong&gt;Groups&lt;/strong&gt;</li>
+<li>For each group the user is in:</li></ol>
+<p>- Click group name</p>
+<p>- Click &lt;strong&gt;Members&lt;/strong&gt;</p>
+<p>- Find user</p>
+<p>- Click &lt;strong&gt;Remove&lt;/strong&gt;</p>
+
+<p>Example removals:</pre></div></p>
+<p>Group Removals for Departing Employee:</p>
+<p>├─ Removed from: grp-all-employees</p>
+<p>├─ Removed from: grp-engineering-contributors</p>
+<p>├─ Removed from: grp-production-access</p>
+<p>├─ Removed from: grp-aws-access</p>
+<p>└─ Total: 8 groups</p>
+<div class='code-block'><pre>&lt;strong&gt;Remove Role Assignments:&lt;/strong&gt;
+<ol><li>Go to &lt;strong&gt;Subscriptions&lt;/strong&gt; &gt; &lt;strong&gt;Access control (IAM)&lt;/strong&gt;</li>
+<li>Search for user</li>
+<li>For each role:</li></ol>
+<p>- Click role</p>
+<p>- Click &lt;strong&gt;Remove&lt;/strong&gt;</p>
+<p>- Confirm</p>
+
+<p>&lt;strong&gt;Step 4: Verify All Access Removed&lt;/strong&gt;</p>
+
+<ol><li>Try to sign in as departing employee:</li></ol>
+<p>- Username: [their email]</p>
+<p>- Password: [any password]</p>
+<p>- Expected: &quot;Sign in failed&quot; message</p>
+<p>- ✅ Verification: Cannot sign in</p>
+
+<ol><li>Check no remaining access:</li></ol>
+<p>- Go to &lt;strong&gt;Entra ID&lt;/strong&gt; &gt; &lt;strong&gt;Users&lt;/strong&gt; &gt; [User]</p>
+<p>- Group memberships: None</p>
+<p>- Role assignments: None</p>
+<p>- MFA methods: Disabled</p>
+
+<p>&lt;strong&gt;Step 5: Delete Account (After 30 days)&lt;/strong&gt;</p>
+
+<p>If employee data retention period passed:</p>
+
+<ol><li>Go to &lt;strong&gt;Entra ID&lt;/strong&gt; &gt; &lt;strong&gt;Users&lt;/strong&gt;</li>
+<li>Click disabled user</li>
+<li>Click &lt;strong&gt;Delete user&lt;/strong&gt;</li>
+<li>Confirm deletion</li>
+<li>Log deletion in audit trail</li></ol>
+
+<p>&lt;strong&gt;Step 6: Audit for Orphaned Accounts&lt;/strong&gt;</p>
+
+<p>Monthly task - find accounts we missed:</p>
+
+<ol><li>Go to &lt;strong&gt;Entra ID&lt;/strong&gt; &gt; &lt;strong&gt;Users&lt;/strong&gt;</li>
+<li>Filter: Status = Disabled</li>
+<li>For each disabled user &gt;30 days old:</li></ol>
+<p>- Verify: They were supposed to be disabled</p>
+<p>- Verify: No lingering access</p>
+<p>- Action: Delete if retention passed</p>
+<ol><li>Create audit report</pre></div></li></ol>
+<p>Monthly Orphaned Account Audit</p>
+<p>────────────────────────────────</p>
+
+<p>Disabled accounts found: 12</p>
+<p>Accounts properly cleaned: 12</p>
+<p>├─ 4 deleted (retention period passed)</p>
+<p>├─ 8 still in retention (delete after: [date])</p>
+
+<p>No access found for disabled accounts ✅</p>
+
+<p>Recommendations:</p>
+<p>└─ Continue monthly audits</p>
+<div class='code-block'><pre>&lt;h3 id=&quot;validation-checklist&quot;&gt;Validation Checklist&lt;/h3&gt;
+
+<ul><ol><li>[ ] Created offboarding checklist</li>
+<li>[ ] Disabled test user account</li>
+<li>[ ] Verified disabled user cannot sign in</li>
+<li>[ ] Removed from all groups</li>
+<li>[ ] Removed all role assignments</li>
+<li>[ ] Verified zero remaining access</li>
+<li>[ ] Planned account deletion after retention</li></ol></ul>
+
+<p>&lt;h3 id=&quot;success-criteria&quot;&gt;Success Criteria&lt;/h3&gt;</p>
+
+<p>✅ Complete: All departing employees disabled within 24 hours</p>
+<p>✅ Zero access remains for disabled accounts</p>
+<p>✅ Offboarding process documented</p>
+<p>✅ Monthly audit process established</p>
+
+<hr class="divider">
+
+<p>&lt;h2 id=&quot;part-8-app-authentication-best-practices&quot;&gt;Part 8 – App Authentication Best Practices&lt;/h2&gt;</p>
+
+<p>&lt;h3 id=&quot;the-challenge&quot;&gt;The Challenge&lt;/h3&gt;</p>
+
+<p>12 apps using hardcoded passwords for Azure authentication. Migrate to managed identities (zero secrets).</p>
+
+<p>&lt;h3 id=&quot;what-youll-learn&quot;&gt;What You&#39;ll Learn&lt;/h3&gt;</p>
+
+<ul><ol><li>How to compare authentication methods</li>
+<li>How to create and use managed identities</li>
+<li>How to create and rotate certificates</li>
+<li>How to eliminate hardcoded secrets</li></ol></ul>
+
+<p>&lt;h3 id=&quot;step-by-step-tasks&quot;&gt;Step-by-Step Tasks&lt;/h3&gt;</p>
+
+<p>&lt;strong&gt;Step 1: Audit Current App Authentication&lt;/strong&gt;</p>
+
+<p>Document how each app authenticates:</pre></div></p>
+<p>Application Authentication Audit</p>
+<p>═════════════════════════════════</p>
+
+<p>App 1: DataExport Service</p>
+<p>├─ Current: Hardcoded password in appsettings.json</p>
+<p>├─ Location: Web server (production)</p>
+<p>├─ Risk Level: 🔴 HIGH (password in code)</p>
+<p>├─ Change to: Managed Identity</p>
+
+<p>App 2: Backup Automation</p>
+<p>├─ Current: Hardcoded password in environment variable</p>
+<p>├─ Location: Automation account</p>
+<p>├─ Risk Level: 🔴 HIGH (password in config)</p>
+<p>├─ Change to: Managed Identity</p>
+
+<p>App 3: Legacy Service</p>
+<p>├─ Current: Service principal with certificate</p>
+<p>├─ Location: On-premises</p>
+<p>├─ Risk Level: 🟡 MEDIUM (certificate needs rotation)</p>
+<p>├─ Change to: Renew certificate, set rotation reminder</p>
+
+<p>Summary:</p>
+<p>├─ Apps using passwords: 9 (CRITICAL - must migrate)</p>
+<p>├─ Apps using certificates: 2 (OK - set rotation reminder)</p>
+<p>├─ Apps using managed identity: 1 (BEST PRACTICE)</p>
+<p>└─ Action Items: Migrate 9 to managed identity</p>
+<div class='code-block'><pre>&lt;strong&gt;Step 2: Create Managed Identity for Azure App&lt;/strong&gt;
+
+<p>For apps running ON Azure (VM, App Service, Container, Function):</p>
+
+<p>&lt;strong&gt;Scenario: WebApi running on Azure App Service&lt;/strong&gt;</p>
+
+<ol><li>Go to &lt;strong&gt;Azure Portal&lt;/strong&gt; &gt; &lt;strong&gt;App Services&lt;/strong&gt; &gt; [App Name]</li>
+<li>Click &lt;strong&gt;Identity&lt;/strong&gt; (left menu)</li>
+<li>Click &lt;strong&gt;System assigned&lt;/strong&gt; tab</li>
+<li>Set &lt;strong&gt;Status&lt;/strong&gt;: ON</li>
+<li>Click &lt;strong&gt;Save&lt;/strong&gt;</li></ol>
+
+<p>Verify managed identity created:</p>
+<ul><ol><li>[ ] Principal ID is displayed</li>
+<li>[ ] Tenant ID is shown</li>
+<li>[ ] Status: Enabled</li></ol></ul>
+
+<p>&lt;strong&gt;Step 3: Grant Permissions to Managed Identity&lt;/strong&gt;</p>
+
+<p>The managed identity needs permissions to access Azure resources:</p>
+
+<ol><li>Go to &lt;strong&gt;Subscriptions&lt;/strong&gt; &gt; &lt;strong&gt;Access control (IAM)&lt;/strong&gt;</li>
+<li>Click &lt;strong&gt;+ Add&lt;/strong&gt; &gt; &lt;strong&gt;Add role assignment&lt;/strong&gt;</li>
+<li>Configure:</li></ol>
+<p>- &lt;strong&gt;Role&lt;/strong&gt;: Appropriate for app (e.g., Contributor for deployment)</p>
+<p>- &lt;strong&gt;Assign access to&lt;/strong&gt;: Managed Identity</p>
+<p>- &lt;strong&gt;Members&lt;/strong&gt;: Select your app (e.g., &quot;WebApi-prod&quot;)</p>
+<ol><li>Click &lt;strong&gt;Assign&lt;/strong&gt;</li></ol>
+
+<p>Verify permissions:</p>
+<ul><ol><li>[ ] App role appears in IAM</li>
+<li>[ ] App can authenticate without password</li></ol></ul>
+
+<p>&lt;strong&gt;Step 4: Update App Code to Use Managed Identity&lt;/strong&gt;</p>
+
+<p>Update app to use managed identity instead of password:</p>
+
+<p>&lt;strong&gt;Before (Hardcoded Password - INSECURE):&lt;/strong&gt;</pre></div>csharp</p>
+<p>// NEVER DO THIS!</p>
+<p>var credential = new UsernamePasswordCredential(</p>
+<p>username: "app@acme.com",</p>
+<p>password: "SuperSecretPassword123!" // In code = BAD!</p>
+<p>);</p>
+<p>var client = new BlobContainerClient(</p>
+<p>new Uri("https://storage.blob.core.windows.net/container"),</p>
+<p>credential);</p>
+<div class='code-block'><pre>&lt;strong&gt;After (Managed Identity - SECURE):&lt;/strong&gt;</pre></div>csharp
+<p>// CORRECT: Use managed identity</p>
+<p>var credential = new ManagedIdentityCredential();</p>
+<p>var client = new BlobContainerClient(</p>
+<p>new Uri("https://storage.blob.core.windows.net/container"),</p>
+<p>credential);</p>
+<div class='code-block'><pre>No credentials needed!
+
+<p>&lt;strong&gt;Step 5: Remove Hardcoded Passwords&lt;/strong&gt;</p>
+
+<p>Once app is updated and tested:</p>
+
+<ol><li>Remove password from code:</li></ol>
+<p>- Delete from appsettings.json</p>
+<p>- Delete from appsettings.production.json</p>
+<p>- Delete from environment variables</p>
+<p>- Delete from Key Vault (if stored there)</p>
+
+<ol><li>Remove old service principal:</li></ol>
+<p>- Go to &lt;strong&gt;Entra ID&lt;/strong&gt; &gt; &lt;strong&gt;App registrations&lt;/strong&gt;</p>
+<p>- Find old app service principal</p>
+<p>- Click &lt;strong&gt;Delete&lt;/strong&gt;</p>
+
+<ol><li>Verify no passwords remain:</li></ol>
+<p>- Code review</p>
+<p>- Configuration check</p>
+<p>- Grep for &quot;password&quot; in codebase</p>
+
+<p>&lt;strong&gt;Step 6: Compare Authentication Methods for Off-Azure Apps&lt;/strong&gt;</p>
+
+<p>For apps NOT running on Azure (on-premises, external cloud):</p>
+
+<table>
+<p><tr></p>
+<p><th>Method</th></p>
+<p><th>Security</th></p>
+<p><th>Effort</th></p>
+<p><th>Use Case</th></p>
+<p></tr></p>
+<p><tr></p>
+<p><td>&lt;strong&gt;Password&lt;/strong&gt;</td></p>
+<p><td>&#128308; Low</td></p>
+<p><td>⚠️ Minimal</td></p>
+<p><td>Never. Seriously.</td></p>
+<p></tr></p>
+<p><tr></p>
+<p><td>&lt;strong&gt;Certificate&lt;/strong&gt;</td></p>
+<p><td>&#128994; Good</td></p>
+<p><td>&#128204; Medium</td></p>
+<p><td>Off-Azure apps, set rotation reminder</td></p>
+<p></tr></p>
+<p><tr></p>
+<p><td>&lt;strong&gt;Managed ID&lt;/strong&gt;</td></p>
+<p><td>&#128994;️ Best</td></p>
+<p><td>✅ None</td></p>
+<p><td>Apps on Azure only</td></p>
+<p></tr></p>
+<p></table></p>
+
+
+<p>&lt;strong&gt;For On-Premises Apps: Use Certificate&lt;/strong&gt;</p>
+
+<ol><li>Create service principal with certificate</li>
+<li>Set calendar reminder for rotation (every 12 months)</li>
+<li>Document certificate thumbprint</li>
+<li>Plan rotation process before expiration</pre></div></li></ol>
+<p>On-Premises App: Legacy Service</p>
+<p>────────────────────────────</p>
+<p>Authentication: Service Principal + Certificate</p>
+<p>Certificate Thumbprint: ABC123DEF456...</p>
+<p>Expiration Date: 2025-06-15</p>
+<p>Rotation Reminder: 2025-05-15 (30 days before)</p>
+<p>Rotation Steps:</p>
+<p>├─ Generate new certificate</p>
+<p>├─ Upload to app service principal</p>
+<p>├─ Update app config with new thumbprint</p>
+<p>├─ Test with new cert</p>
+<p>└─ Decommission old cert</p>
+<div class='code-block'><pre>&lt;strong&gt;Step 7: Create Secrets Cleanup Checklist&lt;/strong&gt;
+
+<ol><li>Audit all passwords/secrets still in use:</li></ol>
+<p></code>`<code></p>
+<p>find . -type f \( -name &quot;&lt;em&gt;.json&quot; -o -name &quot;&lt;/em&gt;.config&quot; \) \</p>
+<p>| xargs grep -l &quot;password\|secret\|credential&quot;</p>
+<p></code>`<code></p>
+
+<ol><li>For each found:</li></ol>
+<li><input type="checkbox"  " disabled> Is it needed?
+<li><input type="checkbox"  " disabled> Can it be replaced with managed identity/certificate?
+<li><input type="checkbox"  " disabled> If needed: Move to Azure Key Vault (not in code)
+
+<p>&lt;h3 id=&quot;validation-checklist&quot;&gt;Validation Checklist&lt;/h3&gt;</p>
+
+<ul><ol><li>[ ] Audited all app authentication methods</li>
+<li>[ ] Created managed identity for at least 1 Azure app</li>
+<li>[ ] Granted role permissions to managed identity</li>
+<li>[ ] Updated app code to use managed identity</li>
+<li>[ ] Verified app works without hardcoded password</li>
+<li>[ ] Removed hardcoded password from code</li>
+<li>[ ] Deleted old service principal</li>
+<li>[ ] Documented off-Azure app authentication (certificate)</li>
+<li>[ ] Created secrets cleanup checklist</li></ol></ul>
+
+<p>&lt;h3 id=&quot;success-criteria&quot;&gt;Success Criteria&lt;/h3&gt;</p>
+
+<p>✅ Complete: All hardcoded passwords removed</p>
+<p>✅ Zero secrets in code</p>
+<p>✅ Apps using zero-secret authentication</p>
+<p>✅ Certificate rotation process documented</p>
+
+<hr class="divider">
+
+<p>&lt;h2 id=&quot;final-assessment-security-hardening-checklist&quot;&gt;Final Assessment: Security Hardening Checklist&lt;/h2&gt;</p>
+
+<p>After completing all 8 parts, verify all best practices are implemented:</pre></div></p>
+<p>SECURITY HARDENING FINAL CHECKLIST</p>
+<p>════════════════════════════════════</p>
+
+<p>✅ Part 1: Least Privilege</p>
+<p>├─ [ ] Owner roles reduced to essential only</p>
+<p>├─ [ ] Custom roles created for specific needs</p>
+<p>├─ [ ] All users have minimum necessary access</p>
+<p>└─ [ ] 40%+ privilege surface reduced</p>
+
+<p>✅ Part 2: Access Reviews</p>
+<p>├─ [ ] Quarterly access review process defined</p>
+<p>├─ [ ] Inactive accounts identified (>90 days)</p>
+<p>├─ [ ] Orphaned accounts disabled/deleted</p>
+<p>└─ [ ] Permission creep cleaned up</p>
+
+<p>✅ Part 3: MFA & Conditional Access</p>
+<p>├─ [ ] MFA required for all admins</p>
+<p>├─ [ ] Risk-based MFA configured for all users</p>
+<p>├─ [ ] Unusual location detection active</p>
+<p>└─ [ ] MFA methods registered and tested</p>
+
+<p>✅ Part 4: Sign-in Monitoring</p>
+<p>├─ [ ] Failed sign-in alerts configured</p>
+<p>├─ [ ] Unusual location alerts active</p>
+<p>├─ [ ] Suspicious activity detected and investigated</p>
+<p>└─ [ ] Incident response playbook created</p>
+
+<p>✅ Part 5: Group-Based Governance</p>
+<p>├─ [ ] Security groups created for all roles</p>
+<p>├─ [ ] 50+ individual assignments migrated to groups</p>
+<p>├─ [ ] Zero individual user assignments remain</p>
+<p>└─ [ ] Group membership audit process established</p>
+
+<p>✅ Part 6: Approval Workflows</p>
+<p>├─ [ ] Entitlement Management enabled</p>
+<p>├─ [ ] Access packages created for sensitive roles</p>
+<p>├─ [ ] 3-stage approval workflow implemented</p>
+<p>├─ [ ] Separation of duty enforced</p>
+<p>└─ [ ] Audit trail captured for all requests</p>
+
+<p>✅ Part 7: Offboarding</p>
+<p>├─ [ ] Offboarding checklist created</p>
+<p>├─ [ ] Accounts disabled within 24 hours</p>
+<p>├─ [ ] All access removed immediately</p>
+<p>├─ [ ] Monthly orphaned account audit established</p>
+<p>└─ [ ] Zero access remains for former employees</p>
+
+<p>✅ Part 8: App Authentication</p>
+<p>├─ [ ] App authentication audit completed</p>
+<p>├─ [ ] Managed identities implemented for Azure apps</p>
+<p>├─ [ ] All hardcoded passwords removed</p>
+<p>├─ [ ] Certificate rotation process documented</p>
+<p>└─ [ ] Zero secrets in code</p>
+
+<p>OVERALL SECURITY POSTURE</p>
+<p>════════════════════════</p>
+
+<p>Before (Audit Findings):</p>
+<p>├─ 47 over-privileged users with Owner</p>
+<p>├─ 23 inactive accounts with access</p>
+<p>├─ 0 MFA on admin accounts</p>
+<p>├─ No monitoring or alerts</p>
+<p>├─ 180+ individual access assignments</p>
+<p>├─ No approval process</p>
+<p>├─ 8 departed employees with access</p>
+<p>└─ 12 apps with hardcoded passwords</p>
+<p>Result: 🔴 HIGH RISK - Multiple critical findings</p>
+
+<p>After (Implementation Complete):</p>
+<p>├─ Owner roles: 3 only (essential)</p>
+<p>├─ Inactive accounts: 0 (all cleaned)</p>
+<p>├─ MFA: 100% on admins, risk-based for all</p>
+<p>├─ Monitoring: Active with alerts</p>
+<p>├─ Access: 100% group-based</p>
+<p>├─ Approvals: Formal workflow with audit trail</p>
+<p>├─ Offboarding: 24-hour SLA</p>
+<p>└─ Passwords: 0 in code, all managed identities</p>
+<p>Result: ✅ COMPLIANT - Audit findings remediated</p>
+
+<p>COMPLIANCE EVIDENCE</p>
+<p>═══════════════════</p>
+
+<p>Generate audit report for security team:</p>
+<ul><ol><li>[ ] Access review results</li>
+<li>[ ] MFA compliance report</li>
+<li>[ ] Sign-in monitoring logs</li>
+<li>[ ] Approval audit trail</li>
+<li>[ ] Offboarding verification</li>
+<li>[ ] Secrets cleanup completion</li></ol></ul>
+
+<p>Next Steps:</p>
+<p>├─ Schedule follow-up audit: 90 days</p>
+<p>├─ Establish monthly review cadence</p>
+<p>├─ Update security policies with new procedures</p>
+<p>└─ Train team on new processes</p>
+<p></code>``</p>
+
+<hr class="divider">
+
+<h2 id="key-takeaways">Key Takeaways</h2>
+
+<p>✅ <strong>Least Privilege</strong> - Give minimum access needed, nothing more</p>
+<p>✅ <strong>Regular Reviews</strong> - Quarterly access audits catch permission creep</p>
+<p>✅ <strong>MFA</strong> - Makes password theft much less valuable</p>
+<p>✅ <strong>Monitoring</strong> - Sign-in logs detect compromise early</p>
+<p>✅ <strong>Groups</strong> - Easier to manage than individual assignments</p>
+<p>✅ <strong>Approvals</strong> - Formal workflow prevents unauthorized access</p>
+<p>✅ <strong>Offboarding</strong> - Disable accounts within 24 hours</p>
+<p>✅ <strong>Secrets</strong> - Zero hardcoded passwords, use managed identities</p>
+
+<hr class="divider">
+
+<h2 id="success-indicators">Success Indicators</h2>
+
+<p>After completing this lab, you should:</p>
+
+<p>✅ Understand how to audit and enforce least privilege</p>
+<p>✅ Know how to conduct quarterly access reviews</p>
+<p>✅ Be able to implement MFA and conditional access</p>
+<p>✅ Understand sign-in log analysis</p>
+<p>✅ Know how to scale access with groups</p>
+<p>✅ Be able to implement approval workflows</p>
+<p>✅ Understand rapid offboarding procedures</p>
+<p>✅ Know when to use managed identities vs certificates</p>
+
+<hr class="divider">
+
+<h2 id="next-steps">Next Steps</h2>
+
+<ol><li><strong>Complete all 8 parts</strong> of this lab</li>
+<li><strong>Document findings</strong> in your audit report</li>
+<li><strong>Share with security team</strong> for validation</li>
+<li><strong>Create remediation plan</strong> with timeline</li>
+<li><strong>Implement changes</strong> in production</li>
+<li><strong>Schedule quarterly reviews</strong> to maintain compliance</li>
+<li><strong>Train team</strong> on new security processes</li>
+<li><strong>Consider advanced topics</strong>: Passwordless sign-in, risk-based access, zero trust</li></ol>
+
+
+  </div>
+</div>
+<script>
+/* Sidebar Active Link Tracking */
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.sidebar a'));
+  var sections = [];
+  links.forEach(function(a){
+    var el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) sections.push({link:a, el:el});
+  });
+  if (!sections.length || !('IntersectionObserver' in window)) return;
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (!entry.isIntersecting) return;
+      var match = sections.find(function(s){ return s.el === entry.target; });
+      if (!match) return;
+      links.forEach(function(a){ a.classList.remove('active'); });
+      match.link.classList.add('active');
+    });
+  }, { rootMargin: '-100px 0px -70% 0px', threshold: 0 });
+  sections.forEach(function(s){ observer.observe(s.el); });
+})();
+
+/* Code Block Copy Button Functionality */
+document.addEventListener('DOMContentLoaded', function(){
+  var codeBlocks = document.querySelectorAll('.code-block');
+  codeBlocks.forEach(function(block){
+    var pre = block.querySelector('pre');
+    if (!pre) return;
+
+    var btn = document.createElement('button');
+    btn.className = 'code-copy-btn';
+    btn.textContent = 'Copy';
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'Copy code to clipboard');
+
+    btn.addEventListener('click', function(){
+      var code = pre.textContent;
+      navigator.clipboard.writeText(code).then(function(){
+        var original = btn.textContent;
+        btn.textContent = '✓ Copied!';
+        btn.classList.add('copied');
+        setTimeout(function(){
+          btn.textContent = original;
+          btn.classList.remove('copied');
+        }, 2000);
+      }).catch(function(){
+        alert('Failed to copy code');
+      });
+    });
+
+    block.appendChild(btn);
+  });
+});
+</script>
+</body>
+</html>
