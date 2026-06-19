@@ -209,11 +209,16 @@ details:focus-visible > summary {
       </div>
     </details>
     <details aria-label="Module labs">
-      <summary>▶ Labs</summary>
+      <summary>▶ Labs (8 Total)</summary>
       <div>
         <a href="lab01-entra-users-groups.html">Lab 01 - Entra Users &amp; Groups</a>
         <a href="lab02-rbac-azure-policy.html">Lab 02 - RBAC &amp; Azure Policy</a>
         <a href="lab03-management-groups-subscriptions.html">Lab 03 - Management Groups</a>
+        <a href="lab04-identity-security-hardening.html">Lab 04 - Security Hardening</a>
+        <a href="lab05-dev-staging-prod-isolation.html">Lab 05 - Env Segregation</a>
+        <a href="lab06-cost-management-chargeback.html">Lab 06 - Cost Management</a>
+        <a href="lab07-department-delegation-isolation.html">Lab 07 - Department Delegation</a>
+        <a href="lab08-compliance-audit-setup.html">Lab 08 - Compliance &amp; Audit</a>
       </div>
     </details>
     <details aria-label="On this page">
@@ -231,14 +236,14 @@ details:focus-visible > summary {
   <div class="subtitle">Master identity management, access control, and governance in Azure</div>
 
   <div class="badges">
-    <span class="badge">🟡 Intermediate</span>
-    <span class="badge">⏱ 120 Minutes</span>
-    <span class="badge">📘 AZ-104 · Module 01</span>
+    <span class="badge">🟡 Beginner to Advanced</span>
+    <span class="badge">⏱ 765 Minutes (12.75 Hours)</span>
+    <span class="badge">📘 AZ-104 · Module 01 · 8 Labs</span>
   </div>
 
   <div class="callout">
     <strong>Why This Matters</strong>
-    <p>Identity and governance are the foundation of secure Azure deployments. This module covers how to manage who accesses your resources (Microsoft Entra ID), what they're allowed to do (RBAC), and how to enforce policies at scale (Management Groups &amp; Azure Policy).</p>
+    <p>Identity and governance are the foundation of secure, compliant Azure deployments. This comprehensive module covers everything from managing users and groups (Entra ID) to enterprise-scale governance, security hardening, cost control, and compliance. Master the patterns used by Fortune 500 companies managing thousands of resources across multiple departments.</p>
   </div>
 
   <!-- Overview -->
@@ -282,23 +287,58 @@ details:focus-visible > summary {
 
   <!-- Labs -->
   <div class="section full" id="labs">
-    <h2>Hands-On Labs</h2>
-    <p>Apply your knowledge with practical labs that let you work with Entra ID, RBAC, and governance features in Azure.</p>
+    <h2>Hands-On Labs (8 Complete Labs)</h2>
+    <p>Apply your knowledge with practical labs that cover everything from identity management to enterprise-scale governance, security hardening, and compliance.</p>
+
+    <h3 style="margin-top:24px">Beginner Tier (125 min)</h3>
     <div class="grid3">
       <div class="card">
         <h4>Lab 01 - Entra Users &amp; Groups</h4>
-        <p>Create users, organize them into groups, and set up administrative units for delegated management.</p>
+        <p>Create users, organize them into groups, and set up administrative units for delegated management. (50 min)</p>
         <a href="lab01-entra-users-groups.html">Start Lab →</a>
       </div>
       <div class="card">
         <h4>Lab 02 - RBAC &amp; Azure Policy</h4>
-        <p>Assign RBAC roles, create custom roles, and enforce Azure Policies across subscriptions.</p>
+        <p>Assign RBAC roles, create custom roles, and enforce Azure Policies across subscriptions. (45 min)</p>
         <a href="lab02-rbac-azure-policy.html">Start Lab →</a>
       </div>
       <div class="card">
         <h4>Lab 03 - Management Groups</h4>
-        <p>Create management group hierarchies and organize subscriptions for centralized governance.</p>
+        <p>Create management group hierarchies and organize subscriptions for centralized governance. (30 min)</p>
         <a href="lab03-management-groups-subscriptions.html">Start Lab →</a>
+      </div>
+    </div>
+
+    <h3 style="margin-top:24px">Intermediate Tier (310 min)</h3>
+    <div class="grid3">
+      <div class="card">
+        <h4>Lab 05 - Environment Segregation</h4>
+        <p>Segregate Dev/Staging/Prod with different access levels and policies to protect production. (120 min) ⭐⭐⭐⭐⭐</p>
+        <a href="lab05-dev-staging-prod-isolation.html">Start Lab →</a>
+      </div>
+      <div class="card">
+        <h4>Lab 06 - Cost Management</h4>
+        <p>Implement tagging, budgets, and policies to control cloud costs by department. (90 min) ⭐⭐⭐⭐</p>
+        <a href="lab06-cost-management-chargeback.html">Start Lab →</a>
+      </div>
+      <div class="card">
+        <h4>Lab 07 - Department Delegation</h4>
+        <p>Create multi-department isolation with autonomous management and central IT oversight. (100 min) ⭐⭐⭐⭐</p>
+        <a href="lab07-department-delegation-isolation.html">Start Lab →</a>
+      </div>
+    </div>
+
+    <h3 style="margin-top:24px">Advanced Tier (330 min)</h3>
+    <div class="grid2">
+      <div class="card">
+        <h4>Lab 04 - Identity Security Hardening</h4>
+        <p>Implement all 8 best practices: least privilege, access reviews, MFA, monitoring, approvals, offboarding, and more. (250+ min) ⭐⭐⭐⭐⭐</p>
+        <a href="lab04-identity-security-hardening.html">Start Lab →</a>
+      </div>
+      <div class="card">
+        <h4>Lab 08 - Compliance &amp; Audit</h4>
+        <p>Set up activity logging, immutable audit trails, and compliance policies for SOC 2 readiness. (80 min) ⭐⭐⭐</p>
+        <a href="lab08-compliance-audit-setup.html">Start Lab →</a>
       </div>
     </div>
   </div>
@@ -310,9 +350,12 @@ details:focus-visible > summary {
       <li><strong>Start here:</strong> Read <a href="01-entra-id-overview.html">Entra ID Overview</a> to understand identity management</li>
       <li><strong>Then:</strong> Read <a href="02-rbac-fundamentals.html">RBAC Fundamentals</a> to understand access control</li>
       <li><strong>Next:</strong> Read <a href="03-management-groups-and-azure-policy.html">Management Groups &amp; Policy</a> to understand governance</li>
-      <li><strong>Deepen:</strong> Read <a href="04-access-control-scenarios.html">Access Control Scenarios</a> for real-world patterns</li>
-      <li><strong>Best Practices:</strong> Read <a href="05-identity-best-practices.html">Identity Best Practices</a></li>
-      <li><strong>Practice:</strong> Complete all three labs to gain hands-on experience</li>
+      <li><strong>Explore:</strong> Read <a href="04-access-control-scenarios.html">Access Control Scenarios</a> for real-world patterns</li>
+      <li><strong>Master:</strong> Read <a href="05-identity-best-practices.html">Identity Best Practices</a></li>
+      <li><strong>Practice Beginner:</strong> Complete <a href="lab01-entra-users-groups.html">Lab 01</a>, <a href="lab02-rbac-azure-policy.html">Lab 02</a>, and <a href="lab03-management-groups-subscriptions.html">Lab 03</a> for foundational skills</li>
+      <li><strong>Advanced Security:</strong> Complete <a href="lab04-identity-security-hardening.html">Lab 04</a> to learn all 8 identity best practices and security hardening</li>
+      <li><strong>Enterprise Patterns:</strong> Complete <a href="lab05-dev-staging-prod-isolation.html">Lab 05</a> (environment segregation), <a href="lab06-cost-management-chargeback.html">Lab 06</a> (cost management), and <a href="lab07-department-delegation-isolation.html">Lab 07</a> (department delegation)</li>
+      <li><strong>Compliance Ready:</strong> Complete <a href="lab08-compliance-audit-setup.html">Lab 08</a> to prepare for SOC 2 audits and implement compliance infrastructure</li>
     </ol>
   </div>
 
@@ -324,12 +367,16 @@ details:focus-visible > summary {
         Professional Learning Hub
       </div>
       <div class="footer-item">
-        <strong>Module</strong>
-        01 — Identity &amp; Governance
+        <strong>Module 01</strong>
+        Identity &amp; Governance · 8 Labs · 765 Minutes
       </div>
       <div class="footer-item">
-        <strong>Generated</strong>
-        June 16, 2026
+        <strong>Coverage</strong>
+        Beginner to Advanced · All 4 Real-World Scenarios
+      </div>
+      <div class="footer-item">
+        <strong>Updated</strong>
+        June 20, 2026
       </div>
     </div>
     <div class="footer-meta">&copy; 2026 — AZ-104 Learning Hub. For study purposes only.</div>
