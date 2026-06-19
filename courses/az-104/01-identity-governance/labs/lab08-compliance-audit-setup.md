@@ -72,7 +72,7 @@ RESULT: SOC 2 compliant audit trail ✓
 - [Lab 01: Entra ID - Users & Groups](lab01-entra-users-groups.md)
 - [Lab 02: RBAC & Azure Policy](lab02-rbac-azure-policy.md)
 - [Lab 03: Management Groups & Subscriptions](lab03-management-groups-subscriptions.md)
-- [Lab 04: Identity Security Hardening](lab04-identity-security-hardening.md) (optional but helpful)
+- [Lab 07: Identity Security Hardening](lab07-identity-security-hardening.md) (optional but helpful)
 
 **Required Permissions:**
 - Owner role on at least one subscription
