@@ -582,8 +582,8 @@ foreach ($labFile in $labFiles) {
         $moduleDir = $pathParts[0]  # e.g., "00-prerequisites"
         $labName = $labFile.BaseName  # e.g., "lab00-azure-portal-navigation"
 
-        # Skip professionally designed labs (Lab 01-03) - they use custom professional template
-        if ($labName -match "^lab0[123]-") {
+        # Skip professionally designed labs (Lab 01-04, 07, 12) - they use custom professional template
+        if ($labName -match "^lab0[1234]-|^lab07-|^lab12-") {
             if ($Verbose) {
                 Write-Host "⏭️  Skipping $labName (professional design template)" -ForegroundColor Green
             }
