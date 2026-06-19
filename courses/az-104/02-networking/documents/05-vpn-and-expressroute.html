@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VPN &amp; ExpressRoute - Overview &amp; Core Concepts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f8fc;--card:#fff;--border:#d9e0ef;--text:#1f2937;--muted:#5b6678;
+  --primary:#151d63;--panel:#00004C;--panel-shadow:rgba(0,0,76,.18);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:Inter,-apple-system,'Segoe UI',sans-serif;color:var(--text)}
+.page{flex:1;min-width:0;padding:28px}
+
+h1{font-size:3.2rem;line-height:1.15;margin:0;color:var(--primary);font-weight:800;letter-spacing:-1px}
+.subtitle{font-size:1.4rem;font-weight:600;color:#2d3b77;margin-top:10px}
+
+.badges{display:flex;gap:12px;margin:20px 0 26px;flex-wrap:wrap}
+.badge{background:#eef2ff;border:1px solid #d8def7;color:#1e2a78;padding:10px 18px;border-radius:999px;font-weight:600;font-size:.95rem}
+
+.section{display:grid;grid-template-columns:42% 58%;gap:28px;padding:26px 0;border-top:1px solid var(--border)}
+.section.full{display:block;padding:26px 0;border-top:1px solid var(--border)}
+.section:first-of-type, .section.full:first-of-type{border-top:none}
+
+h2{font-size:2rem;margin:0 0 14px;color:var(--primary);font-weight:800}
+h3{font-size:1.4rem;margin:22px 0 10px;color:var(--primary);font-weight:700}
+h3:first-child{margin-top:0}
+h4{font-size:1.1rem;margin:16px 0 8px;color:#2d3b77;font-weight:700}
+
+p{font-size:1.05rem;line-height:1.65;margin:.5rem 0;color:var(--text)}
+
+ul, ol{margin:.6rem 0;padding-left:1.4rem}
+li{margin-bottom:6px;line-height:1.6;font-size:1.02rem}
+
+a{color:#1e2a78;text-decoration:none;border-bottom:1px solid transparent;font-weight:600}
+a:hover{border-bottom-color:#1e2a78}
+
+strong{color:var(--primary);font-weight:700}
+
+.callout{margin-top:20px;background:#f3f7ff;border:1px solid #bfd0ff;border-radius:14px;padding:18px 22px}
+.callout strong{color:#1735ad}
+.callout p{margin:0}
+.callout p + p{margin-top:8px}
+
+.panel{
+  background:var(--panel);
+  color:#fff;border-radius:18px;padding:22px 26px;
+  box-shadow:0 12px 28px var(--panel-shadow);
+  font:15px/1.65 'SF Mono',Consolas,'Courier New',monospace;
+  white-space:pre-wrap;
+  overflow:auto;
+}
+.panel.small{font-size:13.5px;line-height:1.6}
+.panel + .panel{margin-top:18px}
+
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:14px 0}
+th,td{padding:14px;border:1px solid var(--border);text-align:left;font-size:.98rem}
+th{background:#eef2ff;color:var(--primary);font-weight:700}
+tr:hover td{background:#fafbff}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+
+.mistake-card{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:14px 0 8px}
+.mistake-card h4{margin-top:0}
+
+.tip{margin-top:20px;background:#eef4ff;border:1px solid #c8d5ff;border-radius:12px;padding:16px 20px;font-size:1.02rem}
+.tip strong{color:#1735ad}
+
+hr.divider{border:none;height:0;margin:0}
+
+.footer{margin-top:48px;padding-top:24px;border-top:1px solid var(--border);font-size:.9rem;color:var(--muted)}
+.footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px}
+.footer-item strong{display:block;color:var(--primary);margin-bottom:6px;font-size:.95rem}
+.footer-meta{margin-top:24px;padding-top:16px;border-top:1px solid var(--border);text-align:center;font-size:.85rem}
+
+@media (max-width:1000px){
+  .section,.grid2,.grid3,.grid4,.mistake-card{grid-template-columns:1fr}
+  h1{font-size:2.3rem}
+  .page{padding:16px}
+  .panel{font-size:13px}
+  .sidebar{display:none}
+  .layout{display:block}
+}
+
+/* ===== Site-wide Cross Navigation ===== */
+.site-nav{
+  position:sticky;top:0;z-index:1000;
+  background:var(--primary);color:#fff;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:12px 28px;font-size:.92rem;
+  box-shadow:0 2px 10px rgba(0,0,76,.18);
+  font-family:Inter,-apple-system,'Segoe UI',sans-serif;
+}
+.site-nav .nav-brand{font-weight:800;font-size:1.05rem;margin-right:auto;color:#fff}
+.site-nav details{position:relative}
+.site-nav summary{cursor:pointer;list-style:none;padding:7px 16px;border-radius:8px;background:rgba(255,255,255,.12);font-weight:600;color:#fff;user-select:none}
+.site-nav summary::-webkit-details-marker,.site-nav summary::marker{display:none;content:''}
+.site-nav details[open] summary{background:rgba(255,255,255,.24)}
+.site-nav .nav-menu{
+  position:absolute;top:calc(100% + 8px);left:0;
+  background:#fff;color:var(--text);
+  border:1px solid var(--border);border-radius:12px;
+  padding:8px;min-width:300px;box-shadow:0 16px 32px rgba(0,0,76,.22);
+  display:flex;flex-direction:column;gap:2px;z-index:1001;
+}
+.site-nav .nav-menu a{
+  display:block;padding:9px 14px;border-radius:8px;border-bottom:none;
+  color:var(--text);font-weight:500;font-size:.95rem;
+}
+.site-nav .nav-menu a:hover{background:#eef2ff;color:#1e2a78}
+.site-nav .nav-menu a.active{background:#eef2ff;color:#1735ad;font-weight:700}
+@media (max-width:768px){
+  .site-nav{padding:10px 16px}
+  .site-nav .nav-brand{font-size:.95rem}
+}
+/* ===== Page Sidebar (Collapsible) ===== */
+.layout{max-width:1400px;margin:auto;display:flex;align-items:flex-start}
+.sidebar{
+  flex:0 0 260px;
+  position:sticky;top:88px;
+  max-height:calc(100vh - 108px);
+  overflow-y:auto;
+  margin:28px 0 28px 28px;
+  padding:20px 18px;
+  background:#fff;border:1px solid var(--border);border-radius:14px;
+  box-shadow:0 4px 16px rgba(21,29,99,.05);
+}
+.sidebar details{margin-bottom:0}
+.sidebar summary{
+  cursor:pointer;list-style:none;padding:10px 12px;border-radius:8px;
+  font-weight:600;font-size:.92rem;color:var(--primary);
+  user-select:none;transition:background 0.2s;
+}
+.sidebar summary::-webkit-details-marker,.sidebar summary::marker{display:none;content:''}
+.sidebar details[open]>summary{background:#eef2ff}
+.sidebar summary:hover{background:#f0f4ff}
+.sidebar a{display:block;padding:8px 12px;margin:2px 0;border-radius:8px;font-size:.88rem;font-weight:500;
+  color:var(--text);border-bottom:none;border-left:3px solid transparent;line-height:1.4;transition:all 0.15s}
+.sidebar a:hover{background:#eef2ff;color:#1e2a78}
+.sidebar a.active{background:#eef2ff;color:#1735ad;font-weight:700;border-left-color:var(--primary)}
+.sidebar details > div{padding:0 0 8px 12px}
+.sidebar hr.sidebar-divider{border:none;border-top:1px solid var(--border);margin:12px 0}
+@media print{
+  .site-nav{display:none}
+  body{background:#fff}
+  .page{padding:0}
+  .panel{box-shadow:none}
+  .sidebar{display:none}
+  .layout{display:block}
+}
+
+/* Keyboard Navigation & Accessibility */
+a:focus-visible,
+button:focus-visible,
+.sidebar a:focus-visible,
+.sidebar summary:focus-visible,
+.site-nav summary:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+details:focus-visible > summary {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+</style>
+</head>
+<body>
+<nav class="site-nav" aria-label="Main site navigation">
+  <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
+  <details class="nav-group" aria-label="Learning module selector">
+    <summary>Learning Module</summary>
+    <div class="nav-menu">
+      <a href="../../00-prerequisites/documents/module-home.html">00 - Prerequisites</a>
+      <a href="../../01-identity-governance/documents/module-home.html">01 - Identity &amp; Governance</a>
+      <a href="../../02-storage/documents/module-home.html">02 - Storage</a>
+      <a href="../../03-compute/documents/module-home.html">03 - Compute</a>
+      <a href="../../04-networking/documents/module-home.html" class="active">04 - Networking</a>
+      <a href="../../05-monitor-maintain/documents/module-home.html">05 - Monitor &amp; Maintain</a>
+    </div>
+  </details>
+</nav>
+<div class="layout">
+  <aside class="sidebar">
+    <details open>
+      <summary>▶ Module 04 - Networking</summary>
+      <div>
+        <a href="01-vnets-and-subnets.html">01 - Vnets and subnets</a>
+        <a href="02-network-security-groups.html">02 - Network security groups</a>
+        <a href="03-routing-fundamentals.html">03 - Routing fundamentals</a>
+        <a href="04-vnet-peering.html">04 - Vnet peering</a>
+        <a href="05-vpn-and-expressroute.html">05 - Vpn and expressroute</a>
+        <a href="06-hub-spoke-topology.html">06 - Hub spoke topology</a>
+        <a href="07-private-endpoints-service-endpoints.html">07 - Private endpoints service endpoints</a>
+        <a href="08-network-security-advanced.html">08 - Network security advanced</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ Labs</summary>
+      <div>
+        <a href="lab01-vnet-subnets.html">lab01 - Vnet subnets</a>
+        <a href="lab02-nsg-asg.html">lab02 - Nsg asg</a>
+        <a href="lab03-vnet-peering-vpn.html">lab03 - Vnet peering vpn</a>
+        <a href="lab04-load-balancer-app-gateway.html">lab04 - Load balancer app gateway</a>
+        <a href="lab05-dns-name-resolution.html">lab05 - Dns name resolution</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ On This Page</summary>
+      <div>
+        <a href="#before-you-start">Before you start</a>
+        <a href="#the-simple-idea">The simple idea</a>
+        <a href="#option-1-vpn-gateway">Option 1 vpn gateway</a>
+        <a href="#real-world-analogy-armored-truck-through-public-roads">Real world analogy armored truck through public roads</a>
+        <a href="#how-vpn-works">How vpn works</a>
+        <a href="#vpn-configuration-and-use-cases">Vpn configuration and use cases</a>
+        <a href="#option-2-expressroute">Option 2 expressroute</a>
+        <a href="#real-world-analogy-private-highway-just-for-you">Real world analogy private highway just for you</a>
+        <a href="#how-expressroute-works">How expressroute works</a>
+        <a href="#expressroute-peering-models-and-pricing">Expressroute peering models and pricing</a>
+        <a href="#comparison-vpn-vs-expressroute">Comparison vpn vs expressroute</a>
+        <a href="#worked-example-real-scenario">Worked example real scenario</a>
+        <a href="#common-mistakes-what-not-to-do">Common mistakes what not to do</a>
+        <a href="#connectivity-checklist">Connectivity checklist</a>
+        <a href="#how-this-connects-to-other-topics">How this connects to other topics</a>
+        <a href="#see-it-in-action">See it in action</a>
+        <a href="#key-takeaways">Key takeaways</a>
+        <a href="#next-steps">Next steps</a>
+      </div>
+    </details>
+  </aside>
+  <div class="page">
+
+  <h1>VPN &amp; ExpressRoute: Hybrid Connectivity</h1>
+  <div class="subtitle">Connect your on-premises data center to Azure securely — over the internet or a dedicated circuit</div>
+
+  <div class="badges">
+    <span class="badge">🟡 Intermediate</span>
+    <span class="badge">⏱ 20 Minutes</span>
+    <span class="badge">📘 AZ-104 · Module 04</span>
+  </div>
+
+  <div class="callout">
+    <strong>Why This Matters</strong>
+    <p>You have Azure VNets in the cloud, but your company still has an on-premises data center. You need to connect them securely. You have two choices: VPN (cheaper, over the internet) or ExpressRoute (dedicated, more expensive, better performance). This doc explains both, when to use each, and how they work.</p>
+  </div>
+
+  <!-- Before You Start -->
+  <div class="section full" id="before-you-start">
+    <h2>Before You Start</h2>
+    <table>
+      <tr><th>Prerequisites</th><td><a href="01-vnets-and-subnets.html">VNets &amp; Subnets</a>, <a href="03-routing-fundamentals.html">Routing Fundamentals</a>, <a href="04-vnet-peering.html">VNet Peering</a></td></tr>
+      <tr><th>Time to understand</th><td>20 minutes</td></tr>
+      <tr><th>Difficulty</th><td>🟡 Intermediate (builds on routing)</td></tr>
+      <tr><th>What you'll learn</th><td>How VPN and ExpressRoute work, comparison, when to use each</td></tr>
+    </table>
+  </div>
+
+  <!-- The Simple Idea -->
+  <div class="section full" id="the-simple-idea">
+    <h2>The Simple Idea</h2>
+    <h3>What Is Hybrid Connectivity?</h3>
+    <p><strong>Hybrid</strong> = Connecting on-premises infrastructure to Azure cloud.</p>
+    <p>You need this when:</p>
+    <ul>
+      <li>Your company has servers in the data center (on-premises)</li>
+      <li>You also have resources in Azure (VMs, databases, apps)</li>
+      <li>They need to communicate securely</li>
+    </ul>
+
+    <h3>Two Solutions</h3>
+    <table>
+      <tr><th>Solution</th><th>Connection</th><th>Bandwidth</th><th>Latency</th><th>Cost</th><th>Security</th></tr>
+      <tr><td><strong>VPN</strong></td><td>Over internet (encrypted)</td><td>Up to 1.25 Gbps</td><td>High (~100ms)</td><td>Low</td><td>Good (encryption)</td></tr>
+      <tr><td><strong>ExpressRoute</strong></td><td>Dedicated circuit from provider</td><td>Up to 100 Gbps</td><td>Low (~5ms)</td><td>High</td><td>Excellent (isolated)</td></tr>
+    </table>
+  </div>
+
+  <!-- Option 1: VPN Gateway -->
+  <div class="section full" id="option-1-vpn-gateway">
+    <h2>Option 1: VPN Gateway</h2>
+    <h3>What Is a VPN?</h3>
+    <p><strong>VPN (Virtual Private Network)</strong> = Secure tunnel over the public internet that encrypts all traffic.</p>
+  </div>
+
+  <!-- VPN Analogy -->
+  <div class="section" id="real-world-analogy-armored-truck-through-public-roads">
+    <div>
+      <h2>Real-World Analogy: Armored Truck Through Public Roads</h2>
+      <p>An armored truck carries secret documents through public roads. Attackers can see the truck, but can't access its contents. The Azure VNet receives and decrypts the documents, which are then safely used in cloud services.</p>
+    </div>
+    <div class="panel">On-Premises Office
+│
+├── Secret documents
+│
+└── Send via: Armored Truck (encrypted)
+    └─ Drives through public roads
+    └─ Attackers can see the truck, but can't access contents ✓
+
+    ↓ (Internet)
+
+    Azure VNet
+    │
+    ├── Documents received and decrypted
+    │
+    └── Safely used in cloud services ✓</div>
+  </div>
+
+  <!-- How VPN Works -->
+  <div class="section full" id="how-vpn-works">
+    <h2>How VPN Works</h2>
+    <div class="panel">Step 1: On-premises router has VPN client
+  └─ Initiates secure tunnel to Azure VPN Gateway
+
+Step 2: Encryption happens automatically
+  └─ All traffic encrypted before leaving on-premises
+  └─ Travels over internet
+  └─ Decrypted by Azure VPN Gateway
+
+Step 3: Azure VPN Gateway decrypts and forwards
+  └─ Forwards to VNets connected to it
+  └─ Return traffic encrypted again
+
+Result:
+  On-premises ═══(Encrypted Tunnel)═══ Azure
+  │                   (Over Internet)      │
+  └─ Secure but slower (encryption overhead)
+  └─ Good for moderate bandwidth needs</div>
+  </div>
+
+  <!-- VPN Configuration & Use Cases -->
+  <div class="section full" id="vpn-configuration-and-use-cases">
+    <h2>VPN Configuration &amp; Use Cases</h2>
+    <div class="grid3">
+      <div>
+        <h3>VPN Configuration</h3>
+        <div class="panel small">On-Premises:
+├─ VPN Gateway (on router)
+├─ Pre-shared key or certificate
+└─ Routes: "To reach 10.0.0.0/16 (Azure), use VPN tunnel"
+
+Azure:
+├─ VPN Gateway in VNet
+├─ Connection resource linking on-prem gateway to Azure gateway
+└─ Routes: "To reach 192.168.0.0/16 (on-prem), use VPN tunnel"
+
+Handshake:
+  On-prem: "Can I reach 10.0.0.0/16?"
+  Azure VPN: "Yes, authenticate with pre-shared key"
+  Tunnel established ✓</div>
+      </div>
+      <div>
+        <h3>Use VPN When</h3>
+        <div class="panel small">├─ Need to connect quickly (days, not weeks)
+├─ Low-to-medium bandwidth (&lt; 1 Gbps)
+├─ Budget-conscious (cheaper than ExpressRoute)
+├─ Can tolerate higher latency (100ms+)
+├─ Example: Backup a database nightly to Azure
+│         (doesn't need constant, low-latency connection)</div>
+      </div>
+      <div>
+        <h3>Don't Use VPN If</h3>
+        <div class="panel small">├─ Need very high bandwidth (&gt; 1 Gbps)
+├─ Need consistent low latency (&lt; 10ms)
+├─ Transmitting HD video or real-time data
+└─ Example: Don't run production SQL server queries over VPN</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Option 2: ExpressRoute -->
+  <div class="section full" id="option-2-expressroute">
+    <h2>Option 2: ExpressRoute</h2>
+    <h3>What Is ExpressRoute?</h3>
+    <p><strong>ExpressRoute</strong> = Dedicated, private network circuit from your on-premises to Azure (not over the internet).</p>
+  </div>
+
+  <!-- ExpressRoute Analogy -->
+  <div class="section" id="real-world-analogy-private-highway-just-for-you">
+    <div>
+      <h2>Real-World Analogy: Private Highway Just For You</h2>
+      <p>A private highway, dedicated and isolated, only you can use. No encryption needed because it's already isolated — much faster and more reliable. Documents are received immediately and safely used in cloud services.</p>
+    </div>
+    <div class="panel">On-Premises Office
+│
+├── Secret documents
+│
+└── Send via: Private highway (dedicated, isolated)
+    └─ Only you can use this highway
+    └─ No encryption needed (already isolated)
+    └─ Much faster and more reliable ✓
+
+    ↓ (Dedicated Circuit - not internet)
+
+    Azure VNet
+    │
+    ├── Documents received immediately
+    │
+    └── Safely used in cloud services ✓</div>
+  </div>
+
+  <!-- How ExpressRoute Works -->
+  <div class="section full" id="how-expressroute-works">
+    <h2>How ExpressRoute Works</h2>
+    <div class="panel">Step 1: Order dedicated circuit from provider
+  └─ Provider creates private circuit: On-prem → Azure DC
+  └─ Takes 2-4 weeks to provision
+
+Step 2: Circuit arrives (dedicated link)
+  └─ Not encrypted (no need—it's isolated)
+  └─ High bandwidth available (1.25, 10, 100 Gbps options)
+
+Step 3: BGP routing configured
+  └─ "Routes to 10.0.0.0/16 (Azure) go through this circuit"
+  └─ "Routes to 192.168.0.0/16 (on-prem) come from this circuit"
+
+Result:
+  On-premises ═══(Dedicated Circuit)═══ Azure
+  │               (Private, No Internet)     │
+  └─ Secure (isolated by nature)
+  └─ Fast (low latency, high bandwidth)
+  └─ Predictable (dedicated resource)</div>
+  </div>
+
+  <!-- Peering Models & Pricing -->
+  <div class="section full" id="expressroute-peering-models-and-pricing">
+    <h2>ExpressRoute Peering Models &amp; Pricing</h2>
+    <div class="grid2">
+      <div>
+        <h3>ExpressRoute Peering Models</h3>
+        <p>Azure supports multiple connections over one ExpressRoute circuit:</p>
+        <div class="panel small">ExpressRoute Circuit
+├─ Private Peering (Azure VNets)
+│  └─ Connect to your Azure VNets (10.0.0.0/16, etc.)
+│  └─ Private IP addresses used
+│  └─ Lowest latency
+│
+├─ Microsoft Peering (Microsoft Services)
+│  └─ Connect to Office 365, Dynamics, Azure Services
+│  └─ Public IP addresses used
+│  └─ Can reach Microsoft services without internet
+│
+└─ Azure Public Peering (Deprecated, avoid)
+   └─ Older model, being phased out</div>
+      </div>
+      <div>
+        <h3>ExpressRoute Pricing Models</h3>
+        <div class="panel small">Unlimited Data (Most common):
+├─ Monthly fee + Fixed amount of bandwidth
+├─ Example: $100/month for 1 Gbps circuit
+├─ All data transfers included ✓
+
+Metered Data (Cheaper if low usage):
+├─ Monthly fee + Per-GB charges for outbound
+├─ Example: $50/month + $0.02/GB outbound
+├─ Good if only occasional transfers
+└─ Note: Inbound is always free ✓</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comparison -->
+  <div class="section full" id="comparison-vpn-vs-expressroute">
+    <h2>Comparison: VPN vs. ExpressRoute</h2>
+    <table>
+      <tr><th>Aspect</th><th>VPN</th><th>ExpressRoute</th></tr>
+      <tr><td><strong>Cost</strong></td><td>Low ($10-50/month)</td><td>High ($100-1000+/month)</td></tr>
+      <tr><td><strong>Setup Time</strong></td><td>Fast (days)</td><td>Slow (weeks)</td></tr>
+      <tr><td><strong>Bandwidth</strong></td><td>Up to 1.25 Gbps</td><td>Up to 100 Gbps</td></tr>
+      <tr><td><strong>Latency</strong></td><td>High (~100ms)</td><td>Low (~5ms)</td></tr>
+      <tr><td><strong>Reliability</strong></td><td>Medium (shared internet)</td><td>High (dedicated)</td></tr>
+      <tr><td><strong>Encryption</strong></td><td>Built-in</td><td>Not needed (isolated)</td></tr>
+      <tr><td><strong>Security</strong></td><td>Good (encryption)</td><td>Excellent (isolation)</td></tr>
+      <tr><td><strong>Best For</strong></td><td>Quick, temporary, low bandwidth</td><td>Production, high throughput</td></tr>
+    </table>
+
+    <h3>Decision Tree</h3>
+    <div class="panel">Need to connect on-premises to Azure?
+│
+├─ YES → Have dedicated budget?
+│        │
+│        ├─ NO → Use VPN Gateway ✓
+│        │   └─ Good for: backup, development, non-critical workloads
+│        │
+│        └─ YES → Need high bandwidth or low latency?
+│                 │
+│                 ├─ NO → Use VPN Gateway ✓
+│                 │   └─ Cheaper, fast to set up
+│                 │
+│                 └─ YES → Use ExpressRoute ✓
+│                     └─ Production, mission-critical, real-time data
+│
+└─ NO → Don't connect on-prem ✓
+    └─ Cloud-only architecture (simpler)</div>
+  </div>
+
+  <!-- Worked Example -->
+  <div class="section full" id="worked-example-real-scenario">
+    <h2>Worked Example: Real Scenario</h2>
+
+    <h3>The Scenario</h3>
+    <p><strong>TechCorp has:</strong></p>
+    <ul>
+      <li>On-premises: Data center with SQL servers (192.168.0.0/16)</li>
+      <li>Azure: Production VNet (10.0.0.0/16) and Dev VNet (10.1.0.0/16)</li>
+    </ul>
+    <p><strong>Requirement:</strong> Migrate workloads incrementally (dual-run for weeks).</p>
+
+    <h3>Solution 1: VPN for Initial Migration</h3>
+    <div class="panel small">Phase 1 (Weeks 1-4): Use VPN for testing
+  └─ On-premises → VPN Gateway → Azure Prod VNet
+  └─ Test applications in Azure while old systems still running
+  └─ Cost: ~$30/month VPN + internet bandwidth
+  └─ Latency: ~100ms (acceptable for testing) ✓
+
+Configuration:
+├─ On-prem VPN Gateway: Configured for site-to-site VPN
+├─ Azure VPN Gateway in Prod VNet
+├─ Pre-shared key or certificates
+├─ Routes:
+│  ├─ On-prem: 192.168.0.0/16 local, 10.0.0.0/16 via VPN
+│  └─ Azure: 10.0.0.0/16 local, 192.168.0.0/16 via VPN
+
+Testing:
+  ├─ App server in Azure (10.0.1.5) queries on-prem SQL (192.168.1.50)
+  ├─ Latency: ~100ms (acceptable for testing) ✓
+  └─ VPN encrypts all traffic ✓
+
+Cost: Low (good for temporary connection)</div>
+
+    <h3>Solution 2: Migrate to ExpressRoute (Phase 2)</h3>
+    <div class="panel small">Phase 2 (Weeks 5+): Switch to ExpressRoute for production
+  └─ Order dedicated circuit: Takes 3 weeks to provision
+  └─ While waiting, continue testing over VPN
+
+Configuration:
+├─ ExpressRoute Circuit provisioned
+│  ├─ Provider: Equinix (or other partner)
+│  ├─ Bandwidth: 10 Gbps
+│  ├─ Location: Same city as data center
+│  └─ Monthly cost: ~$500
+│
+├─ Azure side: Create ExpressRoute gateway
+│  ├─ Private Peering for VNets
+│  └─ Routes updated to use ExpressRoute for all on-prem traffic
+│
+└─ On-premises side: BGP configured for routing
+
+Result:
+  ├─ High bandwidth available (10 Gbps vs. VPN's 1.25 Gbps)
+  ├─ Low latency (~5ms vs. VPN's 100ms)
+  ├─ Production workloads move to Azure with good performance ✓
+  └─ Cost higher but worth it for mission-critical apps</div>
+
+    <h3>Phase 3: Dual Connectivity (Redundancy)</h3>
+    <div class="panel small">For production reliability: Use BOTH VPN and ExpressRoute
+
+VPN + ExpressRoute together:
+├─ ExpressRoute: Primary (low latency, high bandwidth)
+│  └─ BGP priority: 100 (preferred)
+│
+└─ VPN: Failover (takes over if ExpressRoute fails)
+   └─ BGP priority: 200 (backup only)
+
+Result:
+  ├─ Normal: All traffic goes through ExpressRoute
+  ├─ If ExpressRoute circuit fails: Automatically uses VPN ✓
+  ├─ Keeps services running during maintenance/outages ✓
+  └─ High availability achieved (minimal downtime)
+
+Configuration:
+  BGP Local Preference / Priority settings on-prem
+  └─ Advertise 10.0.0.0/16 via ExpressRoute with lower metric
+  └─ Advertise 10.0.0.0/16 via VPN with higher metric
+  └─ On-prem routers prefer lower metric (ExpressRoute)
+  └─ If ExpressRoute fails, use VPN (higher metric wins)</div>
+  </div>
+
+  <!-- Common Mistakes -->
+  <div class="section full" id="common-mistakes-what-not-to-do">
+    <h2>Common Mistakes (What NOT to Do)</h2>
+
+    <h3>❌ Mistake 1: Choosing VPN for Production High-Traffic</h3>
+    <div class="mistake-card">
+      <div>
+        <h4>Wrong</h4>
+        <div class="panel small">Production database (500 GB/month traffic):
+├─ Manager says: "VPN is cheaper, let's use that"
+├─ VPN bandwidth: 1.25 Gbps
+├─ Actual usage: 500 GB/month = 1.5 Gbps sustained
+├─ Result: Bottleneck, slow queries, timeouts ✗</div>
+      </div>
+      <div>
+        <h4>Fix</h4>
+        <div class="panel small">Use ExpressRoute for production:
+├─ Bandwidth: 10+ Gbps available
+├─ Latency: Consistent (~5ms)
+├─ Throughput: Can handle 500 GB/month easily ✓
+└─ Worth the extra cost for reliability ✓</div>
+      </div>
+    </div>
+    <p><strong>Why it fails:</strong> VPN has bandwidth limits, not suitable for heavy production.</p>
+
+    <h3>❌ Mistake 2: Not Planning Failover</h3>
+    <div class="mistake-card">
+      <div>
+        <h4>Wrong</h4>
+        <div class="panel small">ExpressRoute circuit fails (provider maintenance):
+├─ No VPN backup configured
+├─ On-premises can't reach Azure ✗
+├─ Production services down ✗
+├─ SLA breach, customers affected ✗</div>
+      </div>
+      <div>
+        <h4>Fix</h4>
+        <div class="panel small">Configure redundancy:
+├─ Primary: ExpressRoute (low latency)
+├─ Secondary: VPN (backup)
+├─ BGP preference: ExpressRoute preferred
+└─ On circuit failure: BGP switches to VPN automatically ✓</div>
+      </div>
+    </div>
+    <p><strong>Why it fails:</strong> Single point of failure.</p>
+
+    <h3>❌ Mistake 3: Poor Routing Configuration</h3>
+    <div class="mistake-card">
+      <div>
+        <h4>Wrong</h4>
+        <div class="panel small">On-premises routes:
+  └─ Default route (0.0.0.0/0) → VPN to Azure
+
+  Result: ALL traffic to internet goes through Azure VPN ✗
+  ├─ Accessing external websites slow
+  ├─ Azure gateway becomes bottleneck
+  └─ Expensive bandwidth usage</div>
+      </div>
+      <div>
+        <h4>Fix</h4>
+        <div class="panel small">Be specific:
+  ├─ Route 10.0.0.0/16 → VPN (only Azure)
+  ├─ Route 0.0.0.0/0 → Local internet (for web, email, etc.)
+  └─ Result: Only Azure traffic uses VPN, internet traffic local ✓</div>
+      </div>
+    </div>
+    <p><strong>Why it fails:</strong> Routing all traffic through the hybrid link creates a bottleneck and wastes bandwidth.</p>
+  </div>
+
+  <!-- Connectivity Checklist -->
+  <div class="section full" id="connectivity-checklist">
+    <h2>Connectivity Checklist</h2>
+    <div class="panel">□ Choose technology (VPN vs. ExpressRoute)
+  └─ VPN: Quick setup, lower cost
+  └─ ExpressRoute: Higher bandwidth, production-grade
+
+□ For VPN:
+  ├─ VPN Gateway created in Azure VNet
+  ├─ VPN Gateway configured on on-premises router
+  ├─ Pre-shared key configured on both sides
+  ├─ Routes configured (what traffic goes through VPN)
+  └─ Connection tested (ping on-prem from Azure) ✓
+
+□ For ExpressRoute:
+  ├─ Order circuit from provider
+  ├─ Wait for provisioning (2-4 weeks)
+  ├─ Provider key received
+  ├─ ExpressRoute gateway created in Azure
+  ├─ BGP peers configured on both sides
+  └─ Routes converged (on-prem routes visible in Azure) ✓
+
+□ For both:
+  ├─ Routing configured on both sides
+  ├─ NSG rules allow traffic (security groups still apply)
+  ├─ Firewall rules allow traffic (if firewalls present)
+  └─ Performance tested (latency, bandwidth acceptable) ✓
+
+□ For redundancy:
+  ├─ Both VPN and ExpressRoute configured
+  ├─ BGP priorities set (prefer one, failover to other)
+  ├─ Failover tested (disconnect primary, verify backup works)
+  └─ Alerts configured (notify when primary fails) ✓</div>
+  </div>
+
+  <!-- Connections -->
+  <div class="section full" id="how-this-connects-to-other-topics">
+    <h2>How This Connects to Other Topics</h2>
+    <div class="grid2">
+      <div>
+        <h3>Related to Module 01 (Identity &amp; Governance)</h3>
+        <ul>
+          <li><strong>RBAC:</strong> Only network admins can configure VPN/ExpressRoute gateways</li>
+        </ul>
+        <h3>Related to Module 02 (Storage)</h3>
+        <ul>
+          <li><strong>Storage Access:</strong> On-prem servers reach Azure Storage via VPN/ExpressRoute</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Related to Module 04 (Networking)</h3>
+        <ul>
+          <li><strong>VNet Peering:</strong> Hub VNet with gateway can serve multiple spokes</li>
+        </ul>
+        <h3>Related to Module 05 (Monitor)</h3>
+        <ul>
+          <li><strong>Monitor Hybrid Connectivity:</strong> Monitor VPN/ExpressRoute metrics</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- See It In Action -->
+  <div class="section full" id="see-it-in-action">
+    <h2>See It In Action</h2>
+    <p><strong>Associated labs:</strong></p>
+    <ul>
+      <li><a href="../labs/lab05-vpn-gateway.md">Lab 05: Configure VPN Gateway</a></li>
+    </ul>
+    <p><strong>Suggested learning sequence:</strong></p>
+    <ol>
+      <li>✅ Read <a href="01-vnets-and-subnets.html">VNets &amp; Subnets</a></li>
+      <li>✅ Read <a href="03-routing-fundamentals.html">Routing Fundamentals</a></li>
+      <li>✅ Read <a href="04-vnet-peering.html">VNet Peering</a></li>
+      <li>✅ Read this doc (VPN &amp; ExpressRoute)</li>
+      <li>✅ Work through Lab 16 (hands-on VPN setup)</li>
+      <li>➡️ Read <a href="07-private-endpoints-service-endpoints.html">Private Endpoints &amp; Service Endpoints</a></li>
+    </ol>
+  </div>
+
+  <!-- Key Takeaways -->
+  <div class="section full" id="key-takeaways">
+    <h2>Key Takeaways</h2>
+    <div class="tip">
+      <strong>💡 Summary</strong>
+      <ul style="margin-top:8px">
+        <li><strong>VPN = encrypted tunnel over internet</strong> (quick, cheaper, limited bandwidth)</li>
+        <li><strong>ExpressRoute = dedicated private circuit</strong> (better performance, higher cost)</li>
+        <li><strong>VPN best for:</strong> Non-critical, temporary, low-bandwidth connections</li>
+        <li><strong>ExpressRoute best for:</strong> Production, high-throughput, mission-critical</li>
+        <li><strong>Failover:</strong> Configure both VPN and ExpressRoute for redundancy</li>
+        <li><strong>BGP routing:</strong> Automatic failover when primary fails</li>
+        <li><strong>Routing specificity:</strong> Route only Azure traffic through VPN/ExpressRoute</li>
+        <li><strong>NSG/Firewall rules still apply</strong> on both sides of the connection</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Next Steps -->
+  <div class="section full" id="next-steps">
+    <h2>Next Steps</h2>
+    <ol>
+      <li><strong>Learn:</strong> Read this doc (you're here)</li>
+      <li><strong>Decide:</strong> Which fits your scenario—VPN or ExpressRoute?</li>
+      <li><strong>Plan:</strong> Document on-premises IP ranges and Azure VNet ranges</li>
+      <li><strong>Practice:</strong> <a href="../labs/lab05-vpn-gateway.md">Lab 05: Configure VPN Gateway</a></li>
+      <li><strong>Advance:</strong> Set up dual connectivity with VPN + ExpressRoute</li>
+      <li><strong>Secure:</strong> Read <a href="07-private-endpoints-service-endpoints.html">Private Endpoints &amp; Service Endpoints</a></li>
+    </ol>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-grid">
+      <div class="footer-item">
+        <strong>Azure AZ-104</strong>
+        Professional Concept Documentation
+      </div>
+      <div class="footer-item">
+        <strong>Module</strong>
+        04 — Networking
+      </div>
+      <div class="footer-item">
+        <strong>Generated</strong>
+        June 15, 2026
+      </div>
+    </div>
+    <div class="footer-meta">&copy; 2026 — AZ-104 Learning Hub. For study purposes only.</div>
+  </div>
+
+</div>
+</div>
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.sidebar a'));
+  var sections = [];
+  links.forEach(function(a){
+    var el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) sections.push({link:a, el:el});
+  });
+  if (!sections.length || !('IntersectionObserver' in window)) return;
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (!entry.isIntersecting) return;
+      var match = sections.find(function(s){ return s.el === entry.target; });
+      if (!match) return;
+      links.forEach(function(a){ a.classList.remove('active'); });
+      match.link.classList.add('active');
+    });
+  }, { rootMargin: '-100px 0px -70% 0px', threshold: 0 });
+  sections.forEach(function(s){ observer.observe(s.el); });
+})();
+</script>
+</body>
+</html>
+
+
+
+

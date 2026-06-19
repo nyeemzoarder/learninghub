@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab 01 – Virtual Networks & Subnets - AZ-104 Labs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../_styles/lab-template.css">
+<style>
+
+/* Copy button click handler for code blocks */
+</style>
+</head>
+<body>
+<nav class="site-nav" aria-label="Main site navigation">
+  <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
+  <details class="nav-group" aria-label="Learning module selector">
+    <summary>Learning Module</summary>
+    <div class="nav-menu">
+      <a href="../../00-prerequisites/documents/module-home.html">00 - Prerequisites</a>
+      <a href="../../01-identity-governance/documents/module-home.html">01 - Identity &amp; Governance</a>
+      <a href="../../02-storage/documents/module-home.html">02 - Storage</a>
+      <a href="../../03-compute/documents/module-home.html">03 - Compute</a>
+      <a href="../../04-networking/documents/module-home.html">04 - Networking</a>
+      <a href="../../05-monitor-maintain/documents/module-home.html">05 - Monitor &amp; Maintain</a>
+    </div>
+  </details>
+</nav>
+<div class="layout">
+  <aside class="sidebar" aria-label="Page navigation">
+    <details open>
+      <summary>▶ Module 04 - Networking</summary>
+      <div>
+        <a href="01-vnets-and-subnets.html">01 - VNets &amp; Subnets</a>
+<a href="02-network-security-groups.html">02 - Network Security Groups</a>
+<a href="03-routing-fundamentals.html">03 - Routing Fundamentals</a>
+<a href="04-vnet-peering.html">04 - VNet Peering</a>
+<a href="05-vpn-and-expressroute.html">05 - VPN &amp; ExpressRoute</a>
+<a href="06-hub-spoke-topology.html">06 - Hub-Spoke Topology</a>
+<a href="07-private-endpoints-service-endpoints.html">07 - Private Endpoints &amp; Service Endpoints</a>
+<a href="08-network-security-advanced.html">08 - Network Security Advanced</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ Labs</summary>
+      <div>
+        <a href="lab01-vnet-subnets.html" class="active">Lab 01 - VNet &amp; Subnets</a>
+<a href="lab02-nsg-asg.html">Lab 02 - NSG &amp; ASG</a>
+<a href="lab03-vnet-peering-vpn.html">Lab 03 - VNet Peering &amp; VPN</a>
+<a href="lab04-load-balancer-app-gateway.html">Lab 04 - Load Balancer &amp; App Gateway</a>
+<a href="lab05-dns-name-resolution.html">Lab 05 - DNS &amp; Name Resolution</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ On This Page</summary>
+      <div>
+        <a href="#real-life-scenario">Real-Life Scenario</a>
+<a href="#objectives">Objectives</a>
+<a href="#prerequisites">Prerequisites</a>
+<a href="#part-1-create-the-vnet-and-subnets">Part 1 – Create the VNet and subnets</a>
+<a href="#part-2-static-private-ip">Part 2 – Static private IP</a>
+<a href="#part-3-service-endpoints">Part 3 – Service Endpoints</a>
+<a href="#part-4-private-endpoint">Part 4 – Private Endpoint</a>
+<a href="#part-5-ip-address-planning-exercise">Part 5 – IP address planning exercise</a>
+<a href="#success-criteria">Success Criteria</a>
+<a href="#cleanup">Cleanup</a>
+<a href="#exam-tips">Exam Tips</a>
+      </div>
+    </details>
+  </aside>
+  <div class="page">
+  <h1>Lab 01 – Virtual Networks & Subnets</h1>
+
+  <div class="time-estimate-header">
+    <span class="clock-icon">⏱️</span>
+    <span class="time-text">Total Estimated Time: 50 minutes</span>
+  </div>
+
+<h2 id="real-life-scenario">Real-Life Scenario</h2>
+
+<p><strong>Company: FinServe Solutions</strong></p>
+
+<p>FinServe is migrating to Azure and needs to design their network architecture. They need to create virtual networks with proper subnetting strategy, assign static private IPs for critical services, restrict access to storage using service endpoints, create private connections without exposing data to the internet, and plan IP address space for future growth.</p>
+
+<p><strong>The Challenge:</strong> Design a network that isolates workloads, restricts access, and scales without redesign?</p>
+
+<div class="callout-box callout-important">
+  <span class="callout-icon">❗</span>
+  <div class="callout-content">
+    <h4>Core Learning Objective</h4>
+    <p>VNets are the foundation of Azure networking. You'll learn subnetting strategy, IP planning, service endpoints vs private endpoints, and access restriction patterns. This is essential for designing secure, scalable cloud infrastructure.</p>
+  </div>
+</div>
+
+<h2 id="objectives">Objectives</h2>
+
+<ul>
+<li>Create a VNet with multiple subnets and custom address space</li>
+<li>Assign static private IPs to resources</li>
+<li>Configure service endpoints to restrict PaaS access</li>
+<li>Configure private endpoints for fully private PaaS connectivity</li>
+<li>Design IP address space for growth</li>
+</ul>
+
+<h2 id="prerequisites">Prerequisites</h2>
+
+<ul>
+<li>Signed in to Azure Portal at <a href="https://portal.azure.com">portal.azure.com</a></li>
+<li>Basic understanding of CIDR notation (e.g., /16, /24, /26)</li>
+</ul>
+
+<div class="section-header">
+  <h2 id="part-1-create-the-vnet-and-subnets">Part 1 – Create the VNet and subnets</h2>
+  <div class="section-time"><span class="icon">⏱️</span> 15 minutes</div>
+</div>
+
+<div class="callout-box callout-tip">
+  <span class="callout-icon">ℹ️</span>
+  <div class="callout-content">
+    <h4>VNet Fundamentals</h4>
+    <p>A Virtual Network is your private network in Azure. Subnets segment the VNet for organization and security. Each subnet gets a portion of the VNet's address space using CIDR notation.</p>
+  </div>
+</div>
+
+<div class="task-box">
+  <div class="task-header">
+    <span class="task-icon">✓</span>
+    <h3>Step 1: Create Virtual Network and First Subnet</h3>
+  </div>
+  <div class="task-content">
+    <ol>
+      <li>In the Azure Portal, search for <strong>Virtual networks</strong> > <strong>Create</strong></li>
+      <li>Fill in the <strong>Basics</strong> tab:</li>
+    </ol>
+    <ul>
+      <li><strong>Resource group:</strong> <strong>Create new</strong> and name it <code>rg-az104-lab12</code></li>
+      <li><strong>Name:</strong> <code>vnet-hub</code></li>
+      <li><strong>Region:</strong> <code>East US</code></li>
+    </ul>
+    <ol start="3">
+      <li>Click <strong>Next: IP Addresses</strong></li>
+      <li>Configure the address space and first subnet:</li>
+    </ol>
+    <ul>
+      <li><strong>IPv4 address space:</strong> <code>10.50.0.0/16</code> (65,536 addresses)</li>
+      <li><strong>Subnet name:</strong> <code>subnet-web</code></li>
+      <li><strong>Subnet address range:</strong> <code>10.50.1.0/24</code> (256 addresses, ~251 usable)</li>
+    </ul>
+    <ol start="5">
+      <li>Click <strong>Review + create</strong> > <strong>Create</strong></li>
+      <li>Wait for the VNet to be created (typically 1-2 minutes)</li>
+    </ol>
+  </div>
+</div>
+
+<div class="callout-box callout-important">
+  <span class="callout-icon">❗</span>
+  <div class="callout-content">
+    <h4>Reserved IPs in Subnets</h4>
+    <p>Each subnet reserves 5 IPs: .0 (network), .1 (gateway), .2/.3 (DNS), and broadcast. A /24 (256 IPs) has only ~251 usable IPs for resources. Always account for this when planning.</p>
+  </div>
+</div>
+
+<div class="task-box">
+  <div class="task-header">
+    <span class="task-icon">✓</span>
+    <h3>Step 2: Add Additional Subnets</h3>
+  </div>
+  <div class="task-content">
+    <ol>
+      <li>Navigate to <code>vnet-hub</code> > <strong>Subnets</strong> (left menu under Settings)</li>
+      <li>Click <strong>+ Subnet</strong> to add the data subnet:</li>
+    </ol>
+    <ul>
+      <li><strong>Name:</strong> <code>subnet-data</code></li>
+      <li><strong>Subnet address range:</strong> <code>10.50.2.0/24</code></li>
+      <li>Click <strong>Add</strong></li>
+    </ul>
+    <ol start="3">
+      <li>Click <strong>+ Subnet</strong> again to add the management subnet:</li>
+    </ol>
+    <ul>
+      <li><strong>Name:</strong> <code>subnet-mgmt</code></li>
+      <li><strong>Subnet address range:</strong> <code>10.50.3.0/24</code></li>
+      <li>Click <strong>Add</strong></li>
+    </ul>
+    <ol start="4">
+      <li>Verify all three subnets appear in the subnets list</li>
+    </ol>
+  </div>
+</div>
+
+<div class="validation-checklist">
+  <h4>Part 1 Validation</h4>
+  <div>
+    <div class="checklist-item">
+      <input type="checkbox" id="check1">
+      <label for="check1">VNet <code>vnet-hub</code> created in East US with address space <code>10.50.0.0/16</code></label>
+    </div>
+    <div class="checklist-item">
+      <input type="checkbox" id="check2">
+      <label for="check2">Three subnets created: <code>subnet-web</code> (10.50.1.0/24), <code>subnet-data</code> (10.50.2.0/24), <code>subnet-mgmt</code> (10.50.3.0/24)</label>
+    </div>
+    <div class="checklist-item">
+      <input type="checkbox" id="check3">
+      <label for="check3">No overlapping address spaces between subnets</label>
+    </div>
+    <div class="checklist-item">
+      <input type="checkbox" id="check4">
+      <label for="check4">Resource group <code>rg-az104-lab12</code> created</label>
+    </div>
+  </div>
+</div>
+
+<div class="success-box">
+  <h4>After Part 1</h4>
+  <ul class="success-items">
+    <li>VNet <code>vnet-hub</code> created with /16 address space (65,536 addresses)</li>
+    <li>Three subnets created, each with /24 (256 addresses, ~251 usable)</li>
+    <li>You understand CIDR notation and address space planning</li>
+    <li>You know 5 IPs are reserved per subnet</li>
+  </ul>
+</div>
+
+<div class="section-header">
+  <h2 id="part-2-static-private-ip">Part 2 – Static private IP</h2>
+  <div class="section-time"><span class="icon">⏱️</span> 8 minutes</div>
+</div>
+
+<div class="callout-box callout-tip">
+  <span class="callout-icon">ℹ️</span>
+  <div class="callout-content">
+    <h4>Static vs Dynamic IPs</h4>
+    <p>Dynamic IPs can change when resources restart. Static IPs are permanently assigned to a resource. Critical services (databases, DNS servers) should use static IPs.</p>
+  </div>
+</div>
+
+<div class="task-box">
+  <div class="task-header">
+    <span class="task-icon">✓</span>
+    <h3>Step 1: Create Virtual Machine with Static IP</h3>
+  </div>
+  <div class="task-content">
+    <ol>
+      <li>Search for <strong>Virtual machines</strong> > <strong>Create</strong> > <strong>Azure virtual machine</strong></li>
+      <li>In the <strong>Basics</strong> tab, fill in:</li>
+    </ol>
+    <ul>
+      <li><strong>Resource group:</strong> <code>rg-az104-lab12</code></li>
+      <li><strong>Virtual machine name:</strong> <code>vm-data01</code></li>
+      <li><strong>Image:</strong> <code>Ubuntu 22.04 LTS</code></li>
+      <li><strong>Size:</strong> <code>Standard_B1s</code> (cheapest option)</li>
+      <li><strong>Authentication type:</strong> Password (for lab simplicity)</li>
+      <li>Create a username and password (remember these)</li>
+    </ul>
+    <ol start="3">
+      <li>Click <strong>Next: Disks</strong>, then <strong>Next: Networking</strong></li>
+    </ol>
+  </div>
+</div>
+
+<div class="task-box">
+  <div class="task-header">
+    <span class="task-icon">✓</span>
+    <h3>Step 2: Configure Network Settings</h3>
+  </div>
+  <div class="task-content">
+    <ol>
+      <li>In the <strong>Networking</strong> tab, configure:</li>
+    </ol>
+    <ul>
+      <li><strong>Virtual network:</strong> <code>vnet-hub</code></li>
+      <li><strong>Subnet:</strong> <code>subnet-data</code></li>
+      <li><strong>Public IP:</strong> <strong>None</strong> (keep this VM private for security)</li>
+      <li><strong>NIC network security group:</strong> <strong>Basic</strong></li>
+    </ul>
+    <ol start="2">
+      <li>Click <strong>Next: Management</strong>, then <strong>Next: Advanced</strong></li>
+      <li>In the <strong>Advanced</strong> tab, find <strong>Network Interface</strong> section</li>
+      <li>Set <strong>Private IP address assignment:</strong> <strong>Static</strong></li>
+      <li>Set the static IP to <code>10.50.2.10</code></li>
+    </ol>
+  </div>
+</div>
+
+<div class="task-box">
+  <div class="task-header">
+    <span class="task-icon">✓</span>
+    <h3>Step 3: Complete VM Creation</h3>
+  </div>
+  <div class="task-content">
+    <ol>
+      <li>Click <strong>Review + create</strong></li>
+      <li>Review the configuration and click <strong>Create</strong></li>
+      <li>Wait for the VM to be created (typically 2-3 minutes)</li>
+      <li>Once created, navigate to the VM > <strong>Networking</strong> and verify static IP <code>10.50.2.10</code></li>
+    </ol>
+  </div>
+</div>
+
+<div class="validation-checklist">
+  <h4>Part 2 Validation</h4>
+  <div>
+    <div class="checklist-item">
+      <input type="checkbox" id="check5">
+      <label for="check5">VM <code>vm-data01</code> created in <code>subnet-data</code></label>
+    </div>
+    <div class="checklist-item">
+      <input type="checkbox" id="check6">
+      <label for="check6">VM has static private IP <code>10.50.2.10</code></label>
+    </div>
+    <div class="checklist-item">
+      <input type="checkbox" id="check7">
+      <label for="check7">VM has NO public IP (private only)</label>
+    </div>
+    <div class="checklist-item">
+      <input type="checkbox" id="check8">
+      <label for="check8">Network Security Group applied to network interface</label>
+    </div>
+  </div>
+</div>
+
+<div class="success-box">
+  <h4>After Part 2</h4>
+  <ul class="success-items">
+    <li>VM deployed with static private IP within the VNet</li>
+    <li>VM is isolated (no public IP) and only reachable from within VNet</li>
+    <li>You understand static IP assignment for critical services</li>
+    <li>You can secure VMs by removing public IP exposure</li>
+  </ul>
+</div>
+
+<div class="section-header">
+  <h2 id="part-3-service-endpoints">Part 3 – Service Endpoints</h2>
+  <div class="section-time"><span class="icon">⏱️</span> 10 minutes</div>
+</div>
+
+<div class="callout-box callout-tip">
+  <span class="callout-icon">ℹ️</span>
+  <div class="callout-content">
+    <h4>Service Endpoints Overview</h4>
+    <p>Service Endpoints extend your VNet's identity to Azure services (like Storage) over the Azure backbone. The PaaS resource keeps its public endpoint but can restrict access to specified subnets.</p>
+  </div>
+</div>
+
+<div class="task-box">
+  <div class="task-header">
+    <span class="task-icon">✓</span>
+    <h3>Step 1: Enable Service Endpoint on Subnet</h3>
+  </div>
+  <div class="task-content">
+    <ol>
+      <li>Navigate to <code>vnet-hub</code> > <strong>Subnets</strong> > select <code>subnet-data</code></li>
+      <li>Scroll down to <strong>Service endpoints</strong> section</li>
+      <li>Click <strong>+ Add</strong> in the Service endpoints area</li>
+      <li>In the dropdown, select <strong>Microsoft.Storage</strong></li>
+      <li>Click <strong>Add</strong> to enable the service endpoint</li>
+      <li>Save the subnet configuration</li>
+    </ol>
+  </div>
+</div>
+
+<div class="task-box">
+  <div class="task-header">
+    <span class="task-icon">✓</span>
+    <h3>Step 2: Create Storage Account</h3>
+  </div>
+  <div class="task-content">
+    <ol>
+      <li>Search for <strong>Storage accounts</strong> > <strong>Create</strong></li>
+      <li>Fill in the <strong>Basics</strong> tab:</li>
+    </ol>
+    <ul>
+      <li><strong>Resource group:</strong> <code>rg-az104-lab12</code></li>
+      <li><strong>Storage account name:</strong> <code>stoaz104lab12<unique></code> (must be globally unique, 3-24 chars, lowercase only)</li>
+      <li><strong>Region:</strong> <code>East US</code></li>
+      <li><strong>Performance:</strong> <strong>Standard</strong></li>
+      <li><strong>Redundancy:</strong> <strong>Locally-redundant storage (LRS)</strong></li>
+    </ul>
+    <ol start="3">
+      <li>Click <strong>Review + create</strong> > <strong>Create</strong></li>
+    </ol>
+  </div>
+</div>
+
+<div class="callout-box callout-important">
+  <span class="callout-icon">❗</span>
+  <div class="callout-content">
+    <h4>Storage Account Naming</h4>
+    <p>Storage account names must be globally unique (3-24 characters, lowercase letters and numbers only). If your choice is taken, add numbers until it's unique.</p>
+  </div>
+</div>
+
+<div class="task-box">
+  <div class="task-header">
+    <span class="task-icon">✓</span>
+    <h3>Step 3: Restrict Storage Access via Service Endpoint</h3>
+  </div>
+  <div class="task-content">
+    <ol>
+      <li>Navigate to your storage account > <strong>Networking</strong> (under <strong>Security + networking</strong> in left menu)</li>
+      <li>Under <strong>Public network access</strong>, select <strong>Enabled from selected virtual networks and IP addresses</strong></li>
+      <li>Under <strong>Virtual networks</strong>, click <strong>+ Add existing virtual network</strong></li>
+      <li>Select:</li>
+    </ol>
+    <ul>
+      <li><strong>Subscription:</strong> Your current subscription</li>
+      <li><strong>Virtual network:</strong> <code>vnet-hub</code></li>
+      <li><strong>Subnets:</strong> <code>subnet-data</code></li>
+    </ul>
+    <ol start="5">
+      <li>Click <strong>Add</strong></li>
+      <li>Set <strong>Default action</strong> to <strong>Deny</strong></li>
+      <li>Click <strong>Save</strong></li>
+    </ol>
+  </div>
+</div>
+
+<div class="validation-checklist">
+  <h4>Part 3 Validation</h4>
+  <div>
+    <div class="checklist-item">
+      <input type="checkbox" id="check9">
+      <label for="check9">Service endpoint <code>Microsoft.Storage</code> enabled on <code>subnet-data</code></label>
+    </div>
+    <div class="checklist-item">
+      <input type="checkbox" id="check10">
+      <label for="check10">Storage account created with LRS in rg-az104-lab12</label>
+    </div>
+    <div class="checklist-item">
+      <input type="checkbox" id="check11">
+      <label for="check11">Storage account networking restricted to <code>vnet-hub/subnet-data</code> with Default action = Deny</label>
+    </div>
+  </div>
+</div>
+
+<div class="success-box">
+  <h4>After Part 3</h4>
+  <ul class="success-items">
+    <li>Service endpoint enabled on subnet to extend VNet identity to Storage</li>
+    <li>Storage account public access restricted to only the specified subnet</li>
+    <li>You understand how service endpoints add network security without private IPs</li>
+    <li>All other internet access to storage is denied</li>
+  </ul>
+</div>
+
+<div class="section-header">
+  <h2 id="part-4-private-endpoint">Part 4 – Private Endpoint</h2>
+  <div class="section-time"><span class="icon">⏱️</span> 8 minutes</div>
+</div>
+
+<div class="callout-box callout-tip">
+  <span class="callout-icon">ℹ️</span>
+  <div class="callout-content">
+    <h4>Private Endpoints vs Service Endpoints</h4>
+    <p><strong>Service Endpoints:</strong> Extend VNet identity to service, service keeps public endpoint. <strong>Private Endpoints:</strong> Give the PaaS service a private IP inside your VNet—fully removes public exposure.</p>
+  </div>
+</div>
+
+<div class="task-box">
+  <div class="task-header">
+    <span class="task-icon">✓</span>
+    <h3>Step 1: Create Private Endpoint</h3>
+  </div>
+  <div class="task-content">
+    <ol>
+      <li>Search for <strong>Private endpoints</strong> > <strong>Create</strong></li>
+      <li>Fill in the <strong>Basics</strong> tab:</li>
+    </ol>
+    <ul>
+      <li><strong>Resource group:</strong> <code>rg-az104-lab12</code></li>
+      <li><strong>Name:</strong> <code>pe-storage</code></li>
+      <li><strong>Region:</strong> <code>East US</code></li>
+    </ul>
+    <ol start="3">
+      <li>Click <strong>Next: Resource</strong></li>
+    </ol>
+  </div>
+</div>
+
+<div class="task-box">
+  <div class="task-header">
+    <span class="task-icon">✓</span>
+    <h3>Step 2: Connect to Storage Resource</h3>
+  </div>
+  <div class="task-content">
+    <ol>
+      <li>In the <strong>Resource</strong> tab, configure:</li>
+    </ol>
+    <ul>
+      <li><strong>Connection method:</strong> <strong>Connect to an Azure resource in my directory</strong></li>
+      <li><strong>Resource type:</strong> <strong>Microsoft.Storage/storageAccounts</strong></li>
+      <li><strong>Resource:</strong> Select your storage account <code>stoaz104lab12<unique></code></li>
+      <li><strong>Target sub-resource:</strong> <strong>blob</strong></li>
+    </ul>
+    <ol start="2">
+      <li>Click <strong>Next: Virtual Network</strong></li>
+    </ol>
+  </div>
+</div>
+
+<div class="task-box">
+  <div class="task-header">
+    <span class="task-icon">✓</span>
+    <h3>Step 3: Configure VNet and DNS</h3>
+  </div>
+  <div class="task-content">
+    <ol>
+      <li>In the <strong>Virtual Network</strong> tab, configure:</li>
+    </ol>
+    <ul>
+      <li><strong>Virtual network:</strong> <code>vnet-hub</code></li>
+      <li><strong>Subnet:</strong> <code>subnet-mgmt</code></li>
+    </ul>
+    <ol start="2">
+      <li>Click <strong>Next: DNS</strong></li>
+      <li>Enable <strong>Private DNS integration:</strong> <strong>Yes</strong> (auto-creates DNS zone for private resolution)</li>
+      <li>Click <strong>Review + create</strong> > <strong>Create</strong></li>
+      <li>Wait for the private endpoint to be created (typically 1-2 minutes)</li>
+    </ol>
+  </div>
+</div>
+
+<div class="validation-checklist">
+  <h4>Part 4 Validation</h4>
+  <div>
+    <div class="checklist-item">
+      <input type="checkbox" id="check12">
+      <label for="check12">Private endpoint <code>pe-storage</code> created in <code>subnet-mgmt</code></label>
+    </div>
+    <div class="checklist-item">
+      <input type="checkbox" id="check13">
+      <label for="check13">Private endpoint connected to storage account blob resource</label>
+    </div>
+    <div class="checklist-item">
+      <input type="checkbox" id="check14">
+      <label for="check14">Private DNS zone created and integrated for private resolution</label>
+    </div>
+    <div class="checklist-item">
+      <input type="checkbox" id="check15">
+      <label for="check15">Storage account has a private IP visible in <code>subnet-mgmt</code></label>
+    </div>
+  </div>
+</div>
+
+<div class="success-box">
+  <h4>After Part 4</h4>
+  <ul class="success-items">
+    <li>Storage account now has a private IP endpoint inside <code>subnet-mgmt</code></li>
+    <li>Traffic to storage never traverses the public internet</li>
+    <li>Private DNS resolves storage FQDN to private IP</li>
+    <li>You understand the difference: Service Endpoints (public + restricted) vs Private Endpoints (fully private)</li>
+  </ul>
+</div>
+
+<div class="section-header">
+  <h2 id="part-5-ip-address-planning-exercise">Part 5 – IP address planning exercise</h2>
+  <div class="section-time"><span class="icon">⏱️</span> 10 minutes</div>
+</div>
+
+<div class="callout-box callout-tip">
+  <span class="callout-icon">ℹ️</span>
+  <div class="callout-content">
+    <h4>IP Planning Strategy</h4>
+    <p>Plan your address space to accommodate current and future growth. Subnets cannot be easily resized after creation, so plan generously. Different services require different subnet sizes.</p>
+  </div>
+</div>
+
+<div class="task-box">
+  <div class="task-header">
+    <span class="task-icon">✓</span>
+    <h3>Step 1: Review Address Space Allocation</h3>
+  </div>
+  <div class="task-content">
+    <ol>
+      <li>Review your existing infrastructure based on <code>10.50.0.0/16</code>:</li>
+    </ol>
+    <ul>
+      <li><code>subnet-web:</code> 10.50.1.0/24 (250+ hosts)</li>
+      <li><code>subnet-data:</code> 10.50.2.0/24 (60+ hosts)</li>
+      <li><code>subnet-mgmt:</code> 10.50.3.0/24 (20+ hosts)</li>
+    </ul>
+    <ol start="2">
+      <li>Remaining available space: 10.50.4.0 - 10.50.255.0 (much of the /16 is still unused)</li>
+    </ol>
+  </div>
+</div>
+
+<div class="task-box">
+  <div class="task-header">
+    <span class="task-icon">✓</span>
+    <h3>Step 2: Design for Growth</h3>
+  </div>
+  <div class="task-content">
+    <ol>
+      <li>Plan subnets for future requirements:</li>
+    </ol>
+    <ul>
+      <li><strong>AzureBastionSubnet:</strong> minimum /26 (64 addresses)</li>
+      <li>Example: 10.50.4.0/26</li>
+      <li><strong>GatewaySubnet:</strong> recommended /26 or larger (for VPN/ExpressRoute)</li>
+      <li>Example: 10.50.4.64/26</li>
+      <li><strong>AKS cluster subnet:</strong> 1,000+ hosts → /22 (1,024 addresses)</li>
+      <li>Example: 10.50.8.0/22</li>
+    </ul>
+    <ol start="2">
+      <li>Verify: No overlapping address ranges</li>
+    </ol>
+  </div>
+</div>
+
+<div class="task-box">
+  <div class="task-header">
+    <span class="task-icon">✓</span>
+    <h3>Step 3: Understand Reserved Subnet Names</h3>
+  </div>
+  <div class="task-content">
+    <ol>
+      <li>Azure has reserved subnet names for specific services:</li>
+    </ol>
+    <ul>
+      <li><strong>GatewaySubnet:</strong> Required for VPN gateways and ExpressRoute</li>
+      <li><strong>AzureBastionSubnet:</strong> Required for Azure Bastion (RDP/SSH access)</li>
+      <li><strong>AzureFirewallSubnet:</strong> Required for Azure Firewall NVA</li>
+    </ul>
+    <ol start="2">
+      <li>These names must be exact—you can only deploy those services in subnets with these names</li>
+      <li>Plan their size accordingly based on expected deployment scale</li>
+    </ol>
+  </div>
+</div>
+
+<div class="validation-checklist">
+  <h4>Part 5 Validation</h4>
+  <div>
+    <div class="checklist-item">
+      <input type="checkbox" id="check16">
+      <label for="check16">Understand current subnet allocation within 10.50.0.0/16</label>
+    </div>
+    <div class="checklist-item">
+      <input type="checkbox" id="check17">
+      <label for="check17">Can design future subnets (Bastion, Gateway, AKS) without overlapping</label>
+    </div>
+    <div class="checklist-item">
+      <input type="checkbox" id="check18">
+      <label for="check18">Know the reserved subnet names and their purposes</label>
+    </div>
+    <div class="checklist-item">
+      <input type="checkbox" id="check19">
+      <label for="check19">Understand the importance of planning address space for growth</label>
+    </div>
+  </div>
+</div>
+
+<div class="success-box">
+  <h4>After Part 5</h4>
+  <ul class="success-items">
+    <li>You designed IP address space accommodating current and future needs</li>
+    <li>You understand CIDR notation and subnet sizing (/24, /26, /22, etc.)</li>
+    <li>You know reserved subnet names and their purposes</li>
+    <li>You can plan growth without redesigning the entire VNet</li>
+  </ul>
+</div>
+
+<h2 id="success-criteria">Success Criteria</h2>
+
+<div class="success-box">
+  <h4>Lab Completion Checklist</h4>
+  <ul class="success-items">
+    <li>VNet <code>vnet-hub</code> created with /16 address space (10.50.0.0/16)</li>
+    <li>Three subnets created with no overlapping address ranges</li>
+    <li>VM <code>vm-data01</code> deployed with static private IP 10.50.2.10 in subnet-data</li>
+    <li>Service endpoint (Microsoft.Storage) enabled on subnet-data</li>
+    <li>Storage account created and restricted via service endpoint to subnet-data only</li>
+    <li>Private endpoint created for storage in subnet-mgmt with private DNS integration</li>
+    <li>IP address planning exercise completed for future growth</li>
+  </ul>
+</div>
+
+<h2 id="cleanup">Cleanup</h2>
+
+<p>If you want to delete the resources created in this lab:</p>
+
+<ol>
+<li>Navigate to <strong>Resource groups</strong> > select <code>rg-az104-lab12</code></li>
+<li>Click <strong>Delete resource group</strong></li>
+<li>Confirm the deletion</li>
+<li>All resources (VNet, subnets, VMs, storage account, endpoints) will be deleted</li>
+</ol>
+
+<h2 id="exam-tips">Exam Tips</h2>
+
+<ul>
+<li><strong>Reserved IPs:</strong> Each subnet reserves 5 IPs (.0, .1, .2, .3, broadcast). A /24 has 256 addresses but only ~251 usable.</li>
+<li><strong>Service Endpoint vs Private Endpoint:</strong> Service Endpoint keeps the public endpoint but restricts via VNet identity. Private Endpoint gives a private IP inside your VNet—fully removes public exposure.</li>
+<li><strong>VNet Constraints:</strong> VNets cannot span regions. Subnets cannot span VNets. Address spaces should not overlap if you plan VNet peering.</li>
+<li><strong>Reserved Subnet Names:</strong> GatewaySubnet, AzureBastionSubnet, AzureFirewallSubnet—these must be exact names for those services to deploy.</li>
+<li><strong>Static vs Dynamic:</strong> Use static IPs for critical infrastructure (databases, DNS). Dynamic is fine for ephemeral workloads.</li>
+<li><strong>Address Space Planning:</strong> Plan generously for growth. Resizing VNets/subnets after creation is difficult or impossible.</li>
+</ul>
+
+  </div>
+</div>
+<script>
+/* Sidebar Active Link Tracking */
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.sidebar a'));
+  var sections = [];
+  links.forEach(function(a){
+    var el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) sections.push({link:a, el:el});
+  });
+  if (!sections.length || !('IntersectionObserver' in window)) return;
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (!entry.isIntersecting) return;
+      var match = sections.find(function(s){ return s.el === entry.target; });
+      if (!match) return;
+      links.forEach(function(a){ a.classList.remove('active'); });
+      match.link.classList.add('active');
+    });
+  }, { rootMargin: '-100px 0px -70% 0px', threshold: 0 });
+  sections.forEach(function(s){ observer.observe(s.el); });
+})();
+
+/* Code Block Copy Button Functionality */
+document.addEventListener('DOMContentLoaded', function(){
+  var codeBlocks = document.querySelectorAll('.code-block');
+  codeBlocks.forEach(function(block){
+    var pre = block.querySelector('pre');
+    if (!pre) return;
+
+    var btn = document.createElement('button');
+    btn.className = 'code-copy-btn';
+    btn.textContent = 'Copy';
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'Copy code to clipboard');
+
+    btn.addEventListener('click', function(){
+      var code = pre.textContent;
+      navigator.clipboard.writeText(code).then(function(){
+        var original = btn.textContent;
+        btn.textContent = '✓ Copied!';
+        btn.classList.add('copied');
+        setTimeout(function(){
+          btn.textContent = original;
+          btn.classList.remove('copied');
+        }, 2000);
+      }).catch(function(){
+        alert('Failed to copy code');
+      });
+    });
+
+    block.appendChild(btn);
+  });
+});
+</script>
+</body>
+</html>

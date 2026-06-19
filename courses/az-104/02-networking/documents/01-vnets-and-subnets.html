@@ -1,0 +1,718 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Virtual Networks &amp; Subnets - Building Your Private Network</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f8fc;--card:#fff;--border:#d9e0ef;--text:#1f2937;--muted:#5b6678;
+  --primary:#151d63;--panel:#00004C;--panel-shadow:rgba(0,0,76,.18);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:Inter,-apple-system,'Segoe UI',sans-serif;color:var(--text)}
+.page{flex:1;min-width:0;padding:28px}
+
+h1{font-size:3.2rem;line-height:1.15;margin:0;color:var(--primary);font-weight:800;letter-spacing:-1px}
+.subtitle{font-size:1.4rem;font-weight:600;color:#2d3b77;margin-top:10px}
+
+.badges{display:flex;gap:12px;margin:20px 0 26px;flex-wrap:wrap}
+.badge{background:#eef2ff;border:1px solid #d8def7;color:#1e2a78;padding:10px 18px;border-radius:999px;font-weight:600;font-size:.95rem}
+
+.section{display:grid;grid-template-columns:42% 58%;gap:28px;padding:26px 0;border-top:1px solid var(--border)}
+.section.full{display:block;padding:26px 0;border-top:1px solid var(--border)}
+.section:first-of-type, .section.full:first-of-type{border-top:none}
+
+h2{font-size:2rem;margin:0 0 14px;color:var(--primary);font-weight:800}
+h3{font-size:1.4rem;margin:22px 0 10px;color:var(--primary);font-weight:700}
+h3:first-child{margin-top:0}
+h4{font-size:1.1rem;margin:16px 0 8px;color:#2d3b77;font-weight:700}
+
+p{font-size:1.05rem;line-height:1.65;margin:.5rem 0;color:var(--text)}
+
+ul, ol{margin:.6rem 0;padding-left:1.4rem}
+li{margin-bottom:6px;line-height:1.6;font-size:1.02rem}
+
+a{color:#1e2a78;text-decoration:none;border-bottom:1px solid transparent;font-weight:600}
+a:hover{border-bottom-color:#1e2a78}
+
+strong{color:var(--primary);font-weight:700}
+
+.callout{margin-top:20px;background:#f3f7ff;border:1px solid #bfd0ff;border-radius:14px;padding:18px 22px}
+.callout strong{color:#1735ad}
+.callout p{margin:0}
+.callout p + p{margin-top:8px}
+
+.panel{
+  background:var(--panel);
+  color:#fff;border-radius:18px;padding:22px 26px;
+  box-shadow:0 12px 28px var(--panel-shadow);
+  font:15px/1.65 'SF Mono',Consolas,'Courier New',monospace;
+  white-space:pre-wrap;
+  overflow:auto;
+}
+.panel.small{font-size:13.5px;line-height:1.6}
+.panel + .panel{margin-top:18px}
+
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:14px 0}
+th,td{padding:14px;border:1px solid var(--border);text-align:left;font-size:.98rem}
+th{background:#eef2ff;color:var(--primary);font-weight:700}
+tr:hover td{background:#fafbff}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+
+.mistake-card{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:14px 0 8px}
+.mistake-card h4{margin-top:0}
+
+.tip{margin-top:20px;background:#eef4ff;border:1px solid #c8d5ff;border-radius:12px;padding:16px 20px;font-size:1.02rem}
+.tip strong{color:#1735ad}
+
+hr.divider{border:none;height:0;margin:0}
+
+.footer{margin-top:48px;padding-top:24px;border-top:1px solid var(--border);font-size:.9rem;color:var(--muted)}
+.footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px}
+.footer-item strong{display:block;color:var(--primary);margin-bottom:6px;font-size:.95rem}
+.footer-meta{margin-top:24px;padding-top:16px;border-top:1px solid var(--border);text-align:center;font-size:.85rem}
+
+@media (max-width:1000px){
+  .section,.grid2,.grid3,.grid4,.mistake-card{grid-template-columns:1fr}
+  h1{font-size:2.3rem}
+  .page{padding:16px}
+  .panel{font-size:13px}
+  .sidebar{display:none}
+  .layout{display:block}
+}
+
+/* ===== Site-wide Cross Navigation ===== */
+.site-nav{
+  position:sticky;top:0;z-index:1000;
+  background:var(--primary);color:#fff;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:12px 28px;font-size:.92rem;
+  box-shadow:0 2px 10px rgba(0,0,76,.18);
+  font-family:Inter,-apple-system,'Segoe UI',sans-serif;
+}
+.site-nav .nav-brand{font-weight:800;font-size:1.05rem;margin-right:auto;color:#fff}
+.site-nav details{position:relative}
+.site-nav summary{cursor:pointer;list-style:none;padding:7px 16px;border-radius:8px;background:rgba(255,255,255,.12);font-weight:600;color:#fff;user-select:none}
+.site-nav summary::-webkit-details-marker,.site-nav summary::marker{display:none;content:''}
+.site-nav details[open] summary{background:rgba(255,255,255,.24)}
+.site-nav .nav-menu{
+  position:absolute;top:calc(100% + 8px);left:0;
+  background:#fff;color:var(--text);
+  border:1px solid var(--border);border-radius:12px;
+  padding:8px;min-width:300px;box-shadow:0 16px 32px rgba(0,0,76,.22);
+  display:flex;flex-direction:column;gap:2px;z-index:1001;
+}
+.site-nav .nav-menu a{
+  display:block;padding:9px 14px;border-radius:8px;border-bottom:none;
+  color:var(--text);font-weight:500;font-size:.95rem;
+}
+.site-nav .nav-menu a:hover{background:#eef2ff;color:#1e2a78}
+.site-nav .nav-menu a.active{background:#eef2ff;color:#1735ad;font-weight:700}
+@media (max-width:768px){
+  .site-nav{padding:10px 16px}
+  .site-nav .nav-brand{font-size:.95rem}
+}
+/* ===== Page Sidebar (Collapsible) ===== */
+.layout{max-width:1400px;margin:auto;display:flex;align-items:flex-start}
+.sidebar{
+  flex:0 0 260px;
+  position:sticky;top:88px;
+  max-height:calc(100vh - 108px);
+  overflow-y:auto;
+  margin:28px 0 28px 28px;
+  padding:20px 18px;
+  background:#fff;border:1px solid var(--border);border-radius:14px;
+  box-shadow:0 4px 16px rgba(21,29,99,.05);
+}
+.sidebar details{margin-bottom:0}
+.sidebar summary{
+  cursor:pointer;list-style:none;padding:10px 12px;border-radius:8px;
+  font-weight:600;font-size:.92rem;color:var(--primary);
+  user-select:none;transition:background 0.2s;
+}
+.sidebar summary::-webkit-details-marker,.sidebar summary::marker{display:none;content:''}
+.sidebar details[open]>summary{background:#eef2ff}
+.sidebar summary:hover{background:#f0f4ff}
+.sidebar a{display:block;padding:8px 12px;margin:2px 0;border-radius:8px;font-size:.88rem;font-weight:500;
+  color:var(--text);border-bottom:none;border-left:3px solid transparent;line-height:1.4;transition:all 0.15s}
+.sidebar a:hover{background:#eef2ff;color:#1e2a78}
+.sidebar a.active{background:#eef2ff;color:#1735ad;font-weight:700;border-left-color:var(--primary)}
+.sidebar details > div{padding:0 0 8px 12px}
+.sidebar hr.sidebar-divider{border:none;border-top:1px solid var(--border);margin:12px 0}
+@media print{
+  .site-nav{display:none}
+  body{background:#fff}
+  .page{padding:0}
+  .panel{box-shadow:none}
+  .sidebar{display:none}
+  .layout{display:block}
+}
+
+/* Keyboard Navigation & Accessibility */
+a:focus-visible,
+button:focus-visible,
+.sidebar a:focus-visible,
+.sidebar summary:focus-visible,
+.site-nav summary:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+details:focus-visible > summary {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+</style>
+</head>
+<body>
+<nav class="site-nav" aria-label="Main site navigation">
+  <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
+  <details class="nav-group" aria-label="Learning module selector">
+    <summary>Learning Module</summary>
+    <div class="nav-menu">
+      <a href="../../00-prerequisites/documents/module-home.html">00 - Prerequisites</a>
+      <a href="../../01-identity-governance/documents/module-home.html">01 - Identity &amp; Governance</a>
+      <a href="../../02-storage/documents/module-home.html">02 - Storage</a>
+      <a href="../../03-compute/documents/module-home.html">03 - Compute</a>
+      <a href="../../04-networking/documents/module-home.html" class="active">04 - Networking</a>
+      <a href="../../05-monitor-maintain/documents/module-home.html">05 - Monitor &amp; Maintain</a>
+    </div>
+  </details>
+</nav>
+<div class="layout">
+  <aside class="sidebar">
+    <details open>
+      <summary>▶ Module 04 - Networking</summary>
+      <div>
+        <a href="01-vnets-and-subnets.html">01 - Vnets and subnets</a>
+        <a href="02-network-security-groups.html">02 - Network security groups</a>
+        <a href="03-routing-fundamentals.html">03 - Routing fundamentals</a>
+        <a href="04-vnet-peering.html">04 - Vnet peering</a>
+        <a href="05-vpn-and-expressroute.html">05 - Vpn and expressroute</a>
+        <a href="06-hub-spoke-topology.html">06 - Hub spoke topology</a>
+        <a href="07-private-endpoints-service-endpoints.html">07 - Private endpoints service endpoints</a>
+        <a href="08-network-security-advanced.html">08 - Network security advanced</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ Labs</summary>
+      <div>
+        <a href="lab01-vnet-subnets.html">lab01 - Vnet subnets</a>
+        <a href="lab02-nsg-asg.html">lab02 - Nsg asg</a>
+        <a href="lab03-vnet-peering-vpn.html">lab03 - Vnet peering vpn</a>
+        <a href="lab04-load-balancer-app-gateway.html">lab04 - Load balancer app gateway</a>
+        <a href="lab05-dns-name-resolution.html">lab05 - Dns name resolution</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ On This Page</summary>
+      <div>
+        <a href="#before-you-start">Before you start</a>
+        <a href="#the-simple-idea">The simple idea</a>
+        <a href="#how-it-actually-works">How it actually works</a>
+        <a href="#key-components-understanding-vnet-structure">Key components understanding vnet structure</a>
+        <a href="#mental-model-vnet-as-a-building">Mental model vnet as a building</a>
+        <a href="#worked-example-real-scenario">Worked example real scenario</a>
+        <a href="#important-concept-azure-reserved-ips">Important concept azure reserved ips</a>
+        <a href="#common-mistakes-what-not-to-do">Common mistakes what not to do</a>
+        <a href="#how-this-connects-to-other-topics">How this connects to other topics</a>
+        <a href="#see-it-in-action">See it in action</a>
+        <a href="#key-takeaways">Key takeaways</a>
+        <a href="#summary-vnet-vs-subnet-vs-resource-group">Summary vnet vs subnet vs resource group</a>
+        <a href="#next-steps">Next steps</a>
+      </div>
+    </details>
+  </aside>
+  <div class="page">
+
+  <h1>Virtual Networks &amp; Subnets: Building Your Private Network</h1>
+  <div class="subtitle">The foundational building blocks every Azure resource needs to live and communicate</div>
+
+  <div class="badges">
+    <span class="badge">🟢 Beginner</span>
+    <span class="badge">⏱ 15 Minutes</span>
+    <span class="badge">📘 AZ-104 · Module 04</span>
+  </div>
+
+  <div class="callout">
+    <strong>Why This Matters</strong>
+    <p>Before you can deploy any Azure resource (VM, database, app service), it needs a network to live in. Virtual Networks are like creating your own private network inside Azure — like a gated community where only authorized traffic can enter. Understanding VNets and subnets is foundational to everything else in Azure networking.</p>
+  </div>
+
+  <!-- Before You Start -->
+  <div class="section full" id="before-you-start">
+    <h2>Before You Start</h2>
+    <table>
+      <tr><th>Prerequisites</th><td>00-Prerequisites: Networking Basics (CIDR, IP addresses, subnets)</td></tr>
+      <tr><th>Time to understand</th><td>15 minutes</td></tr>
+      <tr><th>Difficulty</th><td>🟢 Beginner (foundational, no prior network knowledge needed)</td></tr>
+      <tr><th>What you'll learn</th><td>What VNets are, how to create subnets, why they matter</td></tr>
+    </table>
+  </div>
+
+  <!-- The Simple Idea -->
+  <div class="section" id="the-simple-idea">
+    <div>
+      <h2>The Simple Idea</h2>
+      <h3>What Is a Virtual Network (VNet)?</h3>
+      <p>A <strong>VNet</strong> is your own <strong>private network inside Azure</strong>. It's a walled-off space where your resources live, talk to each other, and stay isolated from the internet (unless you explicitly allow internet access).</p>
+      <h3>What Is a Subnet?</h3>
+      <p>A <strong>subnet</strong> is a <strong>smaller network inside a VNet</strong>. You divide your VNet into subnets to organize resources and apply security rules.</p>
+      <p>Each subnet has different security rules (Network Security Groups).</p>
+    </div>
+    <div class="panel">Without a VNet (insecure):
+
+Your computers sitting on public internet
+↓
+Anyone can see them and try to connect
+↓
+No privacy, high risk
+
+With a VNet (secure):
+
+Your office building (VNet)
+├── Reception area (public IP - can access internet)
+├── Employee cubicles (private IPs - internal only)
+├── Server room (no public IP - completely isolated)
+└── Conference room (VPN access only - external partners)
+
+Locked doors (Network Security Groups) control who goes where
+
+Example VNet structure:
+
+VNet: 10.0.0.0/16 (my company network)
+├── Subnet 1: 10.0.1.0/24 (Web tier - public)
+├── Subnet 2: 10.0.2.0/24 (App tier - private)
+└── Subnet 3: 10.0.3.0/24 (Database tier - completely private)</div>
+  </div>
+
+  <!-- How It Actually Works -->
+  <div class="section full" id="how-it-actually-works">
+    <h2>How It Actually Works</h2>
+    <div class="grid2">
+      <div>
+        <h3>Step 1: Create a VNet</h3>
+        <p>You define an address space (like your company's IP range):</p>
+        <div class="panel small">VNet Name: my-company-network
+Address Space: 10.0.0.0/16
+(This gives you 65,536 possible IP addresses)</div>
+      </div>
+      <div>
+        <h3>Step 2: Divide Into Subnets</h3>
+        <p>You create smaller subnets within the VNet:</p>
+        <div class="panel small">Subnet 1 (Web): 10.0.1.0/24 (256 addresses)
+Subnet 2 (App): 10.0.2.0/24 (256 addresses)
+Subnet 3 (DB):  10.0.3.0/24 (256 addresses)</div>
+      </div>
+      <div>
+        <h3>Step 3: Deploy Resources Into Subnets</h3>
+        <div class="panel small">Subnet 1 (Web): VM with public IP
+  (accessible from internet)
+Subnet 2 (App): VM with private IP
+  (internal only)
+Subnet 3 (DB):  SQL Database
+  (no public IP)</div>
+      </div>
+      <div>
+        <h3>Step 4: Apply Security Rules (NSGs)</h3>
+        <div class="panel small">Subnet 1: "Allow port 80 from internet"
+Subnet 2: "Allow port 5000 from Subnet 1 only"
+Subnet 3: "Allow port 1433 from Subnet 2 only"</div>
+      </div>
+    </div>
+    <p style="margin-top:14px"><strong>Result:</strong> Traffic flows securely through your network tiers.</p>
+  </div>
+
+  <!-- Key Components -->
+  <div class="section full" id="key-components-understanding-vnet-structure">
+    <h2>Key Components: Understanding VNet Structure</h2>
+    <table>
+      <tr><th>Component</th><th>What It Is</th><th>Example</th><th>Why It Matters</th></tr>
+      <tr><td><strong>VNet</strong></td><td>Your private network</td><td>10.0.0.0/16</td><td>Creates isolated space for resources</td></tr>
+      <tr><td><strong>Address Space</strong></td><td>Range of IP addresses</td><td>10.0.0.0/16 (65k IPs)</td><td>Defines what IPs you can assign</td></tr>
+      <tr><td><strong>Subnet</strong></td><td>Smaller network within VNet</td><td>10.0.1.0/24 (256 IPs)</td><td>Organize resources by tier/function</td></tr>
+      <tr><td><strong>Public IP</strong></td><td>Internet-accessible address</td><td>52.123.45.67</td><td>Allows VM to receive traffic from internet</td></tr>
+      <tr><td><strong>Private IP</strong></td><td>Internal-only address</td><td>10.0.2.5</td><td>Resources talk to each other internally</td></tr>
+      <tr><td><strong>Network Security Group (NSG)</strong></td><td>Firewall rules</td><td>"Allow port 80 inbound"</td><td>Controls traffic in/out of subnet</td></tr>
+    </table>
+  </div>
+
+  <!-- Mental Model -->
+  <div class="section full" id="mental-model-vnet-as-a-building">
+    <h2>Mental Model: VNet as a Building</h2>
+    <p>Think of your VNet like a <strong>building with security</strong>:</p>
+    <div class="panel">                    ┌─────────────────────────────┐
+                    │   Azure VNet (10.0.0.0/16)  │ (Your private building)
+                    │     (65,536 IP addresses)   │
+                    │                             │
+    ┌───────────────┼─────────────┬───────────────┼──────────────────┐
+    │               │             │               │                  │
+┌─────────────┐  ┌────────────┐ ┌────────────┐ ┌────────────┐
+│   Subnet 1  │  │  Subnet 2  │ │  Subnet 3  │ │ Subnet 4   │
+│   Web Tier  │  │  App Tier  │ │  DB Tier   │ │ Backup     │
+│             │  │            │ │            │ │            │
+│10.0.1.0/24 │  │10.0.2.0/24 │ │10.0.3.0/24 │ │10.0.4.0/24 │
+│             │  │            │ │            │ │            │
+│ VM1 (public)│  │ VM2        │ │  SQL DB    │ │ Backup VM  │
+│ IP: .5     │  │ (private)  │ │ (private)  │ │ (private)  │
+│             │  │ IP: .10    │ │ IP: .10    │ │ IP: .20    │
+└─────────────┘  └────────────┘ └────────────┘ └────────────┘
+     ↑
+     │ Public IP: 52.123.45.67
+     │ (accessible from internet)</div>
+    <p style="margin-top:14px">Each subnet has security rules (like locked doors):</p>
+    <ul>
+      <li><strong>Subnet 1 (Web):</strong> Door open to internet (port 80)</li>
+      <li><strong>Subnet 2 (App):</strong> Door locked except from Subnet 1</li>
+      <li><strong>Subnet 3 (DB):</strong> Door locked except from Subnet 2</li>
+      <li><strong>Subnet 4 (Backup):</strong> Door locked — internal only</li>
+    </ul>
+  </div>
+
+  <!-- Worked Example -->
+  <div class="section full" id="worked-example-real-scenario">
+    <h2>Worked Example: Real Scenario</h2>
+    <h3>The Scenario</h3>
+    <p><strong>TechCorp is building a 3-tier web application:</strong></p>
+    <ul>
+      <li><strong>Web Tier:</strong> User-facing web servers (needs internet access)</li>
+      <li><strong>App Tier:</strong> API servers (talks to web tier and database)</li>
+      <li><strong>Database Tier:</strong> SQL databases (talks to app tier only)</li>
+    </ul>
+    <p><strong>Goal:</strong> Deploy this securely with separate tiers, each with appropriate access.</p>
+
+    <h3>Step 1: Plan the VNet</h3>
+    <div class="panel small">VNet Address: 10.0.0.0/16
+
+Web Subnet:  10.0.1.0/24   (256 IPs for web servers)
+App Subnet:  10.0.2.0/24   (256 IPs for app servers)
+DB Subnet:   10.0.3.0/24   (256 IPs for databases)</div>
+
+    <h3 style="margin-top:24px">Step 2: Create Subnets &amp; Deploy Resources</h3>
+    <div class="grid3">
+      <div>
+        <h4>Web Subnet (10.0.1.0/24)</h4>
+        <div class="panel small">VM: WebServer1
+├── Private IP: 10.0.1.5
+├── Public IP: 52.123.45.67
+│   ← Internet can reach here
+└── Purpose: Accept web traffic
+    from internet</div>
+      </div>
+      <div>
+        <h4>App Subnet (10.0.2.0/24)</h4>
+        <div class="panel small">VM: AppServer1
+├── Private IP: 10.0.2.10
+├── No public IP
+│   ← Internet CANNOT reach here
+└── Purpose: Talk to web tier and
+    database only</div>
+      </div>
+      <div>
+        <h4>DB Subnet (10.0.3.0/24)</h4>
+        <div class="panel small">Database: SQL Server
+├── Private IP: 10.0.3.20
+├── No public IP
+│   ← Internet CANNOT reach here
+└── Purpose: Accept queries from
+    app tier only</div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:24px">Step 3: Apply Security Rules (Network Security Groups)</h3>
+    <div class="grid3">
+      <div>
+        <h4>Web Subnet Security Rules (NSG)</h4>
+        <div class="panel small">✓ ALLOW: Port 80 (HTTP) from internet
+✓ ALLOW: Port 443 (HTTPS) from internet
+✗ DENY: Everything else from internet
+✓ ALLOW: App tier to reach web tier</div>
+      </div>
+      <div>
+        <h4>App Subnet Security Rules (NSG)</h4>
+        <div class="panel small">✓ ALLOW: Port 5000 from web tier
+✓ ALLOW: Database tier to reach app tier
+✗ DENY: Internet access (no public IP)</div>
+      </div>
+      <div>
+        <h4>DB Subnet Security Rules (NSG)</h4>
+        <div class="panel small">✓ ALLOW: Port 1433 (SQL) from app tier
+✗ DENY: Everything else
+✗ DENY: Internet access (no public IP)</div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:24px">Step 4: Traffic Flow</h3>
+    <p><strong>User requests web page:</strong></p>
+    <div class="panel">1. User on internet → WebServer1 (52.123.45.67)
+   ✓ Allowed (public IP, port 80 open)
+
+2. WebServer1 → AppServer1 (10.0.2.10)
+   ✓ Allowed (internal subnet communication)
+
+3. AppServer1 → SQL Server (10.0.3.20)
+   ✓ Allowed (port 1433 from app tier)
+
+4. SQL Server → Internet
+   ✗ Blocked (no public IP, NSG denies)</div>
+    <p style="margin-top:14px"><strong>Security achieved:</strong> Database is unreachable from internet, even if someone compromises the web server.</p>
+  </div>
+
+  <!-- Azure Reserved IPs -->
+  <div class="section" id="important-concept-azure-reserved-ips">
+    <div>
+      <h2>Important Concept: Azure Reserved IPs</h2>
+      <div class="callout">
+        <strong>⚠️ Important</strong>
+        <p>Azure reserves 5 IPs in every subnet.</p>
+      </div>
+      <p style="margin-top:14px"><strong>Formula:</strong></p>
+      <div class="panel small">Usable IPs = Total IPs - 5
+Total IPs = 2^(32 - subnet_mask)
+
+Example: /24 subnet
+Total = 2^(32-24) = 2^8 = 256
+Usable = 256 - 5 = 251</div>
+    </div>
+    <div>
+      <table>
+        <tr><th>IP</th><th>Purpose</th></tr>
+        <tr><td>.0</td><td>Network address (reserved)</td></tr>
+        <tr><td>.1</td><td>Default gateway (reserved)</td></tr>
+        <tr><td>.2</td><td>Azure DNS (reserved)</td></tr>
+        <tr><td>.3</td><td>Azure future use (reserved)</td></tr>
+        <tr><td>.255</td><td>Broadcast address (reserved)</td></tr>
+      </table>
+      <p><strong>Example for subnet 10.0.1.0/24 (256 IPs):</strong></p>
+      <div class="panel small">Total IPs: 256
+Reserved: 5 (listed above)
+Usable: 256 - 5 = 251 IPs for your resources</div>
+    </div>
+  </div>
+
+  <!-- Common Mistakes -->
+  <div class="section full" id="common-mistakes-what-not-to-do">
+    <h2>Common Mistakes (What NOT to Do)</h2>
+
+    <h3>❌ Mistake 1: Overlapping Address Spaces</h3>
+    <div class="mistake-card">
+      <div>
+        <h4>Wrong</h4>
+        <div class="panel small">VNet 1: 10.0.0.0/16
+VNet 2: 10.0.0.0/16 (same range!)
+
+If you peer these VNets:
+↓
+Network conflict—traffic routing fails
+↓
+Applications can't communicate</div>
+      </div>
+      <div>
+        <h4>Fix</h4>
+        <div class="panel small">Plan address spaces before creating VNets:
+VNet 1: 10.0.0.0/16
+VNet 2: 10.1.0.0/16 (different range)
+VNet 3: 10.2.0.0/16 (different range)
+
+Document them:
+├── Finance VNet: 10.0.0.0/16
+├── Engineering VNet: 10.1.0.0/16
+└── Operations VNet: 10.2.0.0/16</div>
+      </div>
+    </div>
+    <p><strong>Why it fails:</strong> Azure can't route traffic to same IP range in two places.</p>
+
+    <h3>❌ Mistake 2: Subnet Too Large</h3>
+    <div class="mistake-card">
+      <div>
+        <h4>Wrong</h4>
+        <div class="panel small">VNet: 10.0.0.0/16
+Single subnet: 10.0.0.0/16 (all 65k IPs in one subnet)
+
+Result:
+├── No tier separation
+├── All resources see all traffic
+├── Hard to apply targeted security
+└── Scaling becomes difficult</div>
+      </div>
+      <div>
+        <h4>Fix</h4>
+        <div class="panel small">Divide into multiple smaller subnets:
+VNet: 10.0.0.0/16
+├── Web:  10.0.1.0/24 (256 IPs)
+├── App:  10.0.2.0/24 (256 IPs)
+├── DB:   10.0.3.0/24 (256 IPs)
+└── Extra: 10.0.4.0-10.0.254.0/24 (for growth)</div>
+      </div>
+    </div>
+    <p><strong>Why it fails:</strong> Can't separate concerns (web vs. app vs. database).</p>
+
+    <h3>❌ Mistake 3: Forget About Reserved IPs</h3>
+    <div class="mistake-card">
+      <div>
+        <h4>Wrong</h4>
+        <div class="panel small">Subnet: 10.0.1.0/24
+Admin thinks: "I have 256 IPs, let me assign 256 VMs"
+↓
+Creates VMs with IPs: 10.0.1.0, 10.0.1.1, ..., 10.0.1.255
+↓
+Fails: IPs .0, .1, .2, .3, .255 are reserved
+↓
+Only 251 VMs can be created, not 256</div>
+      </div>
+      <div>
+        <h4>Fix</h4>
+        <div class="panel small">Calculate usable IPs:
+/24 subnet = 256 total - 5 reserved = 251 usable
+/25 subnet = 128 total - 5 reserved = 123 usable
+/26 subnet = 64 total - 5 reserved = 59 usable
+
+Plan accordingly for expected scale.</div>
+      </div>
+    </div>
+    <p><strong>Why it fails:</strong> Reserved IPs aren't available for resources.</p>
+  </div>
+
+  <!-- Connections -->
+  <div class="section full" id="how-this-connects-to-other-topics">
+    <h2>How This Connects to Other Topics</h2>
+    <div class="grid2">
+      <div>
+        <h3>Related to Module 01 (Identity &amp; Governance)</h3>
+        <ul>
+          <li><strong>RBAC + VNets:</strong> Use RBAC to control who can create/modify VNets</li>
+          <li><strong>Policy + VNets:</strong> Enforce policies like "all VNets must have NSGs"</li>
+        </ul>
+        <h3>Related to Module 02 (Storage)</h3>
+        <ul>
+          <li><strong>Service Endpoints:</strong> Connect storage accounts to VNet without public IP</li>
+          <li><strong>Private Endpoints:</strong> Access storage securely from VNet</li>
+          <li><strong>Firewall rules:</strong> Restrict storage access to specific VNets</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Related to Module 03 (Compute)</h3>
+        <ul>
+          <li><strong>VM Deployment:</strong> VMs must be in a subnet (the network they live in)</li>
+          <li><strong>Load Balancers:</strong> Distribute traffic to VMs across subnets</li>
+        </ul>
+        <h3>Related to Module 05 (Monitor)</h3>
+        <ul>
+          <li><strong>Network Watcher:</strong> Monitor traffic between subnets</li>
+          <li><strong>Flow Logs:</strong> See which resources are communicating with each other</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- See It In Action -->
+  <div class="section full" id="see-it-in-action">
+    <h2>See It In Action</h2>
+    <p><strong>Associated lab:</strong> <a href="../labs/lab01-vnet-creation.md">Lab 01: Create &amp; Configure VNets</a></p>
+    <p><strong>Suggested learning sequence:</strong></p>
+    <ol>
+      <li>✅ Read this doc (VNets &amp; Subnets - foundation)</li>
+      <li>✅ Read <a href="02-network-security-groups.html">Network Security Groups</a> (how to secure them)</li>
+      <li>✅ Read Routing Fundamentals (how traffic flows)</li>
+      <li>✅ Work through Lab 12 (hands-on VNet creation)</li>
+      <li>✅ Read VNet Peering (connect multiple VNets)</li>
+    </ol>
+  </div>
+
+  <!-- Key Takeaways -->
+  <div class="section full" id="key-takeaways">
+    <h2>Key Takeaways</h2>
+    <div class="tip">
+      <strong>💡 Summary</strong>
+      <ul style="margin-top:8px">
+        <li><strong>VNet = Your private network in Azure</strong> (like an office network)</li>
+        <li><strong>Subnet = Division within VNet</strong> (like separate departments)</li>
+        <li><strong>Each resource needs a VNet and subnet</strong> (fundamental requirement)</li>
+        <li><strong>Plan address spaces ahead</strong> (avoid overlaps and conflicts)</li>
+        <li><strong>Reserve 5 IPs per subnet</strong> (don't count them in usable IPs)</li>
+        <li><strong>Multiple subnets = better security</strong> (separate tiers, different rules)</li>
+        <li><strong>Public IP = Internet accessible</strong> (VMs with public IPs can reach internet)</li>
+        <li><strong>Private IP = Internal only</strong> (VMs without public IPs stay private)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Summary table -->
+  <div class="section full" id="summary-vnet-vs-subnet-vs-resource-group">
+    <h2>Summary: VNet vs. Subnet vs. Resource Group</h2>
+    <table>
+      <tr><th>Aspect</th><th>VNet</th><th>Subnet</th><th>Resource Group</th></tr>
+      <tr><td><strong>Purpose</strong></td><td>Create private network</td><td>Organize within VNet</td><td>Organize any resources</td></tr>
+      <tr><td><strong>Contains</strong></td><td>Subnets, resources</td><td>Resources (VMs, etc.)</td><td>Any Azure resources</td></tr>
+      <tr><td><strong>Region</strong></td><td>Region-specific</td><td>Within VNet (same region)</td><td>Can span regions</td></tr>
+      <tr><td><strong>Required</strong></td><td>Yes (for networking)</td><td>Yes (to deploy resources)</td><td>Yes (to organize resources)</td></tr>
+      <tr><td><strong>IP space</strong></td><td>Address space you define</td><td>Divided from VNet</td><td>N/A (no IP concept)</td></tr>
+    </table>
+  </div>
+
+  <!-- Next Steps -->
+  <div class="section full" id="next-steps">
+    <h2>Next Steps</h2>
+    <ol>
+      <li><strong>Learn:</strong> Read this doc (you're here)</li>
+      <li><strong>Secure:</strong> Read <a href="02-network-security-groups.html">Network Security Groups</a> (how to add firewall rules)</li>
+      <li><strong>Understand:</strong> Read Routing Fundamentals (how traffic flows)</li>
+      <li><strong>Practice:</strong> <a href="../labs/lab01-vnet-creation.md">Lab 01: Create &amp; Configure VNets</a></li>
+      <li><strong>Connect:</strong> Read VNet Peering (connect multiple VNets)</li>
+    </ol>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-grid">
+      <div class="footer-item">
+        <strong>Azure AZ-104</strong>
+        Professional Concept Documentation
+      </div>
+      <div class="footer-item">
+        <strong>Module</strong>
+        04 — Networking
+      </div>
+      <div class="footer-item">
+        <strong>Generated</strong>
+        June 15, 2026
+      </div>
+    </div>
+    <div class="footer-meta">&copy; 2026 — AZ-104 Learning Hub. For study purposes only.</div>
+  </div>
+
+</div>
+</div>
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.sidebar a'));
+  var sections = [];
+  links.forEach(function(a){
+    var el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) sections.push({link:a, el:el});
+  });
+  if (!sections.length || !('IntersectionObserver' in window)) return;
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (!entry.isIntersecting) return;
+      var match = sections.find(function(s){ return s.el === entry.target; });
+      if (!match) return;
+      links.forEach(function(a){ a.classList.remove('active'); });
+      match.link.classList.add('active');
+    });
+  }, { rootMargin: '-100px 0px -70% 0px', threshold: 0 });
+  sections.forEach(function(s){ observer.observe(s.el); });
+})();
+</script>
+</body>
+</html>
+
+
+

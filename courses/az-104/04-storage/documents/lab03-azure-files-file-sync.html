@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab 03 – Azure Files & Azure File Sync - AZ-104 Labs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Professional Lab Template - Embedded CSS for local file:// access */
+:root{--bg:#f7f9fd;--card:#fff;--border:#e2e8f0;--text:#1a202c;--muted:#64748b;--primary:#1e3a8a;--panel:#0f172a;--panel-shadow:rgba(15,23,42,.12);--section-gap:48px;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,-apple-system,'Segoe UI',sans-serif;color:var(--text);line-height:1.6}.page{flex:1;min-width:0;padding:48px;max-width:1100px;margin:0 auto}
+h1{font-size:3.4rem;line-height:1.2;margin:0 0 12px 0;color:var(--primary);font-weight:800;letter-spacing:-0.5px}h2{font-size:2.2rem;margin:0 0 24px 0;color:var(--primary);font-weight:800;letter-spacing:-0.5px}h3{font-size:1.45rem;margin:32px 0 16px 0;color:var(--primary);font-weight:700;letter-spacing:-0.3px}h3:first-child{margin-top:0}h4{font-size:1.1rem;margin:20px 0 12px 0;color:#1e3a8a;font-weight:700}
+p{font-size:1.05rem;line-height:1.7;margin:12px 0;color:var(--text)}ul,ol{margin:16px 0;padding-left:24px}li{margin-bottom:10px;line-height:1.7;font-size:1.03rem;color:var(--text)}
+a{color:#1e40af;text-decoration:none;border-bottom:2px solid transparent;font-weight:600;transition:border-color 0.2s}a:hover{border-bottom-color:#1e40af}strong{color:var(--primary);font-weight:700}code{background:#f0f4ff;color:#1e40af;padding:4px 8px;border-radius:6px;font:13px/1.5 'SF Mono',Consolas,'Courier New',monospace;font-weight:500}
+.task-box{margin:24px 0;padding:0;background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(30,64,175,.06);transition:box-shadow 0.2s,border-color 0.2s}.task-box:hover{box-shadow:0 4px 12px rgba(30,64,175,.12);border-color:#c7d2fe}
+.task-header{display:flex;align-items:center;gap:12px;padding:18px 20px;background:linear-gradient(135deg,#dbeafe 0%,#eff6ff 100%);border-bottom:1px solid var(--border)}.task-header .task-icon{font-size:1.4rem;color:#1e40af}.task-header h3{margin:0;font-size:1.2rem;color:var(--primary);font-weight:700}.task-content{padding:20px}
+.code-block{position:relative;margin:24px 0;background:#0f172a;border-radius:10px;overflow:hidden;border:1px solid #1e293b;box-shadow:0 4px 12px rgba(15,23,42,.25)}.code-block pre{margin:0;padding:20px 48px 20px 20px;color:#e2e8f0;font-family:'SF Mono',Consolas,'Courier New',monospace;font-size:0.92rem;line-height:1.7;overflow-x:auto}
+.code-copy-btn{position:absolute;top:12px;right:12px;padding:8px 14px;background:#1e293b;color:#60a5fa;border:1px solid #334155;border-radius:6px;cursor:pointer;font-size:0.85rem;font-weight:600;transition:all 0.2s;user-select:none;box-shadow:0 1px 3px rgba(0,0,0,.2)}.code-copy-btn:hover{background:#334155;color:#93c5fd;border-color:#475569}.code-block .keyword{color:#569cd6}.code-block .string{color:#ce9178}.code-block .comment{color:#6a9955}.code-block .operator{color:#d4d4d4}.code-block .function{color:#dcdcaa}.code-block .property{color:#9cdcfe}
+.callout-box{margin:24px 0;padding:18px 20px;border-radius:10px;border-left:4px solid;display:flex;gap:14px;box-shadow:0 1px 3px rgba(0,0,0,.05)}.callout-icon{font-size:1.5rem;flex-shrink:0;min-width:28px;text-align:center}.callout-content{flex:1}.callout-content h4{margin:0 0 8px 0;font-size:1.08rem;font-weight:700}.callout-content p{margin:8px 0;line-height:1.7;font-size:1.02rem}.callout-content p:first-child{margin-top:0}
+.callout-tip{background:#eff6ff;border-color:#3b82f6}.callout-tip .callout-icon{color:#1e40af}.callout-tip h4{color:#1e40af}.callout-warning{background:#fefce8;border-color:#eab308}.callout-warning .callout-icon{color:#ca8a04}.callout-warning h4{color:#92400e}.callout-important{background:#fee2e2;border-color:#ef4444}.callout-important .callout-icon{color:#dc2626}.callout-important h4{color:#991b1b}
+.section-time{background:#dbeafe;border:1px solid #93c5fd;border-radius:8px;padding:10px 16px;font-size:0.95rem;font-weight:600;color:#1e40af;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}.layout{max-width:1500px;margin:auto;display:flex;align-items:flex-start;gap:32px}.sidebar{flex:0 0 280px;position:sticky;top:88px;max-height:calc(100vh - 108px);overflow-y:auto;padding:24px;background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 2px 8px rgba(30,64,175,.06)}.sidebar summary{cursor:pointer;list-style:none;padding:10px 12px;border-radius:8px;font-weight:600;font-size:.93rem;color:var(--primary);user-select:none;transition:all 0.2s}.sidebar summary::-webkit-details-marker{display:none}.sidebar details[open]>summary{background:#dbeafe}.sidebar summary:hover{background:#eff6ff}.sidebar a{display:block;padding:9px 12px;margin-bottom:2px;border-radius:8px;font-size:.89rem;font-weight:500;color:var(--text);border-bottom:none;border-left:3px solid transparent;line-height:1.5;transition:all 0.15s;text-decoration:none;color:#1a202c}.sidebar a:hover{background:#eff6ff;color:var(--primary)}.site-nav{position:sticky;top:0;z-index:1000;background:var(--primary);color:#fff;display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:14px 32px;font-size:.93rem;box-shadow:0 4px 12px rgba(0,0,0,.1);font-family:Inter,-apple-system,'Segoe UI',sans-serif}.site-nav .nav-brand{font-weight:800;font-size:1.1rem;margin-right:auto;color:#fff;letter-spacing:-0.3px}.site-nav summary{cursor:pointer;list-style:none;padding:8px 16px;border-radius:8px;background:rgba(255,255,255,.12);font-weight:600;color:#fff;user-select:none;transition:background 0.2s}
+</style>
+</head>
+<body>
+<nav class="site-nav" aria-label="Main site navigation">
+  <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
+  <details class="nav-group" aria-label="Learning module selector">
+    <summary>Learning Module</summary>
+    <div class="nav-menu">
+      <a href="../../00-prerequisites/documents/module-home.html">00 - Prerequisites</a>
+      <a href="../../01-identity-governance/documents/module-home.html">01 - Identity &amp; Governance</a>
+      <a href="../../02-storage/documents/module-home.html">02 - Storage</a>
+      <a href="../../03-compute/documents/module-home.html">03 - Compute</a>
+      <a href="../../04-networking/documents/module-home.html">04 - Networking</a>
+      <a href="../../05-monitor-maintain/documents/module-home.html">05 - Monitor &amp; Maintain</a>
+    </div>
+  </details>
+</nav>
+<div class="layout">
+  <aside class="sidebar" aria-label="Page navigation">
+    <details open>
+      <summary>▶ Module 02 - Storage</summary>
+      <div>
+        <a href="01-storage-redundancy-options.html">01 - Storage Redundancy Options</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ Labs</summary>
+      <div>
+        <a href="lab01-storage-accounts.html">Lab 01 - Storage Accounts</a>
+<a href="lab02-blob-security-lifecycle.html">Lab 02 - Blob Security &amp; Lifecycle</a>
+<a href="lab03-azure-files-file-sync.html">Lab 03 - Azure Files &amp; File Sync</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ On This Page</summary>
+      <div>
+        <a href="#objectives-">Objectives</a>
+<a href="#prerequisites-">Prerequisites</a>
+<a href="#estimated-time-">Estimated time</a>
+<a href="#part-1-create-a-file-share-">Part 1 – Create a file share</a>
+<a href="#part-2-mount-the-share-from-a-windows-machine-">Part 2 – Mount the share from a Windows machine</a>
+<a href="#part-3-snapshots-">Part 3 – Snapshots</a>
+<a href="#part-4-identity-based-access-entra-kerberos-overview-">Part 4 – Identity-based access (Entra Kerberos) — overview</a>
+<a href="#part-5-azure-file-sync-conceptual-walkthrough-">Part 5 – Azure File Sync (conceptual walkthrough)</a>
+<a href="#validation-">Validation</a>
+<a href="#cleanup-">Cleanup</a>
+<a href="#exam-tips-">Exam Tips</a>
+      </div>
+    </details>
+  </aside>
+  <div class="page">
+  <h1>Lab 03 – Azure Files & Azure File Sync</h1>
+
+<h2 id="objectives-">Objectives</h2>
+<ul><ol><li>Create an Azure file share and mount it from a VM</li>
+<li>Configure share-level and directory-level permissions (Entra Kerberos overview)</li>
+<li>Set up Azure File Sync between an on-prem-style server and Azure file share (conceptual + portal walkthrough)</li>
+<li>Configure file share snapshots</li></ol></ul>
+
+<h2 id="prerequisites-">Prerequisites</h2>
+<ul><ol><li>Storage account (from Lab 04/05 or new)</li>
+<li>A Windows VM for mounting (can reuse Lab 08's VM, or skip mounting if no VM yet)</li>
+<li>Signed in at <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
+
+<h2 id="estimated-time-">Estimated time</h2>
+<p>30 minutes</p>
+
+<p>---</p>
+
+<h2 id="part-1-create-a-file-share-">Part 1 – Create a file share</h2>
+
+<ol><li>Search for <strong>Resource groups</strong> > <strong>Create</strong>. Name: <code>rg-az104-lab06</code>,</li></ol>
+<p>region: <code>East US</code>. <strong>Review + create</strong> > <strong>Create</strong>.</p>
+<ol><li>Search for <strong>Storage accounts</strong> > <strong>Create</strong>. <strong>Resource group</strong>:</li></ol>
+<p><code>rg-az104-lab06</code>, <strong>Storage account name</strong>: <code>stoaz104lab06<unique></code>,</p>
+<p><strong>Region</strong>: <code>East US</code>, <strong>Performance</strong>: Standard, <strong>Redundancy</strong>: LRS.</p>
+<p><strong>Review + create</strong> > <strong>Create</strong>.</p>
+<ol><li>Open the storage account > <strong>File shares</strong> (under <strong>Data storage</strong>) ></li></ol>
+<p><strong>+ File share</strong>. Name: <code>teamshare</code>, <strong>Quota</strong>: 10 GiB,</p>
+<p><strong>Tier</strong>: Transaction optimized. <strong>Create</strong>.</p>
+
+<h2 id="part-2-mount-the-share-from-a-windows-machine-">Part 2 – Mount the share from a Windows machine</h2>
+
+<ol><li>Open <strong>File shares</strong> > <code>teamshare</code> > <strong>Connect</strong> (top toolbar).</li>
+<li>Select the drive letter (e.g., <code>Z:</code>), choose <strong>Windows</strong>, and the Portal</li></ol>
+<p>generates a ready-to-use <code>net use</code> command containing the share path,</p>
+<p>storage account name, and a storage key — for example:</p>
+<p>``<code></p>
+<p>net use Z: \\<account>.file.core.windows.net\teamshare /u:AZURE\<account> <storage-key></p>
+<p></code>`<code></p>
+<ol><li>Copy this command and run it in a <strong>Command Prompt</strong> (not PowerShell) on</li></ol>
+<p>the Windows VM. This is the OS-level mount step — the Portal's <strong>Connect</strong></p>
+<p>dialog is the only place this command needs to come from.</p>
+
+<div class="callout"><p>Port 445 (SMB) must be allowed outbound — many corporate/ISP networks block it.</p></div>
+<div class="callout"><p>Use Azure VPN/ExpressRoute or Azure File Sync to avoid relying on port 445 over the internet.</p></div>
+
+<h2 id="part-3-snapshots-">Part 3 – Snapshots</h2>
+
+<ol><li>Open <strong>File shares</strong> > </code>teamshare<code> > <strong>Snapshots</strong> (left-hand menu) ></li></ol>
+<p><strong>+ Add snapshot</strong>.</p>
+<ol><li>Using the mounted drive (or <strong>Storage browser</strong> > <strong>File shares</strong> ></li></ol>
+<p></code>teamshare<code>), upload a test file, take a snapshot, then modify or delete</p>
+<p>the file.</p>
+<ol><li>Back in <strong>Snapshots</strong>, select the snapshot's timestamp link to browse its</li></ol>
+<p>contents, locate the original file, and use <strong>Restore</strong> (or download +</p>
+<p>re-upload) to recover it.</p>
+<ol><li>The <strong>Snapshots</strong> list also shows each snapshot's creation time, equivalent</li></ol>
+<p>to listing share snapshots.</p>
+
+<h2 id="part-4-identity-based-access-entra-kerberos-overview-">Part 4 – Identity-based access (Entra Kerberos) — overview</h2>
+
+<ol><li>Open the storage account > <strong>File shares</strong> > <strong>Configuration</strong> (or</li></ol>
+<p>account-level <strong>Data storage</strong> > <strong>File shares</strong> > <strong>Active directory</strong>).</p>
+<ol><li>Note the two options: <strong>On-premises Active Directory Domain Services</strong> and</li></ol>
+<p><strong>Microsoft Entra Kerberos</strong> (for hybrid-joined/Entra-joined Windows</p>
+<p>clients, no AD DS needed).</p>
+<ol><li>With Entra Kerberos enabled, go to <strong>Access control (IAM)</strong> > <strong>Add role</li></ol>
+<p>assignment</strong> and assign <strong>Storage File Data SMB Share Contributor</strong> or</p>
+<p><strong>Storage File Data SMB Share Reader</strong> to users/groups — this controls</p>
+<p>share-level access; NTFS permissions on folders/files still apply for</p>
+<p>granular control.</p>
+<ol><li><em>(Full AD DS setup is out of scope for this lab — understand the concept and where it's configured.)</em></li></ol>
+
+<h2 id="part-5-azure-file-sync-conceptual-walkthrough-">Part 5 – Azure File Sync (conceptual walkthrough)</h2>
+
+<p>Azure File Sync requires a Windows Server VM registered as a "server endpoint" —</p>
+<p>deploying a full sync topology is heavy for a quick lab, so walk through the</p>
+<p>Portal flow without completing it:</p>
+
+<ol><li>Search for <strong>Storage Sync Services</strong> > <strong>Create</strong>. <strong>Resource group</strong>:</li></ol>
+<p></code>rg-az104-lab06<code>, <strong>Name</strong>: </code>az104-sync-service<code>, <strong>Region</strong>: </code>East US<code>.</p>
+<p><strong>Review + create</strong> > <strong>Create</strong>.</p>
+<ol><li>Open </code>az104-sync-service<code> > <strong>Sync groups</strong> > <strong>+ Sync group</strong>. Name:</li></ol>
+<p></code>sg-teamshare<code>, <strong>Azure file share</strong>: select </code>teamshare<code> from the storage</p>
+<p>account created earlier (this becomes the <strong>cloud endpoint</strong>).</p>
+<ol><li>To add a <strong>server endpoint</strong>, you'd install the Azure File Sync agent</li></ol>
+<p>(downloaded from the <strong>Storage Sync Service</strong> > <strong>Overview</strong> page) on a</p>
+<p>Windows Server, register it with the Storage Sync Service via the agent's</p>
+<p>registration wizard, then add the local folder path as a server endpoint</p>
+<p>from within the sync group.</p>
+<ol><li>Review <strong>Cloud Tiering</strong> options in the server endpoint configuration —</li></ol>
+<p>frequently-accessed files stay on local server disk, infrequently-used</p>
+<p>files become tiered placeholders pointing to the cloud copy.</p>
+
+<h2 id="validation-">Validation</h2>
+<ul><ol><li>[ ] File share </code>teamshare<code> created with 10 GiB quota</li>
+<li>[ ] A snapshot exists and can be browsed under <strong>Snapshots</strong></li>
+<li>[ ] You can explain identity-based access options for Azure Files (AD DS vs Entra Kerberos vs storage account key)</li>
+<li>[ ] You can explain the role of cloud endpoint, server endpoint, and cloud tiering in Azure File Sync</li></ol></ul>
+
+<h2 id="cleanup-">Cleanup</h2>
+<ol><li>Search for <strong>Resource groups</strong> > select </code>rg-az104-lab06<code> > <strong>Delete resource</li></ol>
+<p>group</strong> (type the name to confirm).</p>
+<ol><li>On the Windows VM, remove the mapped drive: open <strong>This PC</strong>, right-click</li></ol>
+<p>the </code>Z:<code> drive > <strong>Disconnect</strong>, or run </code>net use Z: /delete` in Command</p>
+<p>Prompt.</p>
+
+<h2 id="exam-tips-">Exam Tips</h2>
+<ul><ol><li>SMB requires TCP 445 outbound — a common reason "mount fails" in exam scenarios. NFS shares (premium file shares only) avoid this but require VNet connectivity (no public endpoint).</li>
+<li>Azure File Sync keeps an Azure file share as the central source of truth, syncing to one or more Windows Server endpoints, with optional cloud tiering for capacity savings.</li>
+<li>Snapshots are read-only, point-in-time, incremental copies of a share — used for quick recovery of individual files.</li></ol></ul>
+
+  </div>
+</div>
+<script>
+/* Sidebar Active Link Tracking */
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.sidebar a'));
+  var sections = [];
+  links.forEach(function(a){
+    var el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) sections.push({link:a, el:el});
+  });
+  if (!sections.length || !('IntersectionObserver' in window)) return;
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (!entry.isIntersecting) return;
+      var match = sections.find(function(s){ return s.el === entry.target; });
+      if (!match) return;
+      links.forEach(function(a){ a.classList.remove('active'); });
+      match.link.classList.add('active');
+    });
+  }, { rootMargin: '-100px 0px -70% 0px', threshold: 0 });
+  sections.forEach(function(s){ observer.observe(s.el); });
+})();
+
+/* Code Block Copy Button Functionality */
+document.addEventListener('DOMContentLoaded', function(){
+  var codeBlocks = document.querySelectorAll('.code-block');
+  codeBlocks.forEach(function(block){
+    var pre = block.querySelector('pre');
+    if (!pre) return;
+
+    var btn = document.createElement('button');
+    btn.className = 'code-copy-btn';
+    btn.textContent = 'Copy';
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'Copy code to clipboard');
+
+    btn.addEventListener('click', function(){
+      var code = pre.textContent;
+      navigator.clipboard.writeText(code).then(function(){
+        var original = btn.textContent;
+        btn.textContent = '✓ Copied!';
+        btn.classList.add('copied');
+        setTimeout(function(){
+          btn.textContent = original;
+          btn.classList.remove('copied');
+        }, 2000);
+      }).catch(function(){
+        alert('Failed to copy code');
+      });
+    });
+
+    block.appendChild(btn);
+  });
+});
+</script>
+</body>
+</html>

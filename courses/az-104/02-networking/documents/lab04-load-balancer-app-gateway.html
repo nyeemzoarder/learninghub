@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab 04 – Load Balancer & Application Gateway - AZ-104 Labs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Professional Lab Template - Embedded CSS for local file:// access */
+:root{--bg:#f7f9fd;--card:#fff;--border:#e2e8f0;--text:#1a202c;--muted:#64748b;--primary:#1e3a8a;--panel:#0f172a;--panel-shadow:rgba(15,23,42,.12);--section-gap:48px;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,-apple-system,'Segoe UI',sans-serif;color:var(--text);line-height:1.6}.page{flex:1;min-width:0;padding:48px;max-width:1100px;margin:0 auto}
+h1{font-size:3.4rem;line-height:1.2;margin:0 0 12px 0;color:var(--primary);font-weight:800;letter-spacing:-0.5px}h2{font-size:2.2rem;margin:0 0 24px 0;color:var(--primary);font-weight:800;letter-spacing:-0.5px}h3{font-size:1.45rem;margin:32px 0 16px 0;color:var(--primary);font-weight:700;letter-spacing:-0.3px}h3:first-child{margin-top:0}h4{font-size:1.1rem;margin:20px 0 12px 0;color:#1e3a8a;font-weight:700}
+p{font-size:1.05rem;line-height:1.7;margin:12px 0;color:var(--text)}ul,ol{margin:16px 0;padding-left:24px}li{margin-bottom:10px;line-height:1.7;font-size:1.03rem;color:var(--text)}
+a{color:#1e40af;text-decoration:none;border-bottom:2px solid transparent;font-weight:600;transition:border-color 0.2s}a:hover{border-bottom-color:#1e40af}strong{color:var(--primary);font-weight:700}code{background:#f0f4ff;color:#1e40af;padding:4px 8px;border-radius:6px;font:13px/1.5 'SF Mono',Consolas,'Courier New',monospace;font-weight:500}
+.task-box{margin:24px 0;padding:0;background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(30,64,175,.06);transition:box-shadow 0.2s,border-color 0.2s}.task-box:hover{box-shadow:0 4px 12px rgba(30,64,175,.12);border-color:#c7d2fe}
+.task-header{display:flex;align-items:center;gap:12px;padding:18px 20px;background:linear-gradient(135deg,#dbeafe 0%,#eff6ff 100%);border-bottom:1px solid var(--border)}.task-header .task-icon{font-size:1.4rem;color:#1e40af}.task-header h3{margin:0;font-size:1.2rem;color:var(--primary);font-weight:700}.task-content{padding:20px}
+.code-block{position:relative;margin:24px 0;background:#0f172a;border-radius:10px;overflow:hidden;border:1px solid #1e293b;box-shadow:0 4px 12px rgba(15,23,42,.25)}.code-block pre{margin:0;padding:20px 48px 20px 20px;color:#e2e8f0;font-family:'SF Mono',Consolas,'Courier New',monospace;font-size:0.92rem;line-height:1.7;overflow-x:auto}
+.code-copy-btn{position:absolute;top:12px;right:12px;padding:8px 14px;background:#1e293b;color:#60a5fa;border:1px solid #334155;border-radius:6px;cursor:pointer;font-size:0.85rem;font-weight:600;transition:all 0.2s;user-select:none;box-shadow:0 1px 3px rgba(0,0,0,.2)}.code-copy-btn:hover{background:#334155;color:#93c5fd;border-color:#475569}.code-block .keyword{color:#569cd6}.code-block .string{color:#ce9178}.code-block .comment{color:#6a9955}.code-block .operator{color:#d4d4d4}.code-block .function{color:#dcdcaa}.code-block .property{color:#9cdcfe}
+.callout-box{margin:24px 0;padding:18px 20px;border-radius:10px;border-left:4px solid;display:flex;gap:14px;box-shadow:0 1px 3px rgba(0,0,0,.05)}.callout-icon{font-size:1.5rem;flex-shrink:0;min-width:28px;text-align:center}.callout-content{flex:1}.callout-content h4{margin:0 0 8px 0;font-size:1.08rem;font-weight:700}.callout-content p{margin:8px 0;line-height:1.7;font-size:1.02rem}.callout-content p:first-child{margin-top:0}
+.callout-tip{background:#eff6ff;border-color:#3b82f6}.callout-tip .callout-icon{color:#1e40af}.callout-tip h4{color:#1e40af}.callout-warning{background:#fefce8;border-color:#eab308}.callout-warning .callout-icon{color:#ca8a04}.callout-warning h4{color:#92400e}.callout-important{background:#fee2e2;border-color:#ef4444}.callout-important .callout-icon{color:#dc2626}.callout-important h4{color:#991b1b}
+.section-time{background:#dbeafe;border:1px solid #93c5fd;border-radius:8px;padding:10px 16px;font-size:0.95rem;font-weight:600;color:#1e40af;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}.layout{max-width:1500px;margin:auto;display:flex;align-items:flex-start;gap:32px}.sidebar{flex:0 0 280px;position:sticky;top:88px;max-height:calc(100vh - 108px);overflow-y:auto;padding:24px;background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 2px 8px rgba(30,64,175,.06)}.sidebar summary{cursor:pointer;list-style:none;padding:10px 12px;border-radius:8px;font-weight:600;font-size:.93rem;color:var(--primary);user-select:none;transition:all 0.2s}.sidebar summary::-webkit-details-marker{display:none}.sidebar details[open]>summary{background:#dbeafe}.sidebar summary:hover{background:#eff6ff}.sidebar a{display:block;padding:9px 12px;margin-bottom:2px;border-radius:8px;font-size:.89rem;font-weight:500;color:var(--text);border-bottom:none;border-left:3px solid transparent;line-height:1.5;transition:all 0.15s;text-decoration:none;color:#1a202c}.sidebar a:hover{background:#eff6ff;color:var(--primary)}.site-nav{position:sticky;top:0;z-index:1000;background:var(--primary);color:#fff;display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:14px 32px;font-size:.93rem;box-shadow:0 4px 12px rgba(0,0,0,.1);font-family:Inter,-apple-system,'Segoe UI',sans-serif}.site-nav .nav-brand{font-weight:800;font-size:1.1rem;margin-right:auto;color:#fff;letter-spacing:-0.3px}.site-nav summary{cursor:pointer;list-style:none;padding:8px 16px;border-radius:8px;background:rgba(255,255,255,.12);font-weight:600;color:#fff;user-select:none;transition:background 0.2s}
+</style>
+</head>
+<body>
+<nav class="site-nav" aria-label="Main site navigation">
+  <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
+  <details class="nav-group" aria-label="Learning module selector">
+    <summary>Learning Module</summary>
+    <div class="nav-menu">
+      <a href="../../00-prerequisites/documents/module-home.html">00 - Prerequisites</a>
+      <a href="../../01-identity-governance/documents/module-home.html">01 - Identity &amp; Governance</a>
+      <a href="../../02-storage/documents/module-home.html">02 - Storage</a>
+      <a href="../../03-compute/documents/module-home.html">03 - Compute</a>
+      <a href="../../04-networking/documents/module-home.html">04 - Networking</a>
+      <a href="../../05-monitor-maintain/documents/module-home.html">05 - Monitor &amp; Maintain</a>
+    </div>
+  </details>
+</nav>
+<div class="layout">
+  <aside class="sidebar" aria-label="Page navigation">
+    <details open>
+      <summary>▶ Module 04 - Networking</summary>
+      <div>
+        <a href="01-vnets-and-subnets.html">01 - VNets &amp; Subnets</a>
+<a href="02-network-security-groups.html">02 - Network Security Groups</a>
+<a href="03-routing-fundamentals.html">03 - Routing Fundamentals</a>
+<a href="04-vnet-peering.html">04 - VNet Peering</a>
+<a href="05-vpn-and-expressroute.html">05 - VPN &amp; ExpressRoute</a>
+<a href="06-hub-spoke-topology.html">06 - Hub-Spoke Topology</a>
+<a href="07-private-endpoints-service-endpoints.html">07 - Private Endpoints &amp; Service Endpoints</a>
+<a href="08-network-security-advanced.html">08 - Network Security Advanced</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ Labs</summary>
+      <div>
+        <a href="lab01-vnet-subnets.html">Lab 01 - VNet &amp; Subnets</a>
+<a href="lab02-nsg-asg.html">Lab 02 - NSG &amp; ASG</a>
+<a href="lab03-vnet-peering-vpn.html">Lab 03 - VNet Peering &amp; VPN</a>
+<a href="lab04-load-balancer-app-gateway.html">Lab 04 - Load Balancer &amp; App Gateway</a>
+<a href="lab05-dns-name-resolution.html">Lab 05 - DNS &amp; Name Resolution</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ On This Page</summary>
+      <div>
+        <a href="#objectives-">Objectives</a>
+<a href="#prerequisites-">Prerequisites</a>
+<a href="#estimated-time-">Estimated time</a>
+<a href="#part-1-setup-vnet-and-two-web-vms-">Part 1 – Setup: VNet and two web VMs</a>
+<a href="#part-2-standard-load-balancer-">Part 2 – Standard Load Balancer</a>
+<a href="#part-3-application-gateway-with-path-based-routing-">Part 3 – Application Gateway with path-based routing</a>
+<a href="#part-4-compare-lb-skus-">Part 4 – Compare LB SKUs</a>
+<a href="#validation-">Validation</a>
+<a href="#cleanup-">Cleanup</a>
+<a href="#exam-tips-">Exam Tips</a>
+      </div>
+    </details>
+  </aside>
+  <div class="page">
+  <h1>Lab 04 – Load Balancer & Application Gateway</h1>
+
+<h2 id="objectives-">Objectives</h2>
+<ul><ol><li>Deploy an Azure Load Balancer (Layer 4) with a backend pool and health probe</li>
+<li>Deploy an Application Gateway (Layer 7) with path-based routing</li>
+<li>Compare LB SKUs (Basic vs Standard) and understand when to use each service</li></ol></ul>
+
+<h2 id="prerequisites-">Prerequisites</h2>
+<ul><ol><li>None</li>
+<li>Signed in at <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
+
+<h2 id="estimated-time-">Estimated time</h2>
+<p>45 minutes</p>
+
+<p>---</p>
+
+<h2 id="part-1-setup-vnet-and-two-web-vms-">Part 1 – Setup: VNet and two web VMs</h2>
+
+<ol><li>Search for <strong>Resource groups</strong> > <strong>Create</strong>. Name: <code>rg-az104-lab15</code>,</li></ol>
+<p>region: <code>East US</code>. <strong>Create</strong>.</p>
+<ol><li><strong>Virtual networks</strong> > <strong>Create</strong>. <strong>Name</strong>: <code>vnet-lab15</code>, <strong>Address space</strong>:</li></ol>
+<p><code>10.80.0.0/16</code>, <strong>Subnets</strong>: <code>subnet-backend</code> with <code>10.80.1.0/24</code>. <strong>Create</strong>.</p>
+<ol><li>Create two VMs:</li></ol>
+<p>- <strong>vm-web01</strong> and <strong>vm-web02</strong>: both <strong>Ubuntu 22.04 LTS</strong>, <strong>Standard<em>B1s</strong>,</p>
+<p><code>vnet-lab15</code>/<code>subnet-backend</code> with <strong>public IPs</strong> (so you can manage them</p>
+<p>individually). <strong>Create</strong>.</p>
+<ol><li>On each VM, install nginx with distinct content:</li></ol>
+<p>- SSH into <code>vm-web01</code> and run:</p>
+<p>``<code>bash</p>
+<p>sudo apt-get update && sudo apt-get install -y nginx</p>
+<p>echo "Server 1" | sudo tee /var/www/html/index.html</p>
+<p></code>`<code></p>
+<p>- SSH into </code>vm-web02<code> and repeat (changing "Server 1" to "Server 2").</p>
+
+<h2 id="part-2-standard-load-balancer-">Part 2 – Standard Load Balancer</h2>
+
+<ol><li>Search for <strong>Load balancers</strong> > <strong>Create</strong>.</li>
+<li><strong>Basics</strong>:</li></ol>
+<p>- <strong>Name</strong>: </code>lb-lab15<code></p>
+<p>- <strong>Type</strong>: <strong>Public</strong></p>
+<p>- <strong>SKU</strong>: <strong>Standard</strong></p>
+<p>- <strong>Region</strong>: </code>East US<code></p>
+<p>- <strong>Public IP</strong>: <strong>Create new</strong> (e.g., </code>pip-lb15<code>)</p>
+<ol><li><strong>Frontend IP configuration</strong>:</li></ol>
+<p>- <strong>Frontend IP name</strong>: </code>feLB<code></p>
+<p>- (Public IP already selected above)</p>
+<ol><li><strong>Backend pools</strong>: <strong>Create new</strong></li></ol>
+<p>- <strong>Name</strong>: </code>beLB<code></p>
+<p>- <strong>Subnet</strong>: select </code>vnet-lab15<code>/</code>subnet-backend<code></p>
+<ol><li><strong>Inbound rules</strong> (configure after creation).</li>
+<li><strong>Review + create</strong> > <strong>Create</strong>.</li></ol>
+
+<h3 id="add-vms-to-backend-pool-">Add VMs to backend pool</h3>
+<ol><li>Go to <strong>lb-lab15</strong> > <strong>Backend pools</strong> > select </code>beLB<code> > <strong>+ Add</strong>.</li>
+<li>Select </code>vm-web01<code> and </code>vm-web02<code> > <strong>Add</strong>.</li></ol>
+
+<h3 id="configure-health-probe-load-balancing-rule-">Configure health probe & load-balancing rule</h3>
+
+<div class='callout-box callout-tip'><span class='callout-icon'>ℹ️</span><div class='callout-content'><h4>tip</h4><p>Health probes determine if backend instances are healthy. If a probe fails, the load balancer removes that instance from the rotation until it recovers.</p></div></div>
+
+<ol><li><strong>lb-lab15</strong> > <strong>Health probes</strong> > <strong>+ Add</strong>:</li></ol>
+<p>- <strong>Name</strong>: </code>probe-http<code></p>
+<p>- <strong>Protocol</strong>: <strong>TCP</strong></p>
+<p>- <strong>Port</strong>: 80</p>
+<p>- <strong>Interval</strong>: 5</p>
+<p>- <strong>Add</strong>.</p>
+
+<ol><li><strong>lb-lab15</strong> > <strong>Load balancing rules</strong> > <strong>+ Add</strong>:</li></ol>
+<p>- <strong>Name</strong>: </code>rule-http<code></p>
+<p>- <strong>Protocol</strong>: <strong>TCP</strong></p>
+<p>- <strong>Frontend port</strong>: 80</p>
+<p>- <strong>Backend port</strong>: 80</p>
+<p>- <strong>Backend pool</strong>: </code>beLB<code></p>
+<p>- <strong>Health probe</strong>: </code>probe-http<code></p>
+<p>- <strong>Session persistence</strong>: <strong>None</strong></p>
+<p>- <strong>Add</strong>.</p>
+
+<h3 id="test-load-balancing-">Test load balancing</h3>
+<ol><li>Go to <strong>lb-lab15</strong> > <strong>Overview</strong> > copy the <strong>Public IP address</strong>.</li>
+<li>Open </code>http://<lb-ip><code> in a browser multiple times — should see alternating</li></ol>
+<p>"Server 1" / "Server 2" responses.</p>
+
+<h2 id="part-3-application-gateway-with-path-based-routing-">Part 3 – Application Gateway with path-based routing</h2>
+
+<ol><li>Search for <strong>Application gateways</strong> > <strong>Create</strong>.</li>
+<li><strong>Basics</strong>:</li></ol>
+<p>- <strong>Name</strong>: </code>appgw-lab15<code></p>
+<p>- <strong>Tier</strong>: <strong>Standard v2</strong></p>
+<p>- <strong>Capacity</strong>: 1 instance</p>
+<p>- <strong>Virtual network</strong>: </code>vnet-lab15<code></p>
+<p>- <strong>Subnet</strong>: <strong>Create new</strong> </code>subnet-appgw<code> with </code>10.80.2.0/24<code></p>
+<p>- <strong>Public IP</strong>: <strong>Create new</strong> (e.g., </code>pip-appgw15<code>)</p>
+<ol><li><strong>Backends</strong>:</li></ol>
+<p>- <strong>Backend pools</strong>: select <strong>Create new</strong></p>
+<p>- <strong>Name</strong>: </code>backendPool1<code></p>
+<p>- <strong>Target type</strong>: <strong>IP addresses or FQDN</strong></p>
+<p>- <strong>Targets</strong>: add </code>vm-web01<code>'s private IP (e.g., </code>10.80.1.4<code>) and</p>
+<p></code>vm-web02<code>'s private IP (e.g., </code>10.80.1.5<code>)</p>
+<ol><li><strong>Configuration</strong> (after creation): <strong>Rules</strong> > configure path-based rules</li></ol>
+<p>(see Part 4).</p>
+<ol><li><strong>Review + create</strong> > <strong>Create</strong>.</li></ol>
+
+<h3 id="configure-path-based-routing-">Configure path-based routing</h3>
+<ol><li>Go to <strong>appgw-lab15</strong> > <strong>Rules</strong> (under <strong>Settings</strong>) > <strong>+ Add rule</strong>.</li>
+<li><strong>Rule name</strong>: </code>rule-path<code></li>
+<li><strong>Listener</strong> tab:</li></ol>
+<p>- <strong>Listener name</strong>: </code>listener-http<code></p>
+<p>- <strong>Frontend IP</strong>: select public IP</p>
+<p>- <strong>Port</strong>: 80</p>
+<p>- <strong>Protocol</strong>: <strong>HTTP</strong></p>
+<ol><li><strong>Backend targets</strong> tab:</li></ol>
+<p>- <strong>Path-based routing</strong>: <strong>Checked</strong></p>
+<p>- <strong>Path rules</strong>:</p>
+<p>- Path: </code>/api/<em><code> → backend pool </code>backendPool1<code></p>
+<p>- Path: </code>/images/</em><code> → backend pool </code>backendPool1<code> (or create separate pools)</p>
+<p>- Default path: </code>/<code> → backend pool </code>backendPool1<code></p>
+<ol><li><strong>Review + create</strong> > <strong>Create</strong>.</li></ol>
+
+<h2 id="part-4-compare-lb-skus-">Part 4 – Compare LB SKUs</h2>
+
+<p>| Aspect | Basic LB | Standard LB |</p>
+<p>|--------|----------|-------------|</p>
+<p>| Backend pool | Up to 300 instances, single AVS | Up to 1000, VMs/VMSS across zones |</p>
+<p>| SLA | None | 99.99% |</p>
+<p>| NSG required on backend | No (open by default) | Yes (secure by default) |</p>
+<p>| Availability Zones | No | Yes (zone-redundant) |</p>
+<p>| Outbound rules | No | Yes (explicit SNAT config) |</p>
+
+<h2 id="validation-">Validation</h2>
+<ul><ol><li>[ ] Load Balancer distributes traffic across both VMs (alternating responses)</li>
+<li>[ ] Health probe configured on port 80</li>
+<li>[ ] Application Gateway deployed with backend pool pointing at both VM IPs</li>
+<li>[ ] Can articulate Basic vs Standard LB differences and L4 vs L7 use cases</li></ol></ul>
+
+<h2 id="cleanup-">Cleanup</h2>
+<ol><li><strong>Resource groups</strong> > select </code>rg-az104-lab15<code> > <strong>Delete resource group</strong>.</li></ol>
+
+<h2 id="exam-tips-">Exam Tips</h2>
+<ul><ol><li><strong>Load Balancer</strong> = Layer 4 (TCP/UDP), regional or global (cross-region) tier available in Standard SKU.</li>
+<li><strong>Application Gateway</strong> = Layer 7 (HTTP/HTTPS), supports path-based routing, SSL offload/termination, cookie-based session affinity, and integrates with WAF (Web Application Firewall) — WAF</em>v2 SKU.</li>
+<li>Standard LB requires explicit NSG rules to allow traffic (including </code>AzureLoadBalancer` tag for health probes); Basic LB does not.</li>
+<li>Public vs Internal LB: Internal (ILB) has a private frontend IP only, used for internal-facing tiers.</li></ol></ul>
+
+  </div>
+</div>
+<script>
+/* Sidebar Active Link Tracking */
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.sidebar a'));
+  var sections = [];
+  links.forEach(function(a){
+    var el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) sections.push({link:a, el:el});
+  });
+  if (!sections.length || !('IntersectionObserver' in window)) return;
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (!entry.isIntersecting) return;
+      var match = sections.find(function(s){ return s.el === entry.target; });
+      if (!match) return;
+      links.forEach(function(a){ a.classList.remove('active'); });
+      match.link.classList.add('active');
+    });
+  }, { rootMargin: '-100px 0px -70% 0px', threshold: 0 });
+  sections.forEach(function(s){ observer.observe(s.el); });
+})();
+
+/* Code Block Copy Button Functionality */
+document.addEventListener('DOMContentLoaded', function(){
+  var codeBlocks = document.querySelectorAll('.code-block');
+  codeBlocks.forEach(function(block){
+    var pre = block.querySelector('pre');
+    if (!pre) return;
+
+    var btn = document.createElement('button');
+    btn.className = 'code-copy-btn';
+    btn.textContent = 'Copy';
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'Copy code to clipboard');
+
+    btn.addEventListener('click', function(){
+      var code = pre.textContent;
+      navigator.clipboard.writeText(code).then(function(){
+        var original = btn.textContent;
+        btn.textContent = '✓ Copied!';
+        btn.classList.add('copied');
+        setTimeout(function(){
+          btn.textContent = original;
+          btn.classList.remove('copied');
+        }, 2000);
+      }).catch(function(){
+        alert('Failed to copy code');
+      });
+    });
+
+    block.appendChild(btn);
+  });
+});
+</script>
+</body>
+</html>

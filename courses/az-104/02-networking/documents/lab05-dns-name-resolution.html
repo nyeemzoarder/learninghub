@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab 05 – DNS & Name Resolution - AZ-104 Labs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Professional Lab Template - Embedded CSS for local file:// access */
+:root{--bg:#f7f9fd;--card:#fff;--border:#e2e8f0;--text:#1a202c;--muted:#64748b;--primary:#1e3a8a;--panel:#0f172a;--panel-shadow:rgba(15,23,42,.12);--section-gap:48px;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,-apple-system,'Segoe UI',sans-serif;color:var(--text);line-height:1.6}.page{flex:1;min-width:0;padding:48px;max-width:1100px;margin:0 auto}
+h1{font-size:3.4rem;line-height:1.2;margin:0 0 12px 0;color:var(--primary);font-weight:800;letter-spacing:-0.5px}h2{font-size:2.2rem;margin:0 0 24px 0;color:var(--primary);font-weight:800;letter-spacing:-0.5px}h3{font-size:1.45rem;margin:32px 0 16px 0;color:var(--primary);font-weight:700;letter-spacing:-0.3px}h3:first-child{margin-top:0}h4{font-size:1.1rem;margin:20px 0 12px 0;color:#1e3a8a;font-weight:700}
+p{font-size:1.05rem;line-height:1.7;margin:12px 0;color:var(--text)}ul,ol{margin:16px 0;padding-left:24px}li{margin-bottom:10px;line-height:1.7;font-size:1.03rem;color:var(--text)}
+a{color:#1e40af;text-decoration:none;border-bottom:2px solid transparent;font-weight:600;transition:border-color 0.2s}a:hover{border-bottom-color:#1e40af}strong{color:var(--primary);font-weight:700}code{background:#f0f4ff;color:#1e40af;padding:4px 8px;border-radius:6px;font:13px/1.5 'SF Mono',Consolas,'Courier New',monospace;font-weight:500}
+.task-box{margin:24px 0;padding:0;background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(30,64,175,.06);transition:box-shadow 0.2s,border-color 0.2s}.task-box:hover{box-shadow:0 4px 12px rgba(30,64,175,.12);border-color:#c7d2fe}
+.task-header{display:flex;align-items:center;gap:12px;padding:18px 20px;background:linear-gradient(135deg,#dbeafe 0%,#eff6ff 100%);border-bottom:1px solid var(--border)}.task-header .task-icon{font-size:1.4rem;color:#1e40af}.task-header h3{margin:0;font-size:1.2rem;color:var(--primary);font-weight:700}.task-content{padding:20px}
+.code-block{position:relative;margin:24px 0;background:#0f172a;border-radius:10px;overflow:hidden;border:1px solid #1e293b;box-shadow:0 4px 12px rgba(15,23,42,.25)}.code-block pre{margin:0;padding:20px 48px 20px 20px;color:#e2e8f0;font-family:'SF Mono',Consolas,'Courier New',monospace;font-size:0.92rem;line-height:1.7;overflow-x:auto}
+.code-copy-btn{position:absolute;top:12px;right:12px;padding:8px 14px;background:#1e293b;color:#60a5fa;border:1px solid #334155;border-radius:6px;cursor:pointer;font-size:0.85rem;font-weight:600;transition:all 0.2s;user-select:none;box-shadow:0 1px 3px rgba(0,0,0,.2)}.code-copy-btn:hover{background:#334155;color:#93c5fd;border-color:#475569}.code-block .keyword{color:#569cd6}.code-block .string{color:#ce9178}.code-block .comment{color:#6a9955}.code-block .operator{color:#d4d4d4}.code-block .function{color:#dcdcaa}.code-block .property{color:#9cdcfe}
+.callout-box{margin:24px 0;padding:18px 20px;border-radius:10px;border-left:4px solid;display:flex;gap:14px;box-shadow:0 1px 3px rgba(0,0,0,.05)}.callout-icon{font-size:1.5rem;flex-shrink:0;min-width:28px;text-align:center}.callout-content{flex:1}.callout-content h4{margin:0 0 8px 0;font-size:1.08rem;font-weight:700}.callout-content p{margin:8px 0;line-height:1.7;font-size:1.02rem}.callout-content p:first-child{margin-top:0}
+.callout-tip{background:#eff6ff;border-color:#3b82f6}.callout-tip .callout-icon{color:#1e40af}.callout-tip h4{color:#1e40af}.callout-warning{background:#fefce8;border-color:#eab308}.callout-warning .callout-icon{color:#ca8a04}.callout-warning h4{color:#92400e}.callout-important{background:#fee2e2;border-color:#ef4444}.callout-important .callout-icon{color:#dc2626}.callout-important h4{color:#991b1b}
+.section-time{background:#dbeafe;border:1px solid #93c5fd;border-radius:8px;padding:10px 16px;font-size:0.95rem;font-weight:600;color:#1e40af;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}.layout{max-width:1500px;margin:auto;display:flex;align-items:flex-start;gap:32px}.sidebar{flex:0 0 280px;position:sticky;top:88px;max-height:calc(100vh - 108px);overflow-y:auto;padding:24px;background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 2px 8px rgba(30,64,175,.06)}.sidebar summary{cursor:pointer;list-style:none;padding:10px 12px;border-radius:8px;font-weight:600;font-size:.93rem;color:var(--primary);user-select:none;transition:all 0.2s}.sidebar summary::-webkit-details-marker{display:none}.sidebar details[open]>summary{background:#dbeafe}.sidebar summary:hover{background:#eff6ff}.sidebar a{display:block;padding:9px 12px;margin-bottom:2px;border-radius:8px;font-size:.89rem;font-weight:500;color:var(--text);border-bottom:none;border-left:3px solid transparent;line-height:1.5;transition:all 0.15s;text-decoration:none;color:#1a202c}.sidebar a:hover{background:#eff6ff;color:var(--primary)}.site-nav{position:sticky;top:0;z-index:1000;background:var(--primary);color:#fff;display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:14px 32px;font-size:.93rem;box-shadow:0 4px 12px rgba(0,0,0,.1);font-family:Inter,-apple-system,'Segoe UI',sans-serif}.site-nav .nav-brand{font-weight:800;font-size:1.1rem;margin-right:auto;color:#fff;letter-spacing:-0.3px}.site-nav summary{cursor:pointer;list-style:none;padding:8px 16px;border-radius:8px;background:rgba(255,255,255,.12);font-weight:600;color:#fff;user-select:none;transition:background 0.2s}
+</style>
+</head>
+<body>
+<nav class="site-nav" aria-label="Main site navigation">
+  <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
+  <details class="nav-group" aria-label="Learning module selector">
+    <summary>Learning Module</summary>
+    <div class="nav-menu">
+      <a href="../../00-prerequisites/documents/module-home.html">00 - Prerequisites</a>
+      <a href="../../01-identity-governance/documents/module-home.html">01 - Identity &amp; Governance</a>
+      <a href="../../02-storage/documents/module-home.html">02 - Storage</a>
+      <a href="../../03-compute/documents/module-home.html">03 - Compute</a>
+      <a href="../../04-networking/documents/module-home.html">04 - Networking</a>
+      <a href="../../05-monitor-maintain/documents/module-home.html">05 - Monitor &amp; Maintain</a>
+    </div>
+  </details>
+</nav>
+<div class="layout">
+  <aside class="sidebar" aria-label="Page navigation">
+    <details open>
+      <summary>▶ Module 04 - Networking</summary>
+      <div>
+        <a href="01-vnets-and-subnets.html">01 - VNets &amp; Subnets</a>
+<a href="02-network-security-groups.html">02 - Network Security Groups</a>
+<a href="03-routing-fundamentals.html">03 - Routing Fundamentals</a>
+<a href="04-vnet-peering.html">04 - VNet Peering</a>
+<a href="05-vpn-and-expressroute.html">05 - VPN &amp; ExpressRoute</a>
+<a href="06-hub-spoke-topology.html">06 - Hub-Spoke Topology</a>
+<a href="07-private-endpoints-service-endpoints.html">07 - Private Endpoints &amp; Service Endpoints</a>
+<a href="08-network-security-advanced.html">08 - Network Security Advanced</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ Labs</summary>
+      <div>
+        <a href="lab01-vnet-subnets.html">Lab 01 - VNet &amp; Subnets</a>
+<a href="lab02-nsg-asg.html">Lab 02 - NSG &amp; ASG</a>
+<a href="lab03-vnet-peering-vpn.html">Lab 03 - VNet Peering &amp; VPN</a>
+<a href="lab04-load-balancer-app-gateway.html">Lab 04 - Load Balancer &amp; App Gateway</a>
+<a href="lab05-dns-name-resolution.html">Lab 05 - DNS &amp; Name Resolution</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ On This Page</summary>
+      <div>
+        <a href="#objectives-">Objectives</a>
+<a href="#prerequisites-">Prerequisites</a>
+<a href="#estimated-time-">Estimated time</a>
+<a href="#part-1-public-dns-zone-">Part 1 – Public DNS zone</a>
+<a href="#part-2-private-dns-zone-">Part 2 – Private DNS zone</a>
+<a href="#part-3-test-autoregistration-">Part 3 – Test autoregistration</a>
+<a href="#part-4-custommanual-a-record-in-private-zone-">Part 4 – Custom/manual A record in private zone</a>
+<a href="#part-5-custom-dns-servers-for-a-vnet-overview-">Part 5 – Custom DNS servers for a VNet (overview)</a>
+<a href="#validation-">Validation</a>
+<a href="#cleanup-">Cleanup</a>
+<a href="#exam-tips-">Exam Tips</a>
+      </div>
+    </details>
+  </aside>
+  <div class="page">
+  <h1>Lab 05 – DNS & Name Resolution</h1>
+
+<h2 id="objectives-">Objectives</h2>
+<ul><ol><li>Create an Azure DNS public zone and records</li>
+<li>Create a Private DNS zone and link it to a VNet with autoregistration</li>
+<li>Configure custom DNS servers for a VNet and understand Azure-provided DNS</li></ol></ul>
+
+<h2 id="prerequisites-">Prerequisites</h2>
+<ul><ol><li>None (a real registered domain is NOT required for the public zone exercise — you just won't be able to delegate it)</li>
+<li>Signed in at <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
+
+<h2 id="estimated-time-">Estimated time</h2>
+<p>30 minutes</p>
+
+<p>---</p>
+
+<h2 id="part-1-public-dns-zone-">Part 1 – Public DNS zone</h2>
+
+<div class='callout-box callout-tip'><span class='callout-icon'>ℹ️</span><div class='callout-content'><h4>tip</h4><p>Record TTL (Time To Live) controls how long DNS clients cache the response. Lower TTL (e.g., 300s) allows faster updates but increases DNS query load. Typical values are 3600s for stable records.</p></div></div>
+
+<ol><li>Search for <strong>DNS zones</strong> > <strong>Create</strong>.</li>
+<li><strong>Basics</strong>:</li></ol>
+<p>- <strong>Resource group</strong>: <strong>Create new</strong> <code>rg-az104-lab16</code></p>
+<p>- <strong>Name</strong>: <code>contoso-az104lab.com</code> (doesn't need to be a real domain)</p>
+<p>- <strong>Create</strong>.</p>
+
+<ol><li>Go to <strong>contoso-az104lab.com</strong> > <strong>Record sets</strong> > <strong>+ Record set</strong>:</li></ol>
+<p>- <strong>Name</strong>: <code>www</code></p>
+<p>- <strong>Type</strong>: <strong>A</strong></p>
+<p>- <strong>TTL</strong>: 3600</p>
+<p>- <strong>IP Address</strong>: <code>203.0.113.10</code> (a test IP)</p>
+<p>- <strong>Create</strong>.</p>
+
+<ol><li>Create another record set (CNAME):</li></ol>
+<p>- <strong>Name</strong>: <code>app</code></p>
+<p>- <strong>Type</strong>: <strong>CNAME</strong></p>
+<p>- <strong>TTL</strong>: 3600</p>
+<p>- <strong>Canonical name</strong>: <code>www.contoso-az104lab.com</code></p>
+<p>- <strong>Create</strong>.</p>
+
+<ol><li>Create an MX record:</li></ol>
+<p>- <strong>Name</strong>: <code>@</code> (root)</p>
+<p>- <strong>Type</strong>: <strong>MX</strong></p>
+<p>- <strong>TTL</strong>: 3600</p>
+<p>- <strong>Mail exchange</strong>: <code>mail.contoso-az104lab.com</code></p>
+<p>- <strong>Preference</strong>: 10</p>
+<p>- <strong>Create</strong>.</p>
+
+<h3 id="view-nameservers-">View nameservers</h3>
+<ol><li>Go to <strong>contoso-az104lab.com</strong> > <strong>Overview</strong> — the <strong>Nameservers</strong> are</li></ol>
+<p>listed (e.g., <code>ns1-07.azure-dns.com</code>, etc.). In a real scenario, you'd</p>
+<p>update these NS records at your domain registrar to delegate the domain to</p>
+<p>Azure DNS.</p>
+
+<h2 id="part-2-private-dns-zone-">Part 2 – Private DNS zone</h2>
+
+<ol><li>Search for <strong>Private DNS zones</strong> > <strong>Create</strong>.</li>
+<li><strong>Basics</strong>:</li></ol>
+<p>- <strong>Resource group</strong>: <code>rg-az104-lab16</code></p>
+<p>- <strong>Name</strong>: <code>contoso.internal</code></p>
+<p>- <strong>Create</strong>.</p>
+
+<ol><li>Create a VNet (or reuse from a prior lab):</li></ol>
+<p>- <strong>Virtual networks</strong> > <strong>Create</strong>. <strong>Resource group</strong>: <code>rg-az104-lab16</code>,</p>
+<p><strong>Name</strong>: <code>vnet-dns16</code>, <strong>Address space</strong>: <code>10.90.0.0/16</code>,</p>
+<p><strong>Subnets</strong>: <code>subnet-vms</code> with <code>10.90.1.0/24</code>. <strong>Create</strong>.</p>
+
+<ol><li>Link the private DNS zone to the VNet:</li></ol>
+<p>- Go to <strong>contoso.internal</strong> > <strong>Virtual network links</strong> (under <strong>Settings</strong>) ></p>
+<p><strong>+ Add</strong>.</p>
+<p>- <strong>Link name</strong>: <code>link-vnet-dns16</code></p>
+<p>- <strong>Virtual network</strong>: <code>vnet-dns16</code></p>
+<p>- <strong>Enable autoregistration</strong>: <strong>Checked</strong></p>
+<p>- <strong>Create</strong>.</p>
+
+<h2 id="part-3-test-autoregistration-">Part 3 – Test autoregistration</h2>
+
+<ol><li>Create a VM:</li></ol>
+<p>- <strong>Virtual machines</strong> > <strong>Create</strong> > <code>vm-dns01</code>, <strong>Ubuntu 22.04 LTS</strong>,</p>
+<p><strong>Standard_B1s</strong>, <code>vnet-dns16</code>/<code>subnet-vms</code>. <strong>Create</strong>.</p>
+
+<ol><li>After the VM deploys, go to <strong>contoso.internal</strong> > <strong>Record sets</strong>. The VM</li></ol>
+<p>should automatically appear as <code>vm-dns01</code> with an <strong>A</strong> record pointing to</p>
+<p>its private IP (e.g., <code>10.90.1.4</code>).</p>
+
+<h2 id="part-4-custommanual-a-record-in-private-zone-">Part 4 – Custom/manual A record in private zone</h2>
+
+<ol><li>Go to <strong>contoso.internal</strong> > <strong>Record sets</strong> > <strong>+ Record set</strong>:</li></ol>
+<p>- <strong>Name</strong>: <code>db01</code></p>
+<p>- <strong>Type</strong>: <strong>A</strong></p>
+<p>- <strong>TTL</strong>: 3600</p>
+<p>- <strong>IP Address</strong>: <code>10.90.1.50</code> (a custom IP for a database server)</p>
+<p>- <strong>Create</strong>.</p>
+
+<h2 id="part-5-custom-dns-servers-for-a-vnet-overview-">Part 5 – Custom DNS servers for a VNet (overview)</h2>
+
+<ol><li>Go to <strong>vnet-dns16</strong> > <strong>DNS servers</strong> (under <strong>Settings</strong>).</li>
+<li>Default is <strong>Inherited from Azure</strong> (uses Azure-provided DNS <code>168.63.129.16</code>).</li>
+<li>To use custom DNS:</li></ol>
+<p>- Set to <strong>Custom</strong>.</p>
+<p>- Add custom DNS server IPs (e.g., <code>10.90.1.4</code>, <code>168.63.129.16</code> for failover).</p>
+<p>- <strong>Save</strong>.</p>
+
+<div class='callout-box callout-note'><span class='callout-icon'>📝</span><div class='callout-content'><h4>note</h4><p>Changing DNS servers requires VMs to restart to pick up new settings — discuss,</p></div></div>
+<div class="callout"><p>no need to apply for this lab.</p></div>
+
+<h2 id="validation-">Validation</h2>
+<ul><ol><li>[ ] Public zone <code>contoso-az104lab.com</code> has A, CNAME, and MX records</li>
+<li>[ ] Private zone <code>contoso.internal</code> linked to <code>vnet-dns16</code> with autoregistration enabled</li>
+<li>[ ] <code>vm-dns01</code> automatically appears as an A record in the private zone</li>
+<li>[ ] Manual A record <code>db01.contoso.internal</code> resolves to <code>10.90.1.50</code></li>
+<li>[ ] Can explain why <code>168.63.129.16</code> matters when using custom DNS servers</li></ol></ul>
+
+<h2 id="cleanup-">Cleanup</h2>
+<ol><li><strong>Resource groups</strong> > select <code>rg-az104-lab16</code> > <strong>Delete resource group</strong>.</li></ol>
+
+<h2 id="exam-tips-">Exam Tips</h2>
+<ul><ol><li>Azure Private DNS zones provide name resolution <strong>within and across VNets</strong> (via virtual network links) without managing your own DNS servers.</li>
+<li><strong>Autoregistration</strong> only works for VMs (registers A and PTR records) and only one zone per VNet can have autoregistration enabled.</li>
+<li><code>168.63.129.16</code> is a special, platform-wide virtual IP used for communication with Azure platform resources (DNS, health probes, license checks) — keep it in custom DNS configs.</li>
+<li>Public DNS zones in Azure host your zone's records; you still need to update NS records at your domain registrar to delegate the domain to Azure DNS.</li></ol></ul>
+
+  </div>
+</div>
+<script>
+/* Sidebar Active Link Tracking */
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.sidebar a'));
+  var sections = [];
+  links.forEach(function(a){
+    var el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) sections.push({link:a, el:el});
+  });
+  if (!sections.length || !('IntersectionObserver' in window)) return;
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (!entry.isIntersecting) return;
+      var match = sections.find(function(s){ return s.el === entry.target; });
+      if (!match) return;
+      links.forEach(function(a){ a.classList.remove('active'); });
+      match.link.classList.add('active');
+    });
+  }, { rootMargin: '-100px 0px -70% 0px', threshold: 0 });
+  sections.forEach(function(s){ observer.observe(s.el); });
+})();
+
+/* Code Block Copy Button Functionality */
+document.addEventListener('DOMContentLoaded', function(){
+  var codeBlocks = document.querySelectorAll('.code-block');
+  codeBlocks.forEach(function(block){
+    var pre = block.querySelector('pre');
+    if (!pre) return;
+
+    var btn = document.createElement('button');
+    btn.className = 'code-copy-btn';
+    btn.textContent = 'Copy';
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'Copy code to clipboard');
+
+    btn.addEventListener('click', function(){
+      var code = pre.textContent;
+      navigator.clipboard.writeText(code).then(function(){
+        var original = btn.textContent;
+        btn.textContent = '✓ Copied!';
+        btn.classList.add('copied');
+        setTimeout(function(){
+          btn.textContent = original;
+          btn.classList.remove('copied');
+        }, 2000);
+      }).catch(function(){
+        alert('Failed to copy code');
+      });
+    });
+
+    block.appendChild(btn);
+  });
+});
+</script>
+</body>
+</html>

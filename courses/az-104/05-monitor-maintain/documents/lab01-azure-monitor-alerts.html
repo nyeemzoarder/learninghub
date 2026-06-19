@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab 01 – Azure Monitor & Alerts - AZ-104 Labs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Professional Lab Template - Embedded CSS for local file:// access */
+:root{--bg:#f7f9fd;--card:#fff;--border:#e2e8f0;--text:#1a202c;--muted:#64748b;--primary:#1e3a8a;--panel:#0f172a;--panel-shadow:rgba(15,23,42,.12);--section-gap:48px;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,-apple-system,'Segoe UI',sans-serif;color:var(--text);line-height:1.6}.page{flex:1;min-width:0;padding:48px;max-width:1100px;margin:0 auto}
+h1{font-size:3.4rem;line-height:1.2;margin:0 0 12px 0;color:var(--primary);font-weight:800;letter-spacing:-0.5px}h2{font-size:2.2rem;margin:0 0 24px 0;color:var(--primary);font-weight:800;letter-spacing:-0.5px}h3{font-size:1.45rem;margin:32px 0 16px 0;color:var(--primary);font-weight:700;letter-spacing:-0.3px}h3:first-child{margin-top:0}h4{font-size:1.1rem;margin:20px 0 12px 0;color:#1e3a8a;font-weight:700}
+p{font-size:1.05rem;line-height:1.7;margin:12px 0;color:var(--text)}ul,ol{margin:16px 0;padding-left:24px}li{margin-bottom:10px;line-height:1.7;font-size:1.03rem;color:var(--text)}
+a{color:#1e40af;text-decoration:none;border-bottom:2px solid transparent;font-weight:600;transition:border-color 0.2s}a:hover{border-bottom-color:#1e40af}strong{color:var(--primary);font-weight:700}code{background:#f0f4ff;color:#1e40af;padding:4px 8px;border-radius:6px;font:13px/1.5 'SF Mono',Consolas,'Courier New',monospace;font-weight:500}
+.task-box{margin:24px 0;padding:0;background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(30,64,175,.06);transition:box-shadow 0.2s,border-color 0.2s}.task-box:hover{box-shadow:0 4px 12px rgba(30,64,175,.12);border-color:#c7d2fe}
+.task-header{display:flex;align-items:center;gap:12px;padding:18px 20px;background:linear-gradient(135deg,#dbeafe 0%,#eff6ff 100%);border-bottom:1px solid var(--border)}.task-header .task-icon{font-size:1.4rem;color:#1e40af}.task-header h3{margin:0;font-size:1.2rem;color:var(--primary);font-weight:700}.task-content{padding:20px}
+.code-block{position:relative;margin:24px 0;background:#0f172a;border-radius:10px;overflow:hidden;border:1px solid #1e293b;box-shadow:0 4px 12px rgba(15,23,42,.25)}.code-block pre{margin:0;padding:20px 48px 20px 20px;color:#e2e8f0;font-family:'SF Mono',Consolas,'Courier New',monospace;font-size:0.92rem;line-height:1.7;overflow-x:auto}
+.code-copy-btn{position:absolute;top:12px;right:12px;padding:8px 14px;background:#1e293b;color:#60a5fa;border:1px solid #334155;border-radius:6px;cursor:pointer;font-size:0.85rem;font-weight:600;transition:all 0.2s;user-select:none;box-shadow:0 1px 3px rgba(0,0,0,.2)}.code-copy-btn:hover{background:#334155;color:#93c5fd;border-color:#475569}.code-block .keyword{color:#569cd6}.code-block .string{color:#ce9178}.code-block .comment{color:#6a9955}.code-block .operator{color:#d4d4d4}.code-block .function{color:#dcdcaa}.code-block .property{color:#9cdcfe}
+.callout-box{margin:24px 0;padding:18px 20px;border-radius:10px;border-left:4px solid;display:flex;gap:14px;box-shadow:0 1px 3px rgba(0,0,0,.05)}.callout-icon{font-size:1.5rem;flex-shrink:0;min-width:28px;text-align:center}.callout-content{flex:1}.callout-content h4{margin:0 0 8px 0;font-size:1.08rem;font-weight:700}.callout-content p{margin:8px 0;line-height:1.7;font-size:1.02rem}.callout-content p:first-child{margin-top:0}
+.callout-tip{background:#eff6ff;border-color:#3b82f6}.callout-tip .callout-icon{color:#1e40af}.callout-tip h4{color:#1e40af}.callout-warning{background:#fefce8;border-color:#eab308}.callout-warning .callout-icon{color:#ca8a04}.callout-warning h4{color:#92400e}.callout-important{background:#fee2e2;border-color:#ef4444}.callout-important .callout-icon{color:#dc2626}.callout-important h4{color:#991b1b}
+.section-time{background:#dbeafe;border:1px solid #93c5fd;border-radius:8px;padding:10px 16px;font-size:0.95rem;font-weight:600;color:#1e40af;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}.layout{max-width:1500px;margin:auto;display:flex;align-items:flex-start;gap:32px}.sidebar{flex:0 0 280px;position:sticky;top:88px;max-height:calc(100vh - 108px);overflow-y:auto;padding:24px;background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 2px 8px rgba(30,64,175,.06)}.sidebar summary{cursor:pointer;list-style:none;padding:10px 12px;border-radius:8px;font-weight:600;font-size:.93rem;color:var(--primary);user-select:none;transition:all 0.2s}.sidebar summary::-webkit-details-marker{display:none}.sidebar details[open]>summary{background:#dbeafe}.sidebar summary:hover{background:#eff6ff}.sidebar a{display:block;padding:9px 12px;margin-bottom:2px;border-radius:8px;font-size:.89rem;font-weight:500;color:var(--text);border-bottom:none;border-left:3px solid transparent;line-height:1.5;transition:all 0.15s;text-decoration:none;color:#1a202c}.sidebar a:hover{background:#eff6ff;color:var(--primary)}.site-nav{position:sticky;top:0;z-index:1000;background:var(--primary);color:#fff;display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:14px 32px;font-size:.93rem;box-shadow:0 4px 12px rgba(0,0,0,.1);font-family:Inter,-apple-system,'Segoe UI',sans-serif}.site-nav .nav-brand{font-weight:800;font-size:1.1rem;margin-right:auto;color:#fff;letter-spacing:-0.3px}.site-nav summary{cursor:pointer;list-style:none;padding:8px 16px;border-radius:8px;background:rgba(255,255,255,.12);font-weight:600;color:#fff;user-select:none;transition:background 0.2s}
+</style>
+</head>
+<body>
+<nav class="site-nav" aria-label="Main site navigation">
+  <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
+  <details class="nav-group" aria-label="Learning module selector">
+    <summary>Learning Module</summary>
+    <div class="nav-menu">
+      <a href="../../00-prerequisites/documents/module-home.html">00 - Prerequisites</a>
+      <a href="../../01-identity-governance/documents/module-home.html">01 - Identity &amp; Governance</a>
+      <a href="../../02-storage/documents/module-home.html">02 - Storage</a>
+      <a href="../../03-compute/documents/module-home.html">03 - Compute</a>
+      <a href="../../04-networking/documents/module-home.html">04 - Networking</a>
+      <a href="../../05-monitor-maintain/documents/module-home.html">05 - Monitor &amp; Maintain</a>
+    </div>
+  </details>
+</nav>
+<div class="layout">
+  <aside class="sidebar" aria-label="Page navigation">
+    <details open>
+      <summary>▶ Module 05 - Monitor &amp; Maintain</summary>
+      <div>
+        <a href="01-monitoring-data-flow.html">01 - Monitoring Data Flow</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ Labs</summary>
+      <div>
+        <a href="lab01-azure-monitor-alerts.html">Lab 01 - Azure Monitor &amp; Alerts</a>
+<a href="lab02-backup-recovery.html">Lab 02 - Backup &amp; Recovery</a>
+<a href="lab03-network-monitoring.html">Lab 03 - Network Monitoring</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ On This Page</summary>
+      <div>
+        <a href="#objectives-">Objectives</a>
+<a href="#prerequisites-">Prerequisites</a>
+<a href="#estimated-time-">Estimated time</a>
+<a href="#part-1-setup-log-analytics-workspace-">Part 1 – Setup: Log Analytics workspace</a>
+<a href="#part-2-diagnostic-settings-">Part 2 – Diagnostic settings</a>
+<a href="#part-3-vm-insights-monitoring-on-a-vm-">Part 3 – VM Insights (monitoring on a VM)</a>
+<a href="#part-4-kql-queries-">Part 4 – KQL queries</a>
+<a href="#part-5-action-group-">Part 5 – Action group</a>
+<a href="#part-6-metric-alert-">Part 6 – Metric alert</a>
+<a href="#part-7-log-alert-scheduled-query-">Part 7 – Log alert (scheduled query)</a>
+<a href="#validation-">Validation</a>
+<a href="#cleanup-">Cleanup</a>
+<a href="#exam-tips-">Exam Tips</a>
+      </div>
+    </details>
+  </aside>
+  <div class="page">
+  <h1>Lab 01 – Azure Monitor & Alerts</h1>
+
+<h2 id="objectives-">Objectives</h2>
+<ul><ol><li>Configure diagnostic settings to send logs/metrics to Log Analytics</li>
+<li>Write Kusto (KQL) queries against VM/activity logs</li>
+<li>Create metric and log-based alert rules with action groups</li>
+<li>Explore Azure Monitor Insights (VM insights)</li></ol></ul>
+
+<h2 id="prerequisites-">Prerequisites</h2>
+<ul><ol><li>A VM (small size to minimize billing)</li>
+<li>Signed in at <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
+
+<h2 id="estimated-time-">Estimated time</h2>
+<p>40 minutes</p>
+
+<p>---</p>
+
+<h2 id="part-1-setup-log-analytics-workspace-">Part 1 – Setup: Log Analytics workspace</h2>
+
+<ol><li>Search for <strong>Log Analytics workspaces</strong> > <strong>Create</strong>.</li>
+<li><strong>Basics</strong>:</li></ol>
+<p>- <strong>Resource group</strong>: <strong>Create new</strong> <code>rg-az104-lab17</code></p>
+<p>- <strong>Name</strong>: <code>law-az104lab17</code></p>
+<p>- <strong>Region</strong>: <code>East US</code></p>
+<p>- <strong>Create</strong>.</p>
+
+<h2 id="part-2-diagnostic-settings-">Part 2 – Diagnostic settings</h2>
+
+<div class='callout-box callout-important'><span class='callout-icon'>❗</span><div class='callout-content'><h4>important</h4><p>Diagnostic data is not retroactive. Enable diagnostic settings BEFORE you want to start collecting logs. Historical data cannot be recovered.</p></div></div>
+
+<p>Send metrics/logs to the Log Analytics workspace:</p>
+
+<ol><li>Create a storage account (or reuse one):</li></ol>
+<p>- <strong>Storage accounts</strong> > <strong>Create</strong>. <strong>Resource group</strong>: <code>rg-az104-lab17</code>,</p>
+<p><strong>Name</strong>: <code>stoaz104lab17<unique></code>. <strong>Create</strong>.</p>
+
+<ol><li>Go to <strong>stoaz104lab17<unique></strong> > <strong>Diagnostic settings</strong> (under <strong>Monitoring</strong>) ></li></ol>
+<p><strong>+ Add diagnostic setting</strong>:</p>
+<p>- <strong>Diagnostic setting name</strong>: <code>diag-storage17</code></p>
+<p>- <strong>Logs</strong>: check <strong>StorageRead</strong>, <strong>StorageWrite</strong>, <strong>StorageDelete</strong></p>
+<p>- <strong>Metrics</strong>: check <strong>Transaction</strong></p>
+<p>- <strong>Send to Log Analytics workspace</strong>: <strong>Enabled</strong></p>
+<p>- <strong>Log Analytics workspace</strong>: <code>law-az104lab17</code></p>
+<p>- <strong>Save</strong>.</p>
+
+<p>Diagnostic data now flows from the storage account to Log Analytics.</p>
+
+<h2 id="part-3-vm-insights-monitoring-on-a-vm-">Part 3 – VM Insights (monitoring on a VM)</h2>
+
+<ol><li>Create a VM:</li></ol>
+<p>- <strong>Virtual machines</strong> > <strong>Create</strong> > <code>vm-monitor01</code>, <strong>Ubuntu 22.04 LTS</strong>,</p>
+<p><strong>Standard_B1s</strong>, <code>rg-az104-lab17</code>. <strong>Create</strong>.</p>
+
+<ol><li>Go to <strong>vm-monitor01</strong> > <strong>Insights</strong> (under <strong>Monitoring</strong>) > <strong>Enable</strong> (or</li></ol>
+<p><strong>Configure</strong>).</p>
+<p>- <strong>Log Analytics workspace</strong>: <code>law-az104lab17</code></p>
+<p>- <strong>Configure</strong> — the Portal automatically installs the Azure Monitor Agent</p>
+<p>(AMA) and sets up data collection rules (DCRs) for performance metrics.</p>
+
+<p>After a few minutes, performance data (CPU, memory, disk) flows into Log Analytics.</p>
+
+<h2 id="part-4-kql-queries-">Part 4 – KQL queries</h2>
+
+<ol><li>Go to <strong>law-az104lab17</strong> > <strong>Logs</strong> (under <strong>General</strong>).</li>
+<li>Run a query:</li></ol>
+<p>``<code>kql</p>
+<p>AzureActivity</p>
+<p>| where ResourceGroup == "rg-az104-lab17"</p>
+<p>| project TimeGenerated, OperationNameValue, Caller, ActivityStatusValue</p>
+<p>| order by TimeGenerated desc</p>
+<p>| take 20</p>
+<p></code>`<code></p>
+<p>This shows recent activity log entries for the resource group.</p>
+
+<ol><li>Run another query (after VM insights sends data):</li></ol>
+<p></code>`<code>kql</p>
+<p>Perf</p>
+<p>| where ObjectName == "Processor" and CounterName == "% Processor Time"</p>
+<p>| summarize avg(CounterValue) by bin(TimeGenerated, 5m), Computer</p>
+<p>| order by TimeGenerated desc</p>
+<p></code>`<code></p>
+<p>This aggregates CPU usage by 5-minute bins.</p>
+
+<h2 id="part-5-action-group-">Part 5 – Action group</h2>
+
+<ol><li>Search for <strong>Action groups</strong> > <strong>Create</strong>.</li>
+<li><strong>Basics</strong>:</li></ol>
+<p>- <strong>Resource group</strong>: </code>rg-az104-lab17<code></p>
+<p>- <strong>Action group name</strong>: </code>ag-az104lab17<code></p>
+<p>- <strong>Display name</strong>: </code>AG Lab 17<code></p>
+<ol><li><strong>Notifications</strong> tab:</li></ol>
+<p>- <strong>Notification type</strong>: <strong>Email/SMS message/Push notification/Voice</strong></p>
+<p>- <strong>Name</strong>: </code>admin-email<code></p>
+<p>- <strong>Email address</strong>: your email</p>
+<p>- <strong>Add</strong>.</p>
+<ol><li><strong>Review + create</strong> > <strong>Create</strong>.</li></ol>
+
+<h2 id="part-6-metric-alert-">Part 6 – Metric alert</h2>
+
+<div class='callout-box callout-tip'><span class='callout-icon'>ℹ️</span><div class='callout-content'><h4>tip</h4><p>Set alert thresholds conservatively to avoid alert fatigue. A threshold too low will trigger false alarms; too high will miss real issues. Start with typical peak usage + 20%.</p></div></div>
+
+<ol><li>Search for <strong>Alert rules</strong> > <strong>Create</strong> > <strong>Alert rule</strong>.</li>
+<li><strong>Condition</strong>:</li></ol>
+<p>- <strong>Resource</strong>: select </code>vm-monitor01<code></p>
+<p>- <strong>Signal name</strong>: <strong>Percentage CPU</strong></p>
+<p>- <strong>Operator</strong>: <strong>Greater than</strong></p>
+<p>- <strong>Threshold</strong>: 80</p>
+<p>- <strong>Aggregation period</strong>: 5 minutes</p>
+<p>- <strong>Frequency of evaluation</strong>: 1 minute</p>
+<ol><li><strong>Actions</strong>:</li></ol>
+<p>- <strong>Action group</strong>: select </code>ag-az104lab17<code></p>
+<ol><li><strong>Details</strong>:</li></ol>
+<p>- <strong>Alert rule name</strong>: </code>alert-high-cpu<code></p>
+<p>- <strong>Severity</strong>: <strong>2</strong></p>
+<ol><li><strong>Review + create</strong> > <strong>Create</strong>.</li></ol>
+
+<p>Now, if the VM's CPU exceeds 80% for 5 minutes, an alert fires and sends an</p>
+<p>email/notification via the action group.</p>
+
+<h2 id="part-7-log-alert-scheduled-query-">Part 7 – Log alert (scheduled query)</h2>
+
+<ol><li>Search for <strong>Alert rules</strong> > <strong>Create</strong> > <strong>Alert rule</strong>.</li>
+<li><strong>Condition</strong>:</li></ol>
+<p>- <strong>Resource</strong>: select </code>law-az104lab17<code> (Log Analytics workspace)</p>
+<p>- <strong>Signal name</strong>: <strong>Custom log search</strong></p>
+<p>- <strong>Search query</strong>:</p>
+<p></code>`<code>kql</p>
+<p>AzureActivity</p>
+<p>| where ActivityStatusValue == "Failed"</p>
+<p>| summarize Count = count() by bin(TimeGenerated, 15m)</p>
+<p></code>`<code></p>
+<p>- <strong>Threshold</strong>: Count > 5</p>
+<p>- <strong>Evaluation frequency</strong>: 5 minutes</p>
+<p>- <strong>Lookback period</strong>: 15 minutes</p>
+<ol><li><strong>Actions</strong>:</li></ol>
+<p>- <strong>Action group</strong>: </code>ag-az104lab17<code></p>
+<ol><li><strong>Details</strong>:</li></ol>
+<p>- <strong>Alert rule name</strong>: </code>alert-failed-ops<code></p>
+<p>- <strong>Severity</strong>: <strong>3</strong></p>
+<ol><li><strong>Review + create</strong> > <strong>Create</strong>.</li></ol>
+
+<p>This log alert fires if more than 5 failed operations occur in a 15-minute window.</p>
+
+<h2 id="validation-">Validation</h2>
+<ul><ol><li>[ ] Log Analytics workspace created and receiving diagnostic data</li>
+<li>[ ] AMA installed on </code>vm-monitor01<code> and sending performance metrics</li>
+<li>[ ] KQL query against </code>AzureActivity<code> returns results</li>
+<li>[ ] Action group </code>ag-az104lab17<code> created with email notification</li>
+<li>[ ] Metric alert on CPU > 80% and log-based alert both exist</li></ol></ul>
+
+<h2 id="cleanup-">Cleanup</h2>
+<ol><li><strong>Resource groups</strong> > select </code>rg-az104-lab17` > <strong>Delete resource group</strong>.</li></ol>
+
+<h2 id="exam-tips-">Exam Tips</h2>
+<ul><ol><li><strong>Diagnostic settings</strong> route platform logs/metrics to Log Analytics, Storage (archival), or Event Hubs (streaming).</li>
+<li><strong>Metric alerts</strong> = near-real-time, based on platform metrics (CPU, disk, network). <strong>Log alerts</strong> = based on KQL queries against Log Analytics, evaluated on a schedule — more flexible but higher latency.</li>
+<li>Action groups are reusable across alerts and support email, SMS, voice, webhook, Azure Function, Logic App, ITSM, etc.</li>
+<li>VM insights requires the Azure Monitor Agent (AMA) + a Data Collection Rule (DCR) — replacing the older Log Analytics/MMA agent.</li></ol></ul>
+
+  </div>
+</div>
+<script>
+/* Sidebar Active Link Tracking */
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.sidebar a'));
+  var sections = [];
+  links.forEach(function(a){
+    var el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) sections.push({link:a, el:el});
+  });
+  if (!sections.length || !('IntersectionObserver' in window)) return;
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (!entry.isIntersecting) return;
+      var match = sections.find(function(s){ return s.el === entry.target; });
+      if (!match) return;
+      links.forEach(function(a){ a.classList.remove('active'); });
+      match.link.classList.add('active');
+    });
+  }, { rootMargin: '-100px 0px -70% 0px', threshold: 0 });
+  sections.forEach(function(s){ observer.observe(s.el); });
+})();
+
+/* Code Block Copy Button Functionality */
+document.addEventListener('DOMContentLoaded', function(){
+  var codeBlocks = document.querySelectorAll('.code-block');
+  codeBlocks.forEach(function(block){
+    var pre = block.querySelector('pre');
+    if (!pre) return;
+
+    var btn = document.createElement('button');
+    btn.className = 'code-copy-btn';
+    btn.textContent = 'Copy';
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'Copy code to clipboard');
+
+    btn.addEventListener('click', function(){
+      var code = pre.textContent;
+      navigator.clipboard.writeText(code).then(function(){
+        var original = btn.textContent;
+        btn.textContent = '✓ Copied!';
+        btn.classList.add('copied');
+        setTimeout(function(){
+          btn.textContent = original;
+          btn.classList.remove('copied');
+        }, 2000);
+      }).catch(function(){
+        alert('Failed to copy code');
+      });
+    });
+
+    block.appendChild(btn);
+  });
+});
+</script>
+</body>
+</html>

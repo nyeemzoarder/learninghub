@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab 03 – VNet Peering & VPN Gateway - AZ-104 Labs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Professional Lab Template - Embedded CSS for local file:// access */
+:root{--bg:#f7f9fd;--card:#fff;--border:#e2e8f0;--text:#1a202c;--muted:#64748b;--primary:#1e3a8a;--panel:#0f172a;--panel-shadow:rgba(15,23,42,.12);--section-gap:48px;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,-apple-system,'Segoe UI',sans-serif;color:var(--text);line-height:1.6}.page{flex:1;min-width:0;padding:48px;max-width:1100px;margin:0 auto}
+h1{font-size:3.4rem;line-height:1.2;margin:0 0 12px 0;color:var(--primary);font-weight:800;letter-spacing:-0.5px}h2{font-size:2.2rem;margin:0 0 24px 0;color:var(--primary);font-weight:800;letter-spacing:-0.5px}h3{font-size:1.45rem;margin:32px 0 16px 0;color:var(--primary);font-weight:700;letter-spacing:-0.3px}h3:first-child{margin-top:0}h4{font-size:1.1rem;margin:20px 0 12px 0;color:#1e3a8a;font-weight:700}
+p{font-size:1.05rem;line-height:1.7;margin:12px 0;color:var(--text)}ul,ol{margin:16px 0;padding-left:24px}li{margin-bottom:10px;line-height:1.7;font-size:1.03rem;color:var(--text)}
+a{color:#1e40af;text-decoration:none;border-bottom:2px solid transparent;font-weight:600;transition:border-color 0.2s}a:hover{border-bottom-color:#1e40af}strong{color:var(--primary);font-weight:700}code{background:#f0f4ff;color:#1e40af;padding:4px 8px;border-radius:6px;font:13px/1.5 'SF Mono',Consolas,'Courier New',monospace;font-weight:500}
+.task-box{margin:24px 0;padding:0;background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(30,64,175,.06);transition:box-shadow 0.2s,border-color 0.2s}.task-box:hover{box-shadow:0 4px 12px rgba(30,64,175,.12);border-color:#c7d2fe}
+.task-header{display:flex;align-items:center;gap:12px;padding:18px 20px;background:linear-gradient(135deg,#dbeafe 0%,#eff6ff 100%);border-bottom:1px solid var(--border)}.task-header .task-icon{font-size:1.4rem;color:#1e40af}.task-header h3{margin:0;font-size:1.2rem;color:var(--primary);font-weight:700}.task-content{padding:20px}
+.code-block{position:relative;margin:24px 0;background:#0f172a;border-radius:10px;overflow:hidden;border:1px solid #1e293b;box-shadow:0 4px 12px rgba(15,23,42,.25)}.code-block pre{margin:0;padding:20px 48px 20px 20px;color:#e2e8f0;font-family:'SF Mono',Consolas,'Courier New',monospace;font-size:0.92rem;line-height:1.7;overflow-x:auto}
+.code-copy-btn{position:absolute;top:12px;right:12px;padding:8px 14px;background:#1e293b;color:#60a5fa;border:1px solid #334155;border-radius:6px;cursor:pointer;font-size:0.85rem;font-weight:600;transition:all 0.2s;user-select:none;box-shadow:0 1px 3px rgba(0,0,0,.2)}.code-copy-btn:hover{background:#334155;color:#93c5fd;border-color:#475569}.code-block .keyword{color:#569cd6}.code-block .string{color:#ce9178}.code-block .comment{color:#6a9955}.code-block .operator{color:#d4d4d4}.code-block .function{color:#dcdcaa}.code-block .property{color:#9cdcfe}
+.callout-box{margin:24px 0;padding:18px 20px;border-radius:10px;border-left:4px solid;display:flex;gap:14px;box-shadow:0 1px 3px rgba(0,0,0,.05)}.callout-icon{font-size:1.5rem;flex-shrink:0;min-width:28px;text-align:center}.callout-content{flex:1}.callout-content h4{margin:0 0 8px 0;font-size:1.08rem;font-weight:700}.callout-content p{margin:8px 0;line-height:1.7;font-size:1.02rem}.callout-content p:first-child{margin-top:0}
+.callout-tip{background:#eff6ff;border-color:#3b82f6}.callout-tip .callout-icon{color:#1e40af}.callout-tip h4{color:#1e40af}.callout-warning{background:#fefce8;border-color:#eab308}.callout-warning .callout-icon{color:#ca8a04}.callout-warning h4{color:#92400e}.callout-important{background:#fee2e2;border-color:#ef4444}.callout-important .callout-icon{color:#dc2626}.callout-important h4{color:#991b1b}
+.section-time{background:#dbeafe;border:1px solid #93c5fd;border-radius:8px;padding:10px 16px;font-size:0.95rem;font-weight:600;color:#1e40af;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}.layout{max-width:1500px;margin:auto;display:flex;align-items:flex-start;gap:32px}.sidebar{flex:0 0 280px;position:sticky;top:88px;max-height:calc(100vh - 108px);overflow-y:auto;padding:24px;background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 2px 8px rgba(30,64,175,.06)}.sidebar summary{cursor:pointer;list-style:none;padding:10px 12px;border-radius:8px;font-weight:600;font-size:.93rem;color:var(--primary);user-select:none;transition:all 0.2s}.sidebar summary::-webkit-details-marker{display:none}.sidebar details[open]>summary{background:#dbeafe}.sidebar summary:hover{background:#eff6ff}.sidebar a{display:block;padding:9px 12px;margin-bottom:2px;border-radius:8px;font-size:.89rem;font-weight:500;color:var(--text);border-bottom:none;border-left:3px solid transparent;line-height:1.5;transition:all 0.15s;text-decoration:none;color:#1a202c}.sidebar a:hover{background:#eff6ff;color:var(--primary)}.site-nav{position:sticky;top:0;z-index:1000;background:var(--primary);color:#fff;display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:14px 32px;font-size:.93rem;box-shadow:0 4px 12px rgba(0,0,0,.1);font-family:Inter,-apple-system,'Segoe UI',sans-serif}.site-nav .nav-brand{font-weight:800;font-size:1.1rem;margin-right:auto;color:#fff;letter-spacing:-0.3px}.site-nav summary{cursor:pointer;list-style:none;padding:8px 16px;border-radius:8px;background:rgba(255,255,255,.12);font-weight:600;color:#fff;user-select:none;transition:background 0.2s}
+</style>
+</head>
+<body>
+<nav class="site-nav" aria-label="Main site navigation">
+  <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
+  <details class="nav-group" aria-label="Learning module selector">
+    <summary>Learning Module</summary>
+    <div class="nav-menu">
+      <a href="../../00-prerequisites/documents/module-home.html">00 - Prerequisites</a>
+      <a href="../../01-identity-governance/documents/module-home.html">01 - Identity &amp; Governance</a>
+      <a href="../../02-storage/documents/module-home.html">02 - Storage</a>
+      <a href="../../03-compute/documents/module-home.html">03 - Compute</a>
+      <a href="../../04-networking/documents/module-home.html">04 - Networking</a>
+      <a href="../../05-monitor-maintain/documents/module-home.html">05 - Monitor &amp; Maintain</a>
+    </div>
+  </details>
+</nav>
+<div class="layout">
+  <aside class="sidebar" aria-label="Page navigation">
+    <details open>
+      <summary>▶ Module 04 - Networking</summary>
+      <div>
+        <a href="01-vnets-and-subnets.html">01 - VNets &amp; Subnets</a>
+<a href="02-network-security-groups.html">02 - Network Security Groups</a>
+<a href="03-routing-fundamentals.html">03 - Routing Fundamentals</a>
+<a href="04-vnet-peering.html">04 - VNet Peering</a>
+<a href="05-vpn-and-expressroute.html">05 - VPN &amp; ExpressRoute</a>
+<a href="06-hub-spoke-topology.html">06 - Hub-Spoke Topology</a>
+<a href="07-private-endpoints-service-endpoints.html">07 - Private Endpoints &amp; Service Endpoints</a>
+<a href="08-network-security-advanced.html">08 - Network Security Advanced</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ Labs</summary>
+      <div>
+        <a href="lab01-vnet-subnets.html">Lab 01 - VNet &amp; Subnets</a>
+<a href="lab02-nsg-asg.html">Lab 02 - NSG &amp; ASG</a>
+<a href="lab03-vnet-peering-vpn.html">Lab 03 - VNet Peering &amp; VPN</a>
+<a href="lab04-load-balancer-app-gateway.html">Lab 04 - Load Balancer &amp; App Gateway</a>
+<a href="lab05-dns-name-resolution.html">Lab 05 - DNS &amp; Name Resolution</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ On This Page</summary>
+      <div>
+        <a href="#objectives-">Objectives</a>
+<a href="#prerequisites-">Prerequisites</a>
+<a href="#estimated-time-">Estimated time</a>
+<a href="#part-1-create-two-vnets-non-overlapping-address-spaces-">Part 1 – Create two VNets (non-overlapping address spaces)</a>
+<a href="#part-2-create-vnet-peering-both-directions-">Part 2 – Create VNet peering (both directions)</a>
+<a href="#part-3-test-connectivity-">Part 3 – Test connectivity</a>
+<a href="#part-4-peering-options-gateway-transit-forwarded-traffic-">Part 4 – Peering options: gateway transit & forwarded traffic</a>
+<a href="#part-5-optional-site-to-site-vpn-gateway-">Part 5 – (Optional) Site-to-Site VPN Gateway</a>
+<a href="#validation-">Validation</a>
+<a href="#cleanup-">Cleanup</a>
+<a href="#exam-tips-">Exam Tips</a>
+      </div>
+    </details>
+  </aside>
+  <div class="page">
+  <h1>Lab 03 – VNet Peering & VPN Gateway</h1>
+
+<h2 id="objectives-">Objectives</h2>
+<ul><ol><li>Peer two VNets and verify connectivity</li>
+<li>Configure peering options (gateway transit, forwarded traffic, access)</li>
+<li>(Overview + optional deploy) Create a Site-to-Site VPN gateway</li></ol></ul>
+
+<h2 id="prerequisites-">Prerequisites</h2>
+<ul><ol><li>None</li>
+<li>Signed in at <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
+
+<h2 id="estimated-time-">Estimated time</h2>
+<p>40 minutes (VPN gateway provisioning alone can take ~30 min — plan accordingly)</p>
+
+<p>---</p>
+
+<h2 id="part-1-create-two-vnets-non-overlapping-address-spaces-">Part 1 – Create two VNets (non-overlapping address spaces)</h2>
+
+<div class='callout-box callout-important'><span class='callout-icon'>❗</span><div class='callout-content'><h4>important</h4><p>VNet address spaces MUST NOT overlap for peering to work. Check both VNets' address ranges before creating peering links.</p></div></div>
+
+<ol><li>Search for <strong>Virtual networks</strong> > <strong>Create</strong>.</li></ol>
+<p>- <strong>Resource group</strong>: <strong>Create new</strong> <code>rg-az104-lab14</code></p>
+<p>- <strong>Name</strong>: <code>vnet-hub14</code></p>
+<p>- <strong>Address space</strong>: <code>10.70.0.0/16</code></p>
+<p>- <strong>Subnets</strong>: <code>subnet-hub</code> with <code>10.70.1.0/24</code></p>
+<p>- <strong>Create</strong>.</p>
+
+<ol><li>Repeat to create <strong>vnet-spoke14</strong>:</li></ol>
+<p>- <strong>Address space</strong>: <code>10.71.0.0/16</code> (non-overlapping)</p>
+<p>- <strong>Subnets</strong>: <code>subnet-spoke</code> with <code>10.71.1.0/24</code></p>
+<p>- <strong>Create</strong>.</p>
+
+<h2 id="part-2-create-vnet-peering-both-directions-">Part 2 – Create VNet peering (both directions)</h2>
+
+<ol><li>Go to <strong>vnet-hub14</strong> > <strong>Peerings</strong> (under <strong>Settings</strong>) > <strong>+ Add</strong>.</li>
+<li><strong>Add peering</strong>:</li></ol>
+<p>- <strong>Peering link name</strong>: <code>hub-to-spoke</code></p>
+<p>- <strong>Remote virtual network</strong>:</p>
+<p>- <strong>Select by ID</strong> > choose <code>vnet-spoke14</code></p>
+<p>- <strong>Allow access between VNets</strong>: <strong>Checked</strong></p>
+<p>- <strong>Add</strong>.</p>
+
+<ol><li>Go to <strong>vnet-spoke14</strong> > <strong>Peerings</strong> > <strong>+ Add</strong>.</li>
+<li><strong>Add peering</strong>:</li></ol>
+<p>- <strong>Peering link name</strong>: <code>spoke-to-hub</code></p>
+<p>- <strong>Remote virtual network</strong>: select <code>vnet-hub14</code></p>
+<p>- <strong>Allow access between VNets</strong>: <strong>Checked</strong></p>
+<p>- <strong>Add</strong>.</p>
+
+<p>Both peerings should now show <strong>Connected</strong> status.</p>
+
+<h2 id="part-3-test-connectivity-">Part 3 – Test connectivity</h2>
+
+<ol><li>Create two VMs:</li></ol>
+<p>- <strong>Virtual machines</strong> > <strong>Create</strong> > <code>vm-hub</code>, <strong>Ubuntu 22.04 LTS</strong>,</p>
+<p><code>vnet-hub14</code>/<code>subnet-hub</code> with a <strong>public IP</strong>. <strong>Create</strong>.</p>
+<p>- Create <code>vm-spoke</code>, <strong>Ubuntu 22.04 LTS</strong>, <code>vnet-spoke14</code>/<code>subnet-spoke<strong></p>
+<p>with </strong>No public IP<strong>. </strong>Create<strong>.</p>
+
+<ol><li>SSH into </code>vm-hub<code> using its public IP, then ping/SSH to </code>vm-spoke<code>'s private IP</li></ol>
+<p>(e.g., </code>10.71.1.x<code>) — should succeed over the peering connection (private</p>
+<p>IPs, no public exposure needed).</p>
+
+<h2 id="part-4-peering-options-gateway-transit-forwarded-traffic-">Part 4 – Peering options: gateway transit & forwarded traffic</h2>
+
+<ol><li>Go to </strong>hub-to-spoke<strong> peering > </strong>Edit peering<strong>:</li></ol>
+<p>- </strong>Allow forwarded traffic<strong>: </strong>Checked<strong> (lets traffic NOT originating in</p>
+<p>the peered VNet pass through — needed for NVAs/firewalls)</p>
+<p>- </strong>Save<strong>.</p>
+
+<ol><li>Discuss (no need to configure now): </strong>Allow gateway transit<strong> lets the spoke</li></ol>
+<p>use the hub's VPN/ExpressRoute gateway (hub-spoke topology) — set on the hub</p>
+<p>side; spoke side sets </strong>Use remote gateways<strong>.</p>
+
+<div class='callout-box callout-note'><span class='callout-icon'>📝</span><div class='callout-content'><h4>note</h4><p>VNet peering is </strong>not transitive<strong> — if spoke A peers with hub, and hub</p></div></div>
+<div class="callout"><p>peers with spoke B, A cannot reach B unless explicitly peered (or via gateway</p></div>
+<div class="callout"><p>transit + an NVA).</p></div>
+
+<h2 id="part-5-optional-site-to-site-vpn-gateway-">Part 5 – (Optional) Site-to-Site VPN Gateway</h2>
+
+<p>This part provisions a real gateway — </strong>expensive and slow (~30 min)<strong>. Only</p>
+<p>do this if you want hands-on VPN experience; otherwise read through for concepts.</p>
+
+<ol><li>Go to </strong>vnet-hub14<strong> > </strong>Subnets<strong> > </strong>+ Subnet<strong>. Create:</li></ol>
+<p>- </strong>Name<strong>: </code>GatewaySubnet<code> (reserved name)</p>
+<p>- </strong>Address range<strong>: </code>10.70.255.0/27<code></p>
+<p>- </strong>Add<strong>.</p>
+
+<ol><li>Search for </strong>Virtual network gateways<strong> > </strong>Create<strong>.</li></ol>
+<p>- </strong>Name<strong>: </code>vpngw-lab14<code></p>
+<p>- </strong>Region<strong>: </code>East US<code></p>
+<p>- </strong>Gateway type<strong>: </strong>VPN<strong></p>
+<p>- </strong>VPN type<strong>: </strong>Route-based<strong></p>
+<p>- </strong>Virtual network<strong>: </code>vnet-hub14<code></p>
+<p>- </strong>Gateway subnet<strong>: </code>GatewaySubnet<code></p>
+<p>- </strong>Public IP<strong>: </strong>Create new<strong> (e.g., </code>pip-vpngw<code>)</p>
+<p>- </strong>SKU<strong>: </strong>VpnGw1<strong></p>
+<p>- </strong>Create<strong> (provisioning takes ~30 minutes).</p>
+
+<ol><li>While it's provisioning, go to </strong>Local network gateways<strong> > </strong>Create<strong> to</li></ol>
+<p>represent the on-prem side:</p>
+<p>- </strong>Name<strong>: </code>lng-onprem<code></p>
+<p>- </strong>Endpoint<strong>: </strong>IP address<strong></p>
+<p>- </strong>IP address<strong>: </code>203.0.113.1<code> (a placeholder on-prem public IP)</p>
+<p>- </strong>Address space<strong>: </code>192.168.1.0/24<code> (a placeholder on-prem network)</p>
+<p>- </strong>Create<strong>.</p>
+
+<ol><li>Once the VPN gateway finishes provisioning, go to </strong>vpngw-lab14<strong> ></li></ol>
+<p></strong>Connections<strong> > </strong>+ Add<strong> to create a </strong>Site-to-Site (IPSec)<strong> connection:</p>
+<p>- </strong>Name<strong>: </code>conn-onprem<code></p>
+<p>- </strong>Connection type<strong>: </strong>Site-to-Site (IPSec)<strong></p>
+<p>- </strong>Local network gateway<strong>: </code>lng-onprem<code></p>
+<p>- </strong>Shared key<strong>: </code>P@ssw0rd123!<code> (used for IPSec negotiation)</p>
+<p>- </strong>Create<strong>.</p>
+
+<h2 id="validation-">Validation</h2>
+<ul><ol><li>[ ] Both peerings (</code>hub-to-spoke<code> and </code>spoke-to-hub<code>) show </strong>Connected<strong> status</li>
+<li>[ ] </code>vm-hub<code> can reach </code>vm-spoke<code>'s private IP across the peering</li>
+<li>[ ] Can explain gateway transit vs forwarded traffic vs non-transitive peering</li>
+<li>[ ] (If completed) VPN gateway provisioned and connection created</li></ol></ul>
+
+<h2 id="cleanup-">Cleanup</h2>
+<ol><li></strong>Resource groups<strong> > select </code>rg-az104-lab14<code> > </strong>Delete resource group<strong>.</li></ol>
+<p>> If you deployed the VPN gateway, deletion can take 10-15+ minutes — that's normal.</p>
+
+<h2 id="exam-tips-">Exam Tips</h2>
+<ul><ol><li>VNet Peering is </strong>low-latency, private-backbone<strong> connectivity between VNets — can span regions (global peering) and subscriptions/tenants.</li>
+<li>Peering is </strong>not transitive<strong> — a common exam trap. Hub-spoke transitive routing needs gateway transit + NVA/route tables, or Azure Virtual WAN.</li>
+<li>VPN Gateway SKUs (VpnGw1-5) determine throughput/tunnel counts; </strong>Policy-based<strong> vs </strong>Route-based** VPN types — route-based is more flexible and required for most scenarios (P2S, multiple connections).</li>
+<li></code>GatewaySubnet` is a reserved name and must not have an NSG attached.</li></ol></ul>
+
+  </div>
+</div>
+<script>
+/* Sidebar Active Link Tracking */
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.sidebar a'));
+  var sections = [];
+  links.forEach(function(a){
+    var el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) sections.push({link:a, el:el});
+  });
+  if (!sections.length || !('IntersectionObserver' in window)) return;
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (!entry.isIntersecting) return;
+      var match = sections.find(function(s){ return s.el === entry.target; });
+      if (!match) return;
+      links.forEach(function(a){ a.classList.remove('active'); });
+      match.link.classList.add('active');
+    });
+  }, { rootMargin: '-100px 0px -70% 0px', threshold: 0 });
+  sections.forEach(function(s){ observer.observe(s.el); });
+})();
+
+/* Code Block Copy Button Functionality */
+document.addEventListener('DOMContentLoaded', function(){
+  var codeBlocks = document.querySelectorAll('.code-block');
+  codeBlocks.forEach(function(block){
+    var pre = block.querySelector('pre');
+    if (!pre) return;
+
+    var btn = document.createElement('button');
+    btn.className = 'code-copy-btn';
+    btn.textContent = 'Copy';
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'Copy code to clipboard');
+
+    btn.addEventListener('click', function(){
+      var code = pre.textContent;
+      navigator.clipboard.writeText(code).then(function(){
+        var original = btn.textContent;
+        btn.textContent = '✓ Copied!';
+        btn.classList.add('copied');
+        setTimeout(function(){
+          btn.textContent = original;
+          btn.classList.remove('copied');
+        }, 2000);
+      }).catch(function(){
+        alert('Failed to copy code');
+      });
+    });
+
+    block.appendChild(btn);
+  });
+});
+</script>
+</body>
+</html>

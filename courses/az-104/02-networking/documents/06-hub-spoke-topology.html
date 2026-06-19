@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hub-Spoke Topology - Enterprise Network Architecture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f8fc;--card:#fff;--border:#d9e0ef;--text:#1f2937;--muted:#5b6678;
+  --primary:#151d63;--panel:#00004C;--panel-shadow:rgba(0,0,76,.18);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:Inter,-apple-system,'Segoe UI',sans-serif;color:var(--text)}
+.page{flex:1;min-width:0;padding:28px}
+
+h1{font-size:3.2rem;line-height:1.15;margin:0;color:var(--primary);font-weight:800;letter-spacing:-1px}
+.subtitle{font-size:1.4rem;font-weight:600;color:#2d3b77;margin-top:10px}
+
+.badges{display:flex;gap:12px;margin:20px 0 26px;flex-wrap:wrap}
+.badge{background:#eef2ff;border:1px solid #d8def7;color:#1e2a78;padding:10px 18px;border-radius:999px;font-weight:600;font-size:.95rem}
+
+.section{display:grid;grid-template-columns:42% 58%;gap:28px;padding:26px 0;border-top:1px solid var(--border)}
+.section.full{display:block;padding:26px 0;border-top:1px solid var(--border)}
+.section:first-of-type, .section.full:first-of-type{border-top:none}
+
+h2{font-size:2rem;margin:0 0 14px;color:var(--primary);font-weight:800}
+h3{font-size:1.4rem;margin:22px 0 10px;color:var(--primary);font-weight:700}
+h3:first-child{margin-top:0}
+h4{font-size:1.1rem;margin:16px 0 8px;color:#2d3b77;font-weight:700}
+
+p{font-size:1.05rem;line-height:1.65;margin:.5rem 0;color:var(--text)}
+
+ul, ol{margin:.6rem 0;padding-left:1.4rem}
+li{margin-bottom:6px;line-height:1.6;font-size:1.02rem}
+
+a{color:#1e2a78;text-decoration:none;border-bottom:1px solid transparent;font-weight:600}
+a:hover{border-bottom-color:#1e2a78}
+
+strong{color:var(--primary);font-weight:700}
+
+.callout{margin-top:20px;background:#f3f7ff;border:1px solid #bfd0ff;border-radius:14px;padding:18px 22px}
+.callout strong{color:#1735ad}
+.callout p{margin:0}
+.callout p + p{margin-top:8px}
+
+.panel{
+  background:var(--panel);
+  color:#fff;border-radius:18px;padding:22px 26px;
+  box-shadow:0 12px 28px var(--panel-shadow);
+  font:15px/1.65 'SF Mono',Consolas,'Courier New',monospace;
+  white-space:pre-wrap;
+  overflow:auto;
+}
+.panel.small{font-size:13.5px;line-height:1.6}
+.panel + .panel{margin-top:18px}
+
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:14px 0}
+th,td{padding:14px;border:1px solid var(--border);text-align:left;font-size:.98rem}
+th{background:#eef2ff;color:var(--primary);font-weight:700}
+tr:hover td{background:#fafbff}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+
+.mistake-card{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:14px 0 8px}
+.mistake-card h4{margin-top:0}
+
+.tip{margin-top:20px;background:#eef4ff;border:1px solid #c8d5ff;border-radius:12px;padding:16px 20px;font-size:1.02rem}
+.tip strong{color:#1735ad}
+
+hr.divider{border:none;height:0;margin:0}
+
+.footer{margin-top:48px;padding-top:24px;border-top:1px solid var(--border);font-size:.9rem;color:var(--muted)}
+.footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px}
+.footer-item strong{display:block;color:var(--primary);margin-bottom:6px;font-size:.95rem}
+.footer-meta{margin-top:24px;padding-top:16px;border-top:1px solid var(--border);text-align:center;font-size:.85rem}
+
+@media (max-width:1000px){
+  .section,.grid2,.grid3,.grid4,.mistake-card{grid-template-columns:1fr}
+  h1{font-size:2.3rem}
+  .page{padding:16px}
+  .panel{font-size:13px}
+  .sidebar{display:none}
+  .layout{display:block}
+}
+
+/* ===== Site-wide Cross Navigation ===== */
+.site-nav{
+  position:sticky;top:0;z-index:1000;
+  background:var(--primary);color:#fff;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:12px 28px;font-size:.92rem;
+  box-shadow:0 2px 10px rgba(0,0,76,.18);
+  font-family:Inter,-apple-system,'Segoe UI',sans-serif;
+}
+.site-nav .nav-brand{font-weight:800;font-size:1.05rem;margin-right:auto;color:#fff}
+.site-nav details{position:relative}
+.site-nav summary{cursor:pointer;list-style:none;padding:7px 16px;border-radius:8px;background:rgba(255,255,255,.12);font-weight:600;color:#fff;user-select:none}
+.site-nav summary::-webkit-details-marker,.site-nav summary::marker{display:none;content:''}
+.site-nav details[open] summary{background:rgba(255,255,255,.24)}
+.site-nav .nav-menu{
+  position:absolute;top:calc(100% + 8px);left:0;
+  background:#fff;color:var(--text);
+  border:1px solid var(--border);border-radius:12px;
+  padding:8px;min-width:300px;box-shadow:0 16px 32px rgba(0,0,76,.22);
+  display:flex;flex-direction:column;gap:2px;z-index:1001;
+}
+.site-nav .nav-menu a{
+  display:block;padding:9px 14px;border-radius:8px;border-bottom:none;
+  color:var(--text);font-weight:500;font-size:.95rem;
+}
+.site-nav .nav-menu a:hover{background:#eef2ff;color:#1e2a78}
+.site-nav .nav-menu a.active{background:#eef2ff;color:#1735ad;font-weight:700}
+@media (max-width:768px){
+  .site-nav{padding:10px 16px}
+  .site-nav .nav-brand{font-size:.95rem}
+}
+/* ===== Page Sidebar (Collapsible) ===== */
+.layout{max-width:1400px;margin:auto;display:flex;align-items:flex-start}
+.sidebar{
+  flex:0 0 260px;
+  position:sticky;top:88px;
+  max-height:calc(100vh - 108px);
+  overflow-y:auto;
+  margin:28px 0 28px 28px;
+  padding:20px 18px;
+  background:#fff;border:1px solid var(--border);border-radius:14px;
+  box-shadow:0 4px 16px rgba(21,29,99,.05);
+}
+.sidebar details{margin-bottom:0}
+.sidebar summary{
+  cursor:pointer;list-style:none;padding:10px 12px;border-radius:8px;
+  font-weight:600;font-size:.92rem;color:var(--primary);
+  user-select:none;transition:background 0.2s;
+}
+.sidebar summary::-webkit-details-marker,.sidebar summary::marker{display:none;content:''}
+.sidebar details[open]>summary{background:#eef2ff}
+.sidebar summary:hover{background:#f0f4ff}
+.sidebar a{display:block;padding:8px 12px;margin:2px 0;border-radius:8px;font-size:.88rem;font-weight:500;
+  color:var(--text);border-bottom:none;border-left:3px solid transparent;line-height:1.4;transition:all 0.15s}
+.sidebar a:hover{background:#eef2ff;color:#1e2a78}
+.sidebar a.active{background:#eef2ff;color:#1735ad;font-weight:700;border-left-color:var(--primary)}
+.sidebar details > div{padding:0 0 8px 12px}
+.sidebar hr.sidebar-divider{border:none;border-top:1px solid var(--border);margin:12px 0}
+@media print{
+  .site-nav{display:none}
+  body{background:#fff}
+  .page{padding:0}
+  .panel{box-shadow:none}
+  .sidebar{display:none}
+  .layout{display:block}
+}
+
+/* Keyboard Navigation & Accessibility */
+a:focus-visible,
+button:focus-visible,
+.sidebar a:focus-visible,
+.sidebar summary:focus-visible,
+.site-nav summary:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+details:focus-visible > summary {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+</style>
+</head>
+<body>
+<nav class="site-nav" aria-label="Main site navigation">
+  <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
+  <details class="nav-group" aria-label="Learning module selector">
+    <summary>Learning Module</summary>
+    <div class="nav-menu">
+      <a href="../../00-prerequisites/documents/module-home.html">00 - Prerequisites</a>
+      <a href="../../01-identity-governance/documents/module-home.html">01 - Identity &amp; Governance</a>
+      <a href="../../02-storage/documents/module-home.html">02 - Storage</a>
+      <a href="../../03-compute/documents/module-home.html">03 - Compute</a>
+      <a href="../../04-networking/documents/module-home.html" class="active">04 - Networking</a>
+      <a href="../../05-monitor-maintain/documents/module-home.html">05 - Monitor &amp; Maintain</a>
+    </div>
+  </details>
+</nav>
+<div class="layout">
+  <aside class="sidebar">
+    <details open>
+      <summary>▶ Module 04 - Networking</summary>
+      <div>
+        <a href="01-vnets-and-subnets.html">01 - Vnets and subnets</a>
+        <a href="02-network-security-groups.html">02 - Network security groups</a>
+        <a href="03-routing-fundamentals.html">03 - Routing fundamentals</a>
+        <a href="04-vnet-peering.html">04 - Vnet peering</a>
+        <a href="05-vpn-and-expressroute.html">05 - Vpn and expressroute</a>
+        <a href="06-hub-spoke-topology.html">06 - Hub spoke topology</a>
+        <a href="07-private-endpoints-service-endpoints.html">07 - Private endpoints service endpoints</a>
+        <a href="08-network-security-advanced.html">08 - Network security advanced</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ Labs</summary>
+      <div>
+        <a href="lab01-vnet-subnets.html">lab01 - Vnet subnets</a>
+        <a href="lab02-nsg-asg.html">lab02 - Nsg asg</a>
+        <a href="lab03-vnet-peering-vpn.html">lab03 - Vnet peering vpn</a>
+        <a href="lab04-load-balancer-app-gateway.html">lab04 - Load balancer app gateway</a>
+        <a href="lab05-dns-name-resolution.html">lab05 - Dns name resolution</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ On This Page</summary>
+      <div>
+        <a href="#before-you-start">Before you start</a>
+        <a href="#the-simple-idea">The simple idea</a>
+        <a href="#how-hub-spoke-works">How hub spoke works</a>
+        <a href="#mental-model-hub-spoke-as-postal-system">Mental model hub spoke as postal system</a>
+        <a href="#worked-example-real-scenario">Worked example real scenario</a>
+        <a href="#common-mistakes-what-not-to-do">Common mistakes what not to do</a>
+        <a href="#hub-spoke-checklist">Hub spoke checklist</a>
+        <a href="#how-this-connects-to-other-topics">How this connects to other topics</a>
+        <a href="#see-it-in-action">See it in action</a>
+        <a href="#key-takeaways">Key takeaways</a>
+        <a href="#next-steps">Next steps</a>
+      </div>
+    </details>
+  </aside>
+  <div class="page">
+
+  <h1>Hub-Spoke Topology: Enterprise Network Architecture</h1>
+  <div class="subtitle">The scalable pattern enterprises use to centralize shared services and connect dozens of VNets</div>
+
+  <div class="badges">
+    <span class="badge">🟡 Intermediate</span>
+    <span class="badge">⏱ 20 Minutes</span>
+    <span class="badge">📘 AZ-104 · Module 04</span>
+  </div>
+
+  <div class="callout">
+    <strong>Why This Matters</strong>
+    <p>Imagine managing 50 separate office buildings, each with its own security guard, firewall, and reception desk. Nightmare, right? Hub-spoke is how Azure organizations scale. One central hub handles shared services (firewall, VPN, DNS) and spokes connect to it like branches to a tree. Every major enterprise uses this pattern. Understanding it unlocks most exam scenarios.</p>
+  </div>
+
+  <!-- Before You Start -->
+  <div class="section full" id="before-you-start">
+    <h2>Before You Start</h2>
+    <table>
+      <tr><th>Prerequisites</th><td><a href="01-vnets-and-subnets.html">VNets &amp; Subnets</a>, <a href="02-network-security-groups.html">Network Security Groups</a>, Routing Fundamentals, VNet Peering, VPN &amp; ExpressRoute</td></tr>
+      <tr><th>Time to understand</th><td>20 minutes</td></tr>
+      <tr><th>Difficulty</th><td>🟡 Intermediate (combines multiple networking concepts)</td></tr>
+      <tr><th>What you'll learn</th><td>Hub-spoke architecture, when to use it, how to implement at scale</td></tr>
+    </table>
+  </div>
+
+  <!-- The Simple Idea -->
+  <div class="section" id="the-simple-idea">
+    <div>
+      <h2>The Simple Idea</h2>
+      <h3>What Is Hub-Spoke?</h3>
+      <p><strong>Hub-Spoke</strong> = A network architecture where one central VNet (hub) holds shared services, and multiple VNets (spokes) peer to it — spokes don't talk directly to each other, they route through the hub.</p>
+      <h3>What Goes in the Hub?</h3>
+      <p>Hub VNet contains shared infrastructure:</p>
+      <ul>
+        <li><strong>VPN Gateway</strong> (on-premises connection)</li>
+        <li><strong>ExpressRoute Gateway</strong> (dedicated circuit)</li>
+        <li><strong>Azure Firewall</strong> (centralized inspection)</li>
+        <li><strong>DNS Resolver</strong> (shared DNS)</li>
+        <li><strong>Network NVA</strong> (network appliance)</li>
+      </ul>
+    </div>
+    <div class="panel">Airline Network (Hub-Spoke):
+
+Old Model (Messy):
+  NYC ↔ LA ↔ Chicago ↔ Denver ↔ Boston
+  └─ Every city connected to every other city
+  └─ Too many routes, hard to manage, expensive ✗
+
+Hub-Spoke Model (Clean):
+
+        ┌─── NYC (Spoke)
+        │
+  Dallas (Hub) ─── LA (Spoke)
+        │
+        ├─ Chicago (Spoke)
+        │
+        └─ Boston (Spoke)
+
+  All flights go through Dallas hub
+  ├─ Easier to manage ✓
+  ├─ Centralized security/customs ✓
+  ├─ Economies of scale ✓
+  └─ Spokes don't need direct routes ✓</div>
+  </div>
+
+  <!-- How Hub-Spoke Works -->
+  <div class="section full" id="how-hub-spoke-works">
+    <h2>How Hub-Spoke Works</h2>
+    <h3>Architecture Diagram</h3>
+    <div class="panel">On-Premises (192.168.0.0/16)
+        │
+        │ VPN / ExpressRoute
+        ↓
+
+Hub VNet (10.0.0.0/16)
+├── GatewaySubnet (10.0.1.0/24) — VPN/ExpressRoute Gateway
+├── AzureFirewallSubnet (10.0.2.0/24) — Firewall (centralized inspection)
+├── SharedServicesSubnet (10.0.3.0/24) — DNS, shared resources
+└── ManagementSubnet (10.0.4.0/24) — Admin tools
+
+        ↗ Peering ↖
+       /            \
+  Spoke-Prod        Spoke-Dev        Spoke-Test
+  (10.1.0.0/16)    (10.2.0.0/16)    (10.3.0.0/16)
+  ├─ App tier       ├─ App tier       ├─ App tier
+  └─ DB tier        └─ DB tier        └─ DB tier
+
+Peering Features:
+├─ Hub → Spoke: "Allow gateway transit" ✓
+├─ Spoke → Hub: "Use remote gateway" ✓
+└─ Result: Spokes use hub's VPN to reach on-premises ✓</div>
+
+    <div class="grid2" style="margin-top:18px">
+      <div>
+        <h3>Step 1: Create Hub VNet</h3>
+        <div class="panel small">Hub VNet: 10.0.0.0/16
+├── GatewaySubnet: 10.0.1.0/24
+│   └─ Used by: VPN Gateway
+├── AzureFirewallSubnet: 10.0.2.0/24
+│   └─ Used by: Azure Firewall
+├── SharedServicesSubnet: 10.0.3.0/24
+│   └─ Used by: DNS, shared apps
+└── ManagementSubnet: 10.0.4.0/24
+    └─ Used by: Admin VMs</div>
+      </div>
+      <div>
+        <h3>Step 2: Create Spoke VNets</h3>
+        <div class="panel small">Spoke-Prod: 10.1.0.0/16
+├── WebSubnet: 10.1.1.0/24
+├── AppSubnet: 10.1.2.0/24
+└── DBSubnet: 10.1.3.0/24
+
+Spoke-Dev: 10.2.0.0/16
+├── WebSubnet: 10.2.1.0/24
+├── AppSubnet: 10.2.2.0/24
+└── DBSubnet: 10.2.3.0/24
+
+Spoke-Test: 10.3.0.0/16
+├── WebSubnet: 10.3.1.0/24
+├── AppSubnet: 10.3.2.0/24
+└── DBSubnet: 10.3.3.0/24
+
+Requirement: No overlapping address spaces ✓</div>
+      </div>
+      <div>
+        <h3>Step 3: Deploy Gateways in Hub</h3>
+        <div class="panel small">VPN Gateway in Hub:
+├── Deployed in GatewaySubnet (10.0.1.0/24)
+├── Connects to on-premises via Site-to-Site VPN
+├── Peering option: "Allow gateway transit" ENABLED
+└─ Result: All spokes can reach on-premises through hub
+
+Azure Firewall in Hub:
+├── Deployed in AzureFirewallSubnet (10.0.2.0/24)
+├── Private IP: 10.0.2.4
+├── All internet traffic from spokes routes through it
+└─ Result: Centralized inspection, threat detection ✓</div>
+      </div>
+      <div>
+        <h3>Step 4: Create Peering (Hub ↔ Spokes)</h3>
+        <div class="panel small">Peering 1: Hub ↔ Spoke-Prod
+├── Hub side: "Allow gateway transit" = YES
+├── Spoke side: "Use remote gateway" = YES
+├── Traffic forwarding: ENABLED
+└─ Result: Spoke-Prod routes through hub ✓
+
+Peering 2 &amp; 3: Hub ↔ Spoke-Dev, Hub ↔ Spoke-Test
+└─ Same pattern, both connected ✓
+
+Note: Spokes are NOT directly peered to each other ✗</div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:24px">Step 5: Configure Routing</h3>
+    <div class="panel">In Hub VNet, create User-Defined Routes:
+
+Route Table "HubRoutes":
+├── 0.0.0.0/0 → Azure Firewall (10.0.2.4)
+│   └─ All internet traffic through firewall
+├── 192.168.0.0/16 → VPN Gateway
+│   └─ On-premises traffic through gateway
+└── Apply to: All hub subnets
+
+In Each Spoke, create User-Defined Routes:
+
+Route Table "Prod-Routes":
+├── 0.0.0.0/0 → Hub Firewall (10.0.2.4)
+│   └─ Internet traffic via hub firewall
+├── 192.168.0.0/16 → Hub VPN Gateway
+│   └─ On-premises via hub gateway
+├── 10.2.0.0/16 → Hub firewall
+│   └─ Dev traffic via hub (not direct)
+├── 10.3.0.0/16 → Hub firewall
+│   └─ Test traffic via hub (not direct)
+└── Apply to: All prod subnets (except spokes already peered)
+
+Result:
+  ├─ Prod internal traffic: Direct (10.1.0.0/16)
+  ├─ Prod → Dev traffic: Through hub firewall ✓
+  ├─ Prod → Internet: Through hub firewall ✓
+  └─ Prod → On-prem: Through hub VPN ✓</div>
+
+    <h3 style="margin-top:24px">Step 6: Apply NSG Rules</h3>
+    <div class="panel">Hub Firewall Subnet NSG:
+├── Allow inbound from all spokes (10.1.0.0/16, 10.2.0.0/16, etc.)
+├── Allow inbound from on-premises (192.168.0.0/16)
+├── Allow outbound to internet
+└─ Result: Firewall can inspect all traffic ✓
+
+Spoke-Prod App Subnet NSG:
+├── Allow inbound from Prod Web Subnet (10.1.1.0/24)
+├── Allow inbound from Hub Firewall (10.0.2.4/32)
+├── Deny all other inbound
+└─ Result: App layer only accessible from web tier and hub ✓
+
+Spoke-Dev App Subnet NSG:
+├── Allow inbound from Dev Web Subnet (10.2.1.0/24)
+├── Allow inbound from Hub Firewall (10.0.2.4/32)
+├── Deny Dev → Prod (traffic filtered at firewall)
+└─ Result: Dev isolated from prod ✓</div>
+  </div>
+
+  <!-- Mental Model -->
+  <div class="section full" id="mental-model-hub-spoke-as-postal-system">
+    <h2>Mental Model: Hub-Spoke as Postal System</h2>
+    <div class="panel">Postal Hub-Spoke Network:
+
+Central Post Office (Hub)
+├── Sorting facility
+├── Border control (customs/inspection)
+├── International mail gateway
+└── Shared infrastructure
+
+Regional Branches (Spokes)
+├── Branch 1 (Production)
+├── Branch 2 (Development)
+├── Branch 3 (Testing)
+└── All mail between branches goes through central office
+
+Mail Flow:
+└── Branch1 → Central Hub → Inspection → Forward to Branch2 ✓
+
+Benefits:
+├── Central inspection point (security)
+├── Shared border gateway (cost savings)
+├── Easy to add new branches
+└── Scalable architecture ✓</div>
+  </div>
+
+  <!-- Worked Example -->
+  <div class="section full" id="worked-example-real-scenario">
+    <h2>Worked Example: Real Scenario</h2>
+    <h3>The Scenario</h3>
+    <p><strong>TechCorp Enterprise:</strong></p>
+    <ul>
+      <li>Headquarters: Dallas data center (192.168.0.0/16)</li>
+      <li>3 business units: Production, Development, Testing</li>
+      <li>Each needs isolated Azure environment</li>
+      <li>All need access to on-premises data</li>
+      <li>All traffic to internet must be inspected for security</li>
+    </ul>
+
+    <h3>Architecture Design</h3>
+    <div class="panel">Hub VNet (10.0.0.0/16) - Dallas region
+├── GatewaySubnet (10.0.1.0/24)
+│   └─ VPN Gateway (connects to on-premises)
+├── AzureFirewallSubnet (10.0.2.0/24)
+│   └─ Azure Firewall (centralized inspection)
+├── SharedServicesSubnet (10.0.3.0/24)
+│   └─ DNS resolver, monitoring agents
+└── ManagementSubnet (10.0.4.0/24)
+    └─ Admin VM for troubleshooting
+
+Spoke-Prod (10.1.0.0/16) - Production
+├── WebSubnet (10.1.1.0/24) — Load balancer, web VMs
+├── AppSubnet (10.1.2.0/24) — App servers
+└── DBSubnet (10.1.3.0/24) — Production databases
+
+Spoke-Dev (10.2.0.0/16) - Development
+├── WebSubnet (10.2.1.0/24)
+├── AppSubnet (10.2.2.0/24)
+└── DBSubnet (10.2.3.0/24)
+
+Spoke-Test (10.3.0.0/16) - Testing
+├── WebSubnet (10.3.1.0/24)
+├── AppSubnet (10.3.2.0/24)
+└── DBSubnet (10.3.3.0/24)</div>
+
+    <div class="grid2" style="margin-top:18px">
+      <div>
+        <h4>Step 1: Setup Hub</h4>
+        <div class="panel small">1. Create Hub VNet (10.0.0.0/16)
+2. Create 4 subnets (Gateway, Firewall,
+   SharedServices, Management)
+3. Deploy VPN Gateway in GatewaySubnet
+   └─ Configure for on-premises connection
+4. Deploy Azure Firewall in
+   AzureFirewallSubnet
+   └─ Assign static public IP
+5. Create DNS Resolver in
+   SharedServicesSubnet
+   └─ For hybrid DNS resolution</div>
+      </div>
+      <div>
+        <h4>Step 2: Setup Spokes</h4>
+        <div class="panel small">1. Create 3 spoke VNets:
+   ├─ Prod (10.1.0.0/16)
+   ├─ Dev (10.2.0.0/16)
+   └─ Test (10.3.0.0/16)
+
+2. In each spoke, create 3 subnets:
+   ├─ Web (Web servers / load balancer)
+   ├─ App (Application servers)
+   └─ DB (Databases)
+
+3. Verify: No overlapping address
+   spaces ✓</div>
+      </div>
+    </div>
+
+    <h4 style="margin-top:18px">Step 3: Create Peerings</h4>
+    <div class="panel small">Peering: Hub ↔ Prod
+├─ Hub setting: "Allow gateway transit" = YES
+├─ Prod setting: "Use remote gateway" = YES
+├─ Traffic forwarding: ENABLED
+└─ Status: Connected ✓
+
+Peering: Hub ↔ Dev
+├─ Hub setting: "Allow gateway transit" = YES
+├─ Dev setting: "Use remote gateway" = YES
+├─ Traffic forwarding: ENABLED
+└─ Status: Connected ✓
+
+Peering: Hub ↔ Test
+├─ Hub setting: "Allow gateway transit" = YES
+├─ Test setting: "Use remote gateway" = YES
+├─ Traffic forwarding: ENABLED
+└─ Status: Connected ✓
+
+NOT Created: Prod ↔ Dev, Prod ↔ Test, Dev ↔ Test
+└─ Keeps environments isolated ✓</div>
+
+    <h4 style="margin-top:18px">Step 4: Configure Routing in Hub</h4>
+    <table>
+      <tr><th>Destination</th><th>Next Hop</th><th>Purpose</th></tr>
+      <tr><td>0.0.0.0/0</td><td>Firewall (10.0.2.4)</td><td>Internet traffic</td></tr>
+      <tr><td>192.168.0.0/16</td><td>VPN Gateway</td><td>On-premises</td></tr>
+    </table>
+    <p>Apply to all hub subnets.</p>
+
+    <h4 style="margin-top:18px">Step 5: Configure Routing in Spokes</h4>
+    <table>
+      <tr><th>Destination</th><th>Next Hop</th><th>Purpose</th></tr>
+      <tr><td>10.0.0.0/16</td><td>Hub (peering)</td><td>Hub access (peering, not UDR needed)</td></tr>
+      <tr><td>10.2.0.0/16</td><td>Firewall (10.0.2.4)</td><td>Dev traffic via firewall</td></tr>
+      <tr><td>10.3.0.0/16</td><td>Firewall (10.0.2.4)</td><td>Test traffic via firewall</td></tr>
+      <tr><td>192.168.0.0/16</td><td>VPN Gateway (via hub)</td><td>On-premises via hub</td></tr>
+      <tr><td>0.0.0.0/0</td><td>Firewall (10.0.2.4)</td><td>Internet via firewall</td></tr>
+    </table>
+    <p>Apply to all prod subnets. Dev and Test get similar routes (swap Prod with Dev/Test as destination).</p>
+
+    <h4 style="margin-top:18px">Step 6: Configure NSGs</h4>
+    <div class="grid3">
+      <div>
+        <h4>Prod WebSubnet NSG</h4>
+        <div class="panel small">├── Allow inbound on 80, 443
+│   from 0.0.0.0/0 (internet)
+├── Allow inbound on port 8080
+│   from App subnet (10.1.2.0/24)
+└── Deny all other inbound</div>
+      </div>
+      <div>
+        <h4>Prod AppSubnet NSG</h4>
+        <div class="panel small">├── Allow inbound from Web subnet
+│   (10.1.1.0/24)
+├── Allow inbound from Hub Firewall
+│   (10.0.2.4/32)
+├── Allow outbound to DB subnet
+│   (10.1.3.0/24)
+├── Allow outbound to Firewall
+│   (10.0.2.4/32)
+└── Deny all other inbound</div>
+      </div>
+      <div>
+        <h4>Prod DBSubnet NSG</h4>
+        <div class="panel small">├── Allow inbound port 1433
+│   from App subnet (10.1.2.0/24)
+├── Deny all inbound from other
+│   spokes (firewall inspects,
+│   can't bypass)
+└── Deny internet access
+
+(Dev and Test get similar NSGs)</div>
+      </div>
+    </div>
+
+    <h4 style="margin-top:18px">Hub Firewall Subnet NSG</h4>
+    <div class="panel small">├── Allow inbound from all spokes (10.1.0.0/16, 10.2.0.0/16, 10.3.0.0/16)
+├── Allow inbound from on-prem (192.168.0.0/16)
+├── Allow outbound to internet
+└── Allow outbound to all subnets</div>
+
+    <h3 style="margin-top:24px">Step 7: Test Traffic Flows</h3>
+    <div class="grid2">
+      <div>
+        <h4>Scenario 1: Prod VM to Internet</h4>
+        <div class="panel small">├─ ProdVM (10.1.2.10) → Destination 8.8.8.8
+├─ Routing: 0.0.0.0/0 → Firewall (10.0.2.4)
+├─ Path: Prod App → Hub Firewall → Internet
+├─ Firewall: Inspect traffic ✓
+└─ Result: Allowed (if rule permits) ✓</div>
+      </div>
+      <div>
+        <h4>Scenario 2: Prod VM to On-Premises</h4>
+        <div class="panel small">├─ ProdVM (10.1.2.10) → Server (192.168.1.50)
+├─ Routing: 192.168.0.0/16 → VPN Gateway (via hub peering)
+├─ Path: Prod App → Hub VPN Gateway → VPN Tunnel → On-prem
+├─ Gateway: Encrypt/decrypt ✓
+└─ Result: Connected ✓</div>
+      </div>
+      <div>
+        <h4>Scenario 3: Prod VM to Dev VM</h4>
+        <div class="panel small">├─ ProdVM (10.1.2.10) → DevVM (10.2.2.10)
+├─ Routing: 10.2.0.0/16 → Firewall (10.0.2.4)
+├─ Path: Prod App → Hub Firewall → Dev App
+├─ Firewall: Can block cross-environment traffic ✓
+├─ NSG (Dev App): Allows or blocks from firewall
+└─ Result: Controlled by firewall rules ✓</div>
+      </div>
+      <div>
+        <h4>Scenario 4: Admin Troubleshooting</h4>
+        <div class="panel small">├─ Admin in Hub Management subnet (10.0.4.10)
+├─ Needs to check Prod DB (10.1.3.20)
+├─ Routing: 10.1.0.0/16 → Peered (direct)
+├─ NSG: Prod DB may or may not allow management IPs
+└─ Result: Depends on NSG policy ✓</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Common Mistakes -->
+  <div class="section full" id="common-mistakes-what-not-to-do">
+    <h2>Common Mistakes (What NOT to Do)</h2>
+
+    <h3>❌ Mistake 1: Peering All Spokes to Each Other</h3>
+    <div class="mistake-card">
+      <div>
+        <h4>Wrong</h4>
+        <div class="panel small">Create peerings:
+├─ Hub ↔ Prod
+├─ Hub ↔ Dev
+├─ Prod ↔ Dev (DIRECT PEERING!)
+├─ Prod ↔ Test
+├─ Dev ↔ Test
+└─ Too many connections to manage ✗
+
+Problems:
+├─ Lost central inspection (Prod→Dev bypasses firewall)
+├─ Hard to scale (add 4th spoke = 3 new peerings)
+├─ Security risk (no firewall filter)
+└─ Maintenance nightmare ✗</div>
+      </div>
+      <div>
+        <h4>Fix</h4>
+        <div class="panel small">Only peer spokes to hub:
+├─ Hub ↔ Prod ✓
+├─ Hub ↔ Dev ✓
+├─ Hub ↔ Test ✓
+└─ Spokes don't talk directly
+
+All spoke-to-spoke traffic routes
+through firewall ✓</div>
+      </div>
+    </div>
+    <p><strong>Why it fails:</strong> Defeats the purpose of hub-and-spoke architecture.</p>
+
+    <h3>❌ Mistake 2: Forgetting Gateway Transit Settings</h3>
+    <div class="mistake-card">
+      <div>
+        <h4>Wrong</h4>
+        <div class="panel small">Peering created: Hub ↔ Prod
+├─ "Allow gateway transit": NOT enabled on hub
+├─ "Use remote gateway": Enabled on prod
+├─ Prod VM tries to reach on-premises
+├─ Traffic routes to hub, but hub can't
+│  forward to VPN
+├─ Result: Connection fails ✗</div>
+      </div>
+      <div>
+        <h4>Fix</h4>
+        <div class="panel small">Peering: Hub ↔ Prod
+├─ Hub side: "Allow gateway transit" = YES
+├─ Prod side: "Use remote gateway" = YES
+├─ Both must be set correctly
+├─ Now prod can use hub's VPN ✓</div>
+      </div>
+    </div>
+    <p><strong>Why it fails:</strong> Both sides of the peering need compatible settings.</p>
+
+    <h3>❌ Mistake 3: Non-Transitive Routing</h3>
+    <div class="mistake-card">
+      <div>
+        <h4>Wrong</h4>
+        <div class="panel small">Assumption: "If Hub ↔ Prod and Hub ↔ Dev
+are peered, Prod and Dev can talk"
+
+Reality:
+├─ Peering is non-transitive
+├─ A ↔ B and B ↔ C doesn't mean
+│  A ↔ C automatically ✗
+├─ Prod can reach Hub
+├─ Dev can reach Hub
+├─ But Prod→Dev traffic doesn't
+│  automatically work
+└─ Need explicit UDR routing
+   through firewall ✓</div>
+      </div>
+      <div>
+        <h4>Fix</h4>
+        <div class="panel small">Configure UDRs in spokes:
+├─ Prod Route Table: 10.2.0.0/16 → Firewall
+├─ Dev Route Table: 10.1.0.0/16 → Firewall
+├─ Now traffic goes: Prod → Firewall → Dev
+├─ Firewall can inspect and allow/block
+└─ Transitive connectivity achieved ✓</div>
+      </div>
+    </div>
+    <p><strong>Why it fails:</strong> Peering doesn't transitively connect spokes.</p>
+
+    <h3>❌ Mistake 4: Overlapping Address Spaces</h3>
+    <div class="mistake-card">
+      <div>
+        <h4>Wrong</h4>
+        <div class="panel small">Hub: 10.0.0.0/16
+Prod: 10.0.0.0/16 (SAME!)
+Dev: 10.2.0.0/16
+
+Try to peer:
+├─ Hub ↔ Prod: FAILS (overlapping) ✗
+├─ Hub ↔ Dev: OK
+└─ Cannot achieve full hub-spoke ✗</div>
+      </div>
+      <div>
+        <h4>Fix</h4>
+        <div class="panel small">Plan CIDR ranges upfront:
+├─ Hub: 10.0.0.0/16
+├─ Prod: 10.1.0.0/16 ✓
+├─ Dev: 10.2.0.0/16 ✓
+├─ Test: 10.3.0.0/16 ✓
+├─ On-prem: 192.168.0.0/16
+└─ All peering works ✓</div>
+      </div>
+    </div>
+    <p><strong>Why it fails:</strong> Overlapping addresses cause routing ambiguity.</p>
+  </div>
+
+  <!-- Hub-Spoke Checklist -->
+  <div class="section full" id="hub-spoke-checklist">
+    <h2>Hub-Spoke Checklist</h2>
+    <div class="grid2">
+      <div>
+        <h3>Planning</h3>
+        <div class="panel small">□ Identify hub location (central region,
+  on-premises connection point)
+□ Plan CIDR ranges (hub + all spokes,
+  no overlaps)
+□ Decide on shared services (VPN,
+  firewall, DNS)
+□ Document traffic flow policies
+  (who talks to whom)</div>
+        <h3>Hub Setup</h3>
+        <div class="panel small">□ Create Hub VNet with planned CIDR
+□ Create GatewaySubnet (for VPN/ExpressRoute)
+□ Create AzureFirewallSubnet (if using firewall)
+□ Create SharedServicesSubnet (DNS, shared resources)
+□ Deploy VPN/ExpressRoute Gateway (if hybrid needed)
+□ Deploy Azure Firewall (if centralized inspection needed)
+□ Create Hub Route Table (internet → firewall,
+  on-prem → gateway)</div>
+      </div>
+      <div>
+        <h3>Spoke Setup</h3>
+        <div class="panel small">□ Create Spoke VNets (non-overlapping CIDR)
+□ Create subnets (Web, App, DB or similar tiers)
+□ Create Spoke Route Tables (internet/other-spokes/
+  on-prem → firewall)</div>
+        <h3>Peering</h3>
+        <div class="panel small">□ Peer Hub ↔ Spoke-1
+   └─ Hub: "Allow gateway transit" = YES
+   └─ Spoke-1: "Use remote gateway" = YES
+□ Peer Hub ↔ Spoke-2
+   └─ Hub: "Allow gateway transit" = YES
+   └─ Spoke-2: "Use remote gateway" = YES
+□ Peer Hub ↔ Spoke-3 (repeat pattern)
+□ Verify: Peering status = Connected</div>
+        <h3>NSG Rules &amp; Testing</h3>
+        <div class="panel small">□ Hub: Allow traffic from all spokes and on-prem
+□ Spokes: Allow traffic from hub firewall only
+□ Spokes: Allow internal subnet traffic (Web→App→DB)
+□ Spokes: Block direct spoke-to-spoke (force through hub)
+
+□ Test spoke → hub connectivity (peering works)
+□ Test spoke → internet (routes through firewall)
+□ Test spoke → on-prem (uses hub gateway)
+□ Test spoke → other-spoke (routes through firewall)
+□ Test firewall rules (inspect and allow/block)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Connections -->
+  <div class="section full" id="how-this-connects-to-other-topics">
+    <h2>How This Connects to Other Topics</h2>
+    <div class="grid2">
+      <div>
+        <h3>Related to Module 01 (Identity &amp; Governance)</h3>
+        <ul>
+          <li><strong>RBAC:</strong> Only network admins can create peerings, modify hub routes</li>
+          <li><strong>Policy:</strong> Enforce hub-and-spoke topology for all VNets</li>
+        </ul>
+        <h3>Related to Module 02 (Storage)</h3>
+        <ul>
+          <li><strong>Storage Access:</strong> Spokes access storage through hub firewall</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Related to Module 03 (Compute)</h3>
+        <ul>
+          <li><strong>VM Communication:</strong> VMs in different spokes communicate via hub</li>
+        </ul>
+        <h3>Related to Module 05 (Monitor)</h3>
+        <ul>
+          <li><strong>Monitor Hub:</strong> Track traffic through firewall and gateways</li>
+          <li><strong>Network Watcher:</strong> Diagnose spoke-to-spoke connectivity issues</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- See It In Action -->
+  <div class="section full" id="see-it-in-action">
+    <h2>See It In Action</h2>
+    <p><strong>Associated labs:</strong></p>
+    <ul>
+      <li><a href="../labs/lab01-vnet-subnets.md">Lab 01: VNets &amp; Subnets</a></li>
+      <li><a href="../labs/lab02-nsg-asg.md">Lab 02: NSGs</a></li>
+      <li><a href="../labs/lab03-vnet-peering-vpn.md">Lab 03: VNet Peering</a></li>
+      <li><a href="../labs/lab04-firewall.md">Lab 04: Azure Firewall</a></li>
+    </ul>
+    <p><strong>Suggested learning sequence:</strong></p>
+    <ol>
+      <li>✅ Read <a href="01-vnets-and-subnets.html">VNets &amp; Subnets</a></li>
+      <li>✅ Read <a href="02-network-security-groups.html">NSGs</a></li>
+      <li>✅ Read Routing Fundamentals</li>
+      <li>✅ Read VNet Peering</li>
+      <li>✅ Read VPN &amp; ExpressRoute</li>
+      <li>✅ Read this doc (Hub-Spoke Topology)</li>
+      <li>✅ Work through Labs 12-15 (implement hub-spoke)</li>
+    </ol>
+  </div>
+
+  <!-- Key Takeaways -->
+  <div class="section full" id="key-takeaways">
+    <h2>Key Takeaways</h2>
+    <div class="tip">
+      <strong>💡 Summary</strong>
+      <ul style="margin-top:8px">
+        <li><strong>Hub-Spoke = scalable network architecture</strong> (one hub, many spokes)</li>
+        <li><strong>Hub contains shared services</strong> (VPN, firewall, DNS, shared resources)</li>
+        <li><strong>Spokes don't peer directly</strong> (all traffic through hub for inspection)</li>
+        <li><strong>Gateway transit</strong> = spokes use hub's VPN/ExpressRoute</li>
+        <li><strong>Routing is key</strong> = UDRs direct spoke-to-spoke through firewall</li>
+        <li><strong>Non-transitive peering</strong> = A↔B and B↔C doesn't mean A↔C</li>
+        <li><strong>Plan CIDR upfront</strong> = No overlapping address spaces</li>
+        <li><strong>NSGs enforce policy</strong> = Control which traffic is allowed</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Next Steps -->
+  <div class="section full" id="next-steps">
+    <h2>Next Steps</h2>
+    <ol>
+      <li><strong>Learn:</strong> Read this doc (you're here)</li>
+      <li><strong>Design:</strong> Draw your hub-spoke topology (CIDR, subnets, peerings)</li>
+      <li><strong>Implement:</strong> Work through Labs 12-15 (hands-on setup)</li>
+      <li><strong>Monitor:</strong> Track traffic flows through hub firewall</li>
+      <li><strong>Scale:</strong> Add spokes as new business units need Azure environments</li>
+    </ol>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-grid">
+      <div class="footer-item">
+        <strong>Azure AZ-104</strong>
+        Professional Concept Documentation
+      </div>
+      <div class="footer-item">
+        <strong>Module</strong>
+        04 — Networking
+      </div>
+      <div class="footer-item">
+        <strong>Generated</strong>
+        June 15, 2026
+      </div>
+    </div>
+    <div class="footer-meta">&copy; 2026 — AZ-104 Learning Hub. For study purposes only.</div>
+  </div>
+
+</div>
+</div>
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.sidebar a'));
+  var sections = [];
+  links.forEach(function(a){
+    var el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) sections.push({link:a, el:el});
+  });
+  if (!sections.length || !('IntersectionObserver' in window)) return;
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (!entry.isIntersecting) return;
+      var match = sections.find(function(s){ return s.el === entry.target; });
+      if (!match) return;
+      links.forEach(function(a){ a.classList.remove('active'); });
+      match.link.classList.add('active');
+    });
+  }, { rootMargin: '-100px 0px -70% 0px', threshold: 0 });
+  sections.forEach(function(s){ observer.observe(s.el); });
+})();
+</script>
+</body>
+</html>
+
+
+
+

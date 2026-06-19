@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Network Security Groups (NSGs) - Your Network Firewall</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f8fc;--card:#fff;--border:#d9e0ef;--text:#1f2937;--muted:#5b6678;
+  --primary:#151d63;--panel:#00004C;--panel-shadow:rgba(0,0,76,.18);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:Inter,-apple-system,'Segoe UI',sans-serif;color:var(--text)}
+.page{flex:1;min-width:0;padding:28px}
+
+h1{font-size:3.2rem;line-height:1.15;margin:0;color:var(--primary);font-weight:800;letter-spacing:-1px}
+.subtitle{font-size:1.4rem;font-weight:600;color:#2d3b77;margin-top:10px}
+
+.badges{display:flex;gap:12px;margin:20px 0 26px;flex-wrap:wrap}
+.badge{background:#eef2ff;border:1px solid #d8def7;color:#1e2a78;padding:10px 18px;border-radius:999px;font-weight:600;font-size:.95rem}
+
+.section{display:grid;grid-template-columns:42% 58%;gap:28px;padding:26px 0;border-top:1px solid var(--border)}
+.section.full{display:block;padding:26px 0;border-top:1px solid var(--border)}
+.section:first-of-type, .section.full:first-of-type{border-top:none}
+
+h2{font-size:2rem;margin:0 0 14px;color:var(--primary);font-weight:800}
+h3{font-size:1.4rem;margin:22px 0 10px;color:var(--primary);font-weight:700}
+h3:first-child{margin-top:0}
+h4{font-size:1.1rem;margin:16px 0 8px;color:#2d3b77;font-weight:700}
+
+p{font-size:1.05rem;line-height:1.65;margin:.5rem 0;color:var(--text)}
+
+ul, ol{margin:.6rem 0;padding-left:1.4rem}
+li{margin-bottom:6px;line-height:1.6;font-size:1.02rem}
+
+a{color:#1e2a78;text-decoration:none;border-bottom:1px solid transparent;font-weight:600}
+a:hover{border-bottom-color:#1e2a78}
+
+strong{color:var(--primary);font-weight:700}
+
+.callout{margin-top:20px;background:#f3f7ff;border:1px solid #bfd0ff;border-radius:14px;padding:18px 22px}
+.callout strong{color:#1735ad}
+.callout p{margin:0}
+.callout p + p{margin-top:8px}
+
+.panel{
+  background:var(--panel);
+  color:#fff;border-radius:18px;padding:22px 26px;
+  box-shadow:0 12px 28px var(--panel-shadow);
+  font:15px/1.65 'SF Mono',Consolas,'Courier New',monospace;
+  white-space:pre-wrap;
+  overflow:auto;
+}
+.panel.small{font-size:13.5px;line-height:1.6}
+.panel + .panel{margin-top:18px}
+
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:14px 0}
+th,td{padding:14px;border:1px solid var(--border);text-align:left;font-size:.98rem}
+th{background:#eef2ff;color:var(--primary);font-weight:700}
+tr:hover td{background:#fafbff}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+
+.mistake-card{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:14px 0 8px}
+.mistake-card h4{margin-top:0}
+
+.tip{margin-top:20px;background:#eef4ff;border:1px solid #c8d5ff;border-radius:12px;padding:16px 20px;font-size:1.02rem}
+.tip strong{color:#1735ad}
+
+hr.divider{border:none;height:0;margin:0}
+
+.footer{margin-top:48px;padding-top:24px;border-top:1px solid var(--border);font-size:.9rem;color:var(--muted)}
+.footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px}
+.footer-item strong{display:block;color:var(--primary);margin-bottom:6px;font-size:.95rem}
+.footer-meta{margin-top:24px;padding-top:16px;border-top:1px solid var(--border);text-align:center;font-size:.85rem}
+
+@media (max-width:1000px){
+  .section,.grid2,.grid3,.grid4,.mistake-card{grid-template-columns:1fr}
+  h1{font-size:2.3rem}
+  .page{padding:16px}
+  .panel{font-size:13px}
+  .sidebar{display:none}
+  .layout{display:block}
+}
+
+/* ===== Site-wide Cross Navigation ===== */
+.site-nav{
+  position:sticky;top:0;z-index:1000;
+  background:var(--primary);color:#fff;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:12px 28px;font-size:.92rem;
+  box-shadow:0 2px 10px rgba(0,0,76,.18);
+  font-family:Inter,-apple-system,'Segoe UI',sans-serif;
+}
+.site-nav .nav-brand{font-weight:800;font-size:1.05rem;margin-right:auto;color:#fff}
+.site-nav details{position:relative}
+.site-nav summary{cursor:pointer;list-style:none;padding:7px 16px;border-radius:8px;background:rgba(255,255,255,.12);font-weight:600;color:#fff;user-select:none}
+.site-nav summary::-webkit-details-marker,.site-nav summary::marker{display:none;content:''}
+.site-nav details[open] summary{background:rgba(255,255,255,.24)}
+.site-nav .nav-menu{
+  position:absolute;top:calc(100% + 8px);left:0;
+  background:#fff;color:var(--text);
+  border:1px solid var(--border);border-radius:12px;
+  padding:8px;min-width:300px;box-shadow:0 16px 32px rgba(0,0,76,.22);
+  display:flex;flex-direction:column;gap:2px;z-index:1001;
+}
+.site-nav .nav-menu a{
+  display:block;padding:9px 14px;border-radius:8px;border-bottom:none;
+  color:var(--text);font-weight:500;font-size:.95rem;
+}
+.site-nav .nav-menu a:hover{background:#eef2ff;color:#1e2a78}
+.site-nav .nav-menu a.active{background:#eef2ff;color:#1735ad;font-weight:700}
+@media (max-width:768px){
+  .site-nav{padding:10px 16px}
+  .site-nav .nav-brand{font-size:.95rem}
+}
+/* ===== Page Sidebar (Collapsible) ===== */
+.layout{max-width:1400px;margin:auto;display:flex;align-items:flex-start}
+.sidebar{
+  flex:0 0 260px;
+  position:sticky;top:88px;
+  max-height:calc(100vh - 108px);
+  overflow-y:auto;
+  margin:28px 0 28px 28px;
+  padding:20px 18px;
+  background:#fff;border:1px solid var(--border);border-radius:14px;
+  box-shadow:0 4px 16px rgba(21,29,99,.05);
+}
+.sidebar details{margin-bottom:0}
+.sidebar summary{
+  cursor:pointer;list-style:none;padding:10px 12px;border-radius:8px;
+  font-weight:600;font-size:.92rem;color:var(--primary);
+  user-select:none;transition:background 0.2s;
+}
+.sidebar summary::-webkit-details-marker,.sidebar summary::marker{display:none;content:''}
+.sidebar details[open]>summary{background:#eef2ff}
+.sidebar summary:hover{background:#f0f4ff}
+.sidebar a{display:block;padding:8px 12px;margin:2px 0;border-radius:8px;font-size:.88rem;font-weight:500;
+  color:var(--text);border-bottom:none;border-left:3px solid transparent;line-height:1.4;transition:all 0.15s}
+.sidebar a:hover{background:#eef2ff;color:#1e2a78}
+.sidebar a.active{background:#eef2ff;color:#1735ad;font-weight:700;border-left-color:var(--primary)}
+.sidebar details > div{padding:0 0 8px 12px}
+.sidebar hr.sidebar-divider{border:none;border-top:1px solid var(--border);margin:12px 0}
+@media print{
+  .site-nav{display:none}
+  body{background:#fff}
+  .page{padding:0}
+  .panel{box-shadow:none}
+  .sidebar{display:none}
+  .layout{display:block}
+}
+
+/* Keyboard Navigation & Accessibility */
+a:focus-visible,
+button:focus-visible,
+.sidebar a:focus-visible,
+.sidebar summary:focus-visible,
+.site-nav summary:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+details:focus-visible > summary {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+</style>
+</head>
+<body>
+<nav class="site-nav" aria-label="Main site navigation">
+  <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
+  <details class="nav-group" aria-label="Learning module selector">
+    <summary>Learning Module</summary>
+    <div class="nav-menu">
+      <a href="../../00-prerequisites/documents/module-home.html">00 - Prerequisites</a>
+      <a href="../../01-identity-governance/documents/module-home.html">01 - Identity &amp; Governance</a>
+      <a href="../../02-storage/documents/module-home.html">02 - Storage</a>
+      <a href="../../03-compute/documents/module-home.html">03 - Compute</a>
+      <a href="../../04-networking/documents/module-home.html" class="active">04 - Networking</a>
+      <a href="../../05-monitor-maintain/documents/module-home.html">05 - Monitor &amp; Maintain</a>
+    </div>
+  </details>
+</nav>
+<div class="layout">
+  <aside class="sidebar">
+    <details open>
+      <summary>▶ Module 04 - Networking</summary>
+      <div>
+        <a href="01-vnets-and-subnets.html">01 - Vnets and subnets</a>
+        <a href="02-network-security-groups.html">02 - Network security groups</a>
+        <a href="03-routing-fundamentals.html">03 - Routing fundamentals</a>
+        <a href="04-vnet-peering.html">04 - Vnet peering</a>
+        <a href="05-vpn-and-expressroute.html">05 - Vpn and expressroute</a>
+        <a href="06-hub-spoke-topology.html">06 - Hub spoke topology</a>
+        <a href="07-private-endpoints-service-endpoints.html">07 - Private endpoints service endpoints</a>
+        <a href="08-network-security-advanced.html">08 - Network security advanced</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ Labs</summary>
+      <div>
+        <a href="lab01-vnet-subnets.html">lab01 - Vnet subnets</a>
+        <a href="lab02-nsg-asg.html">lab02 - Nsg asg</a>
+        <a href="lab03-vnet-peering-vpn.html">lab03 - Vnet peering vpn</a>
+        <a href="lab04-load-balancer-app-gateway.html">lab04 - Load balancer app gateway</a>
+        <a href="lab05-dns-name-resolution.html">lab05 - Dns name resolution</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ On This Page</summary>
+      <div>
+        <a href="#before-you-start">Before you start</a>
+        <a href="#the-simple-idea">The simple idea</a>
+        <a href="#what-nsgs-do">What nsgs do</a>
+        <a href="#how-nsgs-work">How nsgs work</a>
+        <a href="#default-nsg-rules">Default nsg rules</a>
+        <a href="#mental-model-nsg-as-a-bouncer-checklist">Mental model nsg as a bouncer checklist</a>
+        <a href="#worked-example-real-scenario">Worked example real scenario</a>
+        <a href="#common-mistakes-what-not-to-do">Common mistakes what not to do</a>
+        <a href="#nsg-rule-examples-quick-reference">Nsg rule examples quick reference</a>
+        <a href="#how-this-connects-to-other-topics">How this connects to other topics</a>
+        <a href="#see-it-in-action">See it in action</a>
+        <a href="#key-takeaways">Key takeaways</a>
+        <a href="#nsg-vs-azure-firewall-vs-rbac">Nsg vs azure firewall vs rbac</a>
+        <a href="#next-steps">Next steps</a>
+      </div>
+    </details>
+  </aside>
+  <div class="page">
+
+  <h1>Network Security Groups (NSGs): Your Network Firewall</h1>
+  <div class="subtitle">Control exactly what traffic gets in and out of every subnet and VM in Azure</div>
+
+  <div class="badges">
+    <span class="badge">🟢 Beginner</span>
+    <span class="badge">⏱ 15 Minutes</span>
+    <span class="badge">📘 AZ-104 · Module 04</span>
+  </div>
+
+  <div class="callout">
+    <strong>Why This Matters</strong>
+    <p>VNets give you a private network, but how do you control what traffic gets in and out? Network Security Groups (NSGs) are like your network's firewall — they let you say "allow this traffic" or "block that traffic" at the subnet level. Without NSGs, anyone with network access could reach your databases. With them, you have complete control.</p>
+  </div>
+
+  <!-- Before You Start -->
+  <div class="section full" id="before-you-start">
+    <h2>Before You Start</h2>
+    <table>
+      <tr><th>Prerequisites</th><td><a href="01-vnets-and-subnets.html">VNets &amp; Subnets</a> (understand VNet structure first)</td></tr>
+      <tr><th>Time to understand</th><td>15 minutes</td></tr>
+      <tr><th>Difficulty</th><td>🟢 Beginner (builds on VNets, no firewall experience needed)</td></tr>
+      <tr><th>What you'll learn</th><td>How NSGs work, how to create rules, best practices</td></tr>
+    </table>
+  </div>
+
+  <!-- The Simple Idea -->
+  <div class="section" id="the-simple-idea">
+    <div>
+      <h2>The Simple Idea</h2>
+      <h3>What Is an NSG?</h3>
+      <p>An <strong>NSG (Network Security Group)</strong> is a <strong>set of firewall rules that control traffic</strong> in and out of a subnet (or a single network card on a VM).</p>
+      <h3>Real-World Analogy: Bouncer at a Club</h3>
+      <p>The bouncer (NSG) checks every person (traffic) trying to enter.</p>
+    </div>
+    <div class="panel">Club (Your Subnet)
+│
+├── Bouncer (NSG) at the door
+│   ├── ✓ Allows: People with valid ID
+│   ├── ✗ Blocks: People without ID
+│   ├── ✗ Blocks: Troublemakers (even with ID)
+│   └── Logs: Who came in and when
+│
+└── Inside: People dancing (your resources)</div>
+  </div>
+
+  <!-- What NSGs Do -->
+  <div class="section full" id="what-nsgs-do">
+    <h2>What NSGs Do</h2>
+    <p>NSGs control traffic based on:</p>
+    <table>
+      <tr><th>Aspect</th><th>What You Specify</th><th>Example</th></tr>
+      <tr><td><strong>Source</strong></td><td>Where traffic comes from</td><td>Internet, specific IP, another subnet</td></tr>
+      <tr><td><strong>Destination</strong></td><td>Where traffic goes to</td><td>Your VM, specific port</td></tr>
+      <tr><td><strong>Port</strong></td><td>Which port number</td><td>80 (HTTP), 443 (HTTPS), 3389 (RDP)</td></tr>
+      <tr><td><strong>Protocol</strong></td><td>TCP, UDP, or both</td><td>TCP, UDP, ICMP</td></tr>
+      <tr><td><strong>Action</strong></td><td>Allow or deny</td><td>Allow, Deny</td></tr>
+    </table>
+  </div>
+
+  <!-- How NSGs Work -->
+  <div class="section" id="how-nsgs-work">
+    <div>
+      <h2>How NSGs Work</h2>
+      <h3>NSG Rule Evaluation (Decision Tree)</h3>
+      <p><strong>Key insight:</strong> The <strong>first matching rule</strong> wins. Rules are evaluated in <strong>priority order</strong> (lower number = higher priority).</p>
+    </div>
+    <div class="panel">Traffic arrives at your subnet
+           ↓
+   ┌───────┴───────┐
+   │               │
+Check NSG Rules (ordered by priority: 100 → 4096)
+   │               │
+   v               v
+First matching rule decides:
+   │
+   ├─→ ALLOW (Rule priority 100)
+   │   → Traffic passes through ✓
+   │
+   ├─→ DENY (Rule priority 200)
+   │   → Traffic blocked ✗
+   │
+   └─→ No rule matches
+       → Default deny ✗</div>
+  </div>
+
+  <!-- Default NSG Rules -->
+  <div class="section full" id="default-nsg-rules">
+    <h2>Default NSG Rules</h2>
+    <p>Every NSG comes with <strong>built-in default rules</strong>:</p>
+    <table>
+      <tr><th>Priority</th><th>Direction</th><th>Name</th><th>Source</th><th>Destination</th><th>Action</th><th>Purpose</th></tr>
+      <tr><td>65000</td><td>Inbound</td><td>AllowVNetInbound</td><td>VirtualNetwork</td><td>VirtualNetwork</td><td>Allow</td><td>Resources within VNet can talk</td></tr>
+      <tr><td>65001</td><td>Inbound</td><td>AllowAzureLoadBalancerInbound</td><td>AzureLoadBalancer</td><td>Any</td><td>Allow</td><td>Load balancers can send traffic</td></tr>
+      <tr><td>65500</td><td>Inbound</td><td>DenyAllInbound</td><td>Any</td><td>Any</td><td>Deny</td><td>Default: block everything else</td></tr>
+      <tr><td>65000</td><td>Outbound</td><td>AllowVNetOutbound</td><td>Any</td><td>VirtualNetwork</td><td>Allow</td><td>Resources can send to VNet</td></tr>
+      <tr><td>65001</td><td>Outbound</td><td>AllowInternetOutbound</td><td>Any</td><td>Internet</td><td>Allow</td><td>Resources can reach internet</td></tr>
+      <tr><td>65500</td><td>Outbound</td><td>DenyAllOutbound</td><td>Any</td><td>Any</td><td>Deny</td><td>Default: block everything else</td></tr>
+    </table>
+    <div class="callout">
+      <strong>Translation</strong>
+      <p>Inbound: "By default, block internet traffic. Allow internal traffic."</p>
+      <p>Outbound: "By default, allow internal and internet traffic."</p>
+    </div>
+  </div>
+
+  <!-- Mental Model -->
+  <div class="section full" id="mental-model-nsg-as-a-bouncer-checklist">
+    <h2>Mental Model: NSG as a Bouncer Checklist</h2>
+    <div class="panel">Bouncer (NSG) has a checklist of rules:
+
+Rule 1 (Priority 100): "Is this person on the VIP list?" → ALLOW if yes
+Rule 2 (Priority 200): "Is this person on the banned list?" → DENY if yes
+Rule 3 (Priority 4096): (Never reached in this example)
+Default (65500): "We haven't decided yet" → DENY
+
+Traffic arrives:
+└─ Check Rule 1: Not on VIP list → Keep checking
+└─ Check Rule 2: YES, banned! → DENY immediately (don't check further)
+└─ Result: Bouncer blocks them at the door ✗</div>
+  </div>
+
+  <!-- Worked Example -->
+  <div class="section full" id="worked-example-real-scenario">
+    <h2>Worked Example: Real Scenario</h2>
+    <h3>The Scenario</h3>
+    <p><strong>TechCorp's 3-tier application:</strong></p>
+    <ul>
+      <li><strong>Web Tier:</strong> Should accept HTTP (port 80) and HTTPS (port 443) from internet</li>
+      <li><strong>App Tier:</strong> Should accept traffic from web tier only (port 5000)</li>
+      <li><strong>DB Tier:</strong> Should accept SQL queries from app tier only (port 1433)</li>
+    </ul>
+    <p><strong>Goal:</strong> Create NSG rules that enforce this security model.</p>
+
+    <h3>Step 1: Web Tier NSG Rules</h3>
+    <p><strong>Purpose:</strong> Accept web traffic from internet, deny everything else</p>
+    <div class="grid2">
+      <div>
+        <div class="panel small">Web Subnet (10.0.1.0/24) NSG Rules:
+─────────────────────────────────────
+
+Priority 100 (HTTP from internet)
+  Source: Internet (0.0.0.0/0)
+  Destination: 10.0.1.0/24
+  Port: 80
+  Protocol: TCP
+  Action: ALLOW ✓
+  Purpose: Allow web traffic
+
+Priority 110 (HTTPS from internet)
+  Source: Internet (0.0.0.0/0)
+  Destination: 10.0.1.0/24
+  Port: 443
+  Protocol: TCP
+  Action: ALLOW ✓
+  Purpose: Allow secure web traffic
+
+Priority 4096 (Deny everything else)
+  (This is the default deny rule)
+  → Any traffic not matching rules
+    100 or 110 is blocked</div>
+      </div>
+      <div>
+        <h4>Result</h4>
+        <div class="panel small">Internet request on port 80
+→ Matches Rule 100 → ALLOW ✓
+
+Internet request on port 3389 (RDP)
+→ No match → DENY ✗
+
+Internal traffic on port 5000
+→ No match → DENY ✗ (as intended)</div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:24px">Step 2: App Tier NSG Rules</h3>
+    <p><strong>Purpose:</strong> Accept traffic from web tier on port 5000, deny everything else</p>
+    <div class="grid2">
+      <div>
+        <div class="panel small">App Subnet (10.0.2.0/24) NSG Rules:
+────────────────────────────────────
+
+Priority 100 (Traffic from web tier)
+  Source: 10.0.1.0/24 (web subnet)
+  Destination: 10.0.2.0/24 (app subnet)
+  Port: 5000
+  Protocol: TCP
+  Action: ALLOW ✓
+  Purpose: Allow web → app communication
+
+Priority 110 (Default deny)
+  (This is the default deny rule)
+  → Any traffic not from web tier
+    on port 5000 is blocked</div>
+      </div>
+      <div>
+        <h4>Result</h4>
+        <div class="panel small">WebServer (10.0.1.5) to AppServer:5000
+→ Matches Rule 100 → ALLOW ✓
+
+Internet to AppServer:5000
+→ No match → DENY ✗ (good—protected)
+
+AppServer to Database:1433
+→ Already handled by DB tier NSG
+  (separate)</div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:24px">Step 3: Database Tier NSG Rules</h3>
+    <p><strong>Purpose:</strong> Accept SQL queries from app tier on port 1433, deny everything else</p>
+    <div class="grid2">
+      <div>
+        <div class="panel small">DB Subnet (10.0.3.0/24) NSG Rules:
+───────────────────────────────────
+
+Priority 100 (SQL from app tier)
+  Source: 10.0.2.0/24 (app subnet)
+  Destination: 10.0.3.0/24 (db subnet)
+  Port: 1433
+  Protocol: TCP
+  Action: ALLOW ✓
+  Purpose: Allow app → database communication
+
+Priority 110 (Default deny)
+  (This is the default deny rule)
+  → Any traffic not from app tier
+    on port 1433 is blocked</div>
+      </div>
+      <div>
+        <h4>Result</h4>
+        <div class="panel small">AppServer (10.0.2.10) to SQL Server:1433
+→ Matches Rule 100 → ALLOW ✓
+
+Internet to SQL Server:1433
+→ No match → DENY ✗ (perfect—database
+  protected)
+
+WebServer to SQL Server:1433
+→ No match → DENY ✗ (good—web can't
+  bypass app)</div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:24px">Step 4: Complete Traffic Flow</h3>
+    <div class="panel">User on internet requests web page:
+└─ Traffic → WebServer (port 80)
+   ├─ Web NSG rule 100 matches → ALLOW ✓
+   ├─ WebServer processes request
+   ├─ WebServer → AppServer (port 5000)
+   │  └─ App NSG rule 100 matches → ALLOW ✓
+   │  └─ AppServer processes request
+   │  └─ AppServer → SQL Server (port 1433)
+   │     └─ DB NSG rule 100 matches → ALLOW ✓
+   │     └─ SQL Server returns data
+   ├─ Data flows back through the chain
+   └─ WebServer sends HTML to user ✓
+
+SECURITY: Each tier is locked down, traffic only flows through the chain.</div>
+  </div>
+
+  <!-- Common Mistakes -->
+  <div class="section full" id="common-mistakes-what-not-to-do">
+    <h2>Common Mistakes (What NOT to Do)</h2>
+
+    <h3>❌ Mistake 1: Overly Permissive Rules</h3>
+    <div class="mistake-card">
+      <div>
+        <h4>Wrong</h4>
+        <div class="panel small">NSG Rule:
+  Source: 0.0.0.0/0 (entire internet)
+  Port: 3389 (RDP - remote admin)
+  Action: ALLOW
+
+Result: Anyone on the internet can RDP
+into your VM ✗</div>
+      </div>
+      <div>
+        <h4>Fix</h4>
+        <div class="panel small">Restrict RDP to known IPs:
+  Source: 203.45.67.0/24 (your office IP range)
+  Port: 3389
+  Action: ALLOW
+
+Or use Azure Bastion (no public RDP needed):
+  Disable port 3389 entirely on NSG
+  Use Bastion to connect securely</div>
+      </div>
+    </div>
+    <p><strong>Why it fails:</strong> Exposes admin interface to potential attacks.</p>
+
+    <h3>❌ Mistake 2: Blocking Internal Communication</h3>
+    <div class="mistake-card">
+      <div>
+        <h4>Wrong</h4>
+        <div class="panel small">NSG on Database Subnet:
+  Source: 0.0.0.0/0 (includes internet, blocks everything)
+  Port: 1433
+  Action: DENY
+
+Then try to connect from AppServer (10.0.2.10) to DB:
+  ✗ DENIED (AppServer is "from somewhere"
+  not explicitly allowed)</div>
+      </div>
+      <div>
+        <h4>Fix</h4>
+        <div class="panel small">NSG on Database Subnet:
+  Source: 10.0.2.0/24 (app tier specifically)
+  Port: 1433
+  Action: ALLOW
+
+Now AppServer can reach database ✓</div>
+      </div>
+    </div>
+    <p><strong>Why it fails:</strong> App tier can't reach database if rule is too strict.</p>
+
+    <h3>❌ Mistake 3: Not Understanding Priority Order</h3>
+    <div class="mistake-card">
+      <div>
+        <h4>Wrong</h4>
+        <div class="panel small">Priority 100: DENY port 80 from internet
+Priority 200: ALLOW port 80 from internet
+
+Traffic arrives on port 80:
+  → Check priority 100: DENY immediately
+  → (Priority 200 never checked because
+     100 won)
+  → Result: Traffic blocked ✗</div>
+      </div>
+      <div>
+        <h4>Fix</h4>
+        <div class="panel small">Priority 100: ALLOW port 80 from internet
+Priority 200: DENY port 80 from specific bad IP
+
+Traffic from most users on port 80:
+  → Check priority 100: ALLOW ✓
+Traffic from malicious IP on port 80:
+  → Check priority 100: Doesn't match
+    (rule says 0.0.0.0/0)
+  → Check priority 200: DENY ✓</div>
+      </div>
+    </div>
+    <p><strong>Why it fails:</strong> First matching rule wins. The DENY came first.</p>
+
+    <h3>❌ Mistake 4: Forgetting Default Deny</h3>
+    <div class="mistake-card">
+      <div>
+        <h4>Wrong</h4>
+        <div class="panel small">NSG has no explicit rules for port 5432 (PostgreSQL)
+Admin tries to access database on port 5432
+
+"Why doesn't it work?" → Because NSG
+defaults to DENY</div>
+      </div>
+      <div>
+        <h4>Fix</h4>
+        <div class="panel small">Create explicit ALLOW rule:
+  Source: Your IP or trusted network
+  Port: 5432
+  Action: ALLOW
+
+Now it works ✓</div>
+      </div>
+    </div>
+    <p><strong>Why it fails:</strong> No rule = blocked (by default).</p>
+  </div>
+
+  <!-- NSG Rule Examples -->
+  <div class="section full" id="nsg-rule-examples-quick-reference">
+    <h2>NSG Rule Examples (Quick Reference)</h2>
+    <div class="grid4">
+      <div>
+        <h4>Allow HTTP from Internet</h4>
+        <div class="panel small">Name: AllowHTTPInternet
+Priority: 100
+Source: 0.0.0.0/0
+Destination: Any
+Port: 80
+Protocol: TCP
+Action: ALLOW</div>
+      </div>
+      <div>
+        <h4>Allow RDP from Your Office</h4>
+        <div class="panel small">Name: AllowRDPFromOffice
+Priority: 110
+Source: 203.45.67.0/24
+(your office public IP)
+Destination: Any
+Port: 3389
+Protocol: TCP
+Action: ALLOW</div>
+      </div>
+      <div>
+        <h4>Allow Traffic Between Subnets</h4>
+        <div class="panel small">Name: AllowSubnetCommunication
+Priority: 120
+Source: 10.0.1.0/24 (web subnet)
+Destination: 10.0.2.0/24 (app subnet)
+Port: 5000
+Protocol: TCP
+Action: ALLOW</div>
+      </div>
+      <div>
+        <h4>Deny Telnet (Insecure Protocol)</h4>
+        <div class="panel small">Name: DenyTelnet
+Priority: 200
+Source: 0.0.0.0/0
+Destination: Any
+Port: 23
+Protocol: TCP
+Action: DENY</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Connections -->
+  <div class="section full" id="how-this-connects-to-other-topics">
+    <h2>How This Connects to Other Topics</h2>
+    <div class="grid2">
+      <div>
+        <h3>Related to Module 01 (Identity &amp; Governance)</h3>
+        <ul>
+          <li><strong>RBAC + NSGs:</strong> Use RBAC to control who can modify NSGs</li>
+          <li><strong>Policy + NSGs:</strong> Enforce policies like "all subnets must have NSGs"</li>
+        </ul>
+        <h3>Related to Module 02 (Storage)</h3>
+        <ul>
+          <li><strong>Storage Firewall:</strong> Combine NSGs with storage IP rules</li>
+          <li><strong>Service Endpoints:</strong> Access storage securely without public IP</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Related to Module 03 (Compute)</h3>
+        <ul>
+          <li><strong>VM Security:</strong> NSGs protect VMs from unauthorized network access</li>
+          <li><strong>Web Application Firewall:</strong> Different from NSG, works at application layer</li>
+        </ul>
+        <h3>Related to Module 05 (Monitor)</h3>
+        <ul>
+          <li><strong>NSG Flow Logs:</strong> See which traffic rules are allowing/denying</li>
+          <li><strong>Network Watcher:</strong> Diagnose connectivity issues related to NSGs</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- See It In Action -->
+  <div class="section full" id="see-it-in-action">
+    <h2>See It In Action</h2>
+    <p><strong>Associated lab:</strong> <a href="../labs/lab02-nsg-rules.md">Lab 02: Create NSG Rules</a></p>
+    <p><strong>Suggested learning sequence:</strong></p>
+    <ol>
+      <li>✅ Read <a href="01-vnets-and-subnets.html">VNets &amp; Subnets</a> first</li>
+      <li>✅ Read this doc (NSGs - firewall rules)</li>
+      <li>✅ Read Routing Fundamentals (how traffic flows)</li>
+      <li>✅ Work through Lab 13 (hands-on NSG rules)</li>
+      <li>✅ Read VNet Peering (NSGs between peered VNets)</li>
+    </ol>
+  </div>
+
+  <!-- Key Takeaways -->
+  <div class="section full" id="key-takeaways">
+    <h2>Key Takeaways</h2>
+    <div class="tip">
+      <strong>💡 Summary</strong>
+      <ul style="margin-top:8px">
+        <li><strong>NSG = Network firewall</strong> (control inbound/outbound traffic)</li>
+        <li><strong>Applied to subnets or NICs</strong> (can protect at either level)</li>
+        <li><strong>Rules evaluated by priority</strong> (lower number = higher priority, checked first)</li>
+        <li><strong>First matching rule wins</strong> (once matched, other rules not checked)</li>
+        <li><strong>Default = deny</strong> (block everything unless explicitly allowed)</li>
+        <li><strong>Think security layers:</strong> VNet isolation + NSGs + RBAC = defense in depth</li>
+        <li><strong>Always require explicit ALLOW</strong> (deny by default is most secure)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- NSG vs Azure Firewall vs RBAC -->
+  <div class="section full" id="nsg-vs-azure-firewall-vs-rbac">
+    <h2>NSG vs. Azure Firewall vs. RBAC</h2>
+    <table>
+      <tr><th>Security Layer</th><th>What It Controls</th><th>Best For</th></tr>
+      <tr><td><strong>NSG</strong></td><td>Network traffic (which ports/IPs)</td><td>VM-level and subnet-level firewall</td></tr>
+      <tr><td><strong>Azure Firewall</strong></td><td>Centralized traffic inspection</td><td>Enforce policies across many VNets</td></tr>
+      <tr><td><strong>RBAC</strong></td><td>Who can use Azure services</td><td>Access control at the service level</td></tr>
+    </table>
+    <p><strong>Defense in depth:</strong> All three together provide complete security.</p>
+  </div>
+
+  <!-- Next Steps -->
+  <div class="section full" id="next-steps">
+    <h2>Next Steps</h2>
+    <ol>
+      <li><strong>Learn:</strong> Read this doc (you're here)</li>
+      <li><strong>Understand:</strong> Read Routing Fundamentals (how traffic flows through NSGs)</li>
+      <li><strong>Practice:</strong> <a href="../labs/lab02-nsg-rules.md">Lab 02: Create NSG Rules</a> (hands-on rule creation)</li>
+      <li><strong>Connect:</strong> Read VNet Peering (NSGs on peered networks)</li>
+      <li><strong>Secure:</strong> Advanced — Azure Firewall (centralized security)</li>
+    </ol>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-grid">
+      <div class="footer-item">
+        <strong>Azure AZ-104</strong>
+        Professional Concept Documentation
+      </div>
+      <div class="footer-item">
+        <strong>Module</strong>
+        04 — Networking
+      </div>
+      <div class="footer-item">
+        <strong>Generated</strong>
+        June 15, 2026
+      </div>
+    </div>
+    <div class="footer-meta">&copy; 2026 — AZ-104 Learning Hub. For study purposes only.</div>
+  </div>
+
+</div>
+</div>
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.sidebar a'));
+  var sections = [];
+  links.forEach(function(a){
+    var el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) sections.push({link:a, el:el});
+  });
+  if (!sections.length || !('IntersectionObserver' in window)) return;
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (!entry.isIntersecting) return;
+      var match = sections.find(function(s){ return s.el === entry.target; });
+      if (!match) return;
+      links.forEach(function(a){ a.classList.remove('active'); });
+      match.link.classList.add('active');
+    });
+  }, { rootMargin: '-100px 0px -70% 0px', threshold: 0 });
+  sections.forEach(function(s){ observer.observe(s.el); });
+})();
+</script>
+</body>
+</html>
+
+
+
+

@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Network Security: Advanced Patterns</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f8fc;--card:#fff;--border:#d9e0ef;--text:#1f2937;--muted:#5b6678;
+  --primary:#151d63;--panel:#00004C;--panel-shadow:rgba(0,0,76,.18);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:Inter,-apple-system,'Segoe UI',sans-serif;color:var(--text)}
+.page{flex:1;min-width:0;padding:28px}
+
+h1{font-size:3.2rem;line-height:1.15;margin:0;color:var(--primary);font-weight:800;letter-spacing:-1px}
+.subtitle{font-size:1.4rem;font-weight:600;color:#2d3b77;margin-top:10px}
+
+.badges{display:flex;gap:12px;margin:20px 0 26px;flex-wrap:wrap}
+.badge{background:#eef2ff;border:1px solid #d8def7;color:#1e2a78;padding:10px 18px;border-radius:999px;font-weight:600;font-size:.95rem}
+
+.section{display:grid;grid-template-columns:42% 58%;gap:28px;padding:26px 0;border-top:1px solid var(--border)}
+.section.full{display:block;padding:26px 0;border-top:1px solid var(--border)}
+.section:first-of-type, .section.full:first-of-type{border-top:none}
+
+h2{font-size:2rem;margin:0 0 14px;color:var(--primary);font-weight:800}
+h3{font-size:1.4rem;margin:22px 0 10px;color:var(--primary);font-weight:700}
+h3:first-child{margin-top:0}
+h4{font-size:1.1rem;margin:16px 0 8px;color:#2d3b77;font-weight:700}
+
+p{font-size:1.05rem;line-height:1.65;margin:.5rem 0;color:var(--text)}
+
+ul, ol{margin:.6rem 0;padding-left:1.4rem}
+li{margin-bottom:6px;line-height:1.6;font-size:1.02rem}
+
+a{color:#1e2a78;text-decoration:none;border-bottom:1px solid transparent;font-weight:600}
+a:hover{border-bottom-color:#1e2a78}
+
+strong{color:var(--primary);font-weight:700}
+
+.callout{margin-top:20px;background:#f3f7ff;border:1px solid #bfd0ff;border-radius:14px;padding:18px 22px}
+.callout strong{color:#1735ad}
+.callout p{margin:0}
+.callout p + p{margin-top:8px}
+
+.panel{
+  background:var(--panel);
+  color:#fff;border-radius:18px;padding:22px 26px;
+  box-shadow:0 12px 28px var(--panel-shadow);
+  font:15px/1.65 'SF Mono',Consolas,'Courier New',monospace;
+  white-space:pre-wrap;
+  overflow:auto;
+}
+.panel.small{font-size:13.5px;line-height:1.6}
+.panel + .panel{margin-top:18px}
+
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:14px 0}
+th,td{padding:14px;border:1px solid var(--border);text-align:left;font-size:.98rem}
+th{background:#eef2ff;color:var(--primary);font-weight:700}
+tr:hover td{background:#fafbff}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+
+.mistake-card{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:14px 0 8px}
+.mistake-card h4{margin-top:0}
+
+.tip{margin-top:20px;background:#eef4ff;border:1px solid #c8d5ff;border-radius:12px;padding:16px 20px;font-size:1.02rem}
+.tip strong{color:#1735ad}
+
+hr.divider{border:none;height:0;margin:0}
+
+.footer{margin-top:48px;padding-top:24px;border-top:1px solid var(--border);font-size:.9rem;color:var(--muted)}
+.footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px}
+.footer-item strong{display:block;color:var(--primary);margin-bottom:6px;font-size:.95rem}
+.footer-meta{margin-top:24px;padding-top:16px;border-top:1px solid var(--border);text-align:center;font-size:.85rem}
+
+@media (max-width:1000px){
+  .section,.grid2,.grid3,.grid4,.mistake-card{grid-template-columns:1fr}
+  h1{font-size:2.3rem}
+  .page{padding:16px}
+  .panel{font-size:13px}
+  .sidebar{display:none}
+  .layout{display:block}
+}
+
+/* ===== Site-wide Cross Navigation ===== */
+.site-nav{
+  position:sticky;top:0;z-index:1000;
+  background:var(--primary);color:#fff;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:12px 28px;font-size:.92rem;
+  box-shadow:0 2px 10px rgba(0,0,76,.18);
+  font-family:Inter,-apple-system,'Segoe UI',sans-serif;
+}
+.site-nav .nav-brand{font-weight:800;font-size:1.05rem;margin-right:auto;color:#fff}
+.site-nav details{position:relative}
+.site-nav summary{cursor:pointer;list-style:none;padding:7px 16px;border-radius:8px;background:rgba(255,255,255,.12);font-weight:600;color:#fff;user-select:none}
+.site-nav summary::-webkit-details-marker,.site-nav summary::marker{display:none;content:''}
+.site-nav details[open] summary{background:rgba(255,255,255,.24)}
+.site-nav .nav-menu{
+  position:absolute;top:calc(100% + 8px);left:0;
+  background:#fff;color:var(--text);
+  border:1px solid var(--border);border-radius:12px;
+  padding:8px;min-width:300px;box-shadow:0 16px 32px rgba(0,0,76,.22);
+  display:flex;flex-direction:column;gap:2px;z-index:1001;
+}
+.site-nav .nav-menu a{
+  display:block;padding:9px 14px;border-radius:8px;border-bottom:none;
+  color:var(--text);font-weight:500;font-size:.95rem;
+}
+.site-nav .nav-menu a:hover{background:#eef2ff;color:#1e2a78}
+.site-nav .nav-menu a.active{background:#eef2ff;color:#1735ad;font-weight:700}
+@media (max-width:768px){
+  .site-nav{padding:10px 16px}
+  .site-nav .nav-brand{font-size:.95rem}
+}
+/* ===== Page Sidebar (Collapsible) ===== */
+.layout{max-width:1400px;margin:auto;display:flex;align-items:flex-start}
+.sidebar{
+  flex:0 0 260px;
+  position:sticky;top:88px;
+  max-height:calc(100vh - 108px);
+  overflow-y:auto;
+  margin:28px 0 28px 28px;
+  padding:20px 18px;
+  background:#fff;border:1px solid var(--border);border-radius:14px;
+  box-shadow:0 4px 16px rgba(21,29,99,.05);
+}
+.sidebar details{margin-bottom:0}
+.sidebar summary{
+  cursor:pointer;list-style:none;padding:10px 12px;border-radius:8px;
+  font-weight:600;font-size:.92rem;color:var(--primary);
+  user-select:none;transition:background 0.2s;
+}
+.sidebar summary::-webkit-details-marker,.sidebar summary::marker{display:none;content:''}
+.sidebar details[open]>summary{background:#eef2ff}
+.sidebar summary:hover{background:#f0f4ff}
+.sidebar a{display:block;padding:8px 12px;margin:2px 0;border-radius:8px;font-size:.88rem;font-weight:500;
+  color:var(--text);border-bottom:none;border-left:3px solid transparent;line-height:1.4;transition:all 0.15s}
+.sidebar a:hover{background:#eef2ff;color:#1e2a78}
+.sidebar a.active{background:#eef2ff;color:#1735ad;font-weight:700;border-left-color:var(--primary)}
+.sidebar details > div{padding:0 0 8px 12px}
+.sidebar hr.sidebar-divider{border:none;border-top:1px solid var(--border);margin:12px 0}
+@media print{
+  .site-nav{display:none}
+  body{background:#fff}
+  .page{padding:0}
+  .panel{box-shadow:none}
+  .sidebar{display:none}
+  .layout{display:block}
+}
+
+/* Keyboard Navigation & Accessibility */
+a:focus-visible,
+button:focus-visible,
+.sidebar a:focus-visible,
+.sidebar summary:focus-visible,
+.site-nav summary:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+details:focus-visible > summary {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+</style>
+</head>
+<body>
+<nav class="site-nav" aria-label="Main site navigation">
+  <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
+  <details class="nav-group" aria-label="Learning module selector">
+    <summary>Learning Module</summary>
+    <div class="nav-menu">
+      <a href="../../00-prerequisites/documents/module-home.html">00 - Prerequisites</a>
+      <a href="../../01-identity-governance/documents/module-home.html">01 - Identity &amp; Governance</a>
+      <a href="../../02-storage/documents/module-home.html">02 - Storage</a>
+      <a href="../../03-compute/documents/module-home.html">03 - Compute</a>
+      <a href="../../04-networking/documents/module-home.html" class="active">04 - Networking</a>
+      <a href="../../05-monitor-maintain/documents/module-home.html">05 - Monitor &amp; Maintain</a>
+    </div>
+  </details>
+</nav>
+<div class="layout">
+  <aside class="sidebar">
+    <details open>
+      <summary>▶ Module 04 - Networking</summary>
+      <div>
+        <a href="01-vnets-and-subnets.html">01 - Vnets and subnets</a>
+        <a href="02-network-security-groups.html">02 - Network security groups</a>
+        <a href="03-routing-fundamentals.html">03 - Routing fundamentals</a>
+        <a href="04-vnet-peering.html">04 - Vnet peering</a>
+        <a href="05-vpn-and-expressroute.html">05 - Vpn and expressroute</a>
+        <a href="06-hub-spoke-topology.html">06 - Hub spoke topology</a>
+        <a href="07-private-endpoints-service-endpoints.html">07 - Private endpoints service endpoints</a>
+        <a href="08-network-security-advanced.html">08 - Network security advanced</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ Labs</summary>
+      <div>
+        <a href="lab01-vnet-subnets.html">lab01 - Vnet subnets</a>
+        <a href="lab02-nsg-asg.html">lab02 - Nsg asg</a>
+        <a href="lab03-vnet-peering-vpn.html">lab03 - Vnet peering vpn</a>
+        <a href="lab04-load-balancer-app-gateway.html">lab04 - Load balancer app gateway</a>
+        <a href="lab05-dns-name-resolution.html">lab05 - Dns name resolution</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ On This Page</summary>
+      <div>
+        <a href="#before-you-start">Before you start</a>
+        <a href="#the-simple-idea-layers-of-network-security">The simple idea layers of network security</a>
+        <a href="#when-nsgs-aren-t-enough">When nsgs aren t enough</a>
+        <a href="#layer-4-ddos-protection">Layer 4 ddos protection</a>
+        <a href="#azure-ddos-protection-tiers">Azure ddos protection tiers</a>
+        <a href="#ddos-basic-vs-ddos-standard">Ddos basic vs ddos standard</a>
+        <a href="#when-to-use-ddos-standard">When to use ddos standard</a>
+        <a href="#layer-3-azure-firewall-stateful-inspection">Layer 3 azure firewall stateful inspection</a>
+        <a href="#azure-firewall-capabilities">Azure firewall capabilities</a>
+        <a href="#azure-firewall-architecture">Azure firewall architecture</a>
+        <a href="#firewall-rule-evaluation-order">Firewall rule evaluation order</a>
+        <a href="#layer-7-web-application-firewall-waf">Layer 7 web application firewall waf</a>
+        <a href="#waf-deployment-models">Waf deployment models</a>
+        <a href="#waf-rule-sets-owasp">Waf rule sets owasp</a>
+        <a href="#waf-example-e-commerce-site">Waf example e commerce site</a>
+        <a href="#layer-2-network-watcher-diagnostics">Layer 2 network watcher diagnostics</a>
+        <a href="#nsg-flow-logs-example">Nsg flow logs example</a>
+        <a href="#worked-example-real-scenario">Worked example real scenario</a>
+        <a href="#attack-scenarios">Attack scenarios</a>
+        <a href="#monitoring-attack-flow-with-network-watcher">Monitoring attack flow with network watcher</a>
+        <a href="#common-mistakes-what-not-to-do">Common mistakes what not to do</a>
+        <a href="#advanced-security-checklist">Advanced security checklist</a>
+        <a href="#how-this-connects-to-other-topics">How this connects to other topics</a>
+        <a href="#see-it-in-action">See it in action</a>
+        <a href="#key-takeaways">Key takeaways</a>
+        <a href="#next-steps">Next steps</a>
+      </div>
+    </details>
+  </aside>
+  <div class="page">
+
+  <h1>Network Security: Advanced Patterns</h1>
+  <div class="subtitle">Beyond NSGs — Azure Firewall, DDoS Protection, WAF, and Network Watcher for defense-in-depth</div>
+
+  <div class="badges">
+    <span class="badge">🔴 Advanced</span>
+    <span class="badge">⏱ 20 Minutes</span>
+    <span class="badge">📘 AZ-104 · Module 04</span>
+  </div>
+
+  <div class="callout">
+    <strong>Why This Matters</strong>
+    <p>NSGs and routing control which traffic is allowed, but they work at Layer 3 (network). Modern attacks happen at Layer 7 (application) — SQL injection, DDoS, bot attacks. This doc covers the advanced tools that protect above NSGs: Azure Firewall (stateful inspection), DDoS Protection (volumetric attacks), Web Application Firewall (app-level threats), and Network Watcher (diagnostics).</p>
+  </div>
+
+  <!-- Before You Start -->
+  <div class="section full" id="before-you-start">
+    <h2>Before You Start</h2>
+    <table>
+      <tr><th>Prerequisites</th><td><a href="01-vnets-and-subnets.md">VNets &amp; Subnets</a>, <a href="02-network-security-groups.md">Network Security Groups</a>, <a href="03-routing-fundamentals.md">Routing Fundamentals</a>, <a href="06-hub-spoke-topology.md">Hub-Spoke Topology</a></td></tr>
+      <tr><th>Time to understand</th><td>20 minutes</td></tr>
+      <tr><th>Difficulty</th><td>🔴 Advanced (builds on all networking concepts)</td></tr>
+      <tr><th>What you'll learn</th><td>Stateful firewalls, application-level protection, DDoS mitigation, network diagnostics</td></tr>
+    </table>
+  </div>
+
+  <!-- Layers of Network Security -->
+  <div class="section" id="the-simple-idea-layers-of-network-security">
+    <div>
+      <h2>The Simple Idea: Layers of Network Security</h2>
+      <p>Earlier docs covered Layers 2-3 (NSGs, routing). This doc covers Layers 4-7 (advanced security).</p>
+      <ul>
+        <li><strong>Layer 7 (Application):</strong> WAF blocks SQL injection, XSS</li>
+        <li><strong>Layer 4 (Transport):</strong> DDoS Protection blocks volumetric attacks</li>
+        <li><strong>Layer 3 (Network):</strong> Azure Firewall allows/denies by IP/port/protocol</li>
+        <li><strong>Layer 2 (Data Link):</strong> NSGs filter by subnet/NIC</li>
+      </ul>
+    </div>
+    <div class="panel">Layer 7 (Application)     ← WAF blocks SQL injection, XSS
+        ↓
+Layer 4 (Transport)       ← DDoS Protection blocks volumetric attacks
+        ↓
+Layer 3 (Network)         ← Azure Firewall allows/denies by IP/port/protocol
+        ↓
+Layer 2 (Data Link)       ← NSGs filter by subnet/NIC</div>
+  </div>
+
+  <!-- When NSGs Aren't Enough -->
+  <div class="section full" id="when-nsgs-aren-t-enough">
+    <h2>When NSGs Aren't Enough</h2>
+    <div class="grid2">
+      <div>
+        <h3>NSG Example</h3>
+        <div class="panel small">Rule: Allow port 443 from 0.0.0.0/0
+├─ Result: Any traffic on port 443 is allowed
+├─ Includes: Legitimate HTTPS traffic ✓
+├─ Includes: DDoS attack on port 443 ✗
+├─ Includes: SQL injection via HTTPS ✗
+└─ NSG can't see inside the traffic, only the port</div>
+      </div>
+      <div>
+        <h3>Advanced Security Needed</h3>
+        <div class="panel small">Azure Firewall:
+├─ Can see the application data
+├─ Can block SQL injection patterns ✓
+├─ Can block malicious URLs ✓
+└─ But adds latency (inspection takes time)
+
+DDoS Protection:
+├─ Detects flood attacks (millions of requests/sec)
+├─ Automatically rate-limits offenders ✓
+└─ Protects infrastructure from being overwhelmed
+
+WAF (Web Application Firewall):
+├─ Sits in front of web apps
+├─ Blocks OWASP Top 10 attacks (XSS, SQLi, etc.)
+├─ Can identify legitimate traffic vs. malicious
+└─ Works with Application Gateway or Front Door</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Layer 4: DDoS Protection -->
+  <div class="section" id="layer-4-ddos-protection">
+    <div>
+      <h2>Layer 4: DDoS Protection</h2>
+      <h3>What Is a DDoS Attack?</h3>
+      <p><strong>DDoS (Distributed Denial of Service)</strong> = Overwhelming a service with traffic so legitimate users can't reach it.</p>
+      <h3>Real-World Analogy: Crowded Restaurant</h3>
+      <p>Normal traffic: a customer goes through the waiter to the kitchen and gets food. A DDoS attack is like 1000 fake customers overwhelming the waiter so real customers can't be served. Protection is a bouncer at the door who questions suspicious groups, blocks obvious fakes, and lets real customers through.</p>
+    </div>
+    <div class="panel">Normal Traffic:
+  Customer → Waiter → Kitchen → Food ✓
+
+DDoS Attack:
+  1000 fake customers → Waiter → Can't serve real customers ✗
+
+Protection:
+  ├─ Bouncer at door: "These 1000 people look fake"
+  ├─ Asks questions: "Where are you from? Why here?"
+  ├─ Blocks obvious fakes ✓
+  └─ Real customers still get served ✓</div>
+  </div>
+
+  <!-- DDoS Protection Tiers -->
+  <div class="section full" id="azure-ddos-protection-tiers">
+    <h2>Azure DDoS Protection Tiers</h2>
+    <table>
+      <tr><th>Tier</th><th>Cost</th><th>Detection</th><th>Mitigation</th><th>Best For</th></tr>
+      <tr><td><strong>Basic</strong></td><td>Free</td><td>Azure automated</td><td>Automatic</td><td>All subscriptions (always on)</td></tr>
+      <tr><td><strong>Standard</strong></td><td>~$3K/month</td><td>24/7 monitoring</td><td>Automatic + manual</td><td>Mission-critical apps</td></tr>
+    </table>
+  </div>
+
+  <!-- DDoS Basic vs Standard -->
+  <div class="section full" id="ddos-basic-vs-ddos-standard">
+    <h2>DDoS Basic vs. DDoS Standard</h2>
+    <div class="grid2">
+      <div>
+        <h3>DDoS Basic (Always On, Free)</h3>
+        <div class="panel small">Included with every Azure subscription:
+├─ Always monitoring incoming traffic
+├─ Auto-blocks obvious DDoS attacks (SYN floods, UDP floods)
+├─ No configuration needed
+├─ Works at network edge (before traffic reaches your VNet)
+
+Limitations:
+├─ Doesn't monitor application-level attacks
+├─ Limited visibility (you don't see metrics)
+└─ No custom policies</div>
+      </div>
+      <div>
+        <h3>DDoS Standard (Paid, Enterprise-Grade)</h3>
+        <div class="panel small">Enable on public IP or VNet:
+├─ 24/7 dedicated support team
+├─ Real-time attack analytics
+├─ Custom mitigation policies
+├─ Attack simulation (test your defenses)
+├─ Cost: ~$3000/month (expensive but justified for critical apps)
+
+Example Policy:
+  ├─ If traffic exceeds 100 Gbps → Rate-limit to 50 Gbps
+  ├─ If SYN flood detected → Block source IPs
+  ├─ If UDP flood detected → Drop UDP packets
+  └─ Legitimate traffic passes through ✓</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- When to Use DDoS Standard -->
+  <div class="section full" id="when-to-use-ddos-standard">
+    <h2>When to Use DDoS Standard</h2>
+    <div class="panel">Use DDoS Standard if:
+├─ App is internet-facing (has public IP)
+├─ App is mission-critical (downtime = lost revenue)
+├─ Traffic patterns are predictable (can set thresholds)
+├─ Example: E-commerce site, financial API, public website
+
+Don't use if:
+├─ Internal-only app (not exposed to internet)
+├─ Testing/development environment
+├─ Traffic highly variable
+└─ Example: Dev VMs, internal apps, test systems</div>
+  </div>
+
+  <!-- Layer 3: Azure Firewall -->
+  <div class="section full" id="layer-3-azure-firewall-stateful-inspection">
+    <h2>Layer 3: Azure Firewall (Stateful Inspection)</h2>
+    <h3>Stateless vs. Stateful Firewalls</h3>
+    <div class="grid2">
+      <div>
+        <h4>NSG (Stateless)</h4>
+        <div class="panel small">Rule: Allow port 443
+├─ Sees: Source IP, Dest IP, Port, Protocol
+├─ Decision: Port 443? YES → Allow
+├─ Doesn't understand: Is this a legitimate HTTPS connection?
+└─ Can't see: Application data, conversation context</div>
+      </div>
+      <div>
+        <h4>Azure Firewall (Stateful)</h4>
+        <div class="panel small">Connection: Client → Server on port 443
+├─ Sees: TLS handshake, certificate, domain
+├─ Understands: "This is HTTPS to example.com"
+├─ Knows: "Example.com is on the allowed list"
+├─ Allows: Traffic ✓
+├─ Understands: "This is a complete HTTPS connection"
+└─ Can inspect: Application layer (if configured)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Azure Firewall Capabilities -->
+  <div class="section full" id="azure-firewall-capabilities">
+    <h2>Azure Firewall Capabilities</h2>
+    <div class="panel">Network Rules (Layer 4):
+├─ Allow/deny by IP, Port, Protocol
+├─ Similar to NSG, but stateful
+├─ Example: Allow 10.0.0.0/16 to reach 192.168.0.0/16 on port 443 ✓
+
+Application Rules (Layer 7):
+├─ Allow/deny by domain name (not just IP)
+├─ Understands FQDN (fully qualified domain name)
+├─ Example: Allow outbound to *.microsoft.com (any Microsoft domain)
+├─ Example: Block *.twitter.com (block all Twitter domains)
+└─ Much more flexible than IP-based filtering ✓
+
+NAT Rules (Network Address Translation):
+├─ Redirect inbound traffic
+├─ Example: Public IP:443 → Internal VM:8443
+├─ Allows internal VMs to receive internet traffic
+└─ Hides internal IPs from internet</div>
+  </div>
+
+  <!-- Azure Firewall Architecture -->
+  <div class="section" id="azure-firewall-architecture">
+    <div>
+      <h2>Azure Firewall Architecture</h2>
+      <p>Azure Firewall lives in the Hub VNet's <strong>AzureFirewallSubnet</strong> with its own public IP. The hub routes all internet and on-prem traffic through the firewall, and spoke VNets route their outbound traffic to the hub firewall too — eliminating the need for a firewall per spoke.</p>
+    </div>
+    <div class="panel">Hub VNet (with Firewall)
+├── AzureFirewallSubnet (10.0.2.0/24)
+│   └─ Azure Firewall instance
+│   └─ Assigned public IP
+│
+├── Routes to Firewall:
+│   └─ 0.0.0.0/0 (internet) → Firewall
+│   └─ 192.168.0.0/16 (on-prem) → Firewall
+│
+└─ All internet/on-prem traffic passes through firewall ✓
+
+Spoke VNet:
+├── Route: 0.0.0.0/0 → Hub Firewall (10.0.2.4)
+├── Route: 192.168.0.0/16 → Hub Firewall
+├── Outbound traffic: Automatically inspected ✓
+└─ No need for firewall per spoke (cost-effective) ✓</div>
+  </div>
+
+  <!-- Firewall Rule Evaluation Order -->
+  <div class="section full" id="firewall-rule-evaluation-order">
+    <h2>Firewall Rule Evaluation Order</h2>
+    <div class="panel">Traffic arrives at Firewall:
+  ↓
+Check NAT Rules (highest priority)
+  └─ If match → Translate and continue
+  ↓
+Check Network Rules
+  └─ If match (allow) → Forward ✓
+  └─ If match (deny) → Drop ✗
+  ↓
+Check Application Rules
+  └─ If match (allow) → Forward ✓
+  └─ If match (deny) → Drop ✗
+  ↓
+Default: Deny (implicit deny)</div>
+  </div>
+
+  <!-- Layer 7: WAF -->
+  <div class="section full" id="layer-7-web-application-firewall-waf">
+    <h2>Layer 7: Web Application Firewall (WAF)</h2>
+    <h3>What Is a WAF?</h3>
+    <p><strong>WAF</strong> = Protects web applications from Layer 7 attacks (not network attacks, but web app attacks).</p>
+
+    <h3>Attacks WAF Protects Against</h3>
+    <div class="grid4">
+      <div>
+        <h4>SQL Injection</h4>
+        <div class="panel small">Attacker sends: ' OR '1'='1
+WAF detects: SQL injection pattern
+WAF blocks: Request ✓</div>
+      </div>
+      <div>
+        <h4>Cross-Site Scripting (XSS)</h4>
+        <div class="panel small">Attacker sends: &lt;script&gt;alert('hacked')&lt;/script&gt;
+WAF detects: JavaScript in form field
+WAF blocks: Request ✓</div>
+      </div>
+      <div>
+        <h4>Cross-Site Request Forgery (CSRF)</h4>
+        <div class="panel small">Attacker sends: Malicious form from external site
+WAF detects: Request from unexpected origin
+WAF blocks: Request ✓</div>
+      </div>
+      <div>
+        <h4>Path Traversal</h4>
+        <div class="panel small">Attacker sends: ../../../etc/passwd
+WAF detects: Directory traversal pattern
+WAF blocks: Request ✓</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WAF Deployment Models -->
+  <div class="section full" id="waf-deployment-models">
+    <h2>WAF Deployment Models</h2>
+    <p><strong>Azure WAF can attach to:</strong></p>
+    <table>
+      <tr><th>Service</th><th>How</th><th>Cost</th></tr>
+      <tr><td><strong>Application Gateway</strong></td><td>Sits in front of web servers</td><td>Charged for gateway + WAF rules</td></tr>
+      <tr><td><strong>Azure Front Door</strong></td><td>Global load balancer + WAF</td><td>Higher cost, global coverage</td></tr>
+      <tr><td><strong>CDN (Content Delivery)</strong></td><td>Via Azure CDN + WAF rules</td><td>Cheaper, good for static content</td></tr>
+    </table>
+  </div>
+
+  <!-- WAF Rule Sets -->
+  <div class="section" id="waf-rule-sets-owasp">
+    <div>
+      <h2>WAF Rule Sets (OWASP)</h2>
+      <p>Azure WAF comes with default rule sets covering standard protection (OWASP 3.0: SQL Injection, XSS, Remote Code Execution rules, etc.), plus custom rules you create yourself — such as blocking IPs by geography or behavior pattern, requiring specific headers, or rate-limiting by source IP.</p>
+    </div>
+    <div class="panel">Azure WAF comes with default rule sets:
+├── OWASP 3.0 (standard protection)
+│   ├─ SQL Injection rules
+│   ├─ XSS rules
+│   ├─ Remote Code Execution rules
+│   └─ etc.
+│
+└── Custom Rules (create your own)
+    ├─ Block IPs by geography
+    ├─ Block IPs by behavior pattern
+    ├─ Require specific headers
+    └─ Rate-limit by source IP</div>
+  </div>
+
+  <!-- WAF Example -->
+  <div class="section full" id="waf-example-e-commerce-site">
+    <h2>WAF Example: E-Commerce Site</h2>
+    <div class="panel">Architecture:
+  Internet → Azure Front Door (global) → WAF (block attacks)
+           → Application Gateway → Web servers → SQL DB
+
+Traffic Flow:
+  1. Attacker sends: SELECT * FROM users; DROP TABLE users;
+  2. Front Door receives (near attacker's region)
+  3. WAF rule: SQL Injection pattern detected
+  4. WAF blocks: Request rejected, attacker gets 403 Forbidden
+  5. Legitimate customer: Normal shopping request
+  6. WAF rule: No attack patterns
+  7. WAF allows: Request passes through to App Gateway
+  8. App Gateway: Load balances to web servers
+  9. Web servers: Process legitimate request
+  10. Result: Site protected from attacks ✓</div>
+  </div>
+
+  <!-- Layer 2: Network Watcher -->
+  <div class="section full" id="layer-2-network-watcher-diagnostics">
+    <h2>Layer 2: Network Watcher (Diagnostics)</h2>
+    <h3>What Is Network Watcher?</h3>
+    <p><strong>Network Watcher</strong> = Diagnostic tools to monitor, diagnose, and visualize network issues.</p>
+
+    <h3>Network Watcher Tools</h3>
+    <div class="grid2">
+      <div>
+        <h4>IP Flow Verify</h4>
+        <div class="panel small">Question: "Can this VM reach that VM?"
+Input: Source IP, Dest IP, Port, Protocol
+Output: "YES (allowed by NSG)" or "NO (blocked by NSG)"
+Use: Debug connectivity issues ✓
+Example: Is the database reachable on port 1433?</div>
+      </div>
+      <div>
+        <h4>Connection Troubleshoot</h4>
+        <div class="panel small">Question: "Why can't I reach that endpoint?"
+Input: Source VM, Destination IP/host
+Output: Detailed hops and where connection fails
+Use: Diagnose routing and firewall issues ✓
+Example: Find where connection breaks (routing loop? firewall?)</div>
+      </div>
+      <div>
+        <h4>NSG Flow Logs</h4>
+        <div class="panel small">Records: All traffic allowed/denied by NSG
+Captures: Source, Dest, Port, Protocol, Allow/Deny
+Use: Compliance, security audits, understanding traffic ✓
+Storage: Log Analytics, Storage Account, Event Hub
+Example: "Which IPs are trying to attack my database?"</div>
+      </div>
+      <div>
+        <h4>Packet Capture</h4>
+        <div class="panel small">Records: Actual packet data (headers and payload)
+Use: Deep troubleshooting, malware analysis
+Warning: Can capture sensitive data (passwords, keys)
+Example: "What data is being sent on this connection?"</div>
+      </div>
+    </div>
+    <h4 style="margin-top:18px">Connection Monitor</h4>
+    <div class="panel small">Monitors: Connectivity from VM to destination
+Tracks: Latency, packet loss, hop information
+Use: Continuous health monitoring ✓
+Example: "Is my connection to the database stable?"</div>
+  </div>
+
+  <!-- NSG Flow Logs Example -->
+  <div class="section full" id="nsg-flow-logs-example">
+    <h2>NSG Flow Logs Example</h2>
+    <div class="panel">Flow Log Entry:
+{
+  "time": "2024-06-14T10:30:45Z",
+  "systemId": "nic-abc123",
+  "category": "NetworkSecurityGroupFlowEvent",
+  "resourceId": "/subscriptions/.../subnets/web",
+  "operationName": "NetworkSecurityGroupFlowEvents",
+  "properties": {
+    "Version": 2,
+    "flows": [
+      {
+        "rule": "AllowHTTPSInternet",
+        "flows": [
+          {
+            "mac": "00:0D:3A:12:34:56",
+            "flowTuples": [
+              "1623667845,40.88.45.120,10.0.1.5,443,52413,T,O,A,B,,"
+              ↑         ↑            ↑          ↑     ↑     ↑ ↑ ↑
+              time      src-IP       dst-IP    port  port  T O A
+                        (internet)   (vm)            C (TCP) (Out)(Allow)
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
+
+Interpretation:
+  ├─ 40.88.45.120 (Internet IP) sent traffic
+  ├─ To 10.0.1.5 (Your VM) on port 443
+  ├─ From port 52413 (ephemeral)
+  ├─ Protocol: TCP
+  ├─ Direction: Outbound (from your perspective)
+  ├─ Action: Allowed
+  └─ Used by: NSG rule "AllowHTTPSInternet"</div>
+  </div>
+
+  <!-- Worked Example -->
+  <div class="section full" id="worked-example-real-scenario">
+    <h2>Worked Example: Real Scenario</h2>
+    <h3>The Scenario</h3>
+    <p><strong>E-Commerce Site (TechCorp):</strong></p>
+    <ul>
+      <li>Public website: example.com (handles customer traffic)</li>
+      <li>Backend databases: Sensitive customer data</li>
+      <li>Global users: Need fast access from anywhere</li>
+      <li>Under attack: Getting DDoS attacks (competitors?)</li>
+    </ul>
+
+    <h3>Security Architecture</h3>
+    <div class="panel">Internet (users + attackers)
+    ↓
+Azure DDoS Standard (Layer 4)
+├─ Rate-limits volumetric attacks
+└─ Cost: ~$3000/month but necessary for e-commerce
+
+    ↓
+Azure Front Door (global)
+├─ Distributes traffic across regions
+├─ Caches static content
+└─ Reduces load on backend
+
+    ↓
+WAF Rules (Layer 7)
+├─ OWASP rules: Block SQL injection, XSS, CSRF
+├─ Custom rules: Block suspicious IPs, geo-blocking
+└─ Action: Deny malicious requests
+
+    ↓
+Azure Firewall (Layer 3-4)
+├─ Network rules: Allow only known sources
+├─ Application rules: Allow only example.com domain traffic
+└─ Action: Inspect and allow legitimate traffic
+
+    ↓
+Application Gateway (Layer 7)
+├─ Web application firewall (additional layer)
+├─ SSL/TLS termination
+├─ Load balancing
+└─ Action: Distribute to backend pools
+
+    ↓
+Backend Servers (VMs)
+├─ NSG: Allow only from Application Gateway
+├─ NSG: Block all unknown sources
+└─ Protected by multiple layers ✓</div>
+  </div>
+
+  <!-- Attack Scenarios -->
+  <div class="section full" id="attack-scenarios">
+    <h2>Attack Scenarios</h2>
+    <div class="grid3">
+      <div>
+        <h3>Scenario 1: Volumetric DDoS</h3>
+        <div class="panel small">Attack: 100 Gbps traffic from 50K compromised IoT devices
+
+Protection Flow:
+  1. DDoS Standard detects: Traffic exceeds normal pattern
+  2. DDoS Standard rate-limits: Drops excess packets
+  3. Legitimate users: Still able to access ✓
+  4. Attacker: Can't overwhelm the service
+  5. Result: Service stays online ✓
+  Cost: Justifies the $3000/month DDoS Standard subscription</div>
+      </div>
+      <div>
+        <h3>Scenario 2: SQL Injection</h3>
+        <div class="panel small">Attack: Attacker sends: GET /product?id=1' OR '1'='1--
+
+Protection Flow:
+  1. Request hits Azure Front Door (Layer 4)
+  2. Front Door forwards to WAF
+  3. WAF checks: OWASP SQL Injection rule
+  4. WAF detects: SQL injection pattern
+  5. WAF blocks: 403 Forbidden
+  6. Attacker gets: Error page (not access to data)
+  7. Backend: Never sees the malicious request ✓
+  8. Result: Database protected ✓</div>
+      </div>
+      <div>
+        <h3>Scenario 3: DDoS + Application Attack</h3>
+        <div class="panel small">Attack: 10 Gbps flood of requests from 1000 IPs
++ SQL injection payloads
+
+Protection Layers:
+  Layer 4 (DDoS): Rate-limits volumetric flood ✓
+  Layer 7 (WAF): Blocks SQL injection payloads ✓
+  Layer 3 (Azure Firewall): Network rules as fallback ✓
+  Layer 2 (NSG): Final protection at subnet level ✓
+
+Result:
+  ├─ DDoS attack: Mitigated by rate-limiting
+  ├─ SQL injection: Blocked by WAF
+  ├─ Legitimate traffic: Passes through all layers
+  └─ Site remains available and secure ✓</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Monitoring Attack Flow -->
+  <div class="section full" id="monitoring-attack-flow-with-network-watcher">
+    <h2>Monitoring Attack Flow with Network Watcher</h2>
+    <div class="panel">Use Network Watcher:
+
+1. NSG Flow Logs enabled:
+   ├─ Captures all traffic (allowed + denied)
+   ├─ Shows which IPs are attacking
+   └─ Stored in Log Analytics for analysis
+
+2. Query Attack Pattern:
+   └─ KQL: NSGFlowLogCommonFields
+      | where FlowStatus == "Deny"
+      | summarize DeniedCount = count() by SourcePublicIP
+      | sort by DeniedCount desc
+
+3. Result:
+   ├─ Top attacking IPs identified
+   ├─ Patterns visible (which ports, protocols)
+   └─ Can create firewall rules to pre-block ✓
+
+4. Connection Monitor:
+   ├─ Monitors legitimate user access
+   ├─ Tracks latency (is site fast enough?)
+   ├─ Alerts on degradation
+   └─ Ensures customer experience ✓</div>
+  </div>
+
+  <!-- Common Mistakes -->
+  <div class="section full" id="common-mistakes-what-not-to-do">
+    <h2>Common Mistakes (What NOT to Do)</h2>
+
+    <h3>❌ Mistake 1: Thinking Firewall Replaces NSGs</h3>
+    <div class="mistake-card">
+      <div>
+        <h4>Wrong</h4>
+        <div class="panel small">"We have Azure Firewall, we don't need NSGs"
+├─ Remove NSG rules
+├─ Rely only on Firewall
+├─ Problem: NSGs are still needed at subnet level
+├─ Result: Defense-in-depth is gone ✗</div>
+      </div>
+      <div>
+        <h4>Fix</h4>
+        <div class="panel small">Use both:
+├─ NSG: Blocks at subnet level (quick, lightweight)
+├─ Firewall: Inspects at hub level (stateful, deep inspection)
+├─ Result: Multiple layers of defense ✓</div>
+      </div>
+    </div>
+    <p><strong>Why it fails:</strong> Firewall and NSGs serve different purposes (stateful inspection vs. subnet isolation).</p>
+
+    <h3>❌ Mistake 2: Not Enabling NSG Flow Logs</h3>
+    <div class="mistake-card">
+      <div>
+        <h4>Wrong</h4>
+        <div class="panel small">"NSG Flow Logs are expensive, let's skip them"
+├─ No visibility into denied traffic
+├─ Can't debug connectivity issues
+├─ Can't investigate security incidents
+├─ Result: Blind to attacks ✗</div>
+      </div>
+      <div>
+        <h4>Fix</h4>
+        <div class="panel small">Enable NSG Flow Logs:
+├─ Store in Log Analytics (cheap, queryable)
+├─ Set retention to 90 days minimum
+├─ Query for:
+│  ├─ Denied traffic patterns
+│  ├─ Unusual port access
+│  └─ Potential attacks
+└─ Cost: ~$10/month (cheap insurance) ✓</div>
+      </div>
+    </div>
+    <p><strong>Why it fails:</strong> Flow logs are the audit trail for network security.</p>
+
+    <h3>❌ Mistake 3: WAF Too Strict</h3>
+    <div class="mistake-card">
+      <div>
+        <h4>Wrong</h4>
+        <div class="panel small">WAF Rule: Block all requests with special characters
+├─ Legitimate request: "What's the price?"
+├─ Contains apostrophe (special character)
+├─ WAF blocks: Legitimate user can't search
+├─ Result: False positives, broken site ✗</div>
+      </div>
+      <div>
+        <h4>Fix</h4>
+        <div class="panel small">WAF Tuning:
+├─ Start with default OWASP rules
+├─ Monitor for false positives
+├─ Exclude specific paths (e.g., file uploads)
+├─ Adjust sensitivity: "Detection" vs. "Prevention" mode
+├─ Result: Security without breaking functionality ✓</div>
+      </div>
+    </div>
+    <p><strong>Why it fails:</strong> Over-blocking legitimate traffic hurts user experience.</p>
+
+    <h3>❌ Mistake 4: DDoS Protection Only, Ignoring Application Attacks</h3>
+    <div class="mistake-card">
+      <div>
+        <h4>Wrong</h4>
+        <div class="panel small">"We have DDoS Standard, we're protected"
+├─ DDoS protects Layer 4 (volumetric)
+├─ Doesn't protect Layer 7 (SQL injection, XSS)
+├─ Attacker uses targeted SQL injection
+├─ Database hacked
+├─ Result: False sense of security ✗</div>
+      </div>
+      <div>
+        <h4>Fix</h4>
+        <div class="panel small">Use layered defense:
+├─ DDoS Standard: Handles volumetric attacks
+├─ WAF: Handles application-level attacks
+├─ Azure Firewall: Network-level inspection
+├─ NSGs: Subnet-level filtering
+└─ Result: Protected at all layers ✓</div>
+      </div>
+    </div>
+    <p><strong>Why it fails:</strong> DDoS and WAF protect different layers.</p>
+  </div>
+
+  <!-- Advanced Security Checklist -->
+  <div class="section full" id="advanced-security-checklist">
+    <h2>Advanced Security Checklist</h2>
+    <div class="grid2">
+      <div>
+        <h3>DDoS Protection</h3>
+        <div class="panel small">□ DDoS Basic: Always enabled (free)
+□ DDoS Standard: Enable for public-facing apps
+  └─ Cost-benefit: $3000/month vs. downtime cost
+□ DDoS alerts: Configure to notify SOC</div>
+        <h3>Azure Firewall</h3>
+        <div class="panel small">□ Deployed in Hub VNet
+□ Application rules: Define allowed domains
+□ Network rules: Define allowed IPs/ports
+□ Routes: All spoke traffic through firewall
+□ Logging: Enable firewall logs
+□ Tuning: Monitor allowed vs. denied traffic</div>
+      </div>
+      <div>
+        <h3>WAF (Application Gateway or Front Door)</h3>
+        <div class="panel small">□ OWASP rules enabled
+□ Mode: Detection (first), then Prevention (after tuning)
+□ Custom rules: Add for your app-specific threats
+□ Exclusions: Configure for file uploads, legitimate patterns
+□ Logging: Send to Log Analytics for analysis</div>
+        <h3>Network Watcher</h3>
+        <div class="panel small">□ NSG Flow Logs: Enabled on all NSGs
+□ Storage: Log Analytics (for querying)
+□ Retention: 90 days minimum
+□ Alerts: Set for unusual patterns
+□ Connection Monitor: Monitor critical connections
+□ IP Flow Verify: Used for troubleshooting</div>
+      </div>
+    </div>
+    <h3 style="margin-top:18px">Incident Response</h3>
+    <div class="panel small">□ Process: What to do when NSG Flow Logs show attack
+□ Ownership: Who investigates security incidents?
+□ Playbook: Steps to block, isolate, remediate
+□ Communication: How to notify customers/stakeholders</div>
+  </div>
+
+  <!-- Connections -->
+  <div class="section full" id="how-this-connects-to-other-topics">
+    <h2>How This Connects to Other Topics</h2>
+    <div class="grid2">
+      <div>
+        <h3>Related to Module 01 (Identity &amp; Governance)</h3>
+        <ul>
+          <li><strong>RBAC:</strong> Only network admins can modify firewall rules</li>
+          <li><strong>Policy:</strong> Enforce firewall + WAF for all public-facing apps</li>
+        </ul>
+        <h3>Related to Module 02 (Storage)</h3>
+        <ul>
+          <li><strong>Storage Firewall:</strong> Combined with WAF for secure access</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Related to Module 05 (Monitor)</h3>
+        <ul>
+          <li><strong>Log Analytics:</strong> Analyze NSG Flow Logs and Firewall logs</li>
+          <li><strong>Alerts:</strong> Trigger on suspicious patterns</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- See It In Action -->
+  <div class="section full" id="see-it-in-action">
+    <h2>See It In Action</h2>
+    <p><strong>Associated labs:</strong></p>
+    <ul>
+      <li><a href="../labs/lab04-azure-firewall.md">Lab 04: Azure Firewall</a> (if exists)</li>
+      <li><a href="../labs/lab19-network-watcher.md">Lab 19: Network Watcher &amp; Diagnostics</a> (if exists)</li>
+    </ul>
+    <p><strong>Suggested learning sequence:</strong></p>
+    <ol>
+      <li>✅ Read <a href="06-hub-spoke-topology.md">Hub-Spoke Topology</a></li>
+      <li>✅ Read this doc (Network Security Advanced)</li>
+      <li>➡️ Hands-on: Set up Azure Firewall in hub</li>
+      <li>➡️ Hands-on: Enable NSG Flow Logs</li>
+      <li>➡️ Hands-on: Deploy WAF on Application Gateway</li>
+    </ol>
+  </div>
+
+  <!-- Key Takeaways -->
+  <div class="section full" id="key-takeaways">
+    <h2>Key Takeaways</h2>
+    <div class="tip">
+      <strong>💡 Summary</strong>
+      <ul style="margin-top:8px">
+        <li><strong>Defense-in-depth:</strong> Use multiple security layers (DDoS, Firewall, WAF, NSG)</li>
+        <li><strong>DDoS Standard:</strong> Essential for internet-facing critical apps (~$3K/month)</li>
+        <li><strong>Azure Firewall:</strong> Stateful inspection, application rules, centralized policy</li>
+        <li><strong>WAF:</strong> Protects against Layer 7 attacks (SQL injection, XSS, CSRF)</li>
+        <li><strong>NSG Flow Logs:</strong> Visibility into allowed/denied traffic (essential for auditing)</li>
+        <li><strong>Network Watcher:</strong> Diagnostic tools for troubleshooting and monitoring</li>
+        <li><strong>Layered approach:</strong> Each layer catches different attack types</li>
+        <li><strong>Tuning required:</strong> Monitor for false positives, adjust rules as needed</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Next Steps -->
+  <div class="section full" id="next-steps">
+    <h2>Next Steps</h2>
+    <ol>
+      <li><strong>Learn:</strong> Read this doc (you're here)</li>
+      <li><strong>Understand:</strong> Which advanced security tools apply to your workloads</li>
+      <li><strong>Implement:</strong> Deploy in order: DDoS → Firewall → WAF</li>
+      <li><strong>Monitor:</strong> Enable NSG Flow Logs and set up alerts</li>
+      <li><strong>Practice:</strong> Use Network Watcher to diagnose connectivity</li>
+      <li><strong>Secure:</strong> Test security with network watcher and flow logs</li>
+    </ol>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-grid">
+      <div class="footer-item">
+        <strong>Azure AZ-104</strong>
+        Professional Concept Documentation
+      </div>
+      <div class="footer-item">
+        <strong>Module</strong>
+        04 — Networking
+      </div>
+      <div class="footer-item">
+        <strong>Generated</strong>
+        June 15, 2026
+      </div>
+    </div>
+    <div class="footer-meta">&copy; 2026 — AZ-104 Learning Hub. For study purposes only.</div>
+  </div>
+
+</div>
+</div>
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.sidebar a'));
+  var sections = [];
+  links.forEach(function(a){
+    var el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) sections.push({link:a, el:el});
+  });
+  if (!sections.length || !('IntersectionObserver' in window)) return;
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (!entry.isIntersecting) return;
+      var match = sections.find(function(s){ return s.el === entry.target; });
+      if (!match) return;
+      links.forEach(function(a){ a.classList.remove('active'); });
+      match.link.classList.add('active');
+    });
+  }, { rootMargin: '-100px 0px -70% 0px', threshold: 0 });
+  sections.forEach(function(s){ observer.observe(s.el); });
+})();
+</script>
+</body>
+</html>
+
+
+
+

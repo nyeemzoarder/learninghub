@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab 01 – Storage Accounts - AZ-104 Labs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Professional Lab Template - Embedded CSS for local file:// access */
+:root{--bg:#f7f9fd;--card:#fff;--border:#e2e8f0;--text:#1a202c;--muted:#64748b;--primary:#1e3a8a;--panel:#0f172a;--panel-shadow:rgba(15,23,42,.12);--section-gap:48px;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,-apple-system,'Segoe UI',sans-serif;color:var(--text);line-height:1.6}.page{flex:1;min-width:0;padding:48px;max-width:1100px;margin:0 auto}
+h1{font-size:3.4rem;line-height:1.2;margin:0 0 12px 0;color:var(--primary);font-weight:800;letter-spacing:-0.5px}h2{font-size:2.2rem;margin:0 0 24px 0;color:var(--primary);font-weight:800;letter-spacing:-0.5px}h3{font-size:1.45rem;margin:32px 0 16px 0;color:var(--primary);font-weight:700;letter-spacing:-0.3px}h3:first-child{margin-top:0}h4{font-size:1.1rem;margin:20px 0 12px 0;color:#1e3a8a;font-weight:700}
+p{font-size:1.05rem;line-height:1.7;margin:12px 0;color:var(--text)}ul,ol{margin:16px 0;padding-left:24px}li{margin-bottom:10px;line-height:1.7;font-size:1.03rem;color:var(--text)}
+a{color:#1e40af;text-decoration:none;border-bottom:2px solid transparent;font-weight:600;transition:border-color 0.2s}a:hover{border-bottom-color:#1e40af}strong{color:var(--primary);font-weight:700}code{background:#f0f4ff;color:#1e40af;padding:4px 8px;border-radius:6px;font:13px/1.5 'SF Mono',Consolas,'Courier New',monospace;font-weight:500}
+.task-box{margin:24px 0;padding:0;background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(30,64,175,.06);transition:box-shadow 0.2s,border-color 0.2s}.task-box:hover{box-shadow:0 4px 12px rgba(30,64,175,.12);border-color:#c7d2fe}
+.task-header{display:flex;align-items:center;gap:12px;padding:18px 20px;background:linear-gradient(135deg,#dbeafe 0%,#eff6ff 100%);border-bottom:1px solid var(--border)}.task-header .task-icon{font-size:1.4rem;color:#1e40af}.task-header h3{margin:0;font-size:1.2rem;color:var(--primary);font-weight:700}.task-content{padding:20px}
+.code-block{position:relative;margin:24px 0;background:#0f172a;border-radius:10px;overflow:hidden;border:1px solid #1e293b;box-shadow:0 4px 12px rgba(15,23,42,.25)}.code-block pre{margin:0;padding:20px 48px 20px 20px;color:#e2e8f0;font-family:'SF Mono',Consolas,'Courier New',monospace;font-size:0.92rem;line-height:1.7;overflow-x:auto}
+.code-copy-btn{position:absolute;top:12px;right:12px;padding:8px 14px;background:#1e293b;color:#60a5fa;border:1px solid #334155;border-radius:6px;cursor:pointer;font-size:0.85rem;font-weight:600;transition:all 0.2s;user-select:none;box-shadow:0 1px 3px rgba(0,0,0,.2)}.code-copy-btn:hover{background:#334155;color:#93c5fd;border-color:#475569}.code-block .keyword{color:#569cd6}.code-block .string{color:#ce9178}.code-block .comment{color:#6a9955}.code-block .operator{color:#d4d4d4}.code-block .function{color:#dcdcaa}.code-block .property{color:#9cdcfe}
+.callout-box{margin:24px 0;padding:18px 20px;border-radius:10px;border-left:4px solid;display:flex;gap:14px;box-shadow:0 1px 3px rgba(0,0,0,.05)}.callout-icon{font-size:1.5rem;flex-shrink:0;min-width:28px;text-align:center}.callout-content{flex:1}.callout-content h4{margin:0 0 8px 0;font-size:1.08rem;font-weight:700}.callout-content p{margin:8px 0;line-height:1.7;font-size:1.02rem}.callout-content p:first-child{margin-top:0}
+.callout-tip{background:#eff6ff;border-color:#3b82f6}.callout-tip .callout-icon{color:#1e40af}.callout-tip h4{color:#1e40af}.callout-warning{background:#fefce8;border-color:#eab308}.callout-warning .callout-icon{color:#ca8a04}.callout-warning h4{color:#92400e}.callout-important{background:#fee2e2;border-color:#ef4444}.callout-important .callout-icon{color:#dc2626}.callout-important h4{color:#991b1b}
+.section-time{background:#dbeafe;border:1px solid #93c5fd;border-radius:8px;padding:10px 16px;font-size:0.95rem;font-weight:600;color:#1e40af;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}.layout{max-width:1500px;margin:auto;display:flex;align-items:flex-start;gap:32px}.sidebar{flex:0 0 280px;position:sticky;top:88px;max-height:calc(100vh - 108px);overflow-y:auto;padding:24px;background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 2px 8px rgba(30,64,175,.06)}.sidebar summary{cursor:pointer;list-style:none;padding:10px 12px;border-radius:8px;font-weight:600;font-size:.93rem;color:var(--primary);user-select:none;transition:all 0.2s}.sidebar summary::-webkit-details-marker{display:none}.sidebar details[open]>summary{background:#dbeafe}.sidebar summary:hover{background:#eff6ff}.sidebar a{display:block;padding:9px 12px;margin-bottom:2px;border-radius:8px;font-size:.89rem;font-weight:500;color:var(--text);border-bottom:none;border-left:3px solid transparent;line-height:1.5;transition:all 0.15s;text-decoration:none;color:#1a202c}.sidebar a:hover{background:#eff6ff;color:var(--primary)}.site-nav{position:sticky;top:0;z-index:1000;background:var(--primary);color:#fff;display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:14px 32px;font-size:.93rem;box-shadow:0 4px 12px rgba(0,0,0,.1);font-family:Inter,-apple-system,'Segoe UI',sans-serif}.site-nav .nav-brand{font-weight:800;font-size:1.1rem;margin-right:auto;color:#fff;letter-spacing:-0.3px}.site-nav summary{cursor:pointer;list-style:none;padding:8px 16px;border-radius:8px;background:rgba(255,255,255,.12);font-weight:600;color:#fff;user-select:none;transition:background 0.2s}
+</style>
+</head>
+<body>
+<nav class="site-nav" aria-label="Main site navigation">
+  <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
+  <details class="nav-group" aria-label="Learning module selector">
+    <summary>Learning Module</summary>
+    <div class="nav-menu">
+      <a href="../../00-prerequisites/documents/module-home.html">00 - Prerequisites</a>
+      <a href="../../01-identity-governance/documents/module-home.html">01 - Identity &amp; Governance</a>
+      <a href="../../02-storage/documents/module-home.html">02 - Storage</a>
+      <a href="../../03-compute/documents/module-home.html">03 - Compute</a>
+      <a href="../../04-networking/documents/module-home.html">04 - Networking</a>
+      <a href="../../05-monitor-maintain/documents/module-home.html">05 - Monitor &amp; Maintain</a>
+    </div>
+  </details>
+</nav>
+<div class="layout">
+  <aside class="sidebar" aria-label="Page navigation">
+    <details open>
+      <summary>▶ Module 02 - Storage</summary>
+      <div>
+        <a href="01-storage-redundancy-options.html">01 - Storage Redundancy Options</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ Labs</summary>
+      <div>
+        <a href="lab01-storage-accounts.html">Lab 01 - Storage Accounts</a>
+<a href="lab02-blob-security-lifecycle.html">Lab 02 - Blob Security &amp; Lifecycle</a>
+<a href="lab03-azure-files-file-sync.html">Lab 03 - Azure Files &amp; File Sync</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ On This Page</summary>
+      <div>
+        <a href="#objectives-">Objectives</a>
+<a href="#prerequisites-">Prerequisites</a>
+<a href="#estimated-time-">Estimated time</a>
+<a href="#part-1-create-the-resource-group-and-storage-account-">Part 1 – Create the resource group and storage account</a>
+<a href="#part-2-explore-redundancy-performance-options-">Part 2 – Explore redundancy & performance options</a>
+<a href="#part-3-containers-blobs-queues-tables-file-shares-">Part 3 – Containers, blobs, queues, tables, file shares</a>
+<a href="#part-4-access-keys-vs-sas-vs-microsoft-entra-authorization-">Part 4 – Access keys vs SAS vs Microsoft Entra authorization</a>
+<a href="#part-5-network-rules-">Part 5 – Network rules</a>
+<a href="#part-6-copy-data-with-storage-browser-">Part 6 – Copy data with Storage browser</a>
+<a href="#success-criteria-">Success Criteria</a>
+<a href="#cleanup-if-needed-">Cleanup (If Needed)</a>
+<a href="#key-takeaways-">Key Takeaways</a>
+<a href="#next-steps-">Next Steps</a>
+      </div>
+    </details>
+  </aside>
+  <div class="page">
+  <h1>Lab 01 – Storage Accounts</h1>
+
+<h2 id="objectives-">Objectives</h2>
+
+<ul><ol><li>Create storage accounts with different redundancy/performance tiers</li>
+<li>Configure access keys, SAS tokens, and network rules</li>
+<li>Work with blob containers, queues, tables, and file shares</li>
+<li>Move/copy data using the Portal's Storage browser</li></ol></ul>
+
+<h2 id="prerequisites-">Prerequisites</h2>
+
+<ul><ol><li>A resource group (we'll create one)</li>
+<li>Signed in at <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
+
+<h2 id="estimated-time-">Estimated time</h2>
+
+<p>40 minutes</p>
+
+<p>---</p>
+
+<h2 id="part-1-create-the-resource-group-and-storage-account-">Part 1 – Create the resource group and storage account</h2>
+
+<h3 id="step-1-create-resource-group-">Step 1: Create resource group</h3>
+
+<ol><li>Search for <strong>Resource groups</strong> > <strong>Create</strong></li>
+<li>Name: <code>rg-az104-lab04</code>, Region: <code>East US</code></li>
+<li><strong>Review + create</strong> > <strong>Create</strong></li></ol>
+
+<h3 id="step-2-create-storage-account-">Step 2: Create storage account</h3>
+
+<ol><li>Search for <strong>Storage accounts</strong> > <strong>Create</strong></li>
+<li><strong>Basics</strong> tab:</li></ol>
+<p>- <strong>Resource group</strong>: <code>rg-az104-lab04</code></p>
+<p>- <strong>Storage account name</strong>: <code>stoaz104lab<unique></code> (3–24 chars, lowercase + numbers only)</p>
+<p>- <strong>Region</strong>: <code>East US</code></p>
+<p>- <strong>Performance</strong>: <strong>Standard</strong></p>
+<p>- <strong>Redundancy</strong>: <strong>Locally-redundant storage (LRS)</strong></p>
+<ol><li>Leave <strong>Advanced</strong> defaults (StorageV2, Hot tier)</li>
+<li><strong>Review + create</strong> > <strong>Create</strong></li></ol>
+
+<div class='callout-box callout-important'><span class='callout-icon'>❗</span><div class='callout-content'><h4>important</h4><p>Storage account names must be GLOBALLY unique across all Azure customers. If your first choice is taken, add numbers until it's unique.</p></div></div>
+
+<p>---</p>
+
+<h2 id="part-2-explore-redundancy-performance-options-">Part 2 – Explore redundancy & performance options</h2>
+
+<h3 id="understanding-redundancy-">Understanding Redundancy</h3>
+
+<p>| Option | Copies | Locations | Cost | Best For |</p>
+<p>|--------|--------|-----------|------|----------|</p>
+<p>| <strong>LRS</strong> | 3 | 1 Datacenter | $$$ | Dev/Test |</p>
+<p>| <strong>ZRS</strong> | 3 | 3 AZs (1 region) | $$$$ | Production (regional) |</p>
+<p>| <strong>GRS</strong> | 6 | 2 Regions | $$$$$ | Disaster recovery |</p>
+
+<h3 id="step-1-view-redundancy-options-">Step 1: View redundancy options</h3>
+
+<ol><li>Open the storage account > <strong>Redundancy</strong> (under <strong>Data management</strong>)</li>
+<li>Note the options: <strong>LRS, ZRS, GRS, GZRS, RA-GRS, RA-GZRS</strong></li>
+<li>Observe that changing redundancy is easy, but note the cost implications</li></ol>
+
+<h3 id="step-2-understand-performance-tiers-">Step 2: Understand performance tiers</h3>
+
+<ol><li>Go to <strong>Configuration</strong> > <strong>Access tier</strong></li></ol>
+<p>- <strong>Hot</strong>: Frequent access (cheapest storage, expensive per-operation)</p>
+<p>- <strong>Cool</strong>: Infrequent access (cheaper per-operation, expensive storage)</p>
+<p>- <strong>Archive</strong>: Long-term (cheapest storage, slow retrieval)</p>
+
+<div class='callout-box callout-tip'><span class='callout-icon'>ℹ️</span><div class='callout-content'><h4>tip</h4><p>Changing access tier between Hot/Cool is free and instant. Archive requires rehydration (24-48 hours).</p></div></div>
+
+<p>---</p>
+
+<h2 id="part-3-containers-blobs-queues-tables-file-shares-">Part 3 – Containers, blobs, queues, tables, file shares</h2>
+
+<h3 id="step-1-create-and-upload-to-blob-container-">Step 1: Create and upload to blob container</h3>
+
+<ol><li>Open the storage account > <strong>Containers</strong> (under <strong>Data storage</strong>)</li>
+<li>Select <strong>+ Container</strong>, name: <code>demo-container</code>, <strong>Public access level</strong>: <strong>Private</strong></li>
+<li>Open <code>demo-container</code> > <strong>Upload</strong></li>
+<li>Create a small text file locally (e.g., <code>sample.txt</code> with text "hello az104")</li>
+<li>Upload it to the container</li></ol>
+
+<div class='callout-box callout-warning'><span class='callout-icon'>⚠️</span><div class='callout-content'><h4>warning</h4><p>Setting Public access to "Blob" or "Container" allows anonymous download. Only do this for non-sensitive data.</p></div></div>
+
+<h3 id="step-2-create-queue-and-table-">Step 2: Create queue and table</h3>
+
+<ol><li><strong>Queues</strong> (under <strong>Data storage</strong>) > <strong>+ Queue</strong>, name: <code>demo-queue</code></li>
+<li><strong>Tables</strong> (under <strong>Data storage</strong>) > <strong>+ Table</strong>, name: <code>demotable</code></li></ol>
+
+<div class='callout-box callout-tip'><span class='callout-icon'>ℹ️</span><div class='callout-content'><h4>tip</h4><p>Queues = async messaging. Tables = NoSQL key-value store. File Shares = SMB protocol (like network drives).</p></div></div>
+
+<h3 id="step-3-create-file-share-">Step 3: Create file share</h3>
+
+<ol><li><strong>File shares</strong> (under <strong>Data storage</strong>) > <strong>+ File share</strong></li></ol>
+<p>- <strong>Name</strong>: <code>demo-share</code></p>
+<p>- <strong>Quota</strong>: <code>5</code> GiB</p>
+<p>- <strong>Tier</strong>: <strong>Transaction optimized</strong></p>
+<ol><li>Create</li></ol>
+
+<p>---</p>
+
+<h2 id="part-4-access-keys-vs-sas-vs-microsoft-entra-authorization-">Part 4 – Access keys vs SAS vs Microsoft Entra authorization</h2>
+
+<h3 id="access-patterns-">Access Patterns</h3>
+
+<p>| Method | Security | Use Case |</p>
+<p>|--------|----------|----------|</p>
+<p>| <strong>Access Keys</strong> | Full admin | Internal apps only |</p>
+<p>| <strong>SAS</strong> | Time-limited | Temporary external access |</p>
+<p>| <strong>Entra ID</strong> | Role-based | Production (recommended) |</p>
+
+<h3 id="step-1-view-access-keys-">Step 1: View Access Keys</h3>
+
+<ol><li><strong>Access keys</strong> (under <strong>Security + networking</strong>)</li>
+<li>Note: two keys (<code>key1</code>, <code>key2</code>) for rotation without downtime</li></ol>
+
+<div class='callout-box callout-important'><span class='callout-icon'>❗</span><div class='callout-content'><h4>important</h4><p>Never commit access keys to GitHub. Always rotate keys when they're exposed.</p></div></div>
+
+<h3 id="step-2-generate-sas-token-">Step 2: Generate SAS token</h3>
+
+<ol><li><strong>Shared Access Signature</strong> (under <strong>Security + networking</strong>)</li>
+<li><strong>Allowed services</strong>: <strong>Blob</strong></li>
+<li><strong>Allowed resource types</strong>: <strong>Container, Object</strong></li>
+<li><strong>Allowed permissions</strong>: <strong>Read</strong></li>
+<li><strong>Start and expiry time</strong>: set expiry to 1 hour from now</li>
+<li><strong>Allowed protocols</strong>: <strong>HTTPS only</strong></li>
+<li>Select <strong>Generate SAS and connection string</strong></li>
+<li>Copy the <strong>Blob SAS URL</strong></li></ol>
+
+<h3 id="step-3-test-sas-access-">Step 3: Test SAS access</h3>
+
+<ol><li>Construct the full URL:</li></ol>
+<div class='code-block'><pre>https://&lt;account&gt;.blob.core.windows.net/demo-container/sample.txt?&lt;sas-token&gt;
+<p>``<code></p>
+<ol><li>Open in browser—you should download </code>sample.txt<code></li>
+<li>After 1 hour, this URL will expire and access will fail</li></ol>
+
+<p>&gt; Tip: SAS tokens are great for temporary sharing. Generate new ones for each user/device to minimize blast radius if leaked.</p>
+
+<p>&lt;h3 id=&quot;step-4-test-entra-id-access-&quot;&gt;Step 4: Test Entra ID access&lt;/h3&gt;</p>
+
+<ol><li>Go to the storage account &gt; &lt;strong&gt;Access control (IAM)&lt;/strong&gt; &gt; &lt;strong&gt;Add role assignment&lt;/strong&gt;</li>
+<li>&lt;strong&gt;Role&lt;/strong&gt;: &lt;strong&gt;Storage Blob Data Reader&lt;/strong&gt;</li>
+<li>&lt;strong&gt;Assign to&lt;/strong&gt;: your user account</li>
+<li>Open &lt;strong&gt;Containers&lt;/strong&gt; &gt; </code>demo-container<code></li>
+<li>In the top toolbar, switch &lt;strong&gt;Authentication method&lt;/strong&gt; from &lt;strong&gt;Access key&lt;/strong&gt; to &lt;strong&gt;Microsoft Entra user account&lt;/strong&gt;</li>
+<li>Confirm you can still view </code>sample.txt<code></li></ol>
+
+<p>&gt; Important: This uses your Entra identity + RBAC instead of account keys. This is the most secure approach for production.</p>
+
+<p>---</p>
+
+<p>&lt;h2 id=&quot;part-5-network-rules-&quot;&gt;Part 5 – Network rules&lt;/h2&gt;</p>
+
+<p>&lt;h3 id=&quot;restricting-access-&quot;&gt;Restricting Access&lt;/h3&gt;</p>
+
+<p>&gt; Warning: Network rules can lock you out if misconfigured. Always test before deploying to production.</p>
+
+<p>&lt;h3 id=&quot;step-1-enable-network-rules-&quot;&gt;Step 1: Enable network rules&lt;/h3&gt;</p>
+
+<ol><li>&lt;strong&gt;Networking&lt;/strong&gt; (under &lt;strong&gt;Security + networking&lt;/strong&gt;)</li>
+<li>&lt;strong&gt;Public network access&lt;/strong&gt;: select &lt;strong&gt;Enabled from selected virtual networks and IP addresses&lt;/strong&gt;</li>
+<li>Under &lt;strong&gt;Firewall&lt;/strong&gt;, select &lt;strong&gt;Add your client IP address&lt;/strong&gt; to allow-list your current IP</li>
+<li>&lt;strong&gt;Save&lt;/strong&gt;</li></ol>
+
+<p>&lt;h3 id=&quot;step-2-test-the-restriction-&quot;&gt;Step 2: Test the restriction&lt;/h3&gt;</p>
+
+<ol><li>Confirm you can still access the storage account (you&#39;re on the allow-list)</li>
+<li>Try accessing from a different network/VPN (should fail with 403 Forbidden)</li>
+<li>Observe that having the access key alone is NOT enough—network rules now take precedence</li></ol>
+
+<p>&gt; Tip: In production, use Service Endpoints or Private Endpoints instead of IP ranges for more security.</p>
+
+<p>&lt;h3 id=&quot;step-3-revert-for-simplicity-&quot;&gt;Step 3: Revert for simplicity&lt;/h3&gt;</p>
+
+<ol><li>Go back to &lt;strong&gt;Networking&lt;/strong&gt; &gt; &lt;strong&gt;Public network access&lt;/strong&gt;: &lt;strong&gt;Enable from all networks&lt;/strong&gt;</li>
+<li>&lt;strong&gt;Save&lt;/strong&gt; (to not interfere with other labs)</li></ol>
+
+<p>---</p>
+
+<p>&lt;h2 id=&quot;part-6-copy-data-with-storage-browser-&quot;&gt;Part 6 – Copy data with Storage browser&lt;/h2&gt;</p>
+
+<p>&lt;h3 id=&quot;step-1-copy-blob-between-containers-&quot;&gt;Step 1: Copy blob between containers&lt;/h3&gt;</p>
+
+<ol><li>&lt;strong&gt;Storage browser&lt;/strong&gt; &gt; &lt;strong&gt;Blob containers&lt;/strong&gt; &gt; </code>demo-container<code> &gt; select </code>sample.txt<code></li>
+<li>&lt;strong&gt;Copy&lt;/strong&gt;</li>
+<li>Create a new container </code>demo-container-2<code> (or navigate to an existing empty one)</li>
+<li>&lt;strong&gt;Paste&lt;/strong&gt;—the blob is now copied</li></ol>
+
+<p>&gt; Tip: This is the Portal equivalent of </code>azcopy<code>. For large data migrations, use AzCopy CLI for speed.</p>
+
+<p>&lt;h3 id=&quot;step-2-download-and-upload-&quot;&gt;Step 2: Download and upload&lt;/h3&gt;</p>
+
+<ol><li>Select </code>sample.txt<code> &gt; &lt;strong&gt;Download&lt;/strong&gt; (pulls to your local machine)</li>
+<li>Modify the file locally</li>
+<li>Go back to &lt;strong&gt;Upload&lt;/strong&gt; &gt; upload the modified file</li>
+<li>Confirm the updated file is in the container</li></ol>
+
+<p>---</p>
+
+<p>&lt;h2 id=&quot;success-criteria-&quot;&gt;Success Criteria&lt;/h2&gt;</p>
+
+<p>✓ Storage account created with StorageV2, LRS, Hot tier</p>
+<p>✓ Container, queue, table, and file share all exist</p>
+<p>✓ SAS URL grants time-limited read access to blob</p>
+<p>✓ Entra ID authentication works (view blob with your user account)</p>
+<p>✓ Network rule restricts access to allow-listed IPs</p>
+<p>✓ Blob successfully copied between containers</p>
+
+<p>---</p>
+
+<p>&lt;h2 id=&quot;cleanup-if-needed-&quot;&gt;Cleanup (If Needed)&lt;/h2&gt;</pre></div>powershell</p>
+<h1>Delete storage account (includes all containers, blobs, queues, tables)</h1>
+<p>Remove-AzStorageAccount -ResourceGroupName "rg-az104-lab04" -Name "stoaz104lab<unique>" -Force</p>
+
+<h1>Delete resource group</h1>
+<p>Remove-AzResourceGroup -Name "rg-az104-lab04" -Force</p>
+<p></code>``</p>
+
+<p>---</p>
+
+<h2 id="key-takeaways-">Key Takeaways</h2>
+
+<ul><ol><li><strong>LRS</strong> is cheap but not HA. <strong>GRS</strong> replicates to another region for disaster recovery</li>
+<li><strong>SAS tokens</strong> are time-limited and granular—perfect for sharing data without keys</li>
+<li><strong>Network rules</strong> add another layer of security on top of access keys</li>
+<li><strong>Entra ID authentication</strong> is the modern approach—don't rely on access keys in production</li>
+<li><strong>Storage browser</strong> is convenient for small files; use <strong>AzCopy</strong> for bulk data</li></ol></ul>
+
+<p>---</p>
+
+<h2 id="next-steps-">Next Steps</h2>
+
+<p>Proceed to Lab 02 to learn about blob security and lifecycle management.</p>
+
+  </div>
+</div>
+<script>
+/* Sidebar Active Link Tracking */
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.sidebar a'));
+  var sections = [];
+  links.forEach(function(a){
+    var el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) sections.push({link:a, el:el});
+  });
+  if (!sections.length || !('IntersectionObserver' in window)) return;
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (!entry.isIntersecting) return;
+      var match = sections.find(function(s){ return s.el === entry.target; });
+      if (!match) return;
+      links.forEach(function(a){ a.classList.remove('active'); });
+      match.link.classList.add('active');
+    });
+  }, { rootMargin: '-100px 0px -70% 0px', threshold: 0 });
+  sections.forEach(function(s){ observer.observe(s.el); });
+})();
+
+/* Code Block Copy Button Functionality */
+document.addEventListener('DOMContentLoaded', function(){
+  var codeBlocks = document.querySelectorAll('.code-block');
+  codeBlocks.forEach(function(block){
+    var pre = block.querySelector('pre');
+    if (!pre) return;
+
+    var btn = document.createElement('button');
+    btn.className = 'code-copy-btn';
+    btn.textContent = 'Copy';
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'Copy code to clipboard');
+
+    btn.addEventListener('click', function(){
+      var code = pre.textContent;
+      navigator.clipboard.writeText(code).then(function(){
+        var original = btn.textContent;
+        btn.textContent = '✓ Copied!';
+        btn.classList.add('copied');
+        setTimeout(function(){
+          btn.textContent = original;
+          btn.classList.remove('copied');
+        }, 2000);
+      }).catch(function(){
+        alert('Failed to copy code');
+      });
+    });
+
+    block.appendChild(btn);
+  });
+});
+</script>
+</body>
+</html>

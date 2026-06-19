@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab 05 – Azure App Service - AZ-104 Labs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Professional Lab Template - Embedded CSS for local file:// access */
+:root{--bg:#f7f9fd;--card:#fff;--border:#e2e8f0;--text:#1a202c;--muted:#64748b;--primary:#1e3a8a;--panel:#0f172a;--panel-shadow:rgba(15,23,42,.12);--section-gap:48px;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,-apple-system,'Segoe UI',sans-serif;color:var(--text);line-height:1.6}.page{flex:1;min-width:0;padding:48px;max-width:1100px;margin:0 auto}
+h1{font-size:3.4rem;line-height:1.2;margin:0 0 12px 0;color:var(--primary);font-weight:800;letter-spacing:-0.5px}h2{font-size:2.2rem;margin:0 0 24px 0;color:var(--primary);font-weight:800;letter-spacing:-0.5px}h3{font-size:1.45rem;margin:32px 0 16px 0;color:var(--primary);font-weight:700;letter-spacing:-0.3px}h3:first-child{margin-top:0}h4{font-size:1.1rem;margin:20px 0 12px 0;color:#1e3a8a;font-weight:700}
+p{font-size:1.05rem;line-height:1.7;margin:12px 0;color:var(--text)}ul,ol{margin:16px 0;padding-left:24px}li{margin-bottom:10px;line-height:1.7;font-size:1.03rem;color:var(--text)}
+a{color:#1e40af;text-decoration:none;border-bottom:2px solid transparent;font-weight:600;transition:border-color 0.2s}a:hover{border-bottom-color:#1e40af}strong{color:var(--primary);font-weight:700}code{background:#f0f4ff;color:#1e40af;padding:4px 8px;border-radius:6px;font:13px/1.5 'SF Mono',Consolas,'Courier New',monospace;font-weight:500}
+.task-box{margin:24px 0;padding:0;background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(30,64,175,.06);transition:box-shadow 0.2s,border-color 0.2s}.task-box:hover{box-shadow:0 4px 12px rgba(30,64,175,.12);border-color:#c7d2fe}
+.task-header{display:flex;align-items:center;gap:12px;padding:18px 20px;background:linear-gradient(135deg,#dbeafe 0%,#eff6ff 100%);border-bottom:1px solid var(--border)}.task-header .task-icon{font-size:1.4rem;color:#1e40af}.task-header h3{margin:0;font-size:1.2rem;color:var(--primary);font-weight:700}.task-content{padding:20px}
+.code-block{position:relative;margin:24px 0;background:#0f172a;border-radius:10px;overflow:hidden;border:1px solid #1e293b;box-shadow:0 4px 12px rgba(15,23,42,.25)}.code-block pre{margin:0;padding:20px 48px 20px 20px;color:#e2e8f0;font-family:'SF Mono',Consolas,'Courier New',monospace;font-size:0.92rem;line-height:1.7;overflow-x:auto}
+.code-copy-btn{position:absolute;top:12px;right:12px;padding:8px 14px;background:#1e293b;color:#60a5fa;border:1px solid #334155;border-radius:6px;cursor:pointer;font-size:0.85rem;font-weight:600;transition:all 0.2s;user-select:none;box-shadow:0 1px 3px rgba(0,0,0,.2)}.code-copy-btn:hover{background:#334155;color:#93c5fd;border-color:#475569}.code-block .keyword{color:#569cd6}.code-block .string{color:#ce9178}.code-block .comment{color:#6a9955}.code-block .operator{color:#d4d4d4}.code-block .function{color:#dcdcaa}.code-block .property{color:#9cdcfe}
+.callout-box{margin:24px 0;padding:18px 20px;border-radius:10px;border-left:4px solid;display:flex;gap:14px;box-shadow:0 1px 3px rgba(0,0,0,.05)}.callout-icon{font-size:1.5rem;flex-shrink:0;min-width:28px;text-align:center}.callout-content{flex:1}.callout-content h4{margin:0 0 8px 0;font-size:1.08rem;font-weight:700}.callout-content p{margin:8px 0;line-height:1.7;font-size:1.02rem}.callout-content p:first-child{margin-top:0}
+.callout-tip{background:#eff6ff;border-color:#3b82f6}.callout-tip .callout-icon{color:#1e40af}.callout-tip h4{color:#1e40af}.callout-warning{background:#fefce8;border-color:#eab308}.callout-warning .callout-icon{color:#ca8a04}.callout-warning h4{color:#92400e}.callout-important{background:#fee2e2;border-color:#ef4444}.callout-important .callout-icon{color:#dc2626}.callout-important h4{color:#991b1b}
+.section-time{background:#dbeafe;border:1px solid #93c5fd;border-radius:8px;padding:10px 16px;font-size:0.95rem;font-weight:600;color:#1e40af;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}.layout{max-width:1500px;margin:auto;display:flex;align-items:flex-start;gap:32px}.sidebar{flex:0 0 280px;position:sticky;top:88px;max-height:calc(100vh - 108px);overflow-y:auto;padding:24px;background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 2px 8px rgba(30,64,175,.06)}.sidebar summary{cursor:pointer;list-style:none;padding:10px 12px;border-radius:8px;font-weight:600;font-size:.93rem;color:var(--primary);user-select:none;transition:all 0.2s}.sidebar summary::-webkit-details-marker{display:none}.sidebar details[open]>summary{background:#dbeafe}.sidebar summary:hover{background:#eff6ff}.sidebar a{display:block;padding:9px 12px;margin-bottom:2px;border-radius:8px;font-size:.89rem;font-weight:500;color:var(--text);border-bottom:none;border-left:3px solid transparent;line-height:1.5;transition:all 0.15s;text-decoration:none;color:#1a202c}.sidebar a:hover{background:#eff6ff;color:var(--primary)}.site-nav{position:sticky;top:0;z-index:1000;background:var(--primary);color:#fff;display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:14px 32px;font-size:.93rem;box-shadow:0 4px 12px rgba(0,0,0,.1);font-family:Inter,-apple-system,'Segoe UI',sans-serif}.site-nav .nav-brand{font-weight:800;font-size:1.1rem;margin-right:auto;color:#fff;letter-spacing:-0.3px}.site-nav summary{cursor:pointer;list-style:none;padding:8px 16px;border-radius:8px;background:rgba(255,255,255,.12);font-weight:600;color:#fff;user-select:none;transition:background 0.2s}
+</style>
+</head>
+<body>
+<nav class="site-nav" aria-label="Main site navigation">
+  <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
+  <details class="nav-group" aria-label="Learning module selector">
+    <summary>Learning Module</summary>
+    <div class="nav-menu">
+      <a href="../../00-prerequisites/documents/module-home.html">00 - Prerequisites</a>
+      <a href="../../01-identity-governance/documents/module-home.html">01 - Identity &amp; Governance</a>
+      <a href="../../02-storage/documents/module-home.html">02 - Storage</a>
+      <a href="../../03-compute/documents/module-home.html">03 - Compute</a>
+      <a href="../../04-networking/documents/module-home.html">04 - Networking</a>
+      <a href="../../05-monitor-maintain/documents/module-home.html">05 - Monitor &amp; Maintain</a>
+    </div>
+  </details>
+</nav>
+<div class="layout">
+  <aside class="sidebar" aria-label="Page navigation">
+    <details open>
+      <summary>▶ Module 03 - Compute</summary>
+      <div>
+        <a href="01-compute-options-comparison.html">01 - Compute Options Comparison</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ Labs</summary>
+      <div>
+        <a href="lab01-arm-bicep-templates.html">Lab 01 - ARM &amp; Bicep Templates</a>
+<a href="lab02-virtual-machines.html">Lab 02 - Virtual Machines</a>
+<a href="lab03-vm-availability-scaling.html">Lab 03 - VM Availability &amp; Scaling</a>
+<a href="lab04-containers-aci-acr.html">Lab 04 - Containers, ACI &amp; ACR</a>
+<a href="lab05-app-service.html">Lab 05 - App Service</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ On This Page</summary>
+      <div>
+        <a href="#objectives-">Objectives</a>
+<a href="#prerequisites-">Prerequisites</a>
+<a href="#estimated-time-">Estimated time</a>
+<a href="#part-1-app-service-plan-and-web-app-">Part 1 – App Service plan and web app</a>
+<a href="#part-2-app-settings-connection-strings-">Part 2 – App settings & connection strings</a>
+<a href="#part-3-deployment-slots-">Part 3 – Deployment slots</a>
+<a href="#part-4-scale-up-plan-tier-and-scale-out-instance-count-">Part 4 – Scale up (plan tier) and scale out (instance count)</a>
+<a href="#part-5-diagnostics-logging-">Part 5 – Diagnostics logging</a>
+<a href="#part-6-custom-domains-tls-overview-">Part 6 – Custom domains & TLS (overview)</a>
+<a href="#part-7-backup-restore-overview-">Part 7 – Backup & restore (overview)</a>
+<a href="#validation-">Validation</a>
+<a href="#cleanup-">Cleanup</a>
+<a href="#exam-tips-">Exam Tips</a>
+      </div>
+    </details>
+  </aside>
+  <div class="page">
+  <h1>Lab 05 – Azure App Service</h1>
+
+<h2 id="objectives-">Objectives</h2>
+<ul><ol><li>Create an App Service plan and web app</li>
+<li>Configure deployment slots and slot swapping</li>
+<li>Configure application/connection-string settings, scaling, and autoscale</li>
+<li>Configure custom domains and TLS (overview), and diagnostics logging</li></ol></ul>
+
+<h2 id="prerequisites-">Prerequisites</h2>
+<ul><ol><li>None (creates its own RG)</li>
+<li>Signed in at <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
+
+<h2 id="estimated-time-">Estimated time</h2>
+<p>35 minutes</p>
+
+<p>---</p>
+
+<h2 id="part-1-app-service-plan-and-web-app-">Part 1 – App Service plan and web app</h2>
+
+<div class='callout-box callout-important'><span class='callout-icon'>❗</span><div class='callout-content'><h4>important</h4><p>Deployment slots are only available on <strong>Standard</strong> tier and above. <strong>Free</strong> and <strong>Shared</strong> tiers do not support slots.</p></div></div>
+
+<ol><li>Search for <strong>App Services</strong> > <strong>Create</strong> > <strong>Web App</strong>.</li>
+<li><strong>Basics</strong> tab:</li></ol>
+<p>- <strong>Resource group</strong>: <strong>Create new</strong> <code>rg-az104-lab11</code></p>
+<p>- <strong>Name</strong>: <code>app-az104lab11-<unique></code></p>
+<p>- <strong>Publish</strong>: <strong>Code</strong></p>
+<p>- <strong>Runtime stack</strong>: <strong>Node 20 LTS</strong></p>
+<p>- <strong>Operating System</strong>: <strong>Linux</strong></p>
+<p>- <strong>Region</strong>: <code>East US</code></p>
+<ol><li><strong>App Service Plan</strong> section: <strong>Create new</strong> plan</li></ol>
+<p>- <strong>Name</strong>: <code>plan-az104lab11</code></p>
+<p>- <strong>SKU and size</strong>: <strong>Standard (S1)</strong> (required for deployment slots)</p>
+<ol><li><strong>Review + create</strong> > <strong>Create</strong>.</li></ol>
+
+<h3 id="browse-the-app-">Browse the app</h3>
+<ol><li>Go to the app > <strong>Overview</strong> > copy the <strong>Default domain</strong> (e.g.,</li></ol>
+<p><code>app-az104lab11-<unique>.azurewebsites.net</code>).</p>
+<ol><li>Open it in a browser — shows the default App Service welcome page.</li></ol>
+
+<h2 id="part-2-app-settings-connection-strings-">Part 2 – App settings & connection strings</h2>
+
+<ol><li>Open the app > <strong>Configuration</strong> (under <strong>Settings</strong>).</li>
+<li><strong>Application settings</strong> tab > <strong>+ New application setting</strong>:</li></ol>
+<p>- <strong>Name</strong>: <code>ENVIRONMENT</code>, <strong>Value</strong>: <code>lab</code>, <strong>Deployment slot setting</strong>:</p>
+<p>unchecked (applies to all slots)</p>
+<p>- <strong>Name</strong>: <code>FEATURE<em>FLAG</em>X</code>, <strong>Value</strong>: <code>true</code></p>
+<ol><li><strong>Connection Strings</strong> tab > <strong>+ New connection string</strong>:</li></ol>
+<p>- <strong>Name</strong>: <code>DefaultConnection</code></p>
+<p>- <strong>Value</strong>: <code>Server=tcp:example.database.windows.net;Database=demo;</code></p>
+<p>- <strong>Type</strong>: <strong>SQLAzure</strong></p>
+<p>- <strong>Deployment slot setting</strong>: unchecked</p>
+<ol><li><strong>Save</strong> > <strong>Continue</strong> (if prompted about restarting the app).</li></ol>
+
+<p>These settings are injected into the app's environment at runtime.</p>
+
+<h2 id="part-3-deployment-slots-">Part 3 – Deployment slots</h2>
+
+<ol><li>Open the app > <strong>Deployment slots</strong> (under <strong>Deployment</strong>) > <strong>+ Add slot</strong>.</li>
+<li><strong>Name</strong>: <code>staging</code>, <strong>Clone settings from</strong>: select the production slot (or</li></ol>
+<p>leave unchecked). <strong>Add</strong>.</p>
+<ol><li>This creates a <code>staging</code> slot with its own subdomain (e.g.,</li></ol>
+<p><code>app-az104lab11-<unique>-staging.azurewebsites.net</code>).</p>
+
+<h3 id="deploy-different-content-to-staging-">Deploy different content to staging</h3>
+<p>(Example: upload a simple HTML file or a zipped app package.)</p>
+
+<ol><li>Go to the <strong>staging</strong> slot > <strong>Deployment Center</strong> (or <strong>Advanced Tools</strong> ></li></ol>
+<p><strong>Kudu</strong> SSH console).</p>
+<ol><li>Or, use the <strong>Zip Deploy</strong> feature: go to the slot > <strong>Deployment Center</strong> ></li></ol>
+<p>choose <strong>Zip Deploy</strong> > upload a <code>.zip</code> containing your app code.</p>
+
+<h3 id="swap-staging-into-production-">Swap staging into production</h3>
+
+<div class='callout-box callout-tip'><span class='callout-icon'>ℹ️</span><div class='callout-content'><h4>tip</h4><p>Use the <strong>Preview swap</strong> feature first to verify the staging slot is working as expected before swapping to production.</p></div></div>
+
+<ol><li>Go to the app's <strong>Deployment slots</strong> > select <code>staging</code> > <strong>Swap</strong> (top toolbar).</li>
+<li><strong>Source</strong>: <code>staging</code>, <strong>Target</strong>: <code>production</code>. <strong>Swap</strong>.</li>
+<li>The slots exchange DNS names — <code>staging</code> now serves the production URL, and</li></ol>
+<p>vice versa. This swap is near-instant (no downtime).</p>
+
+<div class="callout"><p><strong>Slot-specific settings</strong>: if a setting is marked <strong>Deployment slot</p></div>
+<div class="callout"><p>setting</strong>, it does NOT swap — useful for keeping staging pointed at a test</p></div>
+<div class="callout"><p>database while production points at the prod database.</p></div>
+
+<h2 id="part-4-scale-up-plan-tier-and-scale-out-instance-count-">Part 4 – Scale up (plan tier) and scale out (instance count)</h2>
+
+<h3 id="scale-up-vertical-">Scale up (vertical)</h3>
+<ol><li>Open the app > <strong>Scale up (App Service plan)</strong> (under <strong>Settings</strong>).</li>
+<li>Select a higher SKU (e.g., <strong>Standard (S2)</strong> or <strong>Premium (P1v3)</strong>) > <strong>Apply</strong>.</li></ol>
+<p>This increases CPU/RAM per instance.</p>
+
+<h3 id="scale-out-horizontal-">Scale out (horizontal)</h3>
+<ol><li>Open the app > <strong>Scale out (App Service plan)</strong> (under <strong>Settings</strong>).</li>
+<li>Increase <strong>Instance count</strong> to 2 or 3 > <strong>Save</strong>.</li></ol>
+<p>This adds more instances behind the app's load balancer.</p>
+
+<h3 id="configure-autoscale-">Configure autoscale</h3>
+<ol><li>Go to <strong>Monitor</strong> > <strong>Autoscale settings</strong> (in the Azure Portal sidebar, or</li></ol>
+<p>search for <strong>Autoscale settings</strong>).</p>
+<ol><li><strong>Create autoscale setting</strong>:</li></ol>
+<p>- <strong>Resource group</strong>: <code>rg-az104-lab11</code></p>
+<p>- <strong>Resource name</strong>: <code>plan-az104lab11</code></p>
+<p>- <strong>Resource type</strong>: <strong>App Service plans</strong></p>
+<ol><li><strong>Autoscale setting name</strong>: <code>autoscale-app11</code>.</li>
+<li><strong>Default</strong>: minimum 1, maximum 3, current 1.</li>
+<li><strong>Add a rule</strong>:</li></ol>
+<p>- <strong>Metric</strong>: <strong>CPU Percentage</strong></p>
+<p>- <strong>Operator</strong>: <strong>Greater than</strong></p>
+<p>- <strong>Threshold</strong>: 70</p>
+<p>- <strong>Duration</strong>: 5 minutes</p>
+<p>- <strong>Operation</strong>: <strong>Increase count by 1</strong></p>
+<ol><li><strong>Save</strong>.</li></ol>
+
+<p>Now the App Service plan scales out automatically when CPU exceeds 70%.</p>
+
+<h2 id="part-5-diagnostics-logging-">Part 5 – Diagnostics logging</h2>
+
+<ol><li>Open the app > <strong>App Service logs</strong> (under <strong>Monitoring</strong>).</li>
+<li><strong>Application logging</strong>: set <strong>Level</strong> to <strong>Information</strong>. <strong>Filesystem</strong> or</li></ol>
+<p><strong>Blob Storage</strong> (Filesystem for quick testing).</p>
+<ol><li><strong>Web server logging</strong>: <strong>Filesystem</strong> > <strong>Retention period</strong>: 35 days.</li>
+<li><strong>Save</strong>.</li>
+<li><strong>Log stream</strong> (under <strong>Monitoring</strong>) shows real-time logs from the app.</li></ol>
+
+<h2 id="part-6-custom-domains-tls-overview-">Part 6 – Custom domains & TLS (overview)</h2>
+
+<ol><li><strong>Custom domains</strong> (under <strong>Settings</strong>):</li></ol>
+<p>- To add a custom domain, you need a DNS provider and a TLS certificate.</p>
+<p>- Create a CNAME record (<code>your-domain.com</code> → <code>app-az104lab11-<unique>.azurewebsites.net</code>).</p>
+<p>- Add the domain in the Portal > <strong>Custom domains</strong> > <strong>Add custom domain</strong>.</p>
+<p>- Bind a certificate via <strong>TLS/SSL settings</strong> (use <strong>App Service Managed</p>
+<p>Certificate</strong>, which is free for custom domains).</p>
+
+<ol><li><strong>TLS/SSL settings</strong> (under <strong>Settings</strong>):</li></ol>
+<p>- Bind a certificate (managed or self-signed).</p>
+<p>- Set <strong>HTTPS Only</strong> to enforce HTTPS.</p>
+<p>- Set <strong>Minimum TLS version</strong> (e.g., TLS 1.2).</p>
+
+<div class="callout"><p>Skip actual domain purchase and certificate binding in this lab — just</p></div>
+<div class="callout"><p>understand where these settings live.</p></div>
+
+<h2 id="part-7-backup-restore-overview-">Part 7 – Backup & restore (overview)</h2>
+
+<ol><li><strong>Backups</strong> (under <strong>Settings</strong>) — requires <strong>Standard</strong> tier or higher.</li>
+<li>Create a backup target (storage account + container).</li>
+<li>Configure a scheduled backup including the connected database if present.</li>
+<li>Restore a backup by selecting it > <strong>Restore</strong>.</li></ol>
+
+<div class="callout"><p>Backup setup is available on <strong>Standard</strong> tier and above.</p></div>
+
+<h2 id="validation-">Validation</h2>
+<ul><ol><li>[ ] Web app reachable via default hostname</li>
+<li>[ ] App settings (ENVIRONMENT, FEATURE<em>FLAG</em>X) and connection string configured</li>
+<li>[ ] Staging slot created and accessible via separate subdomain</li>
+<li>[ ] Slot swap succeeds (staging and production exchange DNS names)</li>
+<li>[ ] Plan scaled up (higher SKU) and out (more instances)</li>
+<li>[ ] Autoscale rule created based on CPU percentage</li>
+<li>[ ] Application logs visible via <strong>Log stream</strong></li></ol></ul>
+
+<h2 id="cleanup-">Cleanup</h2>
+<ol><li><strong>Resource groups</strong> > select <code>rg-az104-lab11</code> > <strong>Delete resource group</strong>.</li></ol>
+
+<h2 id="exam-tips-">Exam Tips</h2>
+<ul><ol><li>Deployment slots are available on <strong>Standard</strong> tier and above; "swap" is near-instant and avoids downtime — slot-specific app settings/connection strings don't swap if marked sticky.</li>
+<li>Scaling <strong>up</strong> = change SKU/tier (more CPU/RAM/features per instance). Scaling <strong>out</strong> = more instances. Autoscale only does scale out/in, never SKU changes.</li>
+<li><code>HTTPS Only</code> and minimum TLS version are common security exam scenarios.</li>
+<li>App Service supports deployment from: ZIP/WAR deploy, local Git, GitHub Actions/Azure DevOps CI/CD, container images (Web App for Containers).</li></ol></ul>
+
+  </div>
+</div>
+<script>
+/* Sidebar Active Link Tracking */
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.sidebar a'));
+  var sections = [];
+  links.forEach(function(a){
+    var el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) sections.push({link:a, el:el});
+  });
+  if (!sections.length || !('IntersectionObserver' in window)) return;
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (!entry.isIntersecting) return;
+      var match = sections.find(function(s){ return s.el === entry.target; });
+      if (!match) return;
+      links.forEach(function(a){ a.classList.remove('active'); });
+      match.link.classList.add('active');
+    });
+  }, { rootMargin: '-100px 0px -70% 0px', threshold: 0 });
+  sections.forEach(function(s){ observer.observe(s.el); });
+})();
+
+/* Code Block Copy Button Functionality */
+document.addEventListener('DOMContentLoaded', function(){
+  var codeBlocks = document.querySelectorAll('.code-block');
+  codeBlocks.forEach(function(block){
+    var pre = block.querySelector('pre');
+    if (!pre) return;
+
+    var btn = document.createElement('button');
+    btn.className = 'code-copy-btn';
+    btn.textContent = 'Copy';
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'Copy code to clipboard');
+
+    btn.addEventListener('click', function(){
+      var code = pre.textContent;
+      navigator.clipboard.writeText(code).then(function(){
+        var original = btn.textContent;
+        btn.textContent = '✓ Copied!';
+        btn.classList.add('copied');
+        setTimeout(function(){
+          btn.textContent = original;
+          btn.classList.remove('copied');
+        }, 2000);
+      }).catch(function(){
+        alert('Failed to copy code');
+      });
+    });
+
+    block.appendChild(btn);
+  });
+});
+</script>
+</body>
+</html>

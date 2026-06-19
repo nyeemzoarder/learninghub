@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Routing Fundamentals - Overview &amp; Core Concepts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f8fc;--card:#fff;--border:#d9e0ef;--text:#1f2937;--muted:#5b6678;
+  --primary:#151d63;--panel:#00004C;--panel-shadow:rgba(0,0,76,.18);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:Inter,-apple-system,'Segoe UI',sans-serif;color:var(--text)}
+.page{flex:1;min-width:0;padding:28px}
+
+h1{font-size:3.2rem;line-height:1.15;margin:0;color:var(--primary);font-weight:800;letter-spacing:-1px}
+.subtitle{font-size:1.4rem;font-weight:600;color:#2d3b77;margin-top:10px}
+
+.badges{display:flex;gap:12px;margin:20px 0 26px;flex-wrap:wrap}
+.badge{background:#eef2ff;border:1px solid #d8def7;color:#1e2a78;padding:10px 18px;border-radius:999px;font-weight:600;font-size:.95rem}
+
+.section{display:grid;grid-template-columns:42% 58%;gap:28px;padding:26px 0;border-top:1px solid var(--border)}
+.section.full{display:block;padding:26px 0;border-top:1px solid var(--border)}
+.section:first-of-type, .section.full:first-of-type{border-top:none}
+
+h2{font-size:2rem;margin:0 0 14px;color:var(--primary);font-weight:800}
+h3{font-size:1.4rem;margin:22px 0 10px;color:var(--primary);font-weight:700}
+h3:first-child{margin-top:0}
+h4{font-size:1.1rem;margin:16px 0 8px;color:#2d3b77;font-weight:700}
+
+p{font-size:1.05rem;line-height:1.65;margin:.5rem 0;color:var(--text)}
+
+ul, ol{margin:.6rem 0;padding-left:1.4rem}
+li{margin-bottom:6px;line-height:1.6;font-size:1.02rem}
+
+a{color:#1e2a78;text-decoration:none;border-bottom:1px solid transparent;font-weight:600}
+a:hover{border-bottom-color:#1e2a78}
+
+strong{color:var(--primary);font-weight:700}
+
+.callout{margin-top:20px;background:#f3f7ff;border:1px solid #bfd0ff;border-radius:14px;padding:18px 22px}
+.callout strong{color:#1735ad}
+.callout p{margin:0}
+.callout p + p{margin-top:8px}
+
+.panel{
+  background:var(--panel);
+  color:#fff;border-radius:18px;padding:22px 26px;
+  box-shadow:0 12px 28px var(--panel-shadow);
+  font:15px/1.65 'SF Mono',Consolas,'Courier New',monospace;
+  white-space:pre-wrap;
+  overflow:auto;
+}
+.panel.small{font-size:13.5px;line-height:1.6}
+.panel + .panel{margin-top:18px}
+
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:14px 0}
+th,td{padding:14px;border:1px solid var(--border);text-align:left;font-size:.98rem}
+th{background:#eef2ff;color:var(--primary);font-weight:700}
+tr:hover td{background:#fafbff}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+
+.mistake-card{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:14px 0 8px}
+.mistake-card h4{margin-top:0}
+
+.tip{margin-top:20px;background:#eef4ff;border:1px solid #c8d5ff;border-radius:12px;padding:16px 20px;font-size:1.02rem}
+.tip strong{color:#1735ad}
+
+hr.divider{border:none;height:0;margin:0}
+
+.footer{margin-top:48px;padding-top:24px;border-top:1px solid var(--border);font-size:.9rem;color:var(--muted)}
+.footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px}
+.footer-item strong{display:block;color:var(--primary);margin-bottom:6px;font-size:.95rem}
+.footer-meta{margin-top:24px;padding-top:16px;border-top:1px solid var(--border);text-align:center;font-size:.85rem}
+
+@media (max-width:1000px){
+  .section,.grid2,.grid3,.grid4,.mistake-card{grid-template-columns:1fr}
+  h1{font-size:2.3rem}
+  .page{padding:16px}
+  .panel{font-size:13px}
+  .sidebar{display:none}
+  .layout{display:block}
+}
+
+/* ===== Site-wide Cross Navigation ===== */
+.site-nav{
+  position:sticky;top:0;z-index:1000;
+  background:var(--primary);color:#fff;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:12px 28px;font-size:.92rem;
+  box-shadow:0 2px 10px rgba(0,0,76,.18);
+  font-family:Inter,-apple-system,'Segoe UI',sans-serif;
+}
+.site-nav .nav-brand{font-weight:800;font-size:1.05rem;margin-right:auto;color:#fff}
+.site-nav details{position:relative}
+.site-nav summary{cursor:pointer;list-style:none;padding:7px 16px;border-radius:8px;background:rgba(255,255,255,.12);font-weight:600;color:#fff;user-select:none}
+.site-nav summary::-webkit-details-marker,.site-nav summary::marker{display:none;content:''}
+.site-nav details[open] summary{background:rgba(255,255,255,.24)}
+.site-nav .nav-menu{
+  position:absolute;top:calc(100% + 8px);left:0;
+  background:#fff;color:var(--text);
+  border:1px solid var(--border);border-radius:12px;
+  padding:8px;min-width:300px;box-shadow:0 16px 32px rgba(0,0,76,.22);
+  display:flex;flex-direction:column;gap:2px;z-index:1001;
+}
+.site-nav .nav-menu a{
+  display:block;padding:9px 14px;border-radius:8px;border-bottom:none;
+  color:var(--text);font-weight:500;font-size:.95rem;
+}
+.site-nav .nav-menu a:hover{background:#eef2ff;color:#1e2a78}
+.site-nav .nav-menu a.active{background:#eef2ff;color:#1735ad;font-weight:700}
+@media (max-width:768px){
+  .site-nav{padding:10px 16px}
+  .site-nav .nav-brand{font-size:.95rem}
+}
+/* ===== Page Sidebar (Collapsible) ===== */
+.layout{max-width:1400px;margin:auto;display:flex;align-items:flex-start}
+.sidebar{
+  flex:0 0 260px;
+  position:sticky;top:88px;
+  max-height:calc(100vh - 108px);
+  overflow-y:auto;
+  margin:28px 0 28px 28px;
+  padding:20px 18px;
+  background:#fff;border:1px solid var(--border);border-radius:14px;
+  box-shadow:0 4px 16px rgba(21,29,99,.05);
+}
+.sidebar details{margin-bottom:0}
+.sidebar summary{
+  cursor:pointer;list-style:none;padding:10px 12px;border-radius:8px;
+  font-weight:600;font-size:.92rem;color:var(--primary);
+  user-select:none;transition:background 0.2s;
+}
+.sidebar summary::-webkit-details-marker,.sidebar summary::marker{display:none;content:''}
+.sidebar details[open]>summary{background:#eef2ff}
+.sidebar summary:hover{background:#f0f4ff}
+.sidebar a{display:block;padding:8px 12px;margin:2px 0;border-radius:8px;font-size:.88rem;font-weight:500;
+  color:var(--text);border-bottom:none;border-left:3px solid transparent;line-height:1.4;transition:all 0.15s}
+.sidebar a:hover{background:#eef2ff;color:#1e2a78}
+.sidebar a.active{background:#eef2ff;color:#1735ad;font-weight:700;border-left-color:var(--primary)}
+.sidebar details > div{padding:0 0 8px 12px}
+.sidebar hr.sidebar-divider{border:none;border-top:1px solid var(--border);margin:12px 0}
+@media print{
+  .site-nav{display:none}
+  body{background:#fff}
+  .page{padding:0}
+  .panel{box-shadow:none}
+  .sidebar{display:none}
+  .layout{display:block}
+}
+
+/* Keyboard Navigation & Accessibility */
+a:focus-visible,
+button:focus-visible,
+.sidebar a:focus-visible,
+.sidebar summary:focus-visible,
+.site-nav summary:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+details:focus-visible > summary {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+</style>
+</head>
+<body>
+<nav class="site-nav" aria-label="Main site navigation">
+  <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
+  <details class="nav-group" aria-label="Learning module selector">
+    <summary>Learning Module</summary>
+    <div class="nav-menu">
+      <a href="../../00-prerequisites/documents/module-home.html">00 - Prerequisites</a>
+      <a href="../../01-identity-governance/documents/module-home.html">01 - Identity &amp; Governance</a>
+      <a href="../../02-storage/documents/module-home.html">02 - Storage</a>
+      <a href="../../03-compute/documents/module-home.html">03 - Compute</a>
+      <a href="../../04-networking/documents/module-home.html" class="active">04 - Networking</a>
+      <a href="../../05-monitor-maintain/documents/module-home.html">05 - Monitor &amp; Maintain</a>
+    </div>
+  </details>
+</nav>
+<div class="layout">
+  <aside class="sidebar">
+    <details open>
+      <summary>▶ Module 04 - Networking</summary>
+      <div>
+        <a href="01-vnets-and-subnets.html">01 - Vnets and subnets</a>
+        <a href="02-network-security-groups.html">02 - Network security groups</a>
+        <a href="03-routing-fundamentals.html">03 - Routing fundamentals</a>
+        <a href="04-vnet-peering.html">04 - Vnet peering</a>
+        <a href="05-vpn-and-expressroute.html">05 - Vpn and expressroute</a>
+        <a href="06-hub-spoke-topology.html">06 - Hub spoke topology</a>
+        <a href="07-private-endpoints-service-endpoints.html">07 - Private endpoints service endpoints</a>
+        <a href="08-network-security-advanced.html">08 - Network security advanced</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ Labs</summary>
+      <div>
+        <a href="lab01-vnet-subnets.html">lab01 - Vnet subnets</a>
+        <a href="lab02-nsg-asg.html">lab02 - Nsg asg</a>
+        <a href="lab03-vnet-peering-vpn.html">lab03 - Vnet peering vpn</a>
+        <a href="lab04-load-balancer-app-gateway.html">lab04 - Load balancer app gateway</a>
+        <a href="lab05-dns-name-resolution.html">lab05 - Dns name resolution</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ On This Page</summary>
+      <div>
+        <a href="#before-you-start">Before you start</a>
+        <a href="#the-simple-idea">The simple idea</a>
+        <a href="#how-azure-decides-routes">How azure decides routes</a>
+        <a href="#how-it-actually-works">How it actually works</a>
+        <a href="#mental-model-routing-as-gps-navigation">Mental model routing as gps navigation</a>
+        <a href="#system-routes-vs-custom-routes">System routes vs custom routes</a>
+        <a href="#worked-example-real-scenario">Worked example real scenario</a>
+        <a href="#common-mistakes-what-not-to-do">Common mistakes what not to do</a>
+        <a href="#routing-decision-order-route-priority">Routing decision order route priority</a>
+        <a href="#routing-decision-flowchart">Routing decision flowchart</a>
+        <a href="#summary-three-layers-of-network-control">Summary three layers of network control</a>
+        <a href="#how-this-connects-to-other-topics">How this connects to other topics</a>
+        <a href="#see-it-in-action">See it in action</a>
+        <a href="#key-takeaways">Key takeaways</a>
+        <a href="#next-steps">Next steps</a>
+      </div>
+    </details>
+  </aside>
+  <div class="page">
+
+  <h1>Routing Fundamentals: How Traffic Finds Its Way</h1>
+  <div class="subtitle">Understand how Azure decides which path your network traffic takes — the GPS of your VNet</div>
+
+  <div class="badges">
+    <span class="badge">🟢 Beginner</span>
+    <span class="badge">⏱ 15 Minutes</span>
+    <span class="badge">📘 AZ-104 · Module 04</span>
+  </div>
+
+  <div class="callout">
+    <strong>Why This Matters</strong>
+    <p>You've created a VNet with subnets and locked them down with NSGs. But how does traffic actually find its way from your web server to your database? Routing is the "GPS" of your network — it decides which path traffic takes. Understand routing, and you'll understand how your entire network communicates.</p>
+  </div>
+
+  <!-- Before You Start -->
+  <div class="section full" id="before-you-start">
+    <h2>Before You Start</h2>
+    <table>
+      <tr><th>Prerequisites</th><td><a href="01-vnets-and-subnets.html">VNets &amp; Subnets</a> and <a href="02-network-security-groups.html">Network Security Groups</a></td></tr>
+      <tr><th>Time to understand</th><td>15 minutes</td></tr>
+      <tr><th>Difficulty</th><td>🟢 Beginner (builds on NSGs, no advanced networking needed)</td></tr>
+      <tr><th>What you'll learn</th><td>How Azure routes traffic, system vs. custom routes, common routing patterns</td></tr>
+    </table>
+  </div>
+
+  <!-- The Simple Idea -->
+  <div class="section" id="the-simple-idea">
+    <div>
+      <h2>The Simple Idea</h2>
+      <h3>What Is Routing?</h3>
+      <p><strong>Routing</strong> = Deciding the path that network traffic takes from source to destination.</p>
+      <p>Think of it like <strong>GPS for data packets</strong>.</p>
+    </div>
+    <div class="panel">Your data packet: "I need to go from 10.0.1.5 to 10.0.3.20"
+                           ↓
+                   Azure routing table
+                           ↓
+         "I know a route to 10.0.3.0/24
+          Go through subnet 10.0.3.0/24"
+                           ↓
+            Data arrives at destination ✓</div>
+  </div>
+
+  <!-- How Azure Decides Routes -->
+  <div class="section full" id="how-azure-decides-routes">
+    <h2>How Azure Decides Routes</h2>
+    <p>Azure has a <strong>routing table</strong> (like a GPS navigation database) that says:</p>
+    <ul>
+      <li>"To reach 10.0.1.0/24, use local VNet"</li>
+      <li>"To reach 10.0.2.0/24, use local VNet"</li>
+      <li>"To reach 192.168.0.0/16, use VPN Gateway"</li>
+      <li>"To reach anything else, use internet"</li>
+    </ul>
+
+    <h3>Two Types of Routes</h3>
+    <table>
+      <tr><th>Route Type</th><th>What It Does</th><th>Examples</th></tr>
+      <tr><td><strong>System Routes</strong></td><td>Built-in, automatic, managed by Azure</td><td>Internal VNet traffic, internet</td></tr>
+      <tr><td><strong>Custom Routes (UDR)</strong></td><td>You create them for special cases</td><td>Send traffic through firewall, VPN</td></tr>
+    </table>
+  </div>
+
+  <!-- How It Actually Works -->
+  <div class="section full" id="how-it-actually-works">
+    <h2>How It Actually Works</h2>
+
+    <div class="grid2">
+      <div>
+        <h3>Step 1: Traffic Arrives at Your Subnet</h3>
+        <div class="panel small">Data packet arrives:
+From: 10.0.1.5 (WebServer)
+To: 10.0.3.20 (Database)</div>
+      </div>
+      <div>
+        <h3>Step 2: Subnet Looks at Its Routing Table</h3>
+        <div class="panel small">Destination          Next Hop         Purpose
+────────────────────────────────────────────
+10.0.0.0/16         Local VNet       Traffic within VNet stays local
+10.0.1.0/24         Local Subnet     Traffic to this subnet is direct
+10.0.2.0/24         Local Subnet     Traffic to app subnet is direct
+10.0.3.0/24         Local Subnet     Traffic to DB subnet is direct
+0.0.0.0/0           Internet         Everything else goes to internet</div>
+      </div>
+      <div>
+        <h3>Step 3: Routing Lookup</h3>
+        <div class="panel small">Packet destination: 10.0.3.20
+Azure checks routing table:
+  └─ Does it match 10.0.0.0/16? YES ✓
+  └─ Next hop: "Local VNet"
+  └─ Route: Send directly to destination within VNet
+
+Result: Packet goes from 10.0.1.5 → 10.0.3.20 (direct path)</div>
+      </div>
+      <div>
+        <h3>Step 4: NSG Check</h3>
+        <div class="panel small">Packet arrives at DB subnet:
+  └─ NSG checks inbound rule
+     "Is source 10.0.2.0/24 on port 1433?"
+     → YES ✓
+  └─ NSG allows traffic
+Result: Database receives the packet ✓</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mental Model -->
+  <div class="section full" id="mental-model-routing-as-gps-navigation">
+    <h2>Mental Model: Routing as GPS Navigation</h2>
+    <div class="panel">You're driving from point A to point B.
+
+Your GPS (routing table):
+├─ Route 1: "If destination is nearby, drive directly" (system route)
+├─ Route 2: "If destination is far, take the highway" (system route)
+├─ Route 3: "If you need to go through a checkpoint, use Route 66" (custom route)
+└─ Route 4: "If no route exists, go to the main road" (default route)
+
+Your data packet follows the same logic:
+├─ System routes handle normal traffic (within VNet, to internet)
+└─ Custom routes handle special cases (through firewall, VPN, etc.)</div>
+  </div>
+
+  <!-- System Routes vs Custom Routes -->
+  <div class="section full" id="system-routes-vs-custom-routes">
+    <h2>System Routes vs. Custom Routes</h2>
+
+    <h3>System Routes (Created Automatically)</h3>
+    <p><strong>Every VNet automatically gets these routes:</strong></p>
+    <div class="panel small">Destination        Next Hop         Created Automatically?
+──────────────────────────────────────────────────────
+10.0.0.0/16        Local VNet       ✓ Yes (VNet address space)
+0.0.0.0/0          Internet         ✓ Yes (default internet route)</div>
+
+    <p style="margin-top:18px"><strong>Examples of what each means:</strong></p>
+    <table>
+      <tr><th>Route</th><th>Destination</th><th>Next Hop</th><th>When Used</th></tr>
+      <tr><td>Local VNet</td><td>10.0.0.0/16</td><td>Local</td><td>Traffic within your entire VNet</td></tr>
+      <tr><td>Internet</td><td>0.0.0.0/0</td><td>Internet</td><td>Traffic to anywhere not in your VNet</td></tr>
+    </table>
+
+    <h3>Custom Routes (UDRs - User-Defined Routes)</h3>
+    <p><strong>You create these for special cases:</strong></p>
+    <div class="panel small">Example UDR:
+Destination:  192.168.0.0/16 (on-premises)
+Next Hop:     VPN Gateway
+Purpose:      Send traffic to on-premises through VPN</div>
+
+    <p style="margin-top:18px"><strong>Why you'd create custom routes:</strong></p>
+    <table>
+      <tr><th>Use Case</th><th>Custom Route</th><th>Benefit</th></tr>
+      <tr><td><strong>Send traffic through firewall</strong></td><td>Destination: 0.0.0.0/0 → Next Hop: Firewall IP</td><td>All internet-bound traffic passes through firewall</td></tr>
+      <tr><td><strong>Connect to on-premises</strong></td><td>Destination: 192.168.0.0/16 → Next Hop: VPN Gateway</td><td>Corporate network access</td></tr>
+      <tr><td><strong>Send to security appliance</strong></td><td>Destination: 10.0.0.0/16 → Next Hop: NVA (network appliance)</td><td>All internal traffic inspected</td></tr>
+    </table>
+  </div>
+
+  <!-- Worked Example -->
+  <div class="section full" id="worked-example-real-scenario">
+    <h2>Worked Example: Real Scenario</h2>
+
+    <h3>The Scenario</h3>
+    <p><strong>TechCorp's network:</strong></p>
+    <ul>
+      <li>3 subnets within VNet: Web (10.0.1.0/24), App (10.0.2.0/24), DB (10.0.3.0/24)</li>
+      <li>Azure Firewall in hub VNet protecting everything</li>
+      <li>VPN connection to on-premises network (192.168.0.0/16)</li>
+    </ul>
+    <p><strong>Goal:</strong> Route traffic correctly through firewall and VPN.</p>
+
+    <h3>Step 1: Default System Routes (Automatic)</h3>
+    <div class="panel small">App Subnet (10.0.2.0/24) Routing Table (Default):
+─────────────────────────────────────────────────
+
+Destination      Next Hop        Priority
+───────────────────────────────────────
+10.0.0.0/16      Local VNet        1  (All internal VNet traffic)
+0.0.0.0/0        Internet          2  (Everything else to internet)
+
+AppServer (10.0.2.10) wants to send data:
+
+Case 1: To Database (10.0.3.20)
+  └─ Destination: 10.0.3.20
+  └─ Match: 10.0.0.0/16? YES ✓
+  └─ Route: Local VNet (direct path)
+  └─ Result: 10.0.2.10 → 10.0.3.20 directly ✓
+
+Case 2: To Internet
+  └─ Destination: 8.8.8.8 (Google)
+  └─ Match: 10.0.0.0/16? NO
+  └─ Match: 0.0.0.0/0? YES ✓
+  └─ Route: Internet (default route)
+  └─ Result: 10.0.2.10 → Internet directly ✓ (No firewall!)</div>
+    <p><strong>Problem:</strong> Traffic to internet bypasses firewall. We need custom routes.</p>
+
+    <h3>Step 2: Add Custom Routes (Force Through Firewall)</h3>
+    <div class="panel small">Admin creates custom route:
+Destination:  0.0.0.0/0 (all internet traffic)
+Next Hop:     Azure Firewall (10.0.0.4)
+Priority:     Higher than default
+
+App Subnet (10.0.2.0/24) Routing Table (Updated):
+──────────────────────────────────────────────────
+
+Destination      Next Hop        Priority
+───────────────────────────────────────
+0.0.0.0/0        Firewall IP       1  (Custom route - checked first!)
+10.0.0.0/16      Local VNet        2
+0.0.0.0/0        Internet          3  (Default - not used now)
+
+AppServer (10.0.2.10) wants to send data:
+
+Case 1: To Database (10.0.3.20)
+  └─ Destination: 10.0.3.20
+  └─ Match: 0.0.0.0/0? YES, but next hop is 10.0.0.0/16
+  └─ No wait, check priority 2 first
+  └─ Match: 10.0.0.0/16? YES ✓
+  └─ Route: Local VNet (direct, bypass firewall—OK for internal)
+  └─ Result: 10.0.2.10 → 10.0.3.20 directly ✓
+
+Case 2: To Internet
+  └─ Destination: 8.8.8.8 (Google)
+  └─ Match: 0.0.0.0/0? YES ✓ (custom route, high priority)
+  └─ Route: Firewall IP (10.0.0.4)
+  └─ Result: 10.0.2.10 → Firewall → Internet ✓ (Firewall inspects!)</div>
+    <p><strong>Result:</strong> Custom route forces internet-bound traffic through firewall.</p>
+
+    <h3>Step 3: Add VPN Route (For On-Premises Access)</h3>
+    <div class="panel small">Admin creates another custom route:
+Destination:  192.168.0.0/16 (on-premises)
+Next Hop:     VPN Gateway
+Priority:     1
+
+App Subnet (10.0.2.0/24) Routing Table (Final):
+────────────────────────────────────────────────
+
+Destination        Next Hop        Priority
+──────────────────────────────────
+192.168.0.0/16     VPN Gateway       1  (On-prem traffic via VPN)
+0.0.0.0/0          Firewall IP       2  (Internet via firewall)
+10.0.0.0/16        Local VNet        3  (Internal via VNet)
+0.0.0.0/0          Internet          4  (Default - not reached)
+
+AppServer (10.0.2.10) wants to send data:
+
+Case 1: To Database (10.0.3.20)
+  └─ Match: 192.168.0.0/16? NO
+  └─ Match: 0.0.0.0/0? YES, but check next priority
+  └─ Match: 10.0.0.0/16? YES ✓
+  └─ Route: Local VNet
+  └─ Result: Direct to database ✓
+
+Case 2: To On-Premises Server (192.168.1.50)
+  └─ Match: 192.168.0.0/16? YES ✓
+  └─ Route: VPN Gateway
+  └─ Result: 10.0.2.10 → VPN Gateway → VPN Tunnel → On-premises ✓
+
+Case 3: To Internet (8.8.8.8)
+  └─ Match: 192.168.0.0/16? NO
+  └─ Match: 0.0.0.0/0? YES ✓
+  └─ Route: Firewall IP
+  └─ Result: 10.0.2.10 → Firewall → Internet ✓</div>
+  </div>
+
+  <!-- Common Mistakes -->
+  <div class="section full" id="common-mistakes-what-not-to-do">
+    <h2>Common Mistakes (What NOT to Do)</h2>
+
+    <h3>❌ Mistake 1: Unexpected Default Route</h3>
+    <div class="mistake-card">
+      <div>
+        <h4>Wrong</h4>
+        <div class="panel small">Admin creates custom route:
+  Destination: 0.0.0.0/0 → VPN Gateway
+
+All traffic goes to VPN, including:
+  ├─ Internal traffic (should stay local) ✗
+  ├─ Internet traffic (should go to internet or firewall) ✗
+  └─ Database traffic (should be direct) ✗
+
+Result: Everything bottlenecks through VPN</div>
+      </div>
+      <div>
+        <h4>Fix</h4>
+        <div class="panel small">Be more specific:
+  └─ 192.168.0.0/16 → VPN Gateway (only on-prem traffic)
+  └─ 10.0.0.0/16 → Local VNet (internal traffic)
+  └─ 0.0.0.0/0 → Internet or Firewall (external traffic)
+
+Each traffic type follows the correct path ✓</div>
+      </div>
+    </div>
+    <p><strong>Why it fails:</strong> Too broad a route causes unnecessary traffic redirection.</p>
+
+    <h3>❌ Mistake 2: Routing Loop</h3>
+    <div class="mistake-card">
+      <div>
+        <h4>Wrong</h4>
+        <div class="panel small">Custom route 1: 0.0.0.0/0 → Firewall (10.0.0.4)
+Custom route 2: 0.0.0.4/32 → Internet
+
+Packet goes: App → Firewall → Internet
+But what if firewall tries to reach internet?
+  └─ Matches 0.0.0.0/0 → Firewall again
+  └─ Infinite loop! ✗</div>
+      </div>
+      <div>
+        <h4>Fix</h4>
+        <div class="panel small">Firewall routes to internet directly (exclude from custom route):
+  └─ Custom route: 0.0.0.0/0 → Firewall
+  └─ Except: Firewall's NIC route: 0.0.0.0/0 → Internet (direct)
+
+Packet goes: App → Firewall → Internet (no loop) ✓</div>
+      </div>
+    </div>
+    <p><strong>Why it fails:</strong> Packet gets stuck in a loop.</p>
+
+    <h3>❌ Mistake 3: Too Many Custom Routes</h3>
+    <div class="mistake-card">
+      <div>
+        <h4>Wrong</h4>
+        <div class="panel small">Create 100 custom routes for every possible destination
+├─ 8.8.8.8/32 → Internet
+├─ 1.1.1.1/32 → Internet
+├─ ... (95 more individual IPs)
+└─ 192.168.0.0/16 → VPN
+
+Result:
+  ├─ Difficult to maintain
+  ├─ Error-prone
+  ├─ Confusing for other admins
+  └─ Harder to troubleshoot</div>
+      </div>
+      <div>
+        <h4>Fix</h4>
+        <div class="panel small">Use aggregate routes (CIDR notation):
+  └─ 0.0.0.0/0 → Firewall (one route handles everything)
+  └─ 192.168.0.0/16 → VPN (one route for all on-prem)
+
+Much simpler and easier to manage ✓</div>
+      </div>
+    </div>
+    <p><strong>Why it fails:</strong> Complexity = mistakes and maintenance headaches.</p>
+  </div>
+
+  <!-- Routing Decision Order -->
+  <div class="section full" id="routing-decision-order-route-priority">
+    <h2>Routing Decision Order (Route Priority)</h2>
+    <p><strong>When traffic arrives, Azure checks routes in this order:</strong></p>
+
+    <div class="grid3">
+      <div>
+        <h3>1. Most Specific Match (Longest Prefix)</h3>
+        <div class="panel small">Destination: 10.0.2.5
+Routes available:
+├─ 10.0.2.0/25 (specific)
+├─ 10.0.2.0/24 (less specific)
+└─ 10.0.0.0/16 (even less specific)
+
+Azure picks: 10.0.2.0/25 (most specific) ✓</div>
+      </div>
+      <div>
+        <h3>2. Custom Routes Before System Routes</h3>
+        <div class="panel small">If both custom and system routes exist for same destination:
+└─ Custom route wins</div>
+      </div>
+      <div>
+        <h3>3. Default Deny If No Match</h3>
+        <div class="panel small">If no route matches:
+└─ Traffic is dropped (denied) ✗</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Routing Decision Flowchart -->
+  <div class="section full" id="routing-decision-flowchart">
+    <h2>Routing Decision Flowchart</h2>
+    <div class="panel">Packet arrives at subnet
+         ↓
+   Check routing table
+         ↓
+   ┌─────┴──────┐
+   │            │
+Custom route? | System route?
+   │            │
+   v            v
+Found match? → Yes → Next hop identified
+   │                      ↓
+   └─→ No → Check next route / Default (drop)
+                      ↓
+           NSG checks permission
+                      ↓
+         ┌─────┴──────┐
+         │            │
+      ALLOW       DENY
+         │            │
+   Forward    Drop
+   packet    packet</div>
+  </div>
+
+  <!-- Summary table -->
+  <div class="section full" id="summary-three-layers-of-network-control">
+    <h2>Summary: Three Layers of Network Control</h2>
+    <table>
+      <tr><th>Layer</th><th>Tool</th><th>Controls</th><th>Example</th></tr>
+      <tr><td><strong>1. Routing</strong></td><td>Routing Tables (System + UDR)</td><td>Which path traffic takes</td><td>Route all internet traffic through firewall</td></tr>
+      <tr><td><strong>2. Security</strong></td><td>Network Security Groups (NSG)</td><td>Which traffic is allowed</td><td>Allow port 443 from web subnet to app subnet</td></tr>
+      <tr><td><strong>3. Access</strong></td><td>RBAC</td><td>Who can change routing/NSGs</td><td>Only network admins can modify routing tables</td></tr>
+    </table>
+    <p>All three together provide complete network control.</p>
+  </div>
+
+  <!-- Connections -->
+  <div class="section full" id="how-this-connects-to-other-topics">
+    <h2>How This Connects to Other Topics</h2>
+    <div class="grid2">
+      <div>
+        <h3>Related to Module 01 (Identity &amp; Governance)</h3>
+        <ul>
+          <li><strong>RBAC + Routing:</strong> Use RBAC to control who can modify routing tables</li>
+          <li><strong>Policy + Routing:</strong> Enforce routing policies (e.g., all traffic must go through firewall)</li>
+        </ul>
+        <h3>Related to Module 02 (Storage)</h3>
+        <ul>
+          <li><strong>Storage Firewall Routes:</strong> Combined with routing, restrict storage access to specific networks</li>
+          <li><strong>Service Endpoints:</strong> Routes direct traffic to storage without public internet</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Related to Module 03 (Compute)</h3>
+        <ul>
+          <li><strong>VM to VM Communication:</strong> VMs in same VNet route directly (system route)</li>
+          <li><strong>VM to Database:</strong> Routing determines path through NSG and firewall</li>
+        </ul>
+        <h3>Related to Module 05 (Monitor)</h3>
+        <ul>
+          <li><strong>Route Metrics:</strong> Monitor traffic flow through different routes</li>
+          <li><strong>Network Watcher:</strong> Trace routing paths to diagnose connectivity issues</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- See It In Action -->
+  <div class="section full" id="see-it-in-action">
+    <h2>See It In Action</h2>
+    <p><strong>Associated lab:</strong> <a href="../labs/lab03-routing.md">Lab 03: Configure Routing &amp; UDRs</a></p>
+    <p><strong>Suggested learning sequence:</strong></p>
+    <ol>
+      <li>✅ Read <a href="01-vnets-and-subnets.html">VNets &amp; Subnets</a></li>
+      <li>✅ Read <a href="02-network-security-groups.html">Network Security Groups</a></li>
+      <li>✅ Read this doc (Routing Fundamentals)</li>
+      <li>✅ Work through Lab 14 (hands-on routing configuration)</li>
+      <li>✅ Read <a href="04-vnet-peering.html">VNet Peering</a> (routing between peered VNets)</li>
+    </ol>
+  </div>
+
+  <!-- Key Takeaways -->
+  <div class="section full" id="key-takeaways">
+    <h2>Key Takeaways</h2>
+    <div class="tip">
+      <strong>💡 Summary</strong>
+      <ul style="margin-top:8px">
+        <li><strong>Routing = GPS for data packets</strong> (decides which path traffic takes)</li>
+        <li><strong>System routes are automatic</strong> (internal traffic, internet access)</li>
+        <li><strong>Custom routes (UDRs) are for special cases</strong> (firewall, VPN, appliances)</li>
+        <li><strong>More specific route wins</strong> (longer CIDR prefix = higher priority)</li>
+        <li><strong>Custom routes override system routes</strong> (same destination priority)</li>
+        <li><strong>Traffic flows based on routing table</strong> then <strong>checked by NSG rules</strong></li>
+        <li><strong>Routing + NSG = complete traffic control</strong> (routing decides path, NSG decides permission)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Next Steps -->
+  <div class="section full" id="next-steps">
+    <h2>Next Steps</h2>
+    <ol>
+      <li><strong>Learn:</strong> Read this doc (you're here)</li>
+      <li><strong>Practice:</strong> <a href="../labs/lab03-routing.md">Lab 03: Configure Routing &amp; UDRs</a></li>
+      <li><strong>Connect:</strong> Read <a href="04-vnet-peering.html">VNet Peering</a> (routing between peered VNets)</li>
+      <li><strong>Advance:</strong> Read <a href="05-vpn-and-expressroute.html">VPN &amp; ExpressRoute</a> (routing to on-premises)</li>
+      <li><strong>Secure:</strong> Advanced — Azure Firewall with routing rules</li>
+    </ol>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-grid">
+      <div class="footer-item">
+        <strong>Azure AZ-104</strong>
+        Professional Concept Documentation
+      </div>
+      <div class="footer-item">
+        <strong>Module</strong>
+        04 — Networking
+      </div>
+      <div class="footer-item">
+        <strong>Generated</strong>
+        June 15, 2026
+      </div>
+    </div>
+    <div class="footer-meta">&copy; 2026 — AZ-104 Learning Hub. For study purposes only.</div>
+  </div>
+
+</div>
+</div>
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.sidebar a'));
+  var sections = [];
+  links.forEach(function(a){
+    var el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) sections.push({link:a, el:el});
+  });
+  if (!sections.length || !('IntersectionObserver' in window)) return;
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (!entry.isIntersecting) return;
+      var match = sections.find(function(s){ return s.el === entry.target; });
+      if (!match) return;
+      links.forEach(function(a){ a.classList.remove('active'); });
+      match.link.classList.add('active');
+    });
+  }, { rootMargin: '-100px 0px -70% 0px', threshold: 0 });
+  sections.forEach(function(s){ observer.observe(s.el); });
+})();
+</script>
+</body>
+</html>
+
+
+
+

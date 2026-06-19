@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab 01 – Microsoft Entra ID: Users, Groups & Administrative Units - AZ-104 Labs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Professional Lab Template - Embedded CSS for local file:// access */
+:root{--bg:#f7f9fd;--card:#fff;--border:#e2e8f0;--text:#1a202c;--muted:#64748b;--primary:#1e3a8a;--panel:#0f172a;--panel-shadow:rgba(15,23,42,.12);--section-gap:48px;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,-apple-system,'Segoe UI',sans-serif;color:var(--text);line-height:1.6}.page{flex:1;min-width:0;padding:48px;max-width:1100px;margin:0 auto}
+h1{font-size:3.4rem;line-height:1.2;margin:0 0 12px 0;color:var(--primary);font-weight:800;letter-spacing:-0.5px}h2{font-size:2.2rem;margin:0 0 24px 0;color:var(--primary);font-weight:800;letter-spacing:-0.5px}h3{font-size:1.45rem;margin:32px 0 16px 0;color:var(--primary);font-weight:700;letter-spacing:-0.3px}h3:first-child{margin-top:0}h4{font-size:1.1rem;margin:20px 0 12px 0;color:#1e3a8a;font-weight:700}
+p{font-size:1.05rem;line-height:1.7;margin:12px 0;color:var(--text)}ul,ol{margin:16px 0;padding-left:24px}li{margin-bottom:10px;line-height:1.7;font-size:1.03rem;color:var(--text)}
+a{color:#1e40af;text-decoration:none;border-bottom:2px solid transparent;font-weight:600;transition:border-color 0.2s}a:hover{border-bottom-color:#1e40af}strong{color:var(--primary);font-weight:700}code{background:#f0f4ff;color:#1e40af;padding:4px 8px;border-radius:6px;font:13px/1.5 'SF Mono',Consolas,'Courier New',monospace;font-weight:500}
+.task-box{margin:24px 0;padding:0;background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(30,64,175,.06);transition:box-shadow 0.2s,border-color 0.2s}.task-box:hover{box-shadow:0 4px 12px rgba(30,64,175,.12);border-color:#c7d2fe}
+.task-header{display:flex;align-items:center;gap:12px;padding:18px 20px;background:linear-gradient(135deg,#dbeafe 0%,#eff6ff 100%);border-bottom:1px solid var(--border)}.task-header .task-icon{font-size:1.4rem;color:#1e40af}.task-header h3{margin:0;font-size:1.2rem;color:var(--primary);font-weight:700}.task-content{padding:20px}
+.code-block{position:relative;margin:24px 0;background:#0f172a;border-radius:10px;overflow:hidden;border:1px solid #1e293b;box-shadow:0 4px 12px rgba(15,23,42,.25)}.code-block pre{margin:0;padding:20px 48px 20px 20px;color:#e2e8f0;font-family:'SF Mono',Consolas,'Courier New',monospace;font-size:0.92rem;line-height:1.7;overflow-x:auto}
+.code-copy-btn{position:absolute;top:12px;right:12px;padding:8px 14px;background:#1e293b;color:#60a5fa;border:1px solid #334155;border-radius:6px;cursor:pointer;font-size:0.85rem;font-weight:600;transition:all 0.2s;user-select:none;box-shadow:0 1px 3px rgba(0,0,0,.2)}.code-copy-btn:hover{background:#334155;color:#93c5fd;border-color:#475569}.code-block .keyword{color:#569cd6}.code-block .string{color:#ce9178}.code-block .comment{color:#6a9955}.code-block .operator{color:#d4d4d4}.code-block .function{color:#dcdcaa}.code-block .property{color:#9cdcfe}
+.callout-box{margin:24px 0;padding:18px 20px;border-radius:10px;border-left:4px solid;display:flex;gap:14px;box-shadow:0 1px 3px rgba(0,0,0,.05)}.callout-icon{font-size:1.5rem;flex-shrink:0;min-width:28px;text-align:center}.callout-content{flex:1}.callout-content h4{margin:0 0 8px 0;font-size:1.08rem;font-weight:700}.callout-content p{margin:8px 0;line-height:1.7;font-size:1.02rem}.callout-content p:first-child{margin-top:0}
+.callout-tip{background:#eff6ff;border-color:#3b82f6}.callout-tip .callout-icon{color:#1e40af}.callout-tip h4{color:#1e40af}.callout-warning{background:#fefce8;border-color:#eab308}.callout-warning .callout-icon{color:#ca8a04}.callout-warning h4{color:#92400e}.callout-important{background:#fee2e2;border-color:#ef4444}.callout-important .callout-icon{color:#dc2626}.callout-important h4{color:#991b1b}
+.section-time{background:#dbeafe;border:1px solid #93c5fd;border-radius:8px;padding:10px 16px;font-size:0.95rem;font-weight:600;color:#1e40af;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}.layout{max-width:1500px;margin:auto;display:flex;align-items:flex-start;gap:32px}.sidebar{flex:0 0 280px;position:sticky;top:88px;max-height:calc(100vh - 108px);overflow-y:auto;padding:24px;background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 2px 8px rgba(30,64,175,.06)}.sidebar summary{cursor:pointer;list-style:none;padding:10px 12px;border-radius:8px;font-weight:600;font-size:.93rem;color:var(--primary);user-select:none;transition:all 0.2s}.sidebar summary::-webkit-details-marker{display:none}.sidebar details[open]>summary{background:#dbeafe}.sidebar summary:hover{background:#eff6ff}.sidebar a{display:block;padding:9px 12px;margin-bottom:2px;border-radius:8px;font-size:.89rem;font-weight:500;color:var(--text);border-bottom:none;border-left:3px solid transparent;line-height:1.5;transition:all 0.15s;text-decoration:none;color:#1a202c}.sidebar a:hover{background:#eff6ff;color:var(--primary)}.site-nav{position:sticky;top:0;z-index:1000;background:var(--primary);color:#fff;display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:14px 32px;font-size:.93rem;box-shadow:0 4px 12px rgba(0,0,0,.1);font-family:Inter,-apple-system,'Segoe UI',sans-serif}.site-nav .nav-brand{font-weight:800;font-size:1.1rem;margin-right:auto;color:#fff;letter-spacing:-0.3px}.site-nav summary{cursor:pointer;list-style:none;padding:8px 16px;border-radius:8px;background:rgba(255,255,255,.12);font-weight:600;color:#fff;user-select:none;transition:background 0.2s}
+</style>
+</head>
+<body>
+<nav class="site-nav" aria-label="Main site navigation">
+  <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
+  <details class="nav-group" aria-label="Learning module selector">
+    <summary>Learning Module</summary>
+    <div class="nav-menu">
+      <a href="../../00-prerequisites/documents/module-home.html">00 - Prerequisites</a>
+      <a href="../../01-identity-governance/documents/module-home.html">01 - Identity &amp; Governance</a>
+      <a href="../../02-storage/documents/module-home.html">02 - Storage</a>
+      <a href="../../03-compute/documents/module-home.html">03 - Compute</a>
+      <a href="../../04-networking/documents/module-home.html">04 - Networking</a>
+      <a href="../../05-monitor-maintain/documents/module-home.html">05 - Monitor &amp; Maintain</a>
+    </div>
+  </details>
+</nav>
+<div class="layout">
+  <aside class="sidebar" aria-label="Page navigation">
+    <details open>
+      <summary>▶ Module 01 - Identity &amp; Governance</summary>
+      <div>
+        <a href="01-entra-id-overview.html">01 - Entra ID Overview</a>
+<a href="02-rbac-fundamentals.html">02 - RBAC Fundamentals</a>
+<a href="03-management-groups-and-azure-policy.html">03 - Management Groups &amp; Azure Policy</a>
+<a href="04-access-control-scenarios.html">04 - Access Control Scenarios</a>
+<a href="05-identity-best-practices.html">05 - Identity Best Practices</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ Labs</summary>
+      <div>
+        <a href="lab01-entra-users-groups.html">Lab 01 - Entra Users &amp; Groups</a>
+<a href="lab02-rbac-azure-policy.html">Lab 02 - RBAC &amp; Azure Policy</a>
+<a href="lab03-management-groups-subscriptions.html">Lab 03 - Management Groups</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ On This Page</summary>
+      <div>
+        <a href="#real-life-scenario">Real-Life Scenario</a>
+<a href="#objectives">Objectives</a>
+<a href="#prerequisites">Prerequisites</a>
+<a href="#estimated-time">Estimated Time</a>
+<a href="#part-1-create-users-represent-real-employees">Part 1 – Create Users (Represent Real Employees)</a>
+<a href="#part-2-create-groups-by-department-identify-who">Part 2 – Create Groups by Department (Identify WHO)</a>
+<a href="#part-3-optional-dynamic-groups-auto-manage-membership">Part 3 – Optional: Dynamic Groups (Auto-manage Membership)</a>
+<a href="#part-4-administrative-units-limit-where-admins-can-use-their-power">Part 4 – Administrative Units: Limit WHERE Admins Can Use Their Power</a>
+<a href="#part-5-self-service-password-reset-sspr-for-employees">Part 5 – Self-Service Password Reset (SSPR) for Employees</a>
+<a href="#success-criteria">Success Criteria</a>
+<a href="#cleanup-if-needed">Cleanup (If Needed)</a>
+<a href="#key-takeaways">Key Takeaways</a>
+      </div>
+    </details>
+  </aside>
+  <div class="page">
+  <h1>Lab 01 – Microsoft Entra ID: Users, Groups & Administrative Units</h1>
+
+<h2 id="real-life-scenario">Real-Life Scenario</h2>
+
+<p><strong>Company: Contoso Ltd</strong></p>
+
+<p>Contoso is a mid-sized company with 100 employees across three departments:</p>
+<ul><ol><li><strong>Sales:</strong> 30 employees</li>
+<li><strong>Finance:</strong> 20 employees  </li>
+<li><strong>IT:</strong> 10 employees</li></ol></ul>
+
+<p><strong>The Challenge:</strong></p>
+<p>The IT department is overwhelmed with password reset requests. Instead of IT handling ALL password resets company-wide, you need to:</p>
+<ol><li><strong>Empower department heads</strong> to reset passwords for their own team members (delegation)</li>
+<li><strong>Restrict their power</strong> so Sales lead can ONLY manage Sales users, Finance lead can ONLY manage Finance users</li>
+<li>Use <strong>Groups</strong> to identify who they are (Sales lead, Finance lead, IT staff)</li>
+<li>Use <strong>Admin Units</strong> to limit where they can use their power (Sales department only, Finance department only)</li></ol>
+
+<hr class="divider">
+
+<h2 id="objectives">Objectives</h2>
+
+<ul><ol><li>Create users representing real departments (Sales, Finance, IT)</li>
+<li>Organize users into groups by department</li>
+<li>Understand <strong>Groups = WHO (identify role)</strong> vs <strong>Admin Units = WHERE (limit scope)</strong></li>
+<li>Create administrative units scoped to each department</li>
+<li>Delegate User Administrator role with admin unit scope</li>
+<li>Verify that scoped admins can manage only their own department</li></ol></ul>
+
+<h2 id="prerequisites">Prerequisites</h2>
+
+<ul><ol><li>An Entra ID tenant with Global Administrator or User Administrator role</li>
+<li>Signed in at <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
+
+<h2 id="estimated-time">Estimated Time</h2>
+
+<p><span class='section-time'><span class='icon'>⏱️</span>50 min</span> total</p>
+
+<hr class="divider">
+
+<h2 id="part-1-create-users-represent-real-employees">Part 1 – Create Users (Represent Real Employees)</h2>
+
+<p><span class='section-time'><span class='icon'>⏱️</span>10-12 min</span></p>
+
+<div class='callout-box callout-important'><span class='callout-icon'>❗</span><div class='callout-content'><h4>important</h4><p>Each user created in this lab will receive an auto-generated password. Record these for testing later—users must change their password on first sign-in.</p></div></div>
+
+<div class='task-box'><div class='task-header'><span class='task-icon'>✓</span><h3 id="task-create-sales-department-users">Create Sales Department Users</h3></div><div class='task-content'>
+
+<ol><li>Go to <strong>Microsoft Entra ID</strong> > <strong>Users</strong> > <strong>New user</strong> > <strong>Create new user</strong>.</li>
+
+<li>Create three Sales users with these details:</li></ol>
+
+<div class='code-block'><pre>Display Name: Sarah Chen
+<p>Username: sarah.chen@&lt;yourtenant&gt;.onmicrosoft.com</p>
+<p>Department: Sales</pre></div></p>
+
+<div class='code-block'><pre>Display Name: Tom Wilson
+<p>Username: tom.wilson@&lt;yourtenant&gt;.onmicrosoft.com</p>
+<p>Department: Sales</pre></div></p>
+
+<div class='code-block'><pre>Display Name: Lisa Brown
+<p>Username: lisa.brown@&lt;yourtenant&gt;.onmicrosoft.com</p>
+<p>Department: Sales</pre></div></p>
+
+<ol><li>For each user:</li></ol>
+<p>- Click <strong>Auto-generate password</strong> (record the temporary password)</p>
+<p>- ✅ Check <strong>Require password change on first sign-in</strong></p>
+<p>- Set <strong>Usage location</strong> to your country (required for licensing)</p>
+<p>- <strong>Critical:</strong> Set <strong>Department</strong> field to "Sales" (used for dynamic grouping later)</p>
+
+<div class='callout-box callout-tip'><span class='callout-icon'>ℹ️</span><div class='callout-content'><h4>tip</h4><p>You can bulk-create users via PowerShell for faster setup in large environments.</p></div></div>
+
+<h3 id="bulk-create-users-with-powershell-optional">Bulk Create Users with PowerShell (Optional)</h3>
+
+<div class='code-block'><pre>$tenantId = &quot;&lt;your<span class="operator">-</span><span class="property">tenant</span><span class="operator">-</span><span class="property">id</span>&gt;&quot;
+<p>Connect<span class="operator">-</span><span class="property">MgGraph</span> <span class="operator">-</span><span class="property">TenantId</span> $tenantId <span class="operator">-</span><span class="property">Scopes</span> &quot;User.ReadWrite.All&quot;</p>
+
+<p>$users = @(</p>
+<p>@{DisplayName=&quot;Sarah Chen&quot;; UserPrincipalName=&quot;sarah.chen@contoso.onmicrosoft.com&quot;; Department=&quot;Sales&quot;},</p>
+<p>@{DisplayName=&quot;Tom Wilson&quot;; UserPrincipalName=&quot;tom.wilson@contoso.onmicrosoft.com&quot;; Department=&quot;Sales&quot;},</p>
+<p>@{DisplayName=&quot;Lisa Brown&quot;; UserPrincipalName=&quot;lisa.brown@contoso.onmicrosoft.com&quot;; Department=&quot;Sales&quot;}</p>
+<p>)</p>
+
+<p>foreach ($user in $users) {</p>
+<p>$password = <span class="operator">-</span><span class="property">join</span> ((33..126) | Get<span class="operator">-</span><span class="property">Random</span> <span class="operator">-</span><span class="property">Count</span> 12 | ForEach<span class="operator">-</span><span class="property">Object</span> {[char]$_})</p>
+<p><span class=<span class="string">"function"</span>>New<span class="operator">-</span><span class="property">MgUser</span></span> <span class="operator">-</span><span class="property">DisplayName</span> $user.DisplayName <span class="operator">-</span><span class="property">UserPrincipalName</span> $user.UserPrincipalName <code></p>
+<p><span class="operator">-</span><span class="property">PasswordProfile</span> @{Password=$password;ForceChangePasswordNextSignIn=$true} </code></p>
+<p><span class="operator">-</span><span class="property">Department</span> $user.Department</p>
+<p>}</pre></div></p>
+
+<hr class="divider">
+
+<div class='task-box'><div class='task-header'><span class='task-icon'>✓</span><h3 id="task-create-finance-department-users">Create Finance Department Users</h3></div><div class='task-content'>
+
+<ol><li>Go to <strong>Microsoft Entra ID</strong> > <strong>Users</strong> > <strong>New user</strong> > <strong>Create new user</strong>.</li>
+
+<li>Create three Finance users:</li></ol>
+
+<div class='code-block'><pre>Display Name: Bob Johnson
+<p>Username: bob.johnson@&lt;yourtenant&gt;.onmicrosoft.com</p>
+<p>Department: Finance</pre></div></p>
+
+<div class='code-block'><pre>Display Name: Emma Davis
+<p>Username: emma.davis@&lt;yourtenant&gt;.onmicrosoft.com</p>
+<p>Department: Finance</pre></div></p>
+
+<div class='code-block'><pre>Display Name: Mike Lopez
+<p>Username: mike.lopez@&lt;yourtenant&gt;.onmicrosoft.com</p>
+<p>Department: Finance</pre></div></p>
+
+<ol><li>For each Finance user, ensure <strong>Department</strong> field is set to "Finance".</li></ol>
+
+<hr class="divider">
+
+<div class='task-box'><div class='task-header'><span class='task-icon'>✓</span><h3 id="task-create-department-administrators">Create Department Administrators</h3></div><div class='task-content'>
+
+<ol><li>Create two admin users who will manage their departments:</li></ol>
+
+<div class='code-block'><pre>Display Name: James Park (Sales Manager)
+<p>Username: james.park@&lt;yourtenant&gt;.onmicrosoft.com</p>
+<p>Department: Sales</pre></div></p>
+
+<div class='code-block'><pre>Display Name: Rachel Green (Finance Manager)
+<p>Username: rachel.green@&lt;yourtenant&gt;.onmicrosoft.com</p>
+<p>Department: Finance</pre></div></p>
+
+<ol><li><strong>Verification:</strong> Go to <strong>Microsoft Entra ID</strong> > <strong>Users</strong>. Confirm all 8 users appear in the list.</li></ol>
+
+<hr class="divider">
+
+<h2 id="part-2-create-groups-by-department-identify-who">Part 2 – Create Groups by Department (Identify WHO)</h2>
+
+<p><span class='section-time'><span class='icon'>⏱️</span>8-10 min</span></p>
+
+<p><strong>Why Groups?</strong> Groups answer the question: "WHO is this person?" They tell you their role or department.</p>
+<ul><ol><li><code>grp-sales</code> → "These people are in Sales" (Sales team members)</li>
+<li><code>grp-sales-admins</code> → "These people are Sales managers" (Sales team leads who can help with password resets)</li>
+<li><code>grp-finance</code> → "These people are in Finance"</li>
+<li><code>grp-finance-admins</code> → "These people are Finance managers"</li></ol></ul>
+
+<div class='task-box'><div class='task-header'><span class='task-icon'>✓</span><h3 id="task-create-the-sales-department-group">Create the Sales Department Group</h3></div><div class='task-content'>
+
+<ol><li>Go to <strong>Entra ID</strong> > <strong>Groups</strong> > <strong>New group</strong>.</li>
+<li>Fill in:</li></ol>
+<p>- <strong>Group type:</strong> Security</p>
+<p>- <strong>Group name:</strong> <code>grp-sales</code></p>
+<p>- <strong>Membership type:</strong> Assigned</p>
+<p>- <strong>Members:</strong> Add Sarah Chen, Tom Wilson, Lisa Brown (the Sales employees)</p>
+<ol><li>Click <strong>Create</strong>.</li></ol>
+
+<div class='callout-box callout-note'><span class='callout-icon'>📝</span><div class='callout-content'><h4>note</h4><p>Security groups are used for access control. Microsoft 365 groups are for collaboration. For this lab, use Security.</p></div></div>
+
+<hr class="divider">
+
+<div class='task-box'><div class='task-header'><span class='task-icon'>✓</span><h3 id="task-create-the-sales-admins-group">Create the Sales Admins Group</h3></div><div class='task-content'>
+
+<ol><li>Go to <strong>Groups</strong> > <strong>New group</strong>.</li>
+<li>Fill in:</li></ol>
+<p>- <strong>Group type:</strong> Security</p>
+<p>- <strong>Group name:</strong> <code>grp-sales-admins</code></p>
+<p>- <strong>Membership type:</strong> Assigned</p>
+<p>- <strong>Members:</strong> Add James Park (Sales Manager)</p>
+<ol><li>Click <strong>Create</strong>.</li></ol>
+
+<hr class="divider">
+
+<div class='task-box'><div class='task-header'><span class='task-icon'>✓</span><h3 id="task-create-the-finance-department-group">Create the Finance Department Group</h3></div><div class='task-content'>
+
+<ol><li>Go to <strong>Groups</strong> > <strong>New group</strong>.</li>
+<li>Fill in:</li></ol>
+<p>- <strong>Group type:</strong> Security</p>
+<p>- <strong>Group name:</strong> <code>grp-finance</code></p>
+<p>- <strong>Membership type:</strong> Assigned</p>
+<p>- <strong>Members:</strong> Add Bob Johnson, Emma Davis, Mike Lopez (the Finance employees)</p>
+<ol><li>Click <strong>Create</strong>.</li></ol>
+
+<hr class="divider">
+
+<div class='task-box'><div class='task-header'><span class='task-icon'>✓</span><h3 id="task-create-the-finance-admins-group">Create the Finance Admins Group</h3></div><div class='task-content'>
+
+<ol><li>Go to <strong>Groups</strong> > <strong>New group</strong>.</li>
+<li>Fill in:</li></ol>
+<p>- <strong>Group type:</strong> Security</p>
+<p>- <strong>Group name:</strong> <code>grp-finance-admins</code></p>
+<p>- <strong>Membership type:</strong> Assigned</p>
+<p>- <strong>Members:</strong> Add Rachel Green (Finance Manager)</p>
+<ol><li>Click <strong>Create</strong>.</li></ol>
+
+<hr class="divider">
+
+<h3 id="verification-confirm-all-groups-exist">Verification: Confirm All Groups Exist</h3>
+
+<ul><ol><li>✅ <code>grp-sales</code> (3 members: Sarah, Tom, Lisa)</li>
+<li>✅ <code>grp-sales-admins</code> (1 member: James)</li>
+<li>✅ <code>grp-finance</code> (3 members: Bob, Emma, Mike)</li>
+<li>✅ <code>grp-finance-admins</code> (1 member: Rachel)</li></ol></ul>
+
+<hr class="divider">
+
+<h2 id="part-3-optional-dynamic-groups-auto-manage-membership">Part 3 – Optional: Dynamic Groups (Auto-manage Membership)</h2>
+
+<p><span class='section-time'><span class='icon'>⏱️</span>5 min</span></p>
+
+<p><strong>Why Dynamic Groups?</strong> Instead of manually adding/removing users, let rules handle it. When someone's department changes, they're automatically added/removed.</p>
+
+<div class='callout-box callout-note'><span class='callout-icon'>📝</span><div class='callout-content'><h4>note</h4><p>This requires <strong>Entra ID P1/P2 licensing</strong>. Skip if your tenant doesn't have it.</p></div></div>
+
+<h3 id="create-dynamic-user-groups">Create Dynamic User Groups</h3>
+
+<ol><li>Go to <strong>Groups</strong> > <strong>New group</strong> > <strong>Membership type: Dynamic User</strong>.</li>
+<li><strong>Group name:</strong> <code>grp-all-employees-dynamic</code></li>
+<li>Add a rule: <code>(user.accountEnabled -eq true)</code> (all enabled users automatically join)</li>
+<li>Click <strong>Create</strong>.</li></ol>
+
+<p><strong>Real-world value:</strong> When Contoso hires a new Sales person, they don't need to manually add them to <code>grp-sales</code>. A dynamic rule like <code>(user.department -eq "Sales")</code> would do it automatically.</p>
+
+<hr class="divider">
+
+<h2 id="part-4-administrative-units-limit-where-admins-can-use-their-power">Part 4 – Administrative Units: Limit WHERE Admins Can Use Their Power</h2>
+
+<p><span class='section-time'><span class='icon'>⏱️</span>12-15 min</span></p>
+
+<div class='callout-box callout-important'><span class='callout-icon'>❗</span><div class='callout-content'><h4>important</h4><p>Critical Concept — Groups and Admin Units work together:</p></div></div>
+<div class="callout"><p>- <strong>Groups</strong> answer "WHO is this person?" (James is in <code>grp-sales-admins</code> → he's a Sales manager)</p></div>
+<div class="callout"><p>- <strong>Admin Units</strong> answer "WHERE can they work?" (James can reset passwords only in the Sales department)</p></div>
+
+<div class='callout-box callout-warning'><span class='callout-icon'>⚠️</span><div class='callout-content'><h4>warning</h4><p>Without Admin Units, a manager with User Administrator role can reset passwords for ANYONE in your tenant. This is a major security risk. Always use Admin Units to scope delegated admin powers.</p></div></div>
+
+<p><strong>Example Security Impact:</strong></p>
+<ul><ol><li>James (scoped to <code>au-sales</code>) CAN reset passwords for Sales users</li>
+<li>James CAN'T see or reset passwords for Finance users</li>
+<li>Rachel (scoped to <code>au-finance</code>) CAN reset only Finance passwords</li></ol></ul>
+
+<div class='task-box'><div class='task-header'><span class='task-icon'>✓</span><h3 id="task-create-admin-unit-for-sales-department">Create Admin Unit for Sales Department</h3></div><div class='task-content'>
+
+<ol><li>Go to <strong>Entra ID</strong> > <strong>Roles & administrators</strong> > <strong>Administrative units</strong> > <strong>+ New administrative unit</strong>.</li>
+<li>Fill in:</li></ol>
+<p>- <strong>Name:</strong> <code>au-sales</code></p>
+<p>- <strong>Description:</strong> "Sales department scope — for Sales manager delegation"</p>
+<ol><li>Click <strong>Create</strong>.</li></ol>
+
+<hr class="divider">
+
+<div class='task-box'><div class='task-header'><span class='task-icon'>✓</span><h3 id="task-add-sales-users-to-the-admin-unit">Add Sales Users to the Admin Unit</h3></div><div class='task-content'>
+
+<ol><li>Open <code>au-sales</code> > <strong>Members</strong> > <strong>+ Add members</strong>.</li>
+<li>Add the Sales users: <strong>Sarah Chen, Tom Wilson, Lisa Brown</strong> (the Sales team members).</li></ol>
+<p>- Note: You DON'T add James Park here — he's the admin, not a member being managed.</p>
+<ol><li>Click <strong>Add</strong>.</li></ol>
+
+<hr class="divider">
+
+<div class='task-box'><div class='task-header'><span class='task-icon'>✓</span><h3 id="task-create-admin-unit-for-finance-department">Create Admin Unit for Finance Department</h3></div><div class='task-content'>
+
+<ol><li>Go back to <strong>Administrative units</strong> > <strong>+ New administrative unit</strong>.</li>
+<li>Fill in:</li></ol>
+<p>- <strong>Name:</strong> <code>au-finance</code></p>
+<p>- <strong>Description:</strong> "Finance department scope — for Finance manager delegation"</p>
+<ol><li>Click <strong>Create</strong>.</li></ol>
+
+<hr class="divider">
+
+<div class='task-box'><div class='task-header'><span class='task-icon'>✓</span><h3 id="task-add-finance-users-to-the-finance-admin-unit">Add Finance Users to the Finance Admin Unit</h3></div><div class='task-content'>
+
+<ol><li>Open <code>au-finance</code> > <strong>Members</strong> > <strong>+ Add members</strong>.</li>
+<li>Add the Finance users: <strong>Bob Johnson, Emma Davis, Mike Lopez</strong> (the Finance team members).</li>
+<li>Click <strong>Add</strong>.</li></ol>
+
+<hr class="divider">
+
+<div class='task-box'><div class='task-header'><span class='task-icon'>✓</span><h3 id="task-assign-scoped-admin-role-to-sales-manager-the-key-part">Assign Scoped Admin Role to Sales Manager (THE KEY PART)</h3></div><div class='task-content'>
+
+<p><strong>This is where Groups and Admin Units work together:</strong></p>
+
+<ol><li>In <code>au-sales</code>, go to <strong>Roles and administrators</strong> > <strong>+ Add assignments</strong>.</li>
+<li>Search for and select <strong>User Administrator</strong> role.</li>
+<li><strong>Assign to:</strong> James Park (Sales Manager).</li>
+<li>Click <strong>Assign</strong>.</li></ol>
+
+<p><strong>Result:</strong> James Park now has the "User Administrator" role, but ONLY scoped to <code>au-sales</code>. This means:</p>
+<ul><ol><li>✅ James CAN reset passwords for Sarah, Tom, Lisa (Sales users in au-sales)</li>
+<li>✅ James CAN unlock accounts for Sales users</li>
+<li>❌ James CANNOT reset Finance passwords</li>
+<li>❌ James CANNOT see Finance users in his admin scope</li></ol></ul>
+
+<hr class="divider">
+
+<div class='task-box'><div class='task-header'><span class='task-icon'>✓</span><h3 id="task-assign-scoped-admin-role-to-finance-manager">Assign Scoped Admin Role to Finance Manager</h3></div><div class='task-content'>
+
+<ol><li>In <code>au-finance</code>, go to <strong>Roles and administrators</strong> > <strong>+ Add assignments</strong>.</li>
+<li>Search for and select <strong>User Administrator</strong> role.</li>
+<li><strong>Assign to:</strong> Rachel Green (Finance Manager).</li>
+<li>Click <strong>Assign</strong>.</li></ol>
+
+<p><strong>Result:</strong> Rachel now has the same power as James, but scoped to Finance only.</p>
+
+<hr class="divider">
+
+<div class='task-box'><div class='task-header'><span class='task-icon'>✓</span><h3 id="task-verification-confirm-scoped-admin-roles-are-working">Verification — Confirm Scoped Admin Roles Are Working</h3></div><div class='task-content'>
+
+<ol><li>Go to <strong>Entra ID</strong> > <strong>Roles & administrators</strong> > <strong>Administrative units</strong>.</li></ol>
+
+<p><strong>Verify the following exist:</strong></p>
+<ul><ol><li>✅ <code>au-sales</code> with 3 members (Sarah, Tom, Lisa)</li>
+<li>✅ <code>au-finance</code> with 3 members (Bob, Emma, Mike)</li>
+<li>✅ James Park has "User Administrator" role in <code>au-sales</code></li>
+<li>✅ Rachel Green has "User Administrator" role in <code>au-finance</code></li></ol></ul>
+
+<ol><li><strong>Optional:</strong> Sign in as James Park and navigate to <strong>Entra ID</strong> > <strong>Users</strong>. Notice he only sees Sales users — Finance users are hidden from his view. This is the power of Admin Units!</li></ol>
+
+<hr class="divider">
+
+<h2 id="part-5-self-service-password-reset-sspr-for-employees">Part 5 – Self-Service Password Reset (SSPR) for Employees</h2>
+
+<p><span class='section-time'><span class='icon'>⏱️</span>5 min</span></p>
+
+<p>Now that we have scoped admins (James and Rachel), employees should be able to reset their own passwords without waiting for IT.</p>
+
+<ol><li>Go to <strong>Entra ID</strong> > <strong>Password reset</strong>.</li>
+<li>Set <strong>Self-service password reset enabled</strong> to <strong>Selected</strong>.</li>
+<li>Under <strong>Select group</strong>, choose <strong>All</strong> (all users can reset their own passwords) OR select just <code>grp-sales</code> and <code>grp-finance</code> to limit it.</li>
+<li>Review the <strong>Authentication methods</strong> (email, mobile app, security questions, etc.).</li>
+<li>Click <strong>Save</strong>.</li></ol>
+
+<p><strong>Real-world benefit:</strong> Sarah from Sales can reset her own password without contacting James. This reduces administrative burden on scoped admins.</p>
+
+<hr class="divider">
+
+<h2 id="success-criteria">Success Criteria</h2>
+
+<p>✓ <strong>All 8 users created</strong> (3 Sales, 3 Finance, 2 managers)</p>
+<p>✓ <strong>All 4 groups created</strong> (grp-sales, grp-sales-admins, grp-finance, grp-finance-admins)</p>
+<p>✓ <strong>2 admin units created</strong> (au-sales, au-finance)</p>
+<p>✓ <strong>Scoped admin roles assigned</strong> (James to au-sales, Rachel to au-finance)</p>
+<p>✓ <strong>SSPR enabled</strong> for employees to reset their own passwords</p>
+
+<hr class="divider">
+
+<h2 id="cleanup-if-needed">Cleanup (If Needed)</h2>
+
+<p>To remove all resources created in this lab:</p>
+
+<div class='code-block'><pre>&lt;h1&gt;Connect to Entra ID&lt;/h1&gt;
+<p>Connect<span class="operator">-</span><span class="property">MgGraph</span> <span class="operator">-</span><span class="property">TenantId</span> &quot;&lt;your<span class="operator">-</span><span class="property">tenant</span><span class="operator">-</span><span class="property">id</span>&gt;&quot; <span class="operator">-</span><span class="property">Scopes</span> &quot;User.ReadWrite.All&quot;, &quot;Group.ReadWrite.All&quot;, &quot;Directory.ReadWrite.All&quot;</p>
+
+<p>&lt;h1&gt;Delete all 8 users&lt;/h1&gt;</p>
+<p>$users = @(&quot;sarah.chen&quot;, &quot;tom.wilson&quot;, &quot;lisa.brown&quot;, &quot;bob.johnson&quot;, &quot;emma.davis&quot;, &quot;mike.lopez&quot;, &quot;james.park&quot;, &quot;rachel.green&quot;)</p>
+<p>foreach ($user in $users) {</p>
+<p><span class=<span class="string">"function"</span>>Remove<span class="operator">-</span><span class="property">MgUser</span></span> <span class="operator">-</span><span class="property">UserId</span> &quot;$user@&lt;yourtenant&gt;.onmicrosoft.com&quot;</p>
+<p>}</p>
+
+<p>&lt;h1&gt;Delete all 4 groups&lt;/h1&gt;</p>
+<p>$groups = @(&quot;grp<span class="operator">-</span><span class="property">sales</span>&quot;, &quot;grp<span class="operator">-</span><span class="property">sales</span><span class="operator">-</span><span class="property">admins</span>&quot;, &quot;grp<span class="operator">-</span><span class="property">finance</span>&quot;, &quot;grp<span class="operator">-</span><span class="property">finance</span><span class="operator">-</span><span class="property">admins</span>&quot;)</p>
+<p>foreach ($group in $groups) {</p>
+<p>$gObj = Get<span class="operator">-</span><span class="property">MgGroup</span> <span class="operator">-</span><span class="property">Filter</span> &quot;displayName eq &<span class="comment">#39;$group&#39;&quot;</span></p>
+<p>Remove<span class="operator">-</span><span class="property">MgGroup</span> <span class="operator">-</span><span class="property">GroupId</span> $gObj.Id</p>
+<p>}</p>
+
+<p>&lt;h1&gt;Delete administrative units (if using Azure CLI)&lt;/h1&gt;</p>
+<p>&lt;h1&gt;az account set -<span class="operator">-</span><span class="property">subscription</span> &quot;&lt;subscription<span class="operator">-</span><span class="property">id</span>&gt;&quot;&lt;/h1&gt;</p>
+<p>&lt;h1&gt;az ad<span class="operator">-</span><span class="property">admin</span><span class="operator">-</span><span class="property">unit</span> delete -<span class="operator">-</span><span class="property">id</span> &quot;&lt;au<span class="operator">-</span><span class="property">sales</span><span class="operator">-</span><span class="property">id</span>&gt;&quot;&lt;/h1&gt;</p>
+<p>&lt;h1&gt;az ad<span class="operator">-</span><span class="property">admin</span><span class="operator">-</span><span class="property">unit</span> delete -<span class="operator">-</span><span class="property">id</span> &quot;&lt;au<span class="operator">-</span><span class="property">finance</span><span class="operator">-</span><span class="property">id</span>&gt;&quot;&lt;/h1&gt;</pre></div></p>
+
+<hr class="divider">
+
+<h2 id="key-takeaways">Key Takeaways</h2>
+
+<p><strong>Groups vs Admin Units:</strong></p>
+<ul><ol><li><strong>Groups</strong> = Answer "WHO is this person?" (identity/role)</li>
+<li><strong>Admin Units</strong> = Answer "WHERE can they work?" (scope/boundary)</li></ol></ul>
+
+<p><strong>Delegation Best Practices:</strong></p>
+<ul><ol><li>Always use Admin Units to scope delegated admin roles</li>
+<li>Never assign admin roles without Admin Unit scoping</li>
+<li>Use groups to identify administrators, not to scope their power</li></ol></ul>
+
+<p><strong>SSPR Benefits:</strong></p>
+<ul><ol><li>Reduces helpdesk ticket volume</li>
+<li>Improves user experience</li>
+<li>Keeps sensitive admin work with scoped admins</li></ol></ul>
+
+<p><strong>Security:</strong> The combination of Groups + Admin Units + SSPR creates a secure, scalable identity governance system where:</p>
+<ul><ol><li>Managers (James, Rachel) can only manage their own department</li>
+<li>Users can reset their own passwords</li>
+<li>IT can focus on strategic work instead of password resets</li></ol></ul>
+
+  </div>
+</div>
+<script>
+/* Sidebar Active Link Tracking */
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.sidebar a'));
+  var sections = [];
+  links.forEach(function(a){
+    var el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) sections.push({link:a, el:el});
+  });
+  if (!sections.length || !('IntersectionObserver' in window)) return;
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (!entry.isIntersecting) return;
+      var match = sections.find(function(s){ return s.el === entry.target; });
+      if (!match) return;
+      links.forEach(function(a){ a.classList.remove('active'); });
+      match.link.classList.add('active');
+    });
+  }, { rootMargin: '-100px 0px -70% 0px', threshold: 0 });
+  sections.forEach(function(s){ observer.observe(s.el); });
+})();
+
+/* Code Block Copy Button Functionality */
+document.addEventListener('DOMContentLoaded', function(){
+  var codeBlocks = document.querySelectorAll('.code-block');
+  codeBlocks.forEach(function(block){
+    var pre = block.querySelector('pre');
+    if (!pre) return;
+
+    var btn = document.createElement('button');
+    btn.className = 'code-copy-btn';
+    btn.textContent = 'Copy';
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'Copy code to clipboard');
+
+    btn.addEventListener('click', function(){
+      var code = pre.textContent;
+      navigator.clipboard.writeText(code).then(function(){
+        var original = btn.textContent;
+        btn.textContent = '✓ Copied!';
+        btn.classList.add('copied');
+        setTimeout(function(){
+          btn.textContent = original;
+          btn.classList.remove('copied');
+        }, 2000);
+      }).catch(function(){
+        alert('Failed to copy code');
+      });
+    });
+
+    block.appendChild(btn);
+  });
+});
+</script>
+</body>
+</html>

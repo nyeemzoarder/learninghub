@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Module 00 - Prerequisites - AZ-104 Learning Hub</title>
+<title>Module 02 - Networking - AZ-104 Learning Hub</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -187,10 +187,10 @@ details:focus-visible > summary {
   <details class="nav-group" aria-label="Learning module selector">
     <summary>Learning Module</summary>
     <div class="nav-menu">
-      <a href="../../00-prerequisites/documents/module-home.html" class="active">00 - Prerequisites</a>
+      <a href="../../00-prerequisites/documents/module-home.html">00 - Prerequisites</a>
       <a href="../../01-identity-governance/documents/module-home.html">01 - Identity &amp; Governance</a>
       <a href="../../03-compute/documents/module-home.html">03 - Compute</a>
-      <a href="../../02-networking/documents/module-home.html">02 - Networking</a>
+      <a href="../../02-networking/documents/module-home.html" class="active">02 - Networking</a>
       <a href="../../04-storage/documents/module-home.html">04 - Storage</a>
       <a href="../../05-monitor-maintain/documents/module-home.html">05 - Monitor &amp; Maintain</a>
     </div>
@@ -199,18 +199,26 @@ details:focus-visible > summary {
 <div class="layout">
   <aside class="sidebar" aria-label="Page navigation">
     <details open aria-label="Module concepts">
-      <summary>▶ Module 00 - Prerequisites</summary>
+      <summary>▶ Module 02 - Networking</summary>
       <div>
-        <a href="01-cloud-computing-fundamentals.html">01 - Cloud Computing Fundamentals</a>
-        <a href="02-networking-basics.html">02 - Networking Basics</a>
-        <a href="03-identity-and-access-fundamentals.html">03 - Identity &amp; Access Fundamentals</a>
-        <a href="04-azure-portal-navigation.html">04 - Azure Portal Navigation</a>
+        <a href="01-vnets-and-subnets.html">01 - VNets &amp; Subnets</a>
+        <a href="02-network-security-groups.html">02 - Network Security Groups</a>
+        <a href="03-routing-fundamentals.html">03 - Routing Fundamentals</a>
+        <a href="04-vnet-peering.html">04 - VNet Peering</a>
+        <a href="05-vpn-and-expressroute.html">05 - VPN &amp; ExpressRoute</a>
+        <a href="06-hub-spoke-topology.html">06 - Hub-Spoke Topology</a>
+        <a href="07-private-endpoints-service-endpoints.html">07 - Private &amp; Service Endpoints</a>
+        <a href="08-network-security-advanced.html">08 - Advanced Network Security</a>
       </div>
     </details>
     <details aria-label="Module labs">
       <summary>▶ Labs</summary>
       <div>
-        <a href="lab00-azure-portal-navigation.html">Lab 00 - Portal Navigation</a>
+        <a href="lab01-vnet-subnets.html">Lab 01 - VNet &amp; Subnets</a>
+        <a href="lab02-nsg-asg.html">Lab 02 - NSG &amp; ASG</a>
+        <a href="lab03-vnet-peering-vpn.html">Lab 03 - VNet Peering &amp; VPN</a>
+        <a href="lab04-load-balancer-app-gateway.html">Lab 04 - Load Balancer</a>
+        <a href="lab05-dns-name-resolution.html">Lab 05 - DNS Name Resolution</a>
       </div>
     </details>
     <details aria-label="On this page">
@@ -224,50 +232,70 @@ details:focus-visible > summary {
   </aside>
   <div class="page">
 
-  <h1>Module 00: Prerequisites</h1>
-  <div class="subtitle">Master the foundational concepts needed for Azure administration</div>
+  <h1>Module 02: Networking</h1>
+  <div class="subtitle">Master Azure networking fundamentals and advanced network architectures</div>
 
   <div class="badges">
-    <span class="badge">🟢 Foundational</span>
-    <span class="badge">⏱ 60 Minutes</span>
-    <span class="badge">📘 AZ-104 · Module 00</span>
+    <span class="badge">🟡 Intermediate</span>
+    <span class="badge">⏱ 150 Minutes</span>
+    <span class="badge">📘 AZ-104 · Module 02</span>
   </div>
 
   <div class="callout">
     <strong>Why This Matters</strong>
-    <p>Before diving into Azure-specific topics, you need to understand cloud computing fundamentals, networking basics, identity concepts, and how to navigate the Azure Portal. This module builds the foundation for everything else in the AZ-104 exam.</p>
+    <p>Networking is the backbone of Azure infrastructure. This module covers how to design and manage virtual networks, control traffic with security groups, implement routing, connect multiple networks, and secure communications. Solid networking skills are essential for any Azure administrator.</p>
   </div>
 
   <!-- Overview -->
   <div class="section full" id="overview">
     <h2>Module Overview</h2>
-    <p>The Prerequisites module covers the essential concepts and skills you need to succeed with Azure Administration. This module is designed to get you up to speed quickly, whether you're new to cloud computing or transitioning from on-premises infrastructure.</p>
-    <p>You'll learn the basics of cloud computing models, networking concepts, identity and access control, and how to navigate the Azure Portal interface.</p>
+    <p>Module 02 teaches you how to design and manage Azure networks. You'll learn to create and configure virtual networks, implement network security, design multi-network architectures, and connect on-premises networks to Azure securely.</p>
+    <p>This module covers fundamental networking concepts and advanced patterns like hub-spoke topology for enterprise-scale deployments.</p>
   </div>
 
   <!-- Concepts -->
   <div class="section full" id="concepts">
     <h2>Concepts</h2>
-    <div class="grid3">
+    <div class="grid2">
       <div class="card">
-        <h4>01 - Cloud Computing Fundamentals</h4>
-        <p>Understand cloud service models (IaaS, PaaS, SaaS), deployment models, and why organizations choose cloud solutions.</p>
-        <a href="01-cloud-computing-fundamentals.html">Read Concept →</a>
+        <h4>01 - VNets &amp; Subnets</h4>
+        <p>Design and create virtual networks and subnets as the foundation for all Azure network infrastructure.</p>
+        <a href="01-vnets-and-subnets.html">Read Concept →</a>
       </div>
       <div class="card">
-        <h4>02 - Networking Basics</h4>
-        <p>Learn the fundamentals of IP addressing, network topology, subnetting, and how networks are structured in cloud environments.</p>
-        <a href="02-networking-basics.html">Read Concept →</a>
+        <h4>02 - Network Security Groups</h4>
+        <p>Implement network-level firewalls using NSGs to control inbound and outbound traffic to resources.</p>
+        <a href="02-network-security-groups.html">Read Concept →</a>
       </div>
       <div class="card">
-        <h4>03 - Identity &amp; Access Fundamentals</h4>
-        <p>Discover the principles of identity management, authentication, authorization, and how access control works in modern systems.</p>
-        <a href="03-identity-and-access-fundamentals.html">Read Concept →</a>
+        <h4>03 - Routing Fundamentals</h4>
+        <p>Understand IP routing, route tables, and how traffic flows between subnets and networks.</p>
+        <a href="03-routing-fundamentals.html">Read Concept →</a>
       </div>
       <div class="card">
-        <h4>04 - Azure Portal Navigation</h4>
-        <p>Get comfortable navigating the Azure Portal, understanding the dashboard, managing resources, and using essential features.</p>
-        <a href="04-azure-portal-navigation.html">Read Concept →</a>
+        <h4>04 - VNet Peering</h4>
+        <p>Connect multiple virtual networks together for seamless communication between networks.</p>
+        <a href="04-vnet-peering.html">Read Concept →</a>
+      </div>
+      <div class="card">
+        <h4>05 - VPN &amp; ExpressRoute</h4>
+        <p>Securely connect on-premises networks to Azure using VPN Gateway and ExpressRoute.</p>
+        <a href="05-vpn-and-expressroute.html">Read Concept →</a>
+      </div>
+      <div class="card">
+        <h4>06 - Hub-Spoke Topology</h4>
+        <p>Design enterprise-scale network architectures using the hub-spoke pattern for centralized management.</p>
+        <a href="06-hub-spoke-topology.html">Read Concept →</a>
+      </div>
+      <div class="card">
+        <h4>07 - Private &amp; Service Endpoints</h4>
+        <p>Secure access to Azure services using private endpoints and service endpoints.</p>
+        <a href="07-private-endpoints-service-endpoints.html">Read Concept →</a>
+      </div>
+      <div class="card">
+        <h4>08 - Advanced Network Security</h4>
+        <p>Implement advanced security patterns including Application Gateway, WAF, and DDoS protection.</p>
+        <a href="08-network-security-advanced.html">Read Concept →</a>
       </div>
     </div>
   </div>
@@ -275,12 +303,32 @@ details:focus-visible > summary {
   <!-- Labs -->
   <div class="section full" id="labs">
     <h2>Hands-On Labs</h2>
-    <p>Practice your skills with hands-on labs that let you interact with the Azure Portal and apply the concepts you've learned.</p>
-    <div class="grid2">
+    <p>Build your networking skills with practical labs that let you design, configure, and troubleshoot Azure networks.</p>
+    <div class="grid3">
       <div class="card">
-        <h4>Lab 00 - Portal Navigation</h4>
-        <p>Get hands-on practice navigating the Azure Portal, exploring resources, and using the portal's key features.</p>
-        <a href="lab00-azure-portal-navigation.html">Start Lab →</a>
+        <h4>Lab 01 - VNet &amp; Subnets</h4>
+        <p>Create and configure virtual networks, subnets, and IP addressing schemes.</p>
+        <a href="lab01-vnet-subnets.html">Start Lab →</a>
+      </div>
+      <div class="card">
+        <h4>Lab 02 - NSG &amp; ASG</h4>
+        <p>Implement network security groups and application security groups to control traffic.</p>
+        <a href="lab02-nsg-asg.html">Start Lab →</a>
+      </div>
+      <div class="card">
+        <h4>Lab 03 - VNet Peering &amp; VPN</h4>
+        <p>Connect multiple networks and securely link on-premises environments to Azure.</p>
+        <a href="lab03-vnet-peering-vpn.html">Start Lab →</a>
+      </div>
+      <div class="card">
+        <h4>Lab 04 - Load Balancer</h4>
+        <p>Distribute traffic across virtual machines using load balancers and application gateways.</p>
+        <a href="lab04-load-balancer-app-gateway.html">Start Lab →</a>
+      </div>
+      <div class="card">
+        <h4>Lab 05 - DNS Name Resolution</h4>
+        <p>Configure DNS, private DNS zones, and name resolution in Azure networks.</p>
+        <a href="lab05-dns-name-resolution.html">Start Lab →</a>
       </div>
     </div>
   </div>
@@ -289,11 +337,15 @@ details:focus-visible > summary {
   <div class="section full">
     <h2>Recommended Learning Path</h2>
     <ol>
-      <li><strong>Start here:</strong> Read <a href="01-cloud-computing-fundamentals.html">Cloud Computing Fundamentals</a> to understand cloud concepts</li>
-      <li><strong>Then:</strong> Read <a href="02-networking-basics.html">Networking Basics</a> to understand networks</li>
-      <li><strong>Next:</strong> Read <a href="03-identity-and-access-fundamentals.html">Identity &amp; Access Fundamentals</a> to understand authentication</li>
-      <li><strong>Then:</strong> Read <a href="04-azure-portal-navigation.html">Azure Portal Navigation</a> to get comfortable with Azure</li>
-      <li><strong>Finally:</strong> Complete <a href="lab00-azure-portal-navigation.html">Lab 00</a> for hands-on practice</li>
+      <li><strong>Start here:</strong> Read <a href="01-vnets-and-subnets.html">VNets &amp; Subnets</a> for foundational networking</li>
+      <li><strong>Then:</strong> Read <a href="02-network-security-groups.html">Network Security Groups</a> to control traffic</li>
+      <li><strong>Next:</strong> Read <a href="03-routing-fundamentals.html">Routing Fundamentals</a> to understand traffic flow</li>
+      <li><strong>Expand:</strong> Read <a href="04-vnet-peering.html">VNet Peering</a> to connect networks</li>
+      <li><strong>Connect:</strong> Read <a href="05-vpn-and-expressroute.html">VPN &amp; ExpressRoute</a> for hybrid connectivity</li>
+      <li><strong>Scale:</strong> Read <a href="06-hub-spoke-topology.html">Hub-Spoke Topology</a> for enterprise patterns</li>
+      <li><strong>Secure:</strong> Read <a href="07-private-endpoints-service-endpoints.html">Private &amp; Service Endpoints</a></li>
+      <li><strong>Advanced:</strong> Read <a href="08-network-security-advanced.html">Advanced Network Security</a></li>
+      <li><strong>Practice:</strong> Complete all five labs to master networking</li>
     </ol>
   </div>
 
@@ -306,7 +358,7 @@ details:focus-visible > summary {
       </div>
       <div class="footer-item">
         <strong>Module</strong>
-        00 — Prerequisites
+        02 — Networking
       </div>
       <div class="footer-item">
         <strong>Generated</strong>

@@ -1,249 +1,0 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lab 05 – Blob Security & Lifecycle Management - AZ-104 Labs</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../../_styles/lab-template.css">
-<style>
-
-/* Copy button click handler for code blocks */
-</style>
-</head>
-<body>
-<nav class="site-nav" aria-label="Main site navigation">
-  <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
-  <details class="nav-group" aria-label="Learning module selector">
-    <summary>Learning Module</summary>
-    <div class="nav-menu">
-      <a href="../../00-prerequisites/documents/module-home.html">00 - Prerequisites</a>
-      <a href="../../01-identity-governance/documents/module-home.html">01 - Identity &amp; Governance</a>
-      <a href="../../02-storage/documents/module-home.html">02 - Storage</a>
-      <a href="../../03-compute/documents/module-home.html">03 - Compute</a>
-      <a href="../../04-networking/documents/module-home.html">04 - Networking</a>
-      <a href="../../05-monitor-maintain/documents/module-home.html">05 - Monitor &amp; Maintain</a>
-    </div>
-  </details>
-</nav>
-<div class="layout">
-  <aside class="sidebar" aria-label="Page navigation">
-    <details open>
-      <summary>▶ Module 02 - Storage</summary>
-      <div>
-        <a href="01-storage-redundancy-options.html">01 - Storage Redundancy Options</a>
-      </div>
-    </details>
-    <details>
-      <summary>▶ Labs</summary>
-      <div>
-        <a href="lab04-storage-accounts.html">Lab 04 - Storage Accounts</a>
-<a href="lab05-blob-security-lifecycle.html">Lab 05 - Blob Security &amp; Lifecycle</a>
-<a href="lab06-azure-files-file-sync.html">Lab 06 - Azure Files &amp; File Sync</a>
-      </div>
-    </details>
-    <details>
-      <summary>▶ On This Page</summary>
-      <div>
-        <a href="#objectives-">Objectives</a>
-<a href="#prerequisites-">Prerequisites</a>
-<a href="#estimated-time-">Estimated time</a>
-<a href="#part-1-setup-">Part 1 – Setup</a>
-<a href="#part-2-container-access-level-">Part 2 – Container access level</a>
-<a href="#part-3-enable-soft-delete-versioning-">Part 3 – Enable soft delete & versioning</a>
-<a href="#part-4-lifecycle-management-policy-">Part 4 – Lifecycle management policy</a>
-<a href="#part-5-static-website-hosting-">Part 5 – Static website hosting</a>
-<a href="#validation-">Validation</a>
-<a href="#cleanup-">Cleanup</a>
-<a href="#exam-tips-">Exam Tips</a>
-      </div>
-    </details>
-  </aside>
-  <div class="page">
-  <h1>Lab 05 – Blob Security & Lifecycle Management</h1>
-
-<h2 id="objectives-">Objectives</h2>
-<ul><ol><li>Configure blob container access levels and soft delete</li>
-<li>Implement a lifecycle management policy to transition/expire blobs</li>
-<li>Enable blob versioning and point-in-time restore</li>
-<li>Configure static website hosting on a storage account</li></ol></ul>
-
-<h2 id="prerequisites-">Prerequisites</h2>
-<ul><ol><li>Storage account from Lab 04 (or create a new one)</li>
-<li>Signed in at <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
-
-<h2 id="estimated-time-">Estimated time</h2>
-<p>35 minutes</p>
-
-<p>---</p>
-
-<h2 id="part-1-setup-">Part 1 – Setup</h2>
-
-<ol><li>Search for <strong>Resource groups</strong> > <strong>Create</strong>. Name: <code>rg-az104-lab05</code>,</li></ol>
-<p>region: <code>East US</code>. <strong>Review + create</strong> > <strong>Create</strong>.</p>
-<ol><li>Search for <strong>Storage accounts</strong> > <strong>Create</strong>. <strong>Resource group</strong>:</li></ol>
-<p><code>rg-az104-lab05</code>, <strong>Storage account name</strong>: <code>stoaz104lab05<unique></code>,</p>
-<p><strong>Region</strong>: <code>East US</code>, <strong>Performance</strong>: Standard, <strong>Redundancy</strong>: LRS,</p>
-<p><strong>Account kind</strong>: StorageV2. <strong>Review + create</strong> > <strong>Create</strong>.</p>
-<ol><li>Open the storage account > <strong>Containers</strong> > <strong>+ Container</strong>. Name: <code>data</code>.</li></ol>
-
-<h2 id="part-2-container-access-level-">Part 2 – Container access level</h2>
-
-<h3 id="understanding-access-levels-">Understanding Access Levels</h3>
-
-<p>| Level | Listing | Reading Blobs | Best For |</p>
-<p>|-------|---------|---------------|----------|</p>
-<p>| <strong>Private</strong> | ❌ | ❌ | Sensitive data |</p>
-<p>| <strong>Blob</strong> | ❌ | ✅ | Public files (share individual URLs) |</p>
-<p>| <strong>Container</strong> | ✅ | ✅ | Public datasets (allow listing) |</p>
-
-<div class='callout-box callout-warning'><span class='callout-icon'>⚠️</span><div class='callout-content'><h4>warning</h4><p>Setting to "Container" exposes all blob names and allows directory listing. Only use for non-sensitive data.</p></div></div>
-
-<ol><li><strong>Containers</strong> > select <code>data</code> > <strong>Change access level</strong> (top toolbar).</li>
-<li>Set <strong>Public access level</strong> to <strong>Blob (anonymous read access for blobs only)</strong>.</li></ol>
-
-<p>> Note: many subscriptions have <strong>Allow Blob public access</strong> disabled at</p>
-<p>> the account level by default. If the option is greyed out, go to the</p>
-<p>> storage account > <strong>Configuration</strong> and set <strong>Allow Blob public access</strong></p>
-<p>> to <strong>Enabled</strong> first.</p>
-
-<div class='callout-box callout-tip'><span class='callout-icon'>ℹ️</span><div class='callout-content'><h4>tip</h4><p>Share individual blob URLs instead of setting container to public. More secure and controlled.</p></div></div>
-<ol><li>Open <code>data</code> > <strong>Upload</strong> > upload a small text file named <code>public.txt</code></li></ol>
-<p>(content: "public file").</p>
-<ol><li>Select <code>public.txt</code> > copy its <strong>URL</strong> from the properties pane and open</li></ol>
-<p><code>https://<account>.blob.core.windows.net/data/public.txt</code> in a private/</p>
-<p>incognito browser window to confirm anonymous read access.</p>
-<ol><li>Set the access level back to <strong>Private (no anonymous access)</strong> afterward.</li></ol>
-
-<h2 id="part-3-enable-soft-delete-versioning-">Part 3 – Enable soft delete & versioning</h2>
-
-<ol><li>Open the storage account > <strong>Data protection</strong> (under <strong>Data management</strong>).</li>
-<li>Enable <strong>Enable soft delete for blobs</strong> — set retention to 7 days.</li>
-<li>Enable <strong>Enable versioning for blobs</strong>.</li>
-<li>Enable <strong>Enable point-in-time restore for containers</strong> (requires versioning,</li></ol>
-<p>change feed, and soft delete — the Portal will enable change feed</p>
-<p>automatically if needed).</p>
-<ol><li><strong>Save</strong>.</li></ol>
-
-<h3 id="test-soft-delete-and-versioning-">Test soft delete and versioning</h3>
-
-<ol><li>Go to <strong>Containers</strong> > <code>data</code> > <strong>Upload</strong> > upload a file named <code>test.txt</code></li></ol>
-<p>containing <code>v1</code>.</p>
-<ol><li>Upload <code>test.txt</code> again (same name, different content <code>v2</code>) with</li></ol>
-<p><strong>Overwrite if files already exist</strong> checked — this creates a new blob</p>
-<p>version.</p>
-<ol><li>Select <code>test.txt</code> > <strong>Delete</strong> to delete the blob.</li>
-<li>In the <code>data</code> container view, toggle <strong>Show deleted blobs</strong> (top toolbar) —</li></ol>
-<p><code>test.txt</code> should appear greyed out/marked as deleted.</p>
-<ol><li>Select the deleted <code>test.txt</code> > <strong>Undelete</strong> to restore it.</li>
-<li>Select <code>test.txt</code> > <strong>Version history</strong> (or the <strong>...</strong> menu > <strong>Blob</li></ol>
-<p>versions</strong>) to confirm at least 2 versions are listed.</p>
-
-<h2 id="part-4-lifecycle-management-policy-">Part 4 – Lifecycle management policy</h2>
-
-<ol><li>Open the storage account > <strong>Lifecycle management</strong> (under <strong>Data</li></ol>
-<p>management</strong>) > <strong>+ Add rule</strong>.</p>
-<ol><li><strong>Details</strong> tab:</li></ol>
-<p>- <strong>Rule name</strong>: <code>move-to-cool-then-delete</code></p>
-<p>- <strong>Rule scope</strong>: <strong>Limit blobs with filters</strong></p>
-<p>- <strong>Blob type</strong>: <strong>Block blobs</strong></p>
-<ol><li><strong>Base blobs</strong> tab:</li></ol>
-<p>- Check <strong>Move to cool storage</strong> > <strong>More than</strong> <code>30</code> days after</p>
-<p>modification.</p>
-<p>- Check <strong>Move to archive storage</strong> > <strong>More than</strong> <code>90</code> days after</p>
-<p>modification.</p>
-<p>- Check <strong>Delete the blob</strong> > <strong>More than</strong> <code>365</code> days after modification.</p>
-<ol><li><strong>Snapshots</strong> tab: check <strong>Delete the snapshot</strong> > <strong>More than</strong> <code>90</code> days</li></ol>
-<p>after creation.</p>
-<ol><li><strong>Filter set</strong> tab: under <strong>Blob prefix</strong>, enter <code>data/</code>.</li>
-<li><strong>Add</strong> to save the rule.</li></ol>
-
-<h2 id="part-5-static-website-hosting-">Part 5 – Static website hosting</h2>
-
-<ol><li>Open the storage account > <strong>Static website</strong> (under <strong>Data management</strong>).</li>
-<li>Set <strong>Static website</strong> to <strong>Enabled</strong>.</li>
-<li><strong>Index document name</strong>: <code>index.html</code>. <strong>Error document path</strong>: <code>404.html</code>.</li>
-<li><strong>Save</strong> — note the <strong>Primary endpoint</strong> URL that appears.</li>
-<li>Create a local file <code>index.html</code> containing <code><h1>AZ-104 Lab 05</h1></code>.</li>
-<li>Go to <strong>Containers</strong> > the <code>$web</code> container (created automatically) ></li></ol>
-<p><strong>Upload</strong> > upload <code>index.html</code>.</p>
-<ol><li>Open the <strong>Primary endpoint</strong> URL from step 4 in a browser to confirm the</li></ol>
-<p>page loads.</p>
-
-<h2 id="validation-">Validation</h2>
-<ul><ol><li>[ ] Soft-deleted blob <code>test.txt</code> restored successfully via <strong>Undelete</strong></li>
-<li>[ ] At least 2 versions of <code>test.txt</code> are listed under <strong>Blob versions</strong></li>
-<li>[ ] Lifecycle rule <code>move-to-cool-then-delete</code> is visible under <strong>Lifecycle</li></ol></ul>
-<p>management</strong></p>
-<ul><ol><li>[ ] Static website index page loads via the <strong>Primary endpoint</strong> URL</li></ol></ul>
-
-<h2 id="cleanup-">Cleanup</h2>
-<ol><li>Search for <strong>Resource groups</strong> > select <code>rg-az104-lab05</code> > <strong>Delete resource</li></ol>
-<p>group</strong> (type the name to confirm).</p>
-
-<h2 id="exam-tips-">Exam Tips</h2>
-<ul><ol><li>Container access levels: <strong>Private</strong> (no anonymous access), <strong>Blob</strong> (anonymous read of blobs, no listing), <strong>Container</strong> (anonymous read + listing).</li>
-<li>Lifecycle rules act on <strong>last modified date</strong> by default (or <code>daysAfterCreation</code>/<code>daysAfterLastAccessTime</code> with access tracking enabled).</li>
-<li>Point-in-time restore requires: versioning + change feed + soft delete all enabled, and only works for block blobs.</li>
-<li>Static website content is served from the special <code>$web</code> container; custom domains + Azure CDN/Front Door are often layered on top.</li></ol></ul>
-
-  </div>
-</div>
-<script>
-/* Sidebar Active Link Tracking */
-(function(){
-  var links = Array.prototype.slice.call(document.querySelectorAll('.sidebar a'));
-  var sections = [];
-  links.forEach(function(a){
-    var el = document.getElementById(a.getAttribute('href').slice(1));
-    if (el) sections.push({link:a, el:el});
-  });
-  if (!sections.length || !('IntersectionObserver' in window)) return;
-  var observer = new IntersectionObserver(function(entries){
-    entries.forEach(function(entry){
-      if (!entry.isIntersecting) return;
-      var match = sections.find(function(s){ return s.el === entry.target; });
-      if (!match) return;
-      links.forEach(function(a){ a.classList.remove('active'); });
-      match.link.classList.add('active');
-    });
-  }, { rootMargin: '-100px 0px -70% 0px', threshold: 0 });
-  sections.forEach(function(s){ observer.observe(s.el); });
-})();
-
-/* Code Block Copy Button Functionality */
-document.addEventListener('DOMContentLoaded', function(){
-  var codeBlocks = document.querySelectorAll('.code-block');
-  codeBlocks.forEach(function(block){
-    var pre = block.querySelector('pre');
-    if (!pre) return;
-
-    var btn = document.createElement('button');
-    btn.className = 'code-copy-btn';
-    btn.textContent = 'Copy';
-    btn.type = 'button';
-    btn.setAttribute('aria-label', 'Copy code to clipboard');
-
-    btn.addEventListener('click', function(){
-      var code = pre.textContent;
-      navigator.clipboard.writeText(code).then(function(){
-        var original = btn.textContent;
-        btn.textContent = '✓ Copied!';
-        btn.classList.add('copied');
-        setTimeout(function(){
-          btn.textContent = original;
-          btn.classList.remove('copied');
-        }, 2000);
-      }).catch(function(){
-        alert('Failed to copy code');
-      });
-    });
-
-    block.appendChild(btn);
-  });
-});
-</script>
-</body>
-</html>

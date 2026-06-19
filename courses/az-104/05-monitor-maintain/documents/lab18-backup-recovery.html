@@ -1,249 +1,0 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lab 18 – Backup & Recovery - AZ-104 Labs</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../../_styles/lab-template.css">
-<style>
-
-/* Copy button click handler for code blocks */
-</style>
-</head>
-<body>
-<nav class="site-nav" aria-label="Main site navigation">
-  <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
-  <details class="nav-group" aria-label="Learning module selector">
-    <summary>Learning Module</summary>
-    <div class="nav-menu">
-      <a href="../../00-prerequisites/documents/module-home.html">00 - Prerequisites</a>
-      <a href="../../01-identity-governance/documents/module-home.html">01 - Identity &amp; Governance</a>
-      <a href="../../02-storage/documents/module-home.html">02 - Storage</a>
-      <a href="../../03-compute/documents/module-home.html">03 - Compute</a>
-      <a href="../../04-networking/documents/module-home.html">04 - Networking</a>
-      <a href="../../05-monitor-maintain/documents/module-home.html">05 - Monitor &amp; Maintain</a>
-    </div>
-  </details>
-</nav>
-<div class="layout">
-  <aside class="sidebar" aria-label="Page navigation">
-    <details open>
-      <summary>▶ Module 05 - Monitor &amp; Maintain</summary>
-      <div>
-        <a href="01-monitoring-data-flow.html">01 - Monitoring Data Flow</a>
-      </div>
-    </details>
-    <details>
-      <summary>▶ Labs</summary>
-      <div>
-        <a href="lab17-azure-monitor-alerts.html">Lab 17 - Azure Monitor &amp; Alerts</a>
-<a href="lab18-backup-recovery.html">Lab 18 - Backup &amp; Recovery</a>
-<a href="lab19-network-monitoring.html">Lab 19 - Network Monitoring</a>
-      </div>
-    </details>
-    <details>
-      <summary>▶ On This Page</summary>
-      <div>
-        <a href="#objectives-">Objectives</a>
-<a href="#prerequisites-">Prerequisites</a>
-<a href="#estimated-time-">Estimated time</a>
-<a href="#part-1-setup-">Part 1 – Setup</a>
-<a href="#part-2-enable-backup-with-default-policy-">Part 2 – Enable backup with default policy</a>
-<a href="#part-3-reviewcustomize-backup-policy-">Part 3 – Review/customize backup policy</a>
-<a href="#part-4-trigger-an-on-demand-backup-">Part 4 – Trigger an on-demand backup</a>
-<a href="#part-5-recovery-services-vault-settings-soft-delete-redundancy-">Part 5 – Recovery Services vault settings: soft delete & redundancy</a>
-<a href="#part-6-azure-site-recovery-concepts-no-full-deployment-">Part 6 – Azure Site Recovery (concepts, no full deployment)</a>
-<a href="#part-7-restore-after-backup-completes-">Part 7 – Restore (after backup completes)</a>
-<a href="#validation-">Validation</a>
-<a href="#cleanup-">Cleanup</a>
-<a href="#exam-tips-">Exam Tips</a>
-      </div>
-    </details>
-  </aside>
-  <div class="page">
-  <h1>Lab 18 – Backup & Recovery</h1>
-
-<h2 id="objectives-">Objectives</h2>
-<ul><ol><li>Create a Recovery Services vault</li>
-<li>Configure and run a VM backup, then restore a file/disk</li>
-<li>Configure Azure Site Recovery (overview/concepts)</li>
-<li>Understand backup policies, retention, and soft delete for vaults</li></ol></ul>
-
-<h2 id="prerequisites-">Prerequisites</h2>
-<ul><ol><li>A VM (small size to minimize backup time/cost)</li>
-<li>Signed in at <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
-
-<h2 id="estimated-time-">Estimated time</h2>
-<p>45 minutes (initial backup can take a while to complete — plan for waiting)</p>
-
-<p>---</p>
-
-<h2 id="part-1-setup-">Part 1 – Setup</h2>
-
-<ol><li>Search for <strong>Resource groups</strong> > <strong>Create</strong>. Name: <code>rg-az104-lab18</code>,</li></ol>
-<p>region: <code>East US</code>. <strong>Create</strong>.</p>
-<ol><li>Create a VM:</li></ol>
-<p>- <strong>Virtual machines</strong> > <strong>Create</strong> > <code>vm-backup01</code>, <strong>Ubuntu 22.04 LTS</strong>,</p>
-<p><strong>Standard_B1s</strong>. <strong>Create</strong>.</p>
-<ol><li>Search for <strong>Recovery Services vaults</strong> > <strong>Create</strong>.</li></ol>
-<p>- <strong>Resource group</strong>: <code>rg-az104-lab18</code></p>
-<p>- <strong>Name</strong>: <code>rsv-az104lab18</code></p>
-<p>- <strong>Region</strong>: <code>East US</code></p>
-<p>- <strong>Create</strong>.</p>
-
-<h2 id="part-2-enable-backup-with-default-policy-">Part 2 – Enable backup with default policy</h2>
-
-<div class='callout-box callout-important'><span class='callout-icon'>❗</span><div class='callout-content'><h4>important</h4><p>The first backup is a full backup and takes longer than incremental backups. Plan for the VM to be under load during the backup process.</p></div></div>
-
-<ol><li>Go to <strong>rsv-az104lab18</strong> > <strong>Backup</strong> (under <strong>Getting started</strong>).</li>
-<li><strong>Where is your workload running?</strong>: <strong>Azure</strong></li>
-<li><strong>What do you want to backup?</strong>: <strong>Virtual machine</strong></li>
-<li><strong>Select VMs to backup</strong>: check <code>vm-backup01</code> > <strong>Enable backup</strong>.</li></ol>
-<p>- Uses the <strong>DefaultPolicy</strong> (daily backup at 10:00 AM, retention 30 days).</p>
-
-<h2 id="part-3-reviewcustomize-backup-policy-">Part 3 – Review/customize backup policy</h2>
-
-<ol><li>Go to <strong>rsv-az104lab18</strong> > <strong>Backup policies</strong> (under <strong>Manage</strong>).</li>
-<li>Select <strong>DefaultPolicy</strong> — review daily retention, weekly/monthly/yearly tiers.</li>
-<li>To create a custom policy:</li></ol>
-<p>- <strong>+ Add</strong> > <strong>VM backup policy</strong></p>
-<p>- <strong>Policy name</strong>: <code>custom-policy</code></p>
-<p>- <strong>Daily backup</strong>: enabled, time 11:00 PM</p>
-<p>- <strong>Retention</strong>: daily 30 days, weekly 12 weeks</p>
-<p>- <strong>Save</strong>.</p>
-
-<h2 id="part-4-trigger-an-on-demand-backup-">Part 4 – Trigger an on-demand backup</h2>
-
-<ol><li>Go to <strong>rsv-az104lab18</strong> > <strong>Backup items</strong> (under <strong>Protected items</strong>) ></li></ol>
-<p>select <code>vm-backup01</code>.</p>
-<ol><li><strong>Backup Now</strong> (top toolbar):</li></ol>
-<p>- <strong>Retain Backup Till</strong>: set to 30 days from today</p>
-<p>- <strong>OK</strong>.</p>
-
-<p>The backup job begins. <strong>Backup jobs</strong> (under <strong>Manage</strong>) shows progress. This</p>
-<p>can take 15–30+ minutes for the first backup.</p>
-
-<h2 id="part-5-recovery-services-vault-settings-soft-delete-redundancy-">Part 5 – Recovery Services vault settings: soft delete & redundancy</h2>
-
-<div class='callout-box callout-tip'><span class='callout-icon'>ℹ️</span><div class='callout-content'><h4>tip</h4><p>Use <strong>Geo-redundant (GRS)</strong> replication for production backups to protect against regional disasters. LRS is acceptable for non-critical backups or cost-sensitive scenarios.</p></div></div>
-
-<ol><li>Go to <strong>rsv-az104lab18</strong> > <strong>Properties</strong> (under <strong>Settings</strong>).</li>
-<li><strong>Backup configuration</strong>:</li></ol>
-<p>- <strong>Storage replication type</strong>: <strong>Locally-redundant (LRS)</strong> or <strong>Geo-redundant (GRS)</strong> — GRS replicates to a secondary region for DR.</p>
-<p>- <strong>Soft delete</strong>: <strong>Enabled by default</strong> on new vaults — protects backup data for 14 days after accidental/malicious deletion.</p>
-
-<h2 id="part-6-azure-site-recovery-concepts-no-full-deployment-">Part 6 – Azure Site Recovery (concepts, no full deployment)</h2>
-
-<p>ASR provides VM-level disaster recovery by continuously replicating VM disks</p>
-<p>to another region. Workflow:</p>
-<ol><li>Enable replication for a source VM to a target region/VNet.</li>
-<li>Configure replication policy (RPO threshold, retention of recovery points).</li>
-<li>Test failover (non-disruptive, isolated network) to validate DR readiness.</li>
-<li>Planned/unplanned failover moves the workload to the target region.</li>
-<li>Failback once the primary region is healthy.</li></ol>
-
-<p>To explore in the Portal (without full setup):</p>
-<ul><ol><li><strong>rsv-az104lab18</strong> > <strong>Replicated items</strong> (under <strong>Protected items</strong>) — shows</li></ol></ul>
-<p>VMs being replicated via ASR (empty until configured).</p>
-
-<h2 id="part-7-restore-after-backup-completes-">Part 7 – Restore (after backup completes)</h2>
-
-<p>Once the backup job finishes:</p>
-
-<ol><li>Go to <strong>rsv-az104lab18</strong> > <strong>Backup items</strong> > select <code>vm-backup01</code>.</li>
-<li><strong>Restore VM</strong> (top toolbar):</li></ol>
-<p>- <strong>Restore point</strong>: select the latest recovery point</p>
-<p>- <strong>Restore configuration</strong>:</p>
-<p>- <strong>Restore type</strong>: <strong>Create new virtual machine</strong></p>
-<p>- <strong>Virtual machine name</strong>: <code>vm-backup01-restored</code></p>
-<p>- <strong>Resource group</strong>: create new or select existing</p>
-<p>- <strong>Virtual network</strong>: select a VNet</p>
-<p>- <strong>Subnet</strong>: select a subnet</p>
-<p>- <strong>Restore</strong> — creates a new VM from the backup.</p>
-
-<p>Alternative: <strong>Restore disks</strong> to restore individual disks to a storage</p>
-<p>account for file-level recovery.</p>
-
-<h2 id="validation-">Validation</h2>
-<ul><ol><li>[ ] Recovery Services vault created</li>
-<li>[ ] VM backup enabled with a backup policy</li>
-<li>[ ] On-demand backup job completes successfully (check <strong>Backup jobs</strong>)</li>
-<li>[ ] Recovery point listed in <code>vm-backup01</code>'s backup items</li>
-<li>[ ] Can describe ASR failover/failback workflow and RPO/RTO concepts</li></ol></ul>
-
-<h2 id="cleanup-">Cleanup</h2>
-<ol><li>Go to <strong>rsv-az104lab18</strong> > <strong>Backup items</strong> > select <code>vm-backup01</code> ></li></ol>
-<p><strong>Stop Backup</strong> (top toolbar).</p>
-<ol><li><strong>Delete Backup Data</strong>: <strong>Yes</strong> (delete retained backups) > <strong>Stop Backup</strong>.</li>
-<li><strong>Resource groups</strong> > select <code>rg-az104-lab18</code> > <strong>Delete resource group</strong>.</li></ol>
-
-<div class="callout"><p>A Recovery Services vault can't be deleted while it has protected items or</p></div>
-<div class="callout"><p>retained backup data — disable protection first.</p></div>
-
-<h2 id="exam-tips-">Exam Tips</h2>
-<ul><ol><li>Backup is <strong>item-level</strong> (VM, files, SQL, etc.) for operational recovery; <strong>ASR</strong> is <strong>DR-focused</strong>, replicating entire VMs to another region for failover.</li>
-<li>Vault soft delete retains deleted backup data for 14 days — protects against ransomware/accidental deletion.</li>
-<li>RPO (Recovery Point Objective) = acceptable data loss window; RTO (Recovery Time Objective) = acceptable downtime — ASR lets you configure/test against these.</li>
-<li>You must disable protection (and optionally delete backup data) before a vault can be deleted.</li></ol></ul>
-
-  </div>
-</div>
-<script>
-/* Sidebar Active Link Tracking */
-(function(){
-  var links = Array.prototype.slice.call(document.querySelectorAll('.sidebar a'));
-  var sections = [];
-  links.forEach(function(a){
-    var el = document.getElementById(a.getAttribute('href').slice(1));
-    if (el) sections.push({link:a, el:el});
-  });
-  if (!sections.length || !('IntersectionObserver' in window)) return;
-  var observer = new IntersectionObserver(function(entries){
-    entries.forEach(function(entry){
-      if (!entry.isIntersecting) return;
-      var match = sections.find(function(s){ return s.el === entry.target; });
-      if (!match) return;
-      links.forEach(function(a){ a.classList.remove('active'); });
-      match.link.classList.add('active');
-    });
-  }, { rootMargin: '-100px 0px -70% 0px', threshold: 0 });
-  sections.forEach(function(s){ observer.observe(s.el); });
-})();
-
-/* Code Block Copy Button Functionality */
-document.addEventListener('DOMContentLoaded', function(){
-  var codeBlocks = document.querySelectorAll('.code-block');
-  codeBlocks.forEach(function(block){
-    var pre = block.querySelector('pre');
-    if (!pre) return;
-
-    var btn = document.createElement('button');
-    btn.className = 'code-copy-btn';
-    btn.textContent = 'Copy';
-    btn.type = 'button';
-    btn.setAttribute('aria-label', 'Copy code to clipboard');
-
-    btn.addEventListener('click', function(){
-      var code = pre.textContent;
-      navigator.clipboard.writeText(code).then(function(){
-        var original = btn.textContent;
-        btn.textContent = '✓ Copied!';
-        btn.classList.add('copied');
-        setTimeout(function(){
-          btn.textContent = original;
-          btn.classList.remove('copied');
-        }, 2000);
-      }).catch(function(){
-        alert('Failed to copy code');
-      });
-    });
-
-    block.appendChild(btn);
-  });
-});
-</script>
-</body>
-</html>

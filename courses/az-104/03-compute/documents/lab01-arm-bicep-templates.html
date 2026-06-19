@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab 01 – ARM Templates & Bicep - AZ-104 Labs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Professional Lab Template - Embedded CSS for local file:// access */
+:root{--bg:#f7f9fd;--card:#fff;--border:#e2e8f0;--text:#1a202c;--muted:#64748b;--primary:#1e3a8a;--panel:#0f172a;--panel-shadow:rgba(15,23,42,.12);--section-gap:48px;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,-apple-system,'Segoe UI',sans-serif;color:var(--text);line-height:1.6}.page{flex:1;min-width:0;padding:48px;max-width:1100px;margin:0 auto}
+h1{font-size:3.4rem;line-height:1.2;margin:0 0 12px 0;color:var(--primary);font-weight:800;letter-spacing:-0.5px}h2{font-size:2.2rem;margin:0 0 24px 0;color:var(--primary);font-weight:800;letter-spacing:-0.5px}h3{font-size:1.45rem;margin:32px 0 16px 0;color:var(--primary);font-weight:700;letter-spacing:-0.3px}h3:first-child{margin-top:0}h4{font-size:1.1rem;margin:20px 0 12px 0;color:#1e3a8a;font-weight:700}
+p{font-size:1.05rem;line-height:1.7;margin:12px 0;color:var(--text)}ul,ol{margin:16px 0;padding-left:24px}li{margin-bottom:10px;line-height:1.7;font-size:1.03rem;color:var(--text)}
+a{color:#1e40af;text-decoration:none;border-bottom:2px solid transparent;font-weight:600;transition:border-color 0.2s}a:hover{border-bottom-color:#1e40af}strong{color:var(--primary);font-weight:700}code{background:#f0f4ff;color:#1e40af;padding:4px 8px;border-radius:6px;font:13px/1.5 'SF Mono',Consolas,'Courier New',monospace;font-weight:500}
+.task-box{margin:24px 0;padding:0;background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(30,64,175,.06);transition:box-shadow 0.2s,border-color 0.2s}.task-box:hover{box-shadow:0 4px 12px rgba(30,64,175,.12);border-color:#c7d2fe}
+.task-header{display:flex;align-items:center;gap:12px;padding:18px 20px;background:linear-gradient(135deg,#dbeafe 0%,#eff6ff 100%);border-bottom:1px solid var(--border)}.task-header .task-icon{font-size:1.4rem;color:#1e40af}.task-header h3{margin:0;font-size:1.2rem;color:var(--primary);font-weight:700}.task-content{padding:20px}
+.code-block{position:relative;margin:24px 0;background:#0f172a;border-radius:10px;overflow:hidden;border:1px solid #1e293b;box-shadow:0 4px 12px rgba(15,23,42,.25)}.code-block pre{margin:0;padding:20px 48px 20px 20px;color:#e2e8f0;font-family:'SF Mono',Consolas,'Courier New',monospace;font-size:0.92rem;line-height:1.7;overflow-x:auto}
+.code-copy-btn{position:absolute;top:12px;right:12px;padding:8px 14px;background:#1e293b;color:#60a5fa;border:1px solid #334155;border-radius:6px;cursor:pointer;font-size:0.85rem;font-weight:600;transition:all 0.2s;user-select:none;box-shadow:0 1px 3px rgba(0,0,0,.2)}.code-copy-btn:hover{background:#334155;color:#93c5fd;border-color:#475569}.code-block .keyword{color:#569cd6}.code-block .string{color:#ce9178}.code-block .comment{color:#6a9955}.code-block .operator{color:#d4d4d4}.code-block .function{color:#dcdcaa}.code-block .property{color:#9cdcfe}
+.callout-box{margin:24px 0;padding:18px 20px;border-radius:10px;border-left:4px solid;display:flex;gap:14px;box-shadow:0 1px 3px rgba(0,0,0,.05)}.callout-icon{font-size:1.5rem;flex-shrink:0;min-width:28px;text-align:center}.callout-content{flex:1}.callout-content h4{margin:0 0 8px 0;font-size:1.08rem;font-weight:700}.callout-content p{margin:8px 0;line-height:1.7;font-size:1.02rem}.callout-content p:first-child{margin-top:0}
+.callout-tip{background:#eff6ff;border-color:#3b82f6}.callout-tip .callout-icon{color:#1e40af}.callout-tip h4{color:#1e40af}.callout-warning{background:#fefce8;border-color:#eab308}.callout-warning .callout-icon{color:#ca8a04}.callout-warning h4{color:#92400e}.callout-important{background:#fee2e2;border-color:#ef4444}.callout-important .callout-icon{color:#dc2626}.callout-important h4{color:#991b1b}
+.section-time{background:#dbeafe;border:1px solid #93c5fd;border-radius:8px;padding:10px 16px;font-size:0.95rem;font-weight:600;color:#1e40af;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}.layout{max-width:1500px;margin:auto;display:flex;align-items:flex-start;gap:32px}.sidebar{flex:0 0 280px;position:sticky;top:88px;max-height:calc(100vh - 108px);overflow-y:auto;padding:24px;background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 2px 8px rgba(30,64,175,.06)}.sidebar summary{cursor:pointer;list-style:none;padding:10px 12px;border-radius:8px;font-weight:600;font-size:.93rem;color:var(--primary);user-select:none;transition:all 0.2s}.sidebar summary::-webkit-details-marker{display:none}.sidebar details[open]>summary{background:#dbeafe}.sidebar summary:hover{background:#eff6ff}.sidebar a{display:block;padding:9px 12px;margin-bottom:2px;border-radius:8px;font-size:.89rem;font-weight:500;color:var(--text);border-bottom:none;border-left:3px solid transparent;line-height:1.5;transition:all 0.15s;text-decoration:none;color:#1a202c}.sidebar a:hover{background:#eff6ff;color:var(--primary)}.site-nav{position:sticky;top:0;z-index:1000;background:var(--primary);color:#fff;display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:14px 32px;font-size:.93rem;box-shadow:0 4px 12px rgba(0,0,0,.1);font-family:Inter,-apple-system,'Segoe UI',sans-serif}.site-nav .nav-brand{font-weight:800;font-size:1.1rem;margin-right:auto;color:#fff;letter-spacing:-0.3px}.site-nav summary{cursor:pointer;list-style:none;padding:8px 16px;border-radius:8px;background:rgba(255,255,255,.12);font-weight:600;color:#fff;user-select:none;transition:background 0.2s}
+</style>
+</head>
+<body>
+<nav class="site-nav" aria-label="Main site navigation">
+  <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
+  <details class="nav-group" aria-label="Learning module selector">
+    <summary>Learning Module</summary>
+    <div class="nav-menu">
+      <a href="../../00-prerequisites/documents/module-home.html">00 - Prerequisites</a>
+      <a href="../../01-identity-governance/documents/module-home.html">01 - Identity &amp; Governance</a>
+      <a href="../../02-storage/documents/module-home.html">02 - Storage</a>
+      <a href="../../03-compute/documents/module-home.html">03 - Compute</a>
+      <a href="../../04-networking/documents/module-home.html">04 - Networking</a>
+      <a href="../../05-monitor-maintain/documents/module-home.html">05 - Monitor &amp; Maintain</a>
+    </div>
+  </details>
+</nav>
+<div class="layout">
+  <aside class="sidebar" aria-label="Page navigation">
+    <details open>
+      <summary>▶ Module 03 - Compute</summary>
+      <div>
+        <a href="01-compute-options-comparison.html">01 - Compute Options Comparison</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ Labs</summary>
+      <div>
+        <a href="lab01-arm-bicep-templates.html">Lab 01 - ARM &amp; Bicep Templates</a>
+<a href="lab02-virtual-machines.html">Lab 02 - Virtual Machines</a>
+<a href="lab03-vm-availability-scaling.html">Lab 03 - VM Availability &amp; Scaling</a>
+<a href="lab04-containers-aci-acr.html">Lab 04 - Containers, ACI &amp; ACR</a>
+<a href="lab05-app-service.html">Lab 05 - App Service</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ On This Page</summary>
+      <div>
+        <a href="#objectives-">Objectives</a>
+<a href="#prerequisites-">Prerequisites</a>
+<a href="#estimated-time-">Estimated time</a>
+<a href="#part-1-resource-group-">Part 1 – Resource group</a>
+<a href="#part-2-author-a-bicep-template-">Part 2 – Author a Bicep template</a>
+<a href="#part-3-preview-with-what-if-">Part 3 – Preview with what-if</a>
+<a href="#part-4-deploy-">Part 4 – Deploy</a>
+<a href="#part-5-equivalent-arm-json-for-recognition-on-the-exam-">Part 5 – Equivalent ARM JSON (for recognition on the exam)</a>
+<a href="#part-6-deployment-modes-redeploy-">Part 6 – Deployment modes & redeploy</a>
+<a href="#part-7-deployment-history-troubleshooting-">Part 7 – Deployment history & troubleshooting</a>
+<a href="#validation-">Validation</a>
+<a href="#cleanup-">Cleanup</a>
+<a href="#exam-tips-">Exam Tips</a>
+      </div>
+    </details>
+  </aside>
+  <div class="page">
+  <h1>Lab 01 – ARM Templates & Bicep</h1>
+
+<h2 id="objectives-">Objectives</h2>
+<ul><ol><li>Deploy resources using an ARM JSON template</li>
+<li>Convert/author the same deployment in Bicep</li>
+<li>Use parameters, variables, outputs, and what-if deployments</li>
+<li>Deploy at resource group scope and understand deployment modes</li></ol></ul>
+
+<h2 id="prerequisites-">Prerequisites</h2>
+<ul><ol><li>Azure CLI with Bicep: <code>az bicep install</code></li></ol></ul>
+
+<h2 id="estimated-time-">Estimated time</h2>
+<p>40 minutes</p>
+
+<p>---</p>
+
+<h2 id="part-1-resource-group-">Part 1 – Resource group</h2>
+
+<div class='callout-box callout-important'><span class='callout-icon'>❗</span><div class='callout-content'><h4>important</h4><p>This lab uses Azure CLI — ensure <code>az</code> is installed and authenticated to your Azure subscription before proceeding.</p></div></div>
+
+<div class='code-block'><pre><span class="function">az</span> group create --name rg-az104-lab07 --location eastus</pre></div>
+
+<h2 id="part-2-author-a-bicep-template-">Part 2 – Author a Bicep template</h2>
+
+<div class='callout-box callout-tip'><span class='callout-icon'>ℹ️</span><div class='callout-content'><h4>tip</h4><p>Save your Bicep file in a directory with no spaces in the path to avoid CLI parsing issues.</p></div></div>
+
+<p>Create <code>main.bicep</code>:</p>
+<div class='code-block'><pre>@description(&#39;Name prefix for resources&#39;)
+<p>param namePrefix string = &#39;az104lab07&#39;</p>
+
+<p>@allowed([&#39;Standard&lt;em&gt;LRS&#39;, &#39;Standard&lt;/em&gt;GRS&#39;])</p>
+<p>param storageSku string = &#39;Standard&lt;em&gt;LRS&#39;</p>
+
+<p>var storageAccountName = toLower(&#39;${namePrefix}${uniqueString(resourceGroup().id)}&#39;)</p>
+
+<p>resource storageAccount &#39;Microsoft.Storage/storageAccounts@2023-01-01&#39; = {</p>
+<p>name: storageAccountName</p>
+<p>location: resourceGroup().location</p>
+<p>sku: {</p>
+<p>name: storageSku</p>
+<p>}</p>
+<p>kind: &#39;StorageV2&#39;</p>
+<p>properties: {</p>
+<p>minimumTlsVersion: &#39;TLS1&lt;/em&gt;2&#39;</p>
+<p>allowBlobPublicAccess: false</p>
+<p>}</p>
+<p>}</p>
+
+<p>resource vnet &#39;Microsoft.Network/virtualNetworks@2023-09-01&#39; = {</p>
+<p>name: &#39;${namePrefix}-vnet&#39;</p>
+<p>location: resourceGroup().location</p>
+<p>properties: {</p>
+<p>addressSpace: {</p>
+<p>addressPrefixes: [&#39;10.20.0.0/16&#39;]</p>
+<p>}</p>
+<p>subnets: [</p>
+<p>{</p>
+<p>name: &#39;default&#39;</p>
+<p>properties: {</p>
+<p>addressPrefix: &#39;10.20.0.0/24&#39;</p>
+<p>}</p>
+<p>}</p>
+<p>]</p>
+<p>}</p>
+<p>}</p>
+
+<p>output storageAccountName string = storageAccount.name</p>
+<p>output vnetId string = vnet.id</pre></div></p>
+
+<h2 id="part-3-preview-with-what-if-">Part 3 – Preview with what-if</h2>
+
+<div class='callout-box callout-important'><span class='callout-icon'>❗</span><div class='callout-content'><h4>important</h4><p>Always run <code>what-if</code> before deploying to production. It shows exactly what changes will occur without modifying any resources.</p></div></div>
+
+<div class='code-block'><pre><span class="function">az</span> deployment group what-if \
+<p>--resource-group rg-az104-lab07 \</p>
+<p>--template-file main.bicep</pre></div></p>
+<p>Review the predicted <strong>Create</strong> operations before applying.</p>
+
+<h2 id="part-4-deploy-">Part 4 – Deploy</h2>
+
+<div class='code-block'><pre><span class="function">az</span> deployment group create \
+<p>--resource-group rg-az104-lab07 \</p>
+<p>--template-file main.bicep \</p>
+<p>--parameters storageSku=Standard&lt;em&gt;LRS \</p>
+<p>--name lab07-deployment</p>
+
+<p><span class="function">az</span> deployment group show -g rg-az104-lab07 -n lab07-deployment --query properties.outputs</pre></div></p>
+
+<h2 id="part-5-equivalent-arm-json-for-recognition-on-the-exam-">Part 5 – Equivalent ARM JSON (for recognition on the exam)</h2>
+
+<p>Decompile to compare:</p>
+<div class='code-block'><pre><span class="function">az</span> bicep decompile --file main.json   <span class="comment"># if you have JSON, converts to bicep</span>
+<p>&lt;h1&gt;or build bicep -&gt; json:&lt;/h1&gt;</p>
+<p><span class="function">az</span> bicep build --file main.bicep      <span class="comment"># produces main.json</span></pre></div></p>
+<p>Open <code>main.json</code> and identify: <code>$schema</code>, <code>contentVersion</code>, <code>parameters</code>,</p>
+<p><code>variables</code>, <code>resources</code>, <code>outputs</code> — map each to its Bicep equivalent.</p>
+
+<h2 id="part-6-deployment-modes-redeploy-">Part 6 – Deployment modes & redeploy</h2>
+
+<div class='callout-box callout-warning'><span class='callout-icon'>⚠️</span><div class='callout-content'><h4>warning</h4><p><strong>Complete</strong> mode deletes resources NOT in your template. Never use it in production unless you fully understand the consequences.</p></div></div>
+
+<p>Modify <code>storageSku</code> to <code>Standard</em>GRS</code> and redeploy with <strong>Incremental</strong> mode (default):</p>
+<div class='code-block'><pre><span class="function">az</span> deployment group create -g rg-az104-lab07 --template-file main.bicep \
+<p>--parameters storageSku=Standard_GRS --mode Incremental</pre></div></p>
+<p>Discuss (no need to execute): <strong>Complete</strong> mode would delete resources in the</p>
+<p>RG that are <em>not</em> in the template — dangerous, used carefully.</p>
+
+<h2 id="part-7-deployment-history-troubleshooting-">Part 7 – Deployment history & troubleshooting</h2>
+
+<div class='code-block'><pre><span class="function">az</span> deployment group list -g rg-az104-lab07 -o table
+<p><span class="function">az</span> deployment operation group list -g rg-az104-lab07 -n lab07-deployment -o table</pre></div></p>
+
+<h2 id="validation-">Validation</h2>
+<ul><ol><li>[ ] Storage account and VNet deployed via Bicep</li>
+<li>[ ] <code>what-if</code> output reviewed before deploying</li>
+<li>[ ] Outputs (<code>storageAccountName</code>, <code>vnetId</code>) returned correctly</li>
+<li>[ ] Can explain Incremental vs Complete deployment modes</li></ol></ul>
+
+<h2 id="cleanup-">Cleanup</h2>
+<div class='code-block'><pre><span class="function">az</span> group delete --name rg-az104-lab07 --yes --no-wait</pre></div>
+
+<h2 id="exam-tips-">Exam Tips</h2>
+<ul><ol><li>Bicep compiles down to ARM JSON — anything you can do in JSON you can do in Bicep, with cleaner syntax.</li>
+<li><code>what-if</code> shows Create/Modify/Delete/NoChange without applying changes — use it before production deployments.</li>
+<li><strong>Incremental</strong> (default): adds/updates resources in template, leaves others untouched. <strong>Complete</strong>: removes resources in the RG not defined in the template — exam loves to test this distinction.</li>
+<li><code>uniqueString()</code> is commonly used to generate globally-unique names deterministically from the resource group ID.</li></ol></ul>
+
+  </div>
+</div>
+<script>
+/* Sidebar Active Link Tracking */
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.sidebar a'));
+  var sections = [];
+  links.forEach(function(a){
+    var el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) sections.push({link:a, el:el});
+  });
+  if (!sections.length || !('IntersectionObserver' in window)) return;
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (!entry.isIntersecting) return;
+      var match = sections.find(function(s){ return s.el === entry.target; });
+      if (!match) return;
+      links.forEach(function(a){ a.classList.remove('active'); });
+      match.link.classList.add('active');
+    });
+  }, { rootMargin: '-100px 0px -70% 0px', threshold: 0 });
+  sections.forEach(function(s){ observer.observe(s.el); });
+})();
+
+/* Code Block Copy Button Functionality */
+document.addEventListener('DOMContentLoaded', function(){
+  var codeBlocks = document.querySelectorAll('.code-block');
+  codeBlocks.forEach(function(block){
+    var pre = block.querySelector('pre');
+    if (!pre) return;
+
+    var btn = document.createElement('button');
+    btn.className = 'code-copy-btn';
+    btn.textContent = 'Copy';
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'Copy code to clipboard');
+
+    btn.addEventListener('click', function(){
+      var code = pre.textContent;
+      navigator.clipboard.writeText(code).then(function(){
+        var original = btn.textContent;
+        btn.textContent = '✓ Copied!';
+        btn.classList.add('copied');
+        setTimeout(function(){
+          btn.textContent = original;
+          btn.classList.remove('copied');
+        }, 2000);
+      }).catch(function(){
+        alert('Failed to copy code');
+      });
+    });
+
+    block.appendChild(btn);
+  });
+});
+</script>
+</body>
+</html>

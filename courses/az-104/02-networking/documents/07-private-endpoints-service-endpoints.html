@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Private Endpoints &amp; Service Endpoints - Secure PaaS Access</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f8fc;--card:#fff;--border:#d9e0ef;--text:#1f2937;--muted:#5b6678;
+  --primary:#151d63;--panel:#00004C;--panel-shadow:rgba(0,0,76,.18);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:Inter,-apple-system,'Segoe UI',sans-serif;color:var(--text)}
+.page{flex:1;min-width:0;padding:28px}
+
+h1{font-size:3.2rem;line-height:1.15;margin:0;color:var(--primary);font-weight:800;letter-spacing:-1px}
+.subtitle{font-size:1.4rem;font-weight:600;color:#2d3b77;margin-top:10px}
+
+.badges{display:flex;gap:12px;margin:20px 0 26px;flex-wrap:wrap}
+.badge{background:#eef2ff;border:1px solid #d8def7;color:#1e2a78;padding:10px 18px;border-radius:999px;font-weight:600;font-size:.95rem}
+
+.section{display:grid;grid-template-columns:42% 58%;gap:28px;padding:26px 0;border-top:1px solid var(--border)}
+.section.full{display:block;padding:26px 0;border-top:1px solid var(--border)}
+.section:first-of-type, .section.full:first-of-type{border-top:none}
+
+h2{font-size:2rem;margin:0 0 14px;color:var(--primary);font-weight:800}
+h3{font-size:1.4rem;margin:22px 0 10px;color:var(--primary);font-weight:700}
+h3:first-child{margin-top:0}
+h4{font-size:1.1rem;margin:16px 0 8px;color:#2d3b77;font-weight:700}
+
+p{font-size:1.05rem;line-height:1.65;margin:.5rem 0;color:var(--text)}
+
+ul, ol{margin:.6rem 0;padding-left:1.4rem}
+li{margin-bottom:6px;line-height:1.6;font-size:1.02rem}
+
+a{color:#1e2a78;text-decoration:none;border-bottom:1px solid transparent;font-weight:600}
+a:hover{border-bottom-color:#1e2a78}
+
+strong{color:var(--primary);font-weight:700}
+
+.callout{margin-top:20px;background:#f3f7ff;border:1px solid #bfd0ff;border-radius:14px;padding:18px 22px}
+.callout strong{color:#1735ad}
+.callout p{margin:0}
+.callout p + p{margin-top:8px}
+
+.panel{
+  background:var(--panel);
+  color:#fff;border-radius:18px;padding:22px 26px;
+  box-shadow:0 12px 28px var(--panel-shadow);
+  font:15px/1.65 'SF Mono',Consolas,'Courier New',monospace;
+  white-space:pre-wrap;
+  overflow:auto;
+}
+.panel.small{font-size:13.5px;line-height:1.6}
+.panel + .panel{margin-top:18px}
+
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:14px 0}
+th,td{padding:14px;border:1px solid var(--border);text-align:left;font-size:.98rem}
+th{background:#eef2ff;color:var(--primary);font-weight:700}
+tr:hover td{background:#fafbff}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+
+.mistake-card{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:14px 0 8px}
+.mistake-card h4{margin-top:0}
+
+.tip{margin-top:20px;background:#eef4ff;border:1px solid #c8d5ff;border-radius:12px;padding:16px 20px;font-size:1.02rem}
+.tip strong{color:#1735ad}
+
+hr.divider{border:none;height:0;margin:0}
+
+.footer{margin-top:48px;padding-top:24px;border-top:1px solid var(--border);font-size:.9rem;color:var(--muted)}
+.footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px}
+.footer-item strong{display:block;color:var(--primary);margin-bottom:6px;font-size:.95rem}
+.footer-meta{margin-top:24px;padding-top:16px;border-top:1px solid var(--border);text-align:center;font-size:.85rem}
+
+@media (max-width:1000px){
+  .section,.grid2,.grid3,.grid4,.mistake-card{grid-template-columns:1fr}
+  h1{font-size:2.3rem}
+  .page{padding:16px}
+  .panel{font-size:13px}
+  .sidebar{display:none}
+  .layout{display:block}
+}
+
+/* ===== Site-wide Cross Navigation ===== */
+.site-nav{
+  position:sticky;top:0;z-index:1000;
+  background:var(--primary);color:#fff;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:12px 28px;font-size:.92rem;
+  box-shadow:0 2px 10px rgba(0,0,76,.18);
+  font-family:Inter,-apple-system,'Segoe UI',sans-serif;
+}
+.site-nav .nav-brand{font-weight:800;font-size:1.05rem;margin-right:auto;color:#fff}
+.site-nav details{position:relative}
+.site-nav summary{cursor:pointer;list-style:none;padding:7px 16px;border-radius:8px;background:rgba(255,255,255,.12);font-weight:600;color:#fff;user-select:none}
+.site-nav summary::-webkit-details-marker,.site-nav summary::marker{display:none;content:''}
+.site-nav details[open] summary{background:rgba(255,255,255,.24)}
+.site-nav .nav-menu{
+  position:absolute;top:calc(100% + 8px);left:0;
+  background:#fff;color:var(--text);
+  border:1px solid var(--border);border-radius:12px;
+  padding:8px;min-width:300px;box-shadow:0 16px 32px rgba(0,0,76,.22);
+  display:flex;flex-direction:column;gap:2px;z-index:1001;
+}
+.site-nav .nav-menu a{
+  display:block;padding:9px 14px;border-radius:8px;border-bottom:none;
+  color:var(--text);font-weight:500;font-size:.95rem;
+}
+.site-nav .nav-menu a:hover{background:#eef2ff;color:#1e2a78}
+.site-nav .nav-menu a.active{background:#eef2ff;color:#1735ad;font-weight:700}
+@media (max-width:768px){
+  .site-nav{padding:10px 16px}
+  .site-nav .nav-brand{font-size:.95rem}
+}
+/* ===== Page Sidebar (Collapsible) ===== */
+.layout{max-width:1400px;margin:auto;display:flex;align-items:flex-start}
+.sidebar{
+  flex:0 0 260px;
+  position:sticky;top:88px;
+  max-height:calc(100vh - 108px);
+  overflow-y:auto;
+  margin:28px 0 28px 28px;
+  padding:20px 18px;
+  background:#fff;border:1px solid var(--border);border-radius:14px;
+  box-shadow:0 4px 16px rgba(21,29,99,.05);
+}
+.sidebar details{margin-bottom:0}
+.sidebar summary{
+  cursor:pointer;list-style:none;padding:10px 12px;border-radius:8px;
+  font-weight:600;font-size:.92rem;color:var(--primary);
+  user-select:none;transition:background 0.2s;
+}
+.sidebar summary::-webkit-details-marker,.sidebar summary::marker{display:none;content:''}
+.sidebar details[open]>summary{background:#eef2ff}
+.sidebar summary:hover{background:#f0f4ff}
+.sidebar a{display:block;padding:8px 12px;margin:2px 0;border-radius:8px;font-size:.88rem;font-weight:500;
+  color:var(--text);border-bottom:none;border-left:3px solid transparent;line-height:1.4;transition:all 0.15s}
+.sidebar a:hover{background:#eef2ff;color:#1e2a78}
+.sidebar a.active{background:#eef2ff;color:#1735ad;font-weight:700;border-left-color:var(--primary)}
+.sidebar details > div{padding:0 0 8px 12px}
+.sidebar hr.sidebar-divider{border:none;border-top:1px solid var(--border);margin:12px 0}
+@media print{
+  .site-nav{display:none}
+  body{background:#fff}
+  .page{padding:0}
+  .panel{box-shadow:none}
+  .sidebar{display:none}
+  .layout{display:block}
+}
+
+/* Keyboard Navigation & Accessibility */
+a:focus-visible,
+button:focus-visible,
+.sidebar a:focus-visible,
+.sidebar summary:focus-visible,
+.site-nav summary:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+details:focus-visible > summary {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+</style>
+</head>
+<body>
+<nav class="site-nav" aria-label="Main site navigation">
+  <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
+  <details class="nav-group" aria-label="Learning module selector">
+    <summary>Learning Module</summary>
+    <div class="nav-menu">
+      <a href="../../00-prerequisites/documents/module-home.html">00 - Prerequisites</a>
+      <a href="../../01-identity-governance/documents/module-home.html">01 - Identity &amp; Governance</a>
+      <a href="../../02-storage/documents/module-home.html">02 - Storage</a>
+      <a href="../../03-compute/documents/module-home.html">03 - Compute</a>
+      <a href="../../04-networking/documents/module-home.html" class="active">04 - Networking</a>
+      <a href="../../05-monitor-maintain/documents/module-home.html">05 - Monitor &amp; Maintain</a>
+    </div>
+  </details>
+</nav>
+<div class="layout">
+  <aside class="sidebar">
+    <details open>
+      <summary>▶ Module 04 - Networking</summary>
+      <div>
+        <a href="01-vnets-and-subnets.html">01 - Vnets and subnets</a>
+        <a href="02-network-security-groups.html">02 - Network security groups</a>
+        <a href="03-routing-fundamentals.html">03 - Routing fundamentals</a>
+        <a href="04-vnet-peering.html">04 - Vnet peering</a>
+        <a href="05-vpn-and-expressroute.html">05 - Vpn and expressroute</a>
+        <a href="06-hub-spoke-topology.html">06 - Hub spoke topology</a>
+        <a href="07-private-endpoints-service-endpoints.html">07 - Private endpoints service endpoints</a>
+        <a href="08-network-security-advanced.html">08 - Network security advanced</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ Labs</summary>
+      <div>
+        <a href="lab01-vnet-subnets.html">lab01 - Vnet subnets</a>
+        <a href="lab02-nsg-asg.html">lab02 - Nsg asg</a>
+        <a href="lab03-vnet-peering-vpn.html">lab03 - Vnet peering vpn</a>
+        <a href="lab04-load-balancer-app-gateway.html">lab04 - Load balancer app gateway</a>
+        <a href="lab05-dns-name-resolution.html">lab05 - Dns name resolution</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ On This Page</summary>
+      <div>
+        <a href="#before-you-start">Before you start</a>
+        <a href="#the-simple-idea-the-problem">The simple idea the problem</a>
+        <a href="#two-solutions">Two solutions</a>
+        <a href="#solution-1-service-endpoints">Solution 1 service endpoints</a>
+        <a href="#how-service-endpoints-work">How service endpoints work</a>
+        <a href="#service-endpoint-configuration">Service endpoint configuration</a>
+        <a href="#service-endpoint-limitations">Service endpoint limitations</a>
+        <a href="#solution-2-private-endpoints">Solution 2 private endpoints</a>
+        <a href="#how-private-endpoints-work">How private endpoints work</a>
+        <a href="#private-endpoint-configuration">Private endpoint configuration</a>
+        <a href="#comparison-service-endpoint-vs-private-endpoint">Comparison service endpoint vs private endpoint</a>
+        <a href="#decision-tree">Decision tree</a>
+        <a href="#worked-example-real-scenario">Worked example real scenario</a>
+        <a href="#common-mistakes-what-not-to-do">Common mistakes what not to do</a>
+        <a href="#service-endpoint-vs-private-endpoint-checklist">Service endpoint vs private endpoint checklist</a>
+        <a href="#how-this-connects-to-other-topics">How this connects to other topics</a>
+        <a href="#see-it-in-action">See it in action</a>
+        <a href="#key-takeaways">Key takeaways</a>
+        <a href="#next-steps">Next steps</a>
+      </div>
+    </details>
+  </aside>
+  <div class="page">
+
+  <h1>Private Endpoints &amp; Service Endpoints</h1>
+  <div class="subtitle">Secure access to Azure PaaS services from your VNet — without exposing them to the internet</div>
+
+  <div class="badges">
+    <span class="badge">🟡 Intermediate</span>
+    <span class="badge">⏱ 15 Minutes</span>
+    <span class="badge">📘 AZ-104 · Module 04</span>
+  </div>
+
+  <div class="callout">
+    <strong>Why This Matters</strong>
+    <p>You've locked down your VNets with NSGs and routing. But what about Azure services like Azure Storage or SQL Database? By default, they have public endpoints accessible from anywhere. Private Endpoints and Service Endpoints let you access Azure services securely from your VNet without exposing them to the internet.</p>
+  </div>
+
+  <!-- Before You Start -->
+  <div class="section full" id="before-you-start">
+    <h2>Before You Start</h2>
+    <table>
+      <tr><th>Prerequisites</th><td><a href="01-vnets-and-subnets.md">VNets &amp; Subnets</a>, <a href="02-network-security-groups.md">Network Security Groups</a></td></tr>
+      <tr><th>Time to understand</th><td>15 minutes</td></tr>
+      <tr><th>Difficulty</th><td>🟡 Intermediate (builds on VNets and NSGs)</td></tr>
+      <tr><th>What you'll learn</th><td>Private Endpoints vs. Service Endpoints, when to use each, how they work</td></tr>
+    </table>
+  </div>
+
+  <!-- The Simple Idea -->
+  <div class="section" id="the-simple-idea-the-problem">
+    <div>
+      <h2>The Simple Idea: The Problem</h2>
+      <p><strong>By default, Azure PaaS services are public.</strong> A VM in your VNet that needs to reach Azure SQL Database will, by default, route over the internet to the service's public endpoint.</p>
+      <p>That means traffic is visible on the internet (bad for security) and creates potential for man-in-the-middle attacks.</p>
+      <p><strong>Goal:</strong> Access SQL from a VM without exposing it to the internet.</p>
+    </div>
+    <div class="panel">Your VNet (10.0.0.0/16)
+└── VM-A (10.0.1.5) wants to use Azure SQL Database
+    └─ Default: SQL has public endpoint (database.database.windows.net)
+    └─ Traffic: 10.0.1.5 → Internet → SQL public endpoint ✗
+       └─ Traffic visible on internet (bad for security)
+       └─ Potential for man-in-the-middle attacks
+
+Goal: Access SQL from VM without exposing it to internet</div>
+  </div>
+
+  <!-- Two Solutions table -->
+  <div class="section full" id="two-solutions">
+    <h2>Two Solutions</h2>
+    <table>
+      <tr><th>Solution</th><th>How</th><th>Security</th><th>Cost</th></tr>
+      <tr><td><strong>Service Endpoint</strong></td><td>Direct route to service (remains public)</td><td>Good (routes through Azure backbone)</td><td>Free</td></tr>
+      <tr><td><strong>Private Endpoint</strong></td><td>Private IP in your VNet</td><td>Excellent (no internet exposure)</td><td>Paid (~$1/month)</td></tr>
+    </table>
+  </div>
+
+  <!-- Solution 1: Service Endpoints -->
+  <div class="section" id="solution-1-service-endpoints">
+    <div>
+      <h2>Solution 1: Service Endpoints</h2>
+      <h3>What Is a Service Endpoint?</h3>
+      <p><strong>Service Endpoint</strong> = Direct route from your VNet to an Azure service, using Azure's internal backbone (not the internet).</p>
+      <h3>Real-World Analogy: Private Warehouse Door</h3>
+      <p>Azure SQL Database is like a public building with multiple doors. The main entrance (public endpoint) is reachable by anyone from the internet — insecure. The special warehouse door (service endpoint) is only accessible from authorized VNets, via a direct route through Azure's internal network — more secure.</p>
+    </div>
+    <div class="panel">Azure SQL Database (Public building with multiple doors)
+
+├── Main entrance (public endpoint)
+│   └─ Anyone from internet can reach
+│   └─ Insecure ✗
+│
+└── Special warehouse door (service endpoint)
+   └─ Only accessible from authorized VNets
+   └─ Direct route through Azure internal network
+   └─ More secure ✓</div>
+  </div>
+
+  <!-- How Service Endpoints Work -->
+  <div class="section full" id="how-service-endpoints-work">
+    <h2>How Service Endpoints Work</h2>
+    <div class="grid3">
+      <div>
+        <h3>Step 1: Create Service Endpoint</h3>
+        <div class="panel small">Subnet → Service Endpoints → Select "Microsoft.Storage"
+└─ Azure configures automatic route</div>
+      </div>
+      <div>
+        <h3>Step 2: System Route Created</h3>
+        <div class="panel small">Subnet's routing table now has:
+Destination: Storage endpoint
+Next Hop: Service Endpoint (Microsoft backbone)</div>
+      </div>
+      <div>
+        <h3>Step 3: Traffic Flows Securely</h3>
+        <div class="panel small">VM-A (10.0.1.5) → Storage service
+└─ Routing: Service Endpoint route selected
+└─ Path: Direct through Azure backbone (not internet)
+└─ Still travels through public internet for other traffic</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Service Endpoint Configuration -->
+  <div class="section full" id="service-endpoint-configuration">
+    <h2>Service Endpoint Configuration</h2>
+    <div class="grid3">
+      <div>
+        <h3>Step 1: Enable Service Endpoint in VNet/Subnet</h3>
+        <div class="panel small">Azure Portal → VNet → Subnet → Service endpoints
+└─ Select: Microsoft.Storage, Microsoft.Sql, etc.</div>
+      </div>
+      <div>
+        <h3>Step 2: Add Firewall Rule to Storage</h3>
+        <div class="panel small">Storage Account → Firewall &amp; Virtual Networks
+└─ Add VNet and subnet
+└─ Result: Only traffic from this VNet allowed</div>
+      </div>
+      <div>
+        <h3>Step 3: Test</h3>
+        <div class="panel small">VM in subnet → Storage account (now works securely) ✓</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Service Endpoint Limitations -->
+  <div class="section full" id="service-endpoint-limitations">
+    <h2>Service Endpoint Limitations</h2>
+    <div class="panel">Service Endpoint:
+├─ ✓ Free (no extra cost)
+├─ ✓ Quick to set up (minutes)
+├─ ✗ Service still has public endpoint (accessible from internet if allowed)
+├─ ✗ Only works with some Azure services
+│  ├─ Supported: Storage, SQL Database, Cosmos DB, Key Vault, App Service
+│  └─ Not supported: Some older services
+└─ ✗ No private IP (routes to service's public IP, but via Azure backbone)</div>
+  </div>
+
+  <!-- Solution 2: Private Endpoints -->
+  <div class="section" id="solution-2-private-endpoints">
+    <div>
+      <h2>Solution 2: Private Endpoints</h2>
+      <h3>What Is a Private Endpoint?</h3>
+      <p><strong>Private Endpoint</strong> = A private IP address in your VNet that connects to an Azure service (the service gets a private IP from your VNet's address space).</p>
+      <h3>Real-World Analogy: Private Branch Location</h3>
+      <p>Azure SQL Database is like a headquarters. The main office (public endpoint) is visited by anyone — insecure. A private branch office inside your own building (private endpoint) can only be visited by your employees; no one from outside can reach it — maximum security.</p>
+    </div>
+    <div class="panel">Azure SQL Database (Headquarters)
+
+├── Main office (public endpoint)
+│   └─ Anyone can visit
+│   └─ Insecure ✗
+│
+└── Private branch office inside your building (private endpoint)
+   └─ Only your employees can visit (same building)
+   └─ No one from outside can reach it
+   └─ Maximum security ✓</div>
+  </div>
+
+  <!-- How Private Endpoints Work -->
+  <div class="section full" id="how-private-endpoints-work">
+    <h2>How Private Endpoints Work</h2>
+    <div class="grid2">
+      <div>
+        <h3>Step 1: Create Private Endpoint</h3>
+        <div class="panel small">Subnet → Private Endpoints → Add
+└─ Resource: Azure SQL Database
+└─ VNet/Subnet: Which subnet gets the private IP?</div>
+      </div>
+      <div>
+        <h3>Step 2: Private IP Created</h3>
+        <div class="panel small">Subnet's address space: 10.0.2.0/24
+└─ Azure assigns private IP from this range
+└─ Example: 10.0.2.10 becomes the SQL Database endpoint
+└─ This IP is NOT publicly accessible</div>
+      </div>
+      <div>
+        <h3>Step 3: Private DNS Zone</h3>
+        <div class="panel small">Azure creates private DNS record:
+└─ database.database.windows.net → 10.0.2.10 (private IP)
+└─ VM in VNet resolves this automatically
+└─ VM connects to 10.0.2.10 (private connection)</div>
+      </div>
+      <div>
+        <h3>Step 4: Traffic Flows Privately</h3>
+        <div class="panel small">VM-A (10.0.1.5) → Private endpoint (10.0.2.10)
+└─ Routing: Matches local VNet route
+└─ Path: Internal VNet connection (never leaves your network) ✓</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Private Endpoint Configuration -->
+  <div class="section full" id="private-endpoint-configuration">
+    <h2>Private Endpoint Configuration</h2>
+    <div class="grid3">
+      <div>
+        <h3>Step 1: Create Private Endpoint</h3>
+        <div class="panel small">Resource Group → Private Endpoints → Create
+├─ Resource: Azure SQL Database
+├─ VNet: Your-VNet
+├─ Subnet: Your subnet (private IP will come from here)
+└─ DNS: Auto-register in private DNS zone ✓</div>
+      </div>
+      <div>
+        <h3>Step 2: Firewall Configuration</h3>
+        <div class="panel small">Storage Account → Firewall &amp; Virtual Networks
+├─ Default action: Deny (block all public access)
+└─ Private Endpoints: Auto-allowed (doesn't need rule)</div>
+      </div>
+      <div>
+        <h3>Step 3: Test</h3>
+        <div class="panel small">VM in VNet → Can reach storage via private endpoint
+Internet → Cannot reach storage (completely private) ✓</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comparison table -->
+  <div class="section full" id="comparison-service-endpoint-vs-private-endpoint">
+    <h2>Comparison: Service Endpoint vs. Private Endpoint</h2>
+    <table>
+      <tr><th>Aspect</th><th>Service Endpoint</th><th>Private Endpoint</th></tr>
+      <tr><td><strong>Private IP in VNet</strong></td><td>❌ No (routes to service's public IP)</td><td>✅ Yes (service gets IP from your subnet)</td></tr>
+      <tr><td><strong>Accessible from internet</strong></td><td>⚠️ Yes (if firewall allows)</td><td>❌ No (completely private)</td></tr>
+      <tr><td><strong>Cost</strong></td><td>Free</td><td>~$1/month per endpoint</td></tr>
+      <tr><td><strong>Setup time</strong></td><td>Fast (minutes)</td><td>Moderate (10-15 min)</td></tr>
+      <tr><td><strong>Supported services</strong></td><td>Limited set</td><td>Broader support</td></tr>
+      <tr><td><strong>DNS</strong></td><td>Public DNS (service.region.azure.com)</td><td>Private DNS zone</td></tr>
+      <tr><td><strong>Bandwidth cost</strong></td><td>No extra charge</td><td>No extra charge</td></tr>
+      <tr><td><strong>Best for</strong></td><td>Quick, low-risk internal access</td><td>Production, high-security</td></tr>
+    </table>
+  </div>
+
+  <!-- Decision Tree -->
+  <div class="section full" id="decision-tree">
+    <h2>Decision Tree</h2>
+    <div class="panel">Need to access Azure PaaS service securely?
+│
+├─ VPN/ExpressRoute connected?
+│  │
+│  ├─ NO → Use Service Endpoint (simplest, free)
+│  │   └─ "Secure enough" for most non-critical workloads
+│  │
+│  └─ YES → Can you route to service's IP via VPN?
+│      ├─ NO (service doesn't support routing) → Service Endpoint
+│      └─ YES → Choose:
+│         ├─ Quick/Free: Service Endpoint ✓
+│         ├─ Secure: Private Endpoint ✓
+│         └─ Both: Set up Private Endpoint for production
+│
+└─ Need maximum security?
+   └─ YES → Use Private Endpoint ✓
+       └─ Service completely hidden from internet</div>
+  </div>
+
+  <!-- Worked Example -->
+  <div class="section full" id="worked-example-real-scenario">
+    <h2>Worked Example: Real Scenario</h2>
+    <h3>The Scenario</h3>
+    <p><strong>TechCorp has:</strong></p>
+    <ul>
+      <li>Azure VNet: 10.0.0.0/16</li>
+      <li>Dev Subnet: 10.0.1.0/24 (development VMs)</li>
+      <li>Production Subnet: 10.0.2.0/24 (production VMs)</li>
+      <li>Azure Storage Account for application data</li>
+      <li>Azure SQL Database for app data</li>
+    </ul>
+    <p><strong>Goal:</strong> Access both securely from VMs without exposing to internet.</p>
+
+    <h3>Phase 1: Service Endpoints for Development</h3>
+    <div class="panel small">Dev environment (not critical):
+  ├─ Create Service Endpoints on Dev Subnet
+  │  ├─ Microsoft.Storage
+  │  ├─ Microsoft.Sql
+  │  └─ Configuration time: 5 minutes
+  │
+  ├─ Storage Account Firewall
+  │  └─ Add Dev VNet/Subnet as allowed
+  │
+  ├─ SQL Database Firewall
+  │  └─ Add Dev VNet/Subnet as allowed
+  │
+  └─ Result:
+     ├─ Dev VMs can access Storage and SQL
+     ├─ Traffic routes through Azure backbone
+     ├─ Cost: $0 (free)
+     └─ Security: Good (internal routing) ✓</div>
+
+    <h3 style="margin-top:24px">Phase 2: Private Endpoints for Production</h3>
+    <div class="panel small">Production environment (critical):
+  ├─ Create Private Endpoint 1 (Storage)
+  │  ├─ Resource: Storage Account
+  │  ├─ VNet: Your-VNet
+  │  ├─ Subnet: Prod Subnet (10.0.2.0/24)
+  │  ├─ Private DNS zone: Auto-created
+  │  └─ Result: Storage has private IP in subnet
+  │
+  ├─ Create Private Endpoint 2 (SQL)
+  │  ├─ Resource: SQL Database
+  │  ├─ VNet: Your-VNet
+  │  ├─ Subnet: Prod Subnet (10.0.2.0/24)
+  │  ├─ Private DNS zone: Auto-created
+  │  └─ Result: SQL has private IP in subnet
+  │
+  ├─ Firewall Configuration
+  │  ├─ Storage: Default deny (public), private endpoint allowed
+  │  ├─ SQL: Default deny (public), private endpoint allowed
+  │  └─ Result: No internet access possible
+  │
+  └─ Result:
+     ├─ Prod VMs can access Storage and SQL via private IPs
+     ├─ Traffic never leaves VNet (maximum security) ✓
+     ├─ Internet cannot reach these services
+     ├─ Cost: ~$2/month for 2 endpoints
+     └─ Security: Excellent (completely private) ✓</div>
+
+    <h3 style="margin-top:24px">Phase 3: Traffic Isolation</h3>
+    <div class="panel">DNS Resolution:
+├─ Dev VM DNS: storage.azure.com → 40.88.100.5 (public)
+│  └─ Resolution: Public IP (resolves through internet DNS)
+│
+└─ Prod VM DNS: storage.azure.com → 10.0.2.10 (private)
+   └─ Resolution: Private IP (resolves through private DNS zone)
+
+Traffic paths:
+├─ Dev VM → Storage: 10.0.1.5 → 40.88.100.5 (internet path)
+│  ├─ Service Endpoint: Route directly through Azure backbone
+│  └─ Firewall allows only from VNet
+│
+└─ Prod VM → Storage: 10.0.2.5 → 10.0.2.10 (VNet path)
+   ├─ Private Endpoint: Routes locally within VNet
+   └─ Never reaches internet ✓</div>
+  </div>
+
+  <!-- Common Mistakes -->
+  <div class="section full" id="common-mistakes-what-not-to-do">
+    <h2>Common Mistakes (What NOT to Do)</h2>
+
+    <h3>❌ Mistake 1: Relying on Service Endpoint Alone for Sensitive Data</h3>
+    <div class="mistake-card">
+      <div>
+        <h4>Wrong</h4>
+        <div class="panel small">Service Endpoint created for SQL Database:
+├─ Routes through Azure backbone ✓
+├─ But SQL is still publicly accessible
+├─ Competitor discovers public IP address
+├─ Competitor uses their own VNet with Service Endpoint
+├─ Competitor can access the database ✗</div>
+      </div>
+      <div>
+        <h4>Fix</h4>
+        <div class="panel small">For sensitive data:
+├─ Use Private Endpoint instead
+├─ Disable public endpoint completely
+├─ Result: Only your VNet can access it ✓</div>
+      </div>
+    </div>
+    <p><strong>Why it fails:</strong> Service Endpoint doesn't hide the public endpoint.</p>
+
+    <h3>❌ Mistake 2: Private Endpoint Without Proper DNS</h3>
+    <div class="mistake-card">
+      <div>
+        <h4>Wrong</h4>
+        <div class="panel small">Private Endpoint created for SQL (10.0.2.10):
+├─ Application code: "Connect to database.database.windows.net"
+├─ DNS resolution: Resolves to 40.88.100.5 (public IP)
+├─ Firewall: Allows only private endpoint
+├─ Result: Connection fails ✗</div>
+      </div>
+      <div>
+        <h4>Fix</h4>
+        <div class="panel small">Create private DNS zone:
+├─ database.database.windows.net → 10.0.2.10
+├─ VNet linked to private DNS zone
+├─ Now: DNS resolves to 10.0.2.10 (private IP)
+├─ Connection uses private endpoint ✓</div>
+      </div>
+    </div>
+    <p><strong>Why it fails:</strong> DNS resolves to public IP, but firewall blocks it.</p>
+
+    <h3>❌ Mistake 3: Creating Private Endpoint in Wrong Subnet</h3>
+    <div class="mistake-card">
+      <div>
+        <h4>Wrong</h4>
+        <div class="panel small">Prod Subnet: 10.0.2.0/24 (prod workloads)
+Dev Subnet: 10.0.1.0/24 (dev workloads)
+
+Create Private Endpoint in Subnet 10.0.1.0/24:
+├─ Prod workloads in 10.0.2.0/24 try to access database
+├─ DNS: Resolves to private endpoint IP (10.0.1.10)
+├─ Routing: 10.0.2.5 → 10.0.1.10 (different subnet)
+├─ Works but not optimal ⚠️
+└─ Better: Private endpoint in same subnet as clients</div>
+      </div>
+      <div>
+        <h4>Fix</h4>
+        <div class="panel small">Create Private Endpoint in prod subnet:
+├─ Private Endpoint IP: 10.0.2.10 (same subnet as clients)
+├─ Prod workload (10.0.2.5) → 10.0.2.10 (local)
+└─ Lower latency, cleaner routing ✓</div>
+      </div>
+    </div>
+    <p><strong>Why it fails:</strong> Not a complete failure, but adds latency and complexity.</p>
+  </div>
+
+  <!-- Checklist -->
+  <div class="section full" id="service-endpoint-vs-private-endpoint-checklist">
+    <h2>Service Endpoint vs. Private Endpoint Checklist</h2>
+    <div class="panel">Choosing between them:
+
+□ For development/non-critical:
+  ├─ Service Endpoint usually sufficient
+  ├─ Lower cost (free)
+  ├─ Quick to set up
+  └─ Good balance of security and simplicity
+
+□ For production/sensitive data:
+  ├─ Use Private Endpoint
+  ├─ Highest security (private IP)
+  ├─ Public endpoint can be completely disabled
+  └─ Worth the small monthly cost
+
+□ Hybrid approach:
+  ├─ Service Endpoints: External/non-critical services
+  ├─ Private Endpoints: Internal/sensitive services
+  └─ Both: Some organizations use both for defense-in-depth
+
+□ If using Private Endpoint:
+  ├─ Create private DNS zone (auto-done)
+  ├─ Link DNS zone to VNet
+  ├─ Disable public endpoint on storage
+  └─ Test: Confirm private endpoint works, public fails ✓
+
+□ If using Service Endpoint:
+  ├─ Enable on subnet(s) where workloads exist
+  ├─ Add VNet/subnet to storage firewall
+  ├─ Storage still has public endpoint
+  └─ Consider: Is this sufficient for security requirements? ✓</div>
+  </div>
+
+  <!-- Connections -->
+  <div class="section full" id="how-this-connects-to-other-topics">
+    <h2>How This Connects to Other Topics</h2>
+    <div class="grid2">
+      <div>
+        <h3>Related to Module 01 (Identity &amp; Governance)</h3>
+        <ul>
+          <li><strong>RBAC:</strong> Only admins can create/manage Private Endpoints</li>
+        </ul>
+        <h3>Related to Module 02 (Storage)</h3>
+        <ul>
+          <li><strong>Storage Security:</strong> Private Endpoints secure storage access</li>
+          <li><strong>Storage Firewall:</strong> Works with both Service and Private Endpoints</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Related to Module 03 (Compute)</h3>
+        <ul>
+          <li><strong>VM Access to Services:</strong> VMs use Private/Service Endpoints to reach PaaS</li>
+        </ul>
+        <h3>Related to Module 05 (Monitor)</h3>
+        <ul>
+          <li><strong>Monitor Endpoint:</strong> Track Private Endpoint connections</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- See It In Action -->
+  <div class="section full" id="see-it-in-action">
+    <h2>See It In Action</h2>
+    <p><strong>Associated labs:</strong></p>
+    <ul>
+      <li><a href="../labs/lab17-service-endpoints.md">Lab 17: Configure Service Endpoints</a></li>
+      <li><a href="../labs/lab18-private-endpoints.md">Lab 18: Configure Private Endpoints</a></li>
+    </ul>
+    <p><strong>Suggested learning sequence:</strong></p>
+    <ol>
+      <li>✅ Read <a href="01-vnets-and-subnets.md">VNets &amp; Subnets</a></li>
+      <li>✅ Read <a href="02-network-security-groups.md">Network Security Groups</a></li>
+      <li>✅ Read <a href="05-vpn-and-expressroute.md">VPN &amp; ExpressRoute</a></li>
+      <li>✅ Read this doc (Private Endpoints &amp; Service Endpoints)</li>
+      <li>✅ Work through Lab 17 (Service Endpoints hands-on)</li>
+      <li>✅ Work through Lab 18 (Private Endpoints hands-on)</li>
+    </ol>
+  </div>
+
+  <!-- Key Takeaways -->
+  <div class="section full" id="key-takeaways">
+    <h2>Key Takeaways</h2>
+    <div class="tip">
+      <strong>💡 Summary</strong>
+      <ul style="margin-top:8px">
+        <li><strong>Service Endpoint = free route to service</strong> (good, not perfect)</li>
+        <li><strong>Private Endpoint = private IP in your VNet</strong> (best security)</li>
+        <li><strong>Service Endpoint:</strong> Suitable for non-critical, internal-only traffic</li>
+        <li><strong>Private Endpoint:</strong> For sensitive data, production workloads</li>
+        <li><strong>Private DNS zone:</strong> Required for Private Endpoints to work seamlessly</li>
+        <li><strong>Firewall integration:</strong> Both work with storage/service firewalls</li>
+        <li><strong>Public endpoint:</strong> Can be disabled entirely with Private Endpoints</li>
+        <li><strong>Cost:</strong> Service Endpoint free, Private Endpoint ~$1/month</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Next Steps -->
+  <div class="section full" id="next-steps">
+    <h2>Next Steps</h2>
+    <ol>
+      <li><strong>Learn:</strong> Read this doc (you're here)</li>
+      <li><strong>Understand:</strong> When to use each (decision tree above)</li>
+      <li><strong>Practice:</strong> <a href="../labs/lab17-service-endpoints.md">Lab 17: Service Endpoints</a></li>
+      <li><strong>Practice:</strong> <a href="../labs/lab18-private-endpoints.md">Lab 18: Private Endpoints</a></li>
+      <li><strong>Secure:</strong> Disable public endpoints for sensitive services</li>
+      <li><strong>Monitor:</strong> Track endpoint usage and security</li>
+    </ol>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-grid">
+      <div class="footer-item">
+        <strong>Azure AZ-104</strong>
+        Professional Concept Documentation
+      </div>
+      <div class="footer-item">
+        <strong>Module</strong>
+        04 — Networking
+      </div>
+      <div class="footer-item">
+        <strong>Generated</strong>
+        June 15, 2026
+      </div>
+    </div>
+    <div class="footer-meta">&copy; 2026 — AZ-104 Learning Hub. For study purposes only.</div>
+  </div>
+
+</div>
+</div>
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.sidebar a'));
+  var sections = [];
+  links.forEach(function(a){
+    var el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) sections.push({link:a, el:el});
+  });
+  if (!sections.length || !('IntersectionObserver' in window)) return;
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (!entry.isIntersecting) return;
+      var match = sections.find(function(s){ return s.el === entry.target; });
+      if (!match) return;
+      links.forEach(function(a){ a.classList.remove('active'); });
+      match.link.classList.add('active');
+    });
+  }, { rootMargin: '-100px 0px -70% 0px', threshold: 0 });
+  sections.forEach(function(s){ observer.observe(s.el); });
+})();
+</script>
+</body>
+</html>
+
+
+
+
