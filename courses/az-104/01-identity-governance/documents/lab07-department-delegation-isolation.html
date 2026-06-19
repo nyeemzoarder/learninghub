@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab 07 – Department Delegation & Multi-Team Isolation - AZ-104 Labs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Professional Lab Template - Embedded CSS for local file:// access */
+:root{--bg:#f7f9fd;--card:#fff;--border:#e2e8f0;--text:#1a202c;--muted:#64748b;--primary:#1e3a8a;--panel:#0f172a;--panel-shadow:rgba(15,23,42,.12);--section-gap:48px;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,-apple-system,'Segoe UI',sans-serif;color:var(--text);line-height:1.6}.page{flex:1;min-width:0;padding:48px;max-width:1100px;margin:0 auto}
+h1{font-size:3.4rem;line-height:1.2;margin:0 0 12px 0;color:var(--primary);font-weight:800;letter-spacing:-0.5px}h2{font-size:2.2rem;margin:0 0 24px 0;color:var(--primary);font-weight:800;letter-spacing:-0.5px}h3{font-size:1.45rem;margin:32px 0 16px 0;color:var(--primary);font-weight:700;letter-spacing:-0.3px}h3:first-child{margin-top:0}h4{font-size:1.1rem;margin:20px 0 12px 0;color:#1e3a8a;font-weight:700}
+p{font-size:1.05rem;line-height:1.7;margin:12px 0;color:var(--text)}ul,ol{margin:16px 0;padding-left:24px}li{margin-bottom:10px;line-height:1.7;font-size:1.03rem;color:var(--text)}
+a{color:#1e40af;text-decoration:none;border-bottom:2px solid transparent;font-weight:600;transition:border-color 0.2s}a:hover{border-bottom-color:#1e40af}strong{color:var(--primary);font-weight:700}code{background:#f0f4ff;color:#1e40af;padding:4px 8px;border-radius:6px;font:13px/1.5 'SF Mono',Consolas,'Courier New',monospace;font-weight:500}
+.task-box{margin:24px 0;padding:0;background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(30,64,175,.06);transition:box-shadow 0.2s,border-color 0.2s}.task-box:hover{box-shadow:0 4px 12px rgba(30,64,175,.12);border-color:#c7d2fe}
+.task-header{display:flex;align-items:center;gap:12px;padding:18px 20px;background:linear-gradient(135deg,#dbeafe 0%,#eff6ff 100%);border-bottom:1px solid var(--border)}.task-header .task-icon{font-size:1.4rem;color:#1e40af}.task-header h3{margin:0;font-size:1.2rem;color:var(--primary);font-weight:700}.task-content{padding:20px}
+.code-block{position:relative;margin:24px 0;background:#0f172a;border-radius:10px;overflow:hidden;border:1px solid #1e293b;box-shadow:0 4px 12px rgba(15,23,42,.25)}.code-block pre{margin:0;padding:20px 48px 20px 20px;color:#e2e8f0;font-family:'SF Mono',Consolas,'Courier New',monospace;font-size:0.92rem;line-height:1.7;overflow-x:auto}
+.code-copy-btn{position:absolute;top:12px;right:12px;padding:8px 14px;background:#1e293b;color:#60a5fa;border:1px solid #334155;border-radius:6px;cursor:pointer;font-size:0.85rem;font-weight:600;transition:all 0.2s;user-select:none;box-shadow:0 1px 3px rgba(0,0,0,.2)}.code-copy-btn:hover{background:#334155;color:#93c5fd;border-color:#475569}.code-block .keyword{color:#569cd6}.code-block .string{color:#ce9178}.code-block .comment{color:#6a9955}.code-block .operator{color:#d4d4d4}.code-block .function{color:#dcdcaa}.code-block .property{color:#9cdcfe}
+.callout-box{margin:24px 0;padding:18px 20px;border-radius:10px;border-left:4px solid;display:flex;gap:14px;box-shadow:0 1px 3px rgba(0,0,0,.05)}.callout-icon{font-size:1.5rem;flex-shrink:0;min-width:28px;text-align:center}.callout-content{flex:1}.callout-content h4{margin:0 0 8px 0;font-size:1.08rem;font-weight:700}.callout-content p{margin:8px 0;line-height:1.7;font-size:1.02rem}.callout-content p:first-child{margin-top:0}
+.callout-tip{background:#eff6ff;border-color:#3b82f6}.callout-tip .callout-icon{color:#1e40af}.callout-tip h4{color:#1e40af}.callout-warning{background:#fefce8;border-color:#eab308}.callout-warning .callout-icon{color:#ca8a04}.callout-warning h4{color:#92400e}.callout-important{background:#fee2e2;border-color:#ef4444}.callout-important .callout-icon{color:#dc2626}.callout-important h4{color:#991b1b}
+.section-time{background:#dbeafe;border:1px solid #93c5fd;border-radius:8px;padding:10px 16px;font-size:0.95rem;font-weight:600;color:#1e40af;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}.layout{max-width:1500px;margin:auto;display:flex;align-items:flex-start;gap:32px}.sidebar{flex:0 0 280px;position:sticky;top:88px;max-height:calc(100vh - 108px);overflow-y:auto;padding:24px;background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 2px 8px rgba(30,64,175,.06)}.sidebar summary{cursor:pointer;list-style:none;padding:10px 12px;border-radius:8px;font-weight:600;font-size:.93rem;color:var(--primary);user-select:none;transition:all 0.2s}.sidebar summary::-webkit-details-marker{display:none}.sidebar details[open]>summary{background:#dbeafe}.sidebar summary:hover{background:#eff6ff}.sidebar a{display:block;padding:9px 12px;margin-bottom:2px;border-radius:8px;font-size:.89rem;font-weight:500;color:var(--text);border-bottom:none;border-left:3px solid transparent;line-height:1.5;transition:all 0.15s;text-decoration:none;color:#1a202c}.sidebar a:hover{background:#eff6ff;color:var(--primary)}.site-nav{position:sticky;top:0;z-index:1000;background:var(--primary);color:#fff;display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:14px 32px;font-size:.93rem;box-shadow:0 4px 12px rgba(0,0,0,.1);font-family:Inter,-apple-system,'Segoe UI',sans-serif}.site-nav .nav-brand{font-weight:800;font-size:1.1rem;margin-right:auto;color:#fff;letter-spacing:-0.3px}.site-nav summary{cursor:pointer;list-style:none;padding:8px 16px;border-radius:8px;background:rgba(255,255,255,.12);font-weight:600;color:#fff;user-select:none;transition:background 0.2s}
+</style>
+</head>
+<body>
+<nav class="site-nav" aria-label="Main site navigation">
+  <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
+  <details class="nav-group" aria-label="Learning module selector">
+    <summary>Learning Module</summary>
+    <div class="nav-menu">
+      <a href="../../00-prerequisites/documents/module-home.html">00 - Prerequisites</a>
+      <a href="../../01-identity-governance/documents/module-home.html">01 - Identity &amp; Governance</a>
+      <a href="../../02-storage/documents/module-home.html">02 - Storage</a>
+      <a href="../../03-compute/documents/module-home.html">03 - Compute</a>
+      <a href="../../04-networking/documents/module-home.html">04 - Networking</a>
+      <a href="../../05-monitor-maintain/documents/module-home.html">05 - Monitor &amp; Maintain</a>
+    </div>
+  </details>
+</nav>
+<div class="layout">
+  <aside class="sidebar" aria-label="Page navigation">
+    <details open>
+      <summary>▶ Module 01 - Identity &amp; Governance</summary>
+      <div>
+        <a href="01-entra-id-overview.html">01 - Entra ID Overview</a>
+<a href="02-rbac-fundamentals.html">02 - RBAC Fundamentals</a>
+<a href="03-management-groups-and-azure-policy.html">03 - Management Groups &amp; Azure Policy</a>
+<a href="04-access-control-scenarios.html">04 - Access Control Scenarios</a>
+<a href="05-identity-best-practices.html">05 - Identity Best Practices</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ Labs</summary>
+      <div>
+        <a href="lab01-entra-users-groups.html">Lab 01 - Entra Users &amp; Groups</a>
+<a href="lab02-rbac-azure-policy.html">Lab 02 - RBAC &amp; Azure Policy</a>
+<a href="lab03-management-groups-subscriptions.html">Lab 03 - Management Groups</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ On This Page</summary>
+      <div>
+        <a href="#real-life-scenario">Real-Life Scenario</a>
+<a href="#prerequisites">Prerequisites</a>
+<a href="#estimated-time">Estimated Time</a>
+<a href="#part-1-design-management-group-hierarchy">Part 1 – Design Management Group Hierarchy</a>
+<a href="#part-2-create-management-groups">Part 2 – Create Management Groups</a>
+<a href="#part-3-organize-subscriptions-under-management-groups">Part 3 – Organize Subscriptions Under Management Groups</a>
+<a href="#part-4-create-department-entra-groups">Part 4 – Create Department Entra Groups</a>
+<a href="#part-5-configure-scoped-rbac-assignments">Part 5 – Configure Scoped RBAC Assignments</a>
+<a href="#part-6-test-department-isolation">Part 6 – Test Department Isolation</a>
+<a href="#final-assessment-department-delegation-checklist">Final Assessment: Department Delegation Checklist</a>
+<a href="#key-takeaways">Key Takeaways</a>
+<a href="#real-world-application">Real-World Application</a>
+<a href="#next-steps">Next Steps</a>
+      </div>
+    </details>
+  </aside>
+  <div class="page">
+  <h1>Lab 07 – Department Delegation & Multi-Team Isolation</h1>
+
+<h2 id="real-life-scenario">Real-Life Scenario</h2>
+
+<p><strong>Company: TechCorp Enterprise (500+ employees)</strong></p>
+
+<p>TechCorp has grown from startup to enterprise scale. Three departments now manage their own Azure infrastructure independently:</p>
+<ul><ol><li><strong>Finance Department</strong>: 50 people, 3 subscriptions (Prod, Staging, Dev), $15K/month spend</li>
+<li><strong>Engineering Department</strong>: 100 people, 4 subscriptions (Prod, Staging, Dev, ML), $28K/month spend</li>
+<li><strong>Operations</strong>: 25 people, 2 subscriptions (Infrastructure, Security), $4K/month spend</li></ol></ul>
+
+<p><strong>The Challenge:</strong></p>
+<ul><ol><li>Central IT is overwhelmed managing everyone's access</li>
+<li>Finance VP wants to manage Finance subscriptions without IT gate-keeping</li>
+<li>Engineering VP wants autonomy for their team</li>
+<li>But nobody should see other departments' data (confidential!)</li>
+<li>Central IT needs to maintain overall control and compliance</li></ol></ul>
+
+<p><strong>The Problem:</strong></p>
+<div class='code-block'><pre>Current (Broken):
+<p>├─ Everything goes through IT (bottleneck)</p>
+<p>├─ IT is hiring just to handle access requests</p>
+<p>├─ Departments frustrated with slow change management</p>
+<p>├─ No financial accountability per department</p>
+<p>└─ Risk: Finance accessing Engineering data by mistake</pre></div></p>
+
+<p><strong>Your Challenge:</strong> Implement department-based delegation with isolation</p>
+
+<p><strong>The Solution You'll Build:</strong></p>
+<div class='code-block'><pre>MANAGEMENT GROUP HIERARCHY:
+<p>Root (TechCorp)</p>
+<p>├── Finance Department (MG)</p>
+<p>│   ├── Finance-Prod (Sub)</p>
+<p>│   ├── Finance-Staging (Sub)</p>
+<p>│   └── Finance-Dev (Sub)</p>
+<p>├── Engineering Department (MG)</p>
+<p>│   ├── Eng-Prod (Sub)</p>
+<p>│   ├── Eng-Staging (Sub)</p>
+<p>│   ├── Eng-Dev (Sub)</p>
+<p>│   └── Eng-ML (Sub)</p>
+<p>└── Operations (MG)</p>
+<p>├── Ops-Infrastructure (Sub)</p>
+<p>└── Ops-Security (Sub)</p>
+
+<p>ACCESS MODEL:</p>
+<p>Finance VP:</p>
+<p>├─ Can see: Finance Department subscriptions ONLY</p>
+<p>├─ Cannot see: Engineering or Operations data</p>
+<p>├─ Role: Contributor on Finance MG (affects all Finance subs)</p>
+<p>└─ Result: Manages Finance independently</p>
+
+<p>Engineering VP:</p>
+<p>├─ Can see: Engineering Department subscriptions ONLY</p>
+<p>├─ Cannot see: Finance or Operations data</p>
+<p>├─ Role: Contributor on Engineering MG</p>
+<p>└─ Result: Manages Engineering independently</p>
+
+<p>IT Director:</p>
+<p>├─ Can see: EVERYTHING (Root scope)</p>
+<p>├─ Role: Owner at Root</p>
+<p>└─ Result: Central oversight + emergency access</p>
+
+<p>RESULT: Departments autonomous + Isolated + Auditable</pre></div></p>
+
+<hr class="divider">
+
+<h2 id="prerequisites">Prerequisites</h2>
+
+<p><strong>Required Knowledge:</strong></p>
+<ul><ol><li><a href="lab01-entra-users-groups.md">Lab 01: Entra ID - Users & Groups</a></li>
+<li><a href="lab02-rbac-azure-policy.md">Lab 02: RBAC & Azure Policy</a></li>
+<li><a href="lab03-management-groups-subscriptions.md">Lab 03: Management Groups & Subscriptions</a></li></ol></ul>
+
+<p><strong>Required Permissions:</strong></p>
+<ul><ol><li>Global Administrator or User Access Administrator</li>
+<li>Root Management Group access</li>
+<li>At least 6+ subscriptions (or ability to create them)</li></ol></ul>
+
+<p><strong>Scope:</strong> Tenant-wide (affects all subscriptions)</p>
+
+<hr class="divider">
+
+<h2 id="estimated-time">Estimated Time</h2>
+
+<p><strong>Total: 100 minutes</strong></p>
+<ul><ol><li>Part 1: Design MG hierarchy (20 min)</li>
+<li>Part 2: Create management groups (20 min)</li>
+<li>Part 3: Organize subscriptions (15 min)</li>
+<li>Part 4: Create department groups (15 min)</li>
+<li>Part 5: Configure scoped RBAC (20 min)</li>
+<li>Part 6: Test isolation (10 min)</li></ol></ul>
+
+<p><strong>Difficulty: Advanced</strong></p>
+
+<hr class="divider">
+
+<h2 id="part-1-design-management-group-hierarchy">Part 1 – Design Management Group Hierarchy</h2>
+
+<h3 id="the-challenge">The Challenge</h3>
+
+<p>Before you build the hierarchy, design it. Poor design = painful refactoring later.</p>
+
+<h3 id="what-youll-learn">What You'll Learn</h3>
+
+<ul><ol><li>How to think about management group organization</li>
+<li>How to avoid common design mistakes</li>
+<li>How to plan for scale</li></ol></ul>
+
+<h3 id="step-by-step-tasks">Step-by-Step Tasks</h3>
+
+<p><strong>Step 1: Understand the Requirements</strong></p>
+
+<p>TechCorp needs:</p>
+<div class='code-block'><pre>DESIGN REQUIREMENTS:
+<p>├─ 3 departments with autonomous management</p>
+<p>├─ Each department sees only their subscriptions</p>
+<p>├─ Each department has Prod/Staging/Dev environments</p>
+<p>├─ IT maintains central control</p>
+<p>├─ Policies cascade to all departments</p>
+<p>└─ Cost tracking by department</pre></div></p>
+
+<p><strong>Step 2: Design the Hierarchy</strong></p>
+
+<p>Create your MG design:</p>
+
+<div class='code-block'><pre>ROOT (TechCorp Tenant Root Group)
+<p>└── Purpose: Apply tenant-wide policies</p>
+
+<p>├── mg-finance (Finance Department)</p>
+<p>│   ├── Purpose: Isolate Finance resources</p>
+<p>│   ├── Subscriptions:</p>
+<p>│   │   ├─ finance-prod</p>
+<p>│   │   ├─ finance-staging</p>
+<p>│   │   └─ finance-dev</p>
+<p>│   └── Owner: Finance VP (Contributor role)</p>
+<p>│</p>
+<p>├── mg-engineering (Engineering Department)</p>
+<p>│   ├── Purpose: Isolate Engineering resources</p>
+<p>│   ├── Subscriptions:</p>
+<p>│   │   ├─ eng-prod</p>
+<p>│   │   ├─ eng-staging</p>
+<p>│   │   ├─ eng-dev</p>
+<p>│   │   └─ eng-ml</p>
+<p>│   └── Owner: Engineering VP (Contributor role)</p>
+<p>│</p>
+<p>└── mg-operations (Operations Department)</p>
+<p>├── Purpose: Infrastructure/security</p>
+<p>├── Subscriptions:</p>
+<p>│   ├─ ops-infrastructure</p>
+<p>│   └─ ops-security</p>
+<p>└── Owner: Operations Director (Contributor role)</pre></div></p>
+
+<p><strong>Step 3: Plan RBAC Assignments</strong></p>
+
+<p>Document which groups get which roles at which scopes:</p>
+
+<div class='code-block'><pre>RBAC PLAN:
+
+<p>ROOT SCOPE:</p>
+<p>├─ grp-it-admins: Owner (view everything, override anything)</p>
+<p>├─ grp-auditors: Reader (audit everything)</p>
+<p>└─ Security policy: Applied to all subscriptions</p>
+
+<p>FINANCE MG:</p>
+<p>├─ grp-finance-admins: Contributor (manage Finance subs)</p>
+<p>├─ grp-finance-users: Reader (view Finance resources)</p>
+<p>└─ Finance-specific policies</p>
+
+<p>ENGINEERING MG:</p>
+<p>├─ grp-engineering-admins: Contributor (manage Eng subs)</p>
+<p>├─ grp-engineering-users: Reader (view Eng resources)</p>
+<p>└─ Engineering-specific policies</p>
+
+<p>OPERATIONS MG:</p>
+<p>├─ grp-ops-admins: Contributor (manage Ops subs)</p>
+<p>├─ grp-ops-users: Reader (view Ops resources)</p>
+<p>└─ Ops-specific policies</pre></div></p>
+
+<p><strong>Step 4: Document Design</strong></p>
+
+<p>Create a design document:</p>
+
+<div class='code-block'><pre>MANAGEMENT GROUP DESIGN DOCUMENT
+<p>════════════════════════════════════════════════════════════</p>
+
+<p>DESIGNED FOR: TechCorp Enterprise</p>
+
+<p>HIERARCHY STRUCTURE:</p>
+<p>(paste your hierarchy diagram)</p>
+
+<p>DEPARTMENT DETAILS:</p>
+
+<p>Finance Department:</p>
+<p>├─ Subscriptions: 3 (prod, staging, dev)</p>
+<p>├─ Expected cost: $15K/month</p>
+<p>├─ Admin group: grp-finance-admins</p>
+<p>├─ Member count: 50 people</p>
+<p>└─ Isolation: Complete (no cross-access)</p>
+
+<p>Engineering Department:</p>
+<p>├─ Subscriptions: 4 (prod, staging, dev, ml)</p>
+<p>├─ Expected cost: $28K/month</p>
+<p>├─ Admin group: grp-engineering-admins</p>
+<p>├─ Member count: 100 people</p>
+<p>└─ Isolation: Complete (no cross-access)</p>
+
+<p>Operations Department:</p>
+<p>├─ Subscriptions: 2 (infrastructure, security)</p>
+<p>├─ Expected cost: $4K/month</p>
+<p>├─ Admin group: grp-ops-admins</p>
+<p>├─ Member count: 25 people</p>
+<p>└─ Isolation: Complete (no cross-access)</p>
+
+<p>APPROVAL: Design reviewed and approved ☐</pre></div></p>
+
+<h3 id="validation-checklist">Validation Checklist</h3>
+
+<ul><ol><li>[ ] Hierarchy designed with 3 departments</li>
+<li>[ ] Each department has 2-4 subscriptions planned</li>
+<li>[ ] Scope assignments documented</li>
+<li>[ ] Groups and roles defined</li>
+<li>[ ] Design document created</li>
+<li>[ ] Design reviewed for conflicts/gaps</li></ol></ul>
+
+<h3 id="success-criteria">Success Criteria</h3>
+
+<p>✅ Complete: Clear MG hierarchy designed</p>
+<p>✅ Department isolation planned</p>
+<p>✅ RBAC assignment strategy defined</p>
+<p>✅ Ready to implement</p>
+
+<hr class="divider">
+
+<h2 id="part-2-create-management-groups">Part 2 – Create Management Groups</h2>
+
+<h3 id="the-challenge">The Challenge</h3>
+
+<p>Implement your design by creating the management group hierarchy.</p>
+
+<h3 id="what-youll-learn">What You'll Learn</h3>
+
+<ul><ol><li>How to create management groups</li>
+<li>How to nest management groups</li>
+<li>How to verify hierarchy is correct</li></ol></ul>
+
+<h3 id="step-by-step-tasks">Step-by-Step Tasks</h3>
+
+<p><strong>Step 1: Create Top-Level Department Groups</strong></p>
+
+<ol><li>Go to <strong>Management groups</strong></li>
+<li>Click <strong>+ Create management group</strong></li>
+
+<li>Create Finance Department MG:</li></ol>
+<div class='code-block'><pre>Name: mg-finance
+<p>Display Name: Finance Department</p>
+<p>Parent: Root Management Group</p>
+<p>Description: Finance department subscriptions and access</pre></div></p>
+
+<ol><li>Create Engineering Department MG:</li></ol>
+<div class='code-block'><pre>Name: mg-engineering
+<p>Display Name: Engineering Department</p>
+<p>Parent: Root Management Group</p>
+<p>Description: Engineering department subscriptions and access</pre></div></p>
+
+<ol><li>Create Operations MG:</li></ol>
+<div class='code-block'><pre>Name: mg-operations
+<p>Display Name: Operations Department</p>
+<p>Parent: Root Management Group</p>
+<p>Description: Operations subscriptions and access</pre></div></p>
+
+<p><strong>Step 2: Verify Hierarchy</strong></p>
+
+<ol><li>Go to <strong>Management groups</strong> > <strong>Hierarchy</strong></li>
+<li>Expand the tree view</li>
+<li>Verify structure matches your design:</li></ol>
+
+<div class='code-block'><pre>Tenant Root Group
+<p>├── mg-finance</p>
+<p>├── mg-engineering</p>
+<p>└── mg-operations</pre></div></p>
+
+<p><strong>Step 3: Document Creation</strong></p>
+
+<div class='code-block'><pre>MANAGEMENT GROUP CREATION LOG
+<p>════════════════════════════════════════════════════════════</p>
+
+<p>Created: mg-finance</p>
+<p>├─ Display Name: Finance Department</p>
+<p>├─ Parent: Root Management Group</p>
+<p>├─ Created: _______&lt;em&gt;&lt;strong&gt; (date)</p>
+<p>└─ Status: ✓ Created</p>
+
+<p>Created: mg-engineering</p>
+<p>├─ Display Name: Engineering Department</p>
+<p>├─ Parent: Root Management Group</p>
+<p>├─ Created: &lt;/strong&gt;&lt;/em&gt;____&lt;em&gt;&lt;strong&gt; (date)</p>
+<p>└─ Status: ✓ Created</p>
+
+<p>Created: mg-operations</p>
+<p>├─ Display Name: Operations Department</p>
+<p>├─ Parent: Root Management Group</p>
+<p>├─ Created: &lt;/strong&gt;&lt;/em&gt;____&lt;em&gt;&lt;strong&gt; (date)</p>
+<p>└─ Status: ✓ Created</p>
+
+<p>HIERARCHY STATUS: ✓ Complete</pre></div></p>
+
+<h3 id="validation-checklist">Validation Checklist</h3>
+
+<ul><ol><li>[ ] Created mg-finance MG</li>
+<li>[ ] Created mg-engineering MG</li>
+<li>[ ] Created mg-operations MG</li>
+<li>[ ] All nested under Root</li>
+<li>[ ] Hierarchy verified in Azure Portal</li>
+<li>[ ] Creation log completed</li></ol></ul>
+
+<h3 id="success-criteria">Success Criteria</h3>
+
+<p>✅ Complete: All 3 department MGs created</p>
+<p>✅ Hierarchy matches design</p>
+<p>✅ All MGs visible in Azure Portal</p>
+
+<hr class="divider">
+
+<h2 id="part-3-organize-subscriptions-under-management-groups">Part 3 – Organize Subscriptions Under Management Groups</h2>
+
+<h3 id="the-challenge">The Challenge</h3>
+
+<p>Move existing subscriptions into the right management groups.</p>
+
+<h3 id="what-youll-learn">What You'll Learn</h3>
+
+<ul><ol><li>How to move subscriptions to management groups</li>
+<li>How to verify subscriptions are in correct location</li>
+<li>How to troubleshoot subscription movement</li></ol></ul>
+
+<h3 id="step-by-step-tasks">Step-by-Step Tasks</h3>
+
+<p><strong>Step 1: Identify Your Subscriptions</strong></p>
+
+<p>List which subscriptions you'll move to each MG:</p>
+
+<div class='code-block'><pre>SUBSCRIPTION ASSIGNMENT PLAN:
+
+<p>Finance Department (mg-finance):</p>
+<p>├─ Subscription 1: finance-prod</p>
+<p>├─ Subscription 2: finance-staging</p>
+<p>└─ Subscription 3: finance-dev</p>
+
+<p>Engineering Department (mg-engineering):</p>
+<p>├─ Subscription 4: eng-prod</p>
+<p>├─ Subscription 5: eng-staging</p>
+<p>├─ Subscription 6: eng-dev</p>
+<p>└─ Subscription 7: eng-ml</p>
+
+<p>Operations (mg-operations):</p>
+<p>├─ Subscription 8: ops-infrastructure</p>
+<p>└─ Subscription 9: ops-security</p>
+
+<p>OR use existing subscriptions if you have them</pre></div></p>
+
+<p><strong>Step 2: Move Subscriptions to Finance MG</strong></p>
+
+<ol><li>Go to <strong>Management groups</strong> > <strong>mg-finance</strong></li>
+<li>Click <strong>Subscriptions</strong> tab</li>
+<li>Click <strong>Add subscription</strong></li>
+<li>Select your Finance subscriptions (or create new ones)</li>
+<li>Click <strong>Save</strong></li></ol>
+
+<p>Repeat for each Finance subscription.</p>
+
+<p><strong>Step 3: Move Subscriptions to Engineering MG</strong></p>
+
+<ol><li>Go to <strong>Management groups</strong> > <strong>mg-engineering</strong></li>
+<li>Repeat the process for Engineering subscriptions</li></ol>
+
+<p><strong>Step 4: Move Subscriptions to Operations MG</strong></p>
+
+<ol><li>Go to <strong>Management groups</strong> > <strong>mg-operations</strong></li>
+<li>Repeat for Operations subscriptions</li></ol>
+
+<p><strong>Step 5: Verify Subscription Organization</strong></p>
+
+<p>For each MG:</p>
+<ol><li>Click the MG name</li>
+<li>Go to <strong>Subscriptions</strong> tab</li>
+<li>Verify correct subscriptions appear</li>
+<li>Document:</li></ol>
+
+<div class='code-block'><pre>SUBSCRIPTION ORGANIZATION VERIFICATION:
+
+<p>mg-finance subscriptions:</p>
+<p>├─ finance-prod: ✓ Present</p>
+<p>├─ finance-staging: ✓ Present</p>
+<p>└─ finance-dev: ✓ Present</p>
+<p>└─ Status: COMPLETE</p>
+
+<p>mg-engineering subscriptions:</p>
+<p>├─ eng-prod: ✓ Present</p>
+<p>├─ eng-staging: ✓ Present</p>
+<p>├─ eng-dev: ✓ Present</p>
+<p>└─ eng-ml: ✓ Present</p>
+<p>└─ Status: COMPLETE</p>
+
+<p>mg-operations subscriptions:</p>
+<p>├─ ops-infrastructure: ✓ Present</p>
+<p>└─ ops-security: ✓ Present</p>
+<p>└─ Status: COMPLETE</pre></div></p>
+
+<h3 id="validation-checklist">Validation Checklist</h3>
+
+<ul><ol><li>[ ] Identified all subscriptions to organize</li>
+<li>[ ] Moved Finance subscriptions to mg-finance</li>
+<li>[ ] Moved Engineering subscriptions to mg-engineering</li>
+<li>[ ] Moved Operations subscriptions to mg-operations</li>
+<li>[ ] Verified each MG has correct subscriptions</li>
+<li>[ ] All subscriptions organized</li></ol></ul>
+
+<h3 id="success-criteria">Success Criteria</h3>
+
+<p>✅ Complete: All subscriptions in correct MGs</p>
+<p>✅ No subscriptions under Root</p>
+<p>✅ Department isolation at subscription level</p>
+
+<hr class="divider">
+
+<h2 id="part-4-create-department-entra-groups">Part 4 – Create Department Entra Groups</h2>
+
+<h3 id="the-challenge">The Challenge</h3>
+
+<p>You need groups to assign roles. Create groups for each department.</p>
+
+<h3 id="what-youll-learn">What You'll Learn</h3>
+
+<ul><ol><li>How to create department-specific groups</li>
+<li>How to organize groups for scalability</li>
+<li>How to plan group naming</li></ol></ul>
+
+<h3 id="step-by-step-tasks">Step-by-Step Tasks</h3>
+
+<p><strong>Step 1: Create Finance Groups</strong></p>
+
+<ol><li>Go to <strong>Entra ID</strong> > <strong>Groups</strong> > <strong>New group</strong></li>
+
+<li>Create Finance Admins:</li></ol>
+<div class='code-block'><pre>Name: grp-finance-admins
+<p>Type: Security</p>
+<p>Description: Finance department administrators (can manage Finance subscriptions)</p>
+<p>Members: Add Finance VPs, Finance IT staff</pre></div></p>
+
+<ol><li>Create Finance Users:</li></ol>
+<div class='code-block'><pre>Name: grp-finance-users
+<p>Type: Security</p>
+<p>Description: Finance department users (read-only access to Finance)</p>
+<p>Members: Add Finance employees</pre></div></p>
+
+<p><strong>Step 2: Create Engineering Groups</strong></p>
+
+<ol><li>Create Engineering Admins:</li></ol>
+<div class='code-block'><pre>Name: grp-engineering-admins
+<p>Type: Security</p>
+<p>Description: Engineering department administrators</p>
+<p>Members: Add Engineering VPs, Engineering leads</pre></div></p>
+
+<ol><li>Create Engineering Users:</li></ol>
+<div class='code-block'><pre>Name: grp-engineering-users
+<p>Type: Security</p>
+<p>Description: Engineering department users (read-only)</p>
+<p>Members: Add Engineering employees</pre></div></p>
+
+<p><strong>Step 3: Create Operations Groups</strong></p>
+
+<ol><li>Create Operations Admins:</li></ol>
+<div class='code-block'><pre>Name: grp-ops-admins
+<p>Type: Security</p>
+<p>Description: Operations administrators</p>
+<p>Members: Add Operations director, senior ops engineers</pre></div></p>
+
+<ol><li>Create Operations Users:</li></ol>
+<div class='code-block'><pre>Name: grp-ops-users
+<p>Type: Security</p>
+<p>Description: Operations staff (read-only)</p>
+<p>Members: Add Operations team members</pre></div></p>
+
+<p><strong>Step 4: Create IT & Auditor Groups</strong></p>
+
+<ol><li>Create IT Admins:</li></ol>
+<div class='code-block'><pre>Name: grp-it-admins
+<p>Type: Security</p>
+<p>Description: IT administrators with Root scope access</p>
+<p>Members: Add IT directors, cloud architects</pre></div></p>
+
+<ol><li>Create Auditors:</li></ol>
+<div class='code-block'><pre>Name: grp-auditors
+<p>Type: Security</p>
+<p>Description: Auditors and compliance team (read-only everywhere)</p>
+<p>Members: Add internal auditors, compliance officers</pre></div></p>
+
+<p><strong>Step 5: Document Groups</strong></p>
+
+<div class='code-block'><pre>ENTRA GROUPS CREATED:
+
+<p>Department Admin Groups:</p>
+<p>├─ grp-finance-admins (Members: &lt;/strong&gt;&lt;/em&gt;&lt;strong&gt;)</p>
+<p>├─ grp-engineering-admins (Members: &lt;/strong&gt;&lt;em&gt;&lt;strong&gt;)</p>
+<p>└─ grp-ops-admins (Members: &lt;/strong&gt;&lt;/em&gt;&lt;strong&gt;)</p>
+
+<p>Department User Groups:</p>
+<p>├─ grp-finance-users (Members: &lt;/strong&gt;&lt;em&gt;&lt;strong&gt;)</p>
+<p>├─ grp-engineering-users (Members: &lt;/strong&gt;&lt;/em&gt;&lt;strong&gt;)</p>
+<p>└─ grp-ops-users (Members: &lt;/strong&gt;&lt;em&gt;&lt;strong&gt;)</p>
+
+<p>Infrastructure Groups:</p>
+<p>├─ grp-it-admins (Members: &lt;/strong&gt;&lt;/em&gt;&lt;strong&gt;)</p>
+<p>└─ grp-auditors (Members: &lt;/strong&gt;&lt;em&gt;&lt;strong&gt;)</p>
+
+<p>TOTAL: 8 groups created ✓</pre></div></p>
+
+<h3 id="validation-checklist">Validation Checklist</h3>
+
+<ul><ol><li>[ ] Created 3 department admin groups</li>
+<li>[ ] Created 3 department user groups</li>
+<li>[ ] Created IT admin group</li>
+<li>[ ] Created auditor group</li>
+<li>[ ] All groups have appropriate members</li>
+<li>[ ] All groups documented</li></ol></ul>
+
+<h3 id="success-criteria">Success Criteria</h3>
+
+<p>✅ Complete: 8 groups created</p>
+<p>✅ Department groups properly scoped</p>
+<p>✅ Clear naming convention</p>
+
+<hr class="divider">
+
+<h2 id="part-5-configure-scoped-rbac-assignments">Part 5 – Configure Scoped RBAC Assignments</h2>
+
+<h3 id="the-challenge">The Challenge</h3>
+
+<p>Assign roles to groups at management group scope so they have access only to their department.</p>
+
+<h3 id="what-youll-learn">What You'll Learn</h3>
+
+<ul><ol><li>How to assign roles at MG scope</li>
+<li>How to enforce department isolation with RBAC</li>
+<li>How to prevent cross-department access</li></ol></ul>
+
+<h3 id="step-by-step-tasks">Step-by-Step Tasks</h3>
+
+<p><strong>Step 1: Assign Finance Department Roles</strong></p>
+
+<ol><li>Go to <strong>Management groups</strong> > <strong>mg-finance</strong> > <strong>Access control (IAM)</strong></li>
+<li>Click <strong>+ Add</strong> > <strong>Add role assignment</strong></li>
+
+<li>For <strong>grp-finance-admins</strong>:</li></ol>
+<div class='code-block'><pre>Role: Contributor
+<p>Scope: mg-finance (management group)</p>
+<p>Members: grp-finance-admins</p>
+<p>Effect: Can create, modify, delete Finance resources</p>
+<p>Result: Finance VP controls Finance subscriptions</pre></div></p>
+
+<ol><li>For <strong>grp-finance-users</strong>:</li></ol>
+<div class='code-block'><pre>Role: Reader
+<p>Scope: mg-finance</p>
+<p>Members: grp-finance-users</p>
+<p>Effect: Can view Finance resources (read-only)</pre></div></p>
+
+<p><strong>Step 2: Assign Engineering Department Roles</strong></p>
+
+<ol><li>Go to <strong>Management groups</strong> > <strong>mg-engineering</strong> > <strong>Access control (IAM)</strong></li>
+
+<li>For <strong>grp-engineering-admins</strong>:</li></ol>
+<div class='code-block'><pre>Role: Contributor
+<p>Scope: mg-engineering</p>
+<p>Members: grp-engineering-admins</p>
+<p>Effect: Can manage Engineering subscriptions</pre></div></p>
+
+<ol><li>For <strong>grp-engineering-users</strong>:</li></ol>
+<div class='code-block'><pre>Role: Reader
+<p>Scope: mg-engineering</p>
+<p>Members: grp-engineering-users</p>
+<p>Effect: Read-only access to Engineering</pre></div></p>
+
+<p><strong>Step 3: Assign Operations Roles</strong></p>
+
+<ol><li>Go to <strong>Management groups</strong> > <strong>mg-operations</strong> > <strong>Access control (IAM)</strong></li>
+
+<li>For <strong>grp-ops-admins</strong>:</li></ol>
+<div class='code-block'><pre>Role: Contributor
+<p>Scope: mg-operations</p>
+<p>Members: grp-ops-admins</pre></div></p>
+
+<ol><li>For <strong>grp-ops-users</strong>:</li></ol>
+<div class='code-block'><pre>Role: Reader
+<p>Scope: mg-operations</p>
+<p>Members: grp-ops-users</pre></div></p>
+
+<p><strong>Step 4: Assign IT and Auditor Roles at Root</strong></p>
+
+<ol><li>Go to <strong>Root Management Group</strong> > <strong>Access control (IAM)</strong></li>
+
+<li>For <strong>grp-it-admins</strong>:</li></ol>
+<div class='code-block'><pre>Role: Owner
+<p>Scope: Root (all subscriptions)</p>
+<p>Members: grp-it-admins</p>
+<p>Effect: IT has complete control everywhere</p>
+<p>Reason: Emergency access, central oversight</pre></div></p>
+
+<ol><li>For <strong>grp-auditors</strong>:</li></ol>
+<div class='code-block'><pre>Role: Reader
+<p>Scope: Root (can view everything)</p>
+<p>Members: grp-auditors</p>
+<p>Effect: Can audit all departments</p>
+<p>Reason: Compliance and audit trail review</pre></div></p>
+
+<p><strong>Step 5: Document RBAC Configuration</strong></p>
+
+<div class='code-block'><pre>RBAC ASSIGNMENT MATRIX - FINAL
+<p>════════════════════════════════════════════════════════════</p>
+
+<p>FINANCE DEPARTMENT (mg-finance):</p>
+<p>├─ grp-finance-admins: Contributor ✓</p>
+<p>├─ grp-finance-users: Reader ✓</p>
+<p>└─ Result: Finance autonomous, isolated</p>
+
+<p>ENGINEERING DEPARTMENT (mg-engineering):</p>
+<p>├─ grp-engineering-admins: Contributor ✓</p>
+<p>├─ grp-engineering-users: Reader ✓</p>
+<p>└─ Result: Engineering autonomous, isolated</p>
+
+<p>OPERATIONS (mg-operations):</p>
+<p>├─ grp-ops-admins: Contributor ✓</p>
+<p>├─ grp-ops-users: Reader ✓</p>
+<p>└─ Result: Operations autonomous, isolated</p>
+
+<p>CENTRAL IT (Root):</p>
+<p>├─ grp-it-admins: Owner ✓</p>
+<p>├─ grp-auditors: Reader ✓</p>
+<p>└─ Result: IT maintains oversight + audit access</p>
+
+<p>ISOLATION VERIFIED:</p>
+<p>├─ Finance VP: Sees Finance subs ONLY ✓</p>
+<p>├─ Engineering VP: Sees Engineering subs ONLY ✓</p>
+<p>├─ Operations Director: Sees Operations subs ONLY ✓</p>
+<p>├─ IT Director: Sees EVERYTHING (Root) ✓</p>
+<p>└─ Auditors: Sees EVERYTHING (read-only) ✓</pre></div></p>
+
+<h3 id="validation-checklist">Validation Checklist</h3>
+
+<ul><ol><li>[ ] Assigned Contributor to grp-finance-admins on mg-finance</li>
+<li>[ ] Assigned Contributor to grp-engineering-admins on mg-engineering</li>
+<li>[ ] Assigned Contributor to grp-ops-admins on mg-operations</li>
+<li>[ ] Assigned Owner to grp-it-admins at Root</li>
+<li>[ ] Assigned Reader to grp-auditors at Root</li>
+<li>[ ] All assignments visible in IAM</li>
+<li>[ ] Scopes verified (MG vs Root)</li></ol></ul>
+
+<h3 id="success-criteria">Success Criteria</h3>
+
+<p>✅ Complete: All RBAC assignments configured</p>
+<p>✅ Department isolation enforced via RBAC</p>
+<p>✅ Central IT maintains Root control</p>
+<p>✅ Auditors have read-only Root access</p>
+
+<hr class="divider">
+
+<h2 id="part-6-test-department-isolation">Part 6 – Test Department Isolation</h2>
+
+<h3 id="the-challenge">The Challenge</h3>
+
+<p>Verify that isolation actually works. Don't trust configuration - test it!</p>
+
+<h3 id="what-youll-learn">What You'll Learn</h3>
+
+<ul><ol><li>How to test access from different perspectives</li>
+<li>How to verify isolation is enforced</li>
+<li>How to troubleshoot access issues</li></ol></ul>
+
+<h3 id="step-by-step-tasks">Step-by-Step Tasks</h3>
+
+<p><strong>Step 1: Test Finance Admin Access</strong></p>
+
+<p>Simulate Finance VP signing in:</p>
+
+<div class='code-block'><pre>TEST: Finance VP can see Finance subscriptions
+
+<p>Method 1: Use &quot;Check access&quot; in IAM</p>
+<p>├─ Go to any subscription &gt; Access control (IAM) &gt; Check access</p>
+<p>├─ Enter Finance VP email</p>
+<p>└─ Verify: Can access Finance subs, CANNOT access Engineering/Ops</p>
+
+<p>Method 2: Sign in as Finance VP</p>
+<p>├─ Open new browser (InPrivate/Incognito)</p>
+<p>├─ Sign in as Finance VP user</p>
+<p>├─ Navigate to Subscriptions blade</p>
+<p>├─ Record which subscriptions are visible</pre></div></p>
+
+<p><strong>Expected Results:</strong></p>
+<div class='code-block'><pre>Finance VP (grp-finance-admins):
+
+<p>Can See:</p>
+<p>├─ finance-prod ✓</p>
+<p>├─ finance-staging ✓</p>
+<p>└─ finance-dev ✓</p>
+
+<p>Cannot See:</p>
+<p>├─ eng-prod ✗</p>
+<p>├─ eng-staging ✗</p>
+<p>├─ eng-dev ✗</p>
+<p>├─ eng-ml ✗</p>
+<p>├─ ops-infrastructure ✗</p>
+<p>└─ ops-security ✗</p>
+
+<p>Result: ISOLATION VERIFIED ✓</pre></div></p>
+
+<p><strong>Step 2: Test Engineering Admin Access</strong></p>
+
+<div class='code-block'><pre>TEST: Engineering VP can see Engineering subscriptions ONLY
+
+<p>Expected Results:</p>
+
+<p>Can See:</p>
+<p>├─ eng-prod ✓</p>
+<p>├─ eng-staging ✓</p>
+<p>├─ eng-dev ✓</p>
+<p>└─ eng-ml ✓</p>
+
+<p>Cannot See:</p>
+<p>├─ finance-prod ✗</p>
+<p>├─ finance-staging ✗</p>
+<p>├─ finance-dev ✗</p>
+<p>├─ ops-infrastructure ✗</p>
+<p>└─ ops-security ✗</p>
+
+<p>Result: ISOLATION VERIFIED ✓</pre></div></p>
+
+<p><strong>Step 3: Test Operations Admin Access</strong></p>
+
+<div class='code-block'><pre>TEST: Operations Director can see Operations subs ONLY
+
+<p>Expected Results:</p>
+
+<p>Can See:</p>
+<p>├─ ops-infrastructure ✓</p>
+<p>└─ ops-security ✓</p>
+
+<p>Cannot See:</p>
+<p>├─ finance-&lt;em&gt; ✗</p>
+<p>├─ eng-&lt;/em&gt; ✗</p>
+<p>└─ All other subscriptions ✗</p>
+
+<p>Result: ISOLATION VERIFIED ✓</pre></div></p>
+
+<p><strong>Step 4: Test IT Admin Access (Should see everything)</strong></p>
+
+<div class='code-block'><pre>TEST: IT Director can see ALL subscriptions
+
+<p>Expected Results:</p>
+
+<p>Can See: ALL subscriptions ✓</p>
+<p>├─ finance-&lt;em&gt; ✓</p>
+<p>├─ eng-&lt;/em&gt; ✓</p>
+<p>├─ ops-* ✓</p>
+<p>└─ Any other subscriptions ✓</p>
+
+<p>Result: Central oversight verified ✓</pre></div></p>
+
+<p><strong>Step 5: Test Auditor Access (Read-only everywhere)</strong></p>
+
+<div class='code-block'><pre>TEST: Auditor can view everything but not modify
+
+<p>Expected Results:</p>
+
+<p>Can See: ALL subscriptions (read-only) ✓</p>
+<p>Can Modify: NOTHING ✗</p>
+<p>├─ Cannot create resources</p>
+<p>├─ Cannot delete resources</p>
+<p>├─ Cannot change policies</p>
+<p>└─ Can only view and audit ✓</p>
+
+<p>Result: Read-only auditing verified ✓</pre></div></p>
+
+<p><strong>Step 6: Create Isolation Test Report</strong></p>
+
+<div class='code-block'><pre>DEPARTMENT ISOLATION TEST REPORT
+<p>════════════════════════════════════════════════════════════</p>
+
+<p>Test Date: &lt;/strong&gt;&lt;/em&gt;_________&lt;em&gt;&lt;strong&gt;</p>
+<p>Tester: &lt;/strong&gt;&lt;/em&gt;_________&lt;em&gt;&lt;strong&gt;</p>
+
+<p>FINANCE ADMIN ISOLATION:</p>
+<p>├─ Can see Finance subs: ✓ PASS / ✗ FAIL</p>
+<p>├─ Cannot see Engineering: ✓ PASS / ✗ FAIL</p>
+<p>├─ Cannot see Operations: ✓ PASS / ✗ FAIL</p>
+<p>└─ Result: ✓ ISOLATED / ✗ FAILED</p>
+
+<p>ENGINEERING ADMIN ISOLATION:</p>
+<p>├─ Can see Engineering subs: ✓ PASS / ✗ FAIL</p>
+<p>├─ Cannot see Finance: ✓ PASS / ✗ FAIL</p>
+<p>├─ Cannot see Operations: ✓ PASS / ✗ FAIL</p>
+<p>└─ Result: ✓ ISOLATED / ✗ FAILED</p>
+
+<p>OPERATIONS ADMIN ISOLATION:</p>
+<p>├─ Can see Operations subs: ✓ PASS / ✗ FAIL</p>
+<p>├─ Cannot see Finance: ✓ PASS / ✗ FAIL</p>
+<p>├─ Cannot see Engineering: ✓ PASS / ✗ FAIL</p>
+<p>└─ Result: ✓ ISOLATED / ✗ FAILED</p>
+
+<p>IT ADMIN OVERVIEW:</p>
+<p>├─ Can see all subscriptions: ✓ PASS / ✗ FAIL</p>
+<p>├─ Can modify resources: ✓ PASS / ✗ FAIL</p>
+<p>└─ Result: ✓ CENTRAL CONTROL / ✗ FAILED</p>
+
+<p>AUDITOR ACCESS:</p>
+<p>├─ Can view all subscriptions: ✓ PASS / ✗ FAIL</p>
+<p>├─ Cannot modify anything: ✓ PASS / ✗ FAIL</p>
+<p>└─ Result: ✓ READ-ONLY AUDIT / ✗ FAILED</p>
+
+<p>OVERALL: ✓ ALL TESTS PASS / ✗ SOME FAILURES</pre></div></p>
+
+<h3 id="validation-checklist">Validation Checklist</h3>
+
+<ul><ol><li>[ ] Tested Finance VP access (can see Finance only)</li>
+<li>[ ] Tested Engineering VP access (can see Engineering only)</li>
+<li>[ ] Tested Operations admin access (can see Operations only)</li>
+<li>[ ] Tested IT admin access (can see everything)</li>
+<li>[ ] Tested auditor access (read-only everywhere)</li>
+<li>[ ] All isolation verified</li>
+<li>[ ] Test report completed</li></ol></ul>
+
+<h3 id="success-criteria">Success Criteria</h3>
+
+<p>✅ Complete: All isolation tests passed</p>
+<p>✅ Department admins cannot see other departments</p>
+<p>✅ IT maintains central oversight</p>
+<p>✅ Auditors have read-only access</p>
+
+<hr class="divider">
+
+<h2 id="final-assessment-department-delegation-checklist">Final Assessment: Department Delegation Checklist</h2>
+
+<p>After completing all 6 parts, verify everything is in place:</p>
+
+<div class='code-block'><pre>DEPARTMENT DELEGATION &amp; ISOLATION FINAL CHECKLIST
+<p>════════════════════════════════════════════════════════════</p>
+
+<p>DESIGN &amp; PLANNING</p>
+<p>├─ [ ] MG hierarchy designed</p>
+<p>├─ [ ] Subscription organization planned</p>
+<p>├─ [ ] RBAC strategy documented</p>
+<p>└─ [ ] Status: ✓ COMPLETE</p>
+
+<p>MANAGEMENT GROUPS</p>
+<p>├─ [ ] mg-finance created</p>
+<p>├─ [ ] mg-engineering created</p>
+<p>├─ [ ] mg-operations created</p>
+<p>└─ [ ] Status: ✓ COMPLETE</p>
+
+<p>SUBSCRIPTIONS</p>
+<p>├─ [ ] Finance subs moved to mg-finance</p>
+<p>├─ [ ] Engineering subs moved to mg-engineering</p>
+<p>├─ [ ] Operations subs moved to mg-operations</p>
+<p>└─ [ ] Status: ✓ COMPLETE</p>
+
+<p>ENTRA GROUPS</p>
+<p>├─ [ ] 3 department admin groups created</p>
+<p>├─ [ ] 3 department user groups created</p>
+<p>├─ [ ] IT admin group created</p>
+<p>├─ [ ] Auditor group created</p>
+<p>└─ [ ] Status: ✓ COMPLETE</p>
+
+<p>RBAC ASSIGNMENTS</p>
+<p>├─ [ ] Finance admins: Contributor on mg-finance</p>
+<p>├─ [ ] Engineering admins: Contributor on mg-engineering</p>
+<p>├─ [ ] Operations admins: Contributor on mg-operations</p>
+<p>├─ [ ] IT admins: Owner at Root</p>
+<p>├─ [ ] Auditors: Reader at Root</p>
+<p>└─ [ ] Status: ✓ COMPLETE</p>
+
+<p>ISOLATION TESTING</p>
+<p>├─ [ ] Finance VP: Isolated to Finance subs</p>
+<p>├─ [ ] Engineering VP: Isolated to Engineering subs</p>
+<p>├─ [ ] Operations Director: Isolated to Operations subs</p>
+<p>├─ [ ] IT Director: Can see everything</p>
+<p>├─ [ ] Auditors: Read-only everywhere</p>
+<p>└─ [ ] Status: ✓ COMPLETE</p>
+
+<p>DOCUMENTATION</p>
+<p>├─ [ ] Design document created</p>
+<p>├─ [ ] MG creation log completed</p>
+<p>├─ [ ] Subscription organization verified</p>
+<p>├─ [ ] RBAC matrix documented</p>
+<p>├─ [ ] Isolation test report completed</p>
+<p>└─ [ ] Status: ✓ COMPLETE</p>
+
+<p>OVERALL COMPLETION: &lt;/strong&gt;&lt;/em&gt; 100% ___ Partial (identify gaps)</pre></div></p>
+
+<hr class="divider">
+
+<h2 id="key-takeaways">Key Takeaways</h2>
+
+<p>✅ <strong>Management Groups enable delegation</strong> - Each department manages their own scope</p>
+<p>✅ <strong>Scope isolation prevents data leaks</strong> - Finance VP cannot see Engineering data</p>
+<p>✅ <strong>RBAC at MG level cascades to subscriptions</strong> - Changes at MG level affect all child subscriptions</p>
+<p>✅ <strong>Central IT maintains overview</strong> - Root Owner role provides emergency access</p>
+<p>✅ <strong>Auditors need Root Reader access</strong> - Can see everything for compliance</p>
+
+<hr class="divider">
+
+<h2 id="real-world-application">Real-World Application</h2>
+
+<p>You've now implemented patterns used by:</p>
+<ul><ol><li><strong>Google, Amazon, Microsoft</strong>: Multi-department organizations</li>
+<li><strong>Enterprise IT teams</strong>: Department delegation at scale</li>
+<li><strong>Large SaaS companies</strong>: Autonomous team structure</li>
+<li><strong>Financial services</strong>: Regulatory-required segregation</li></ol></ul>
+
+<hr class="divider">
+
+<h2 id="next-steps">Next Steps</h2>
+
+<ol><li><strong>Document the structure</strong> - Share MG hierarchy with all departments</li>
+<li><strong>Train department admins</strong> - Help them understand their autonomy and responsibility</li>
+<li><strong>Monitor usage</strong> - Track departmental spending and resource creation</li>
+<li><strong>Apply department policies</strong> - Add Finance-specific, Engineering-specific policies</li>
+<li><strong>Set up alerts</strong> - Cost alerts per department (from Lab 06)</li>
+<li><strong>Audit quarterly</strong> - Review access and resource organization</li></ol>
+
+
+  </div>
+</div>
+<script>
+/* Sidebar Active Link Tracking */
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.sidebar a'));
+  var sections = [];
+  links.forEach(function(a){
+    var el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) sections.push({link:a, el:el});
+  });
+  if (!sections.length || !('IntersectionObserver' in window)) return;
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (!entry.isIntersecting) return;
+      var match = sections.find(function(s){ return s.el === entry.target; });
+      if (!match) return;
+      links.forEach(function(a){ a.classList.remove('active'); });
+      match.link.classList.add('active');
+    });
+  }, { rootMargin: '-100px 0px -70% 0px', threshold: 0 });
+  sections.forEach(function(s){ observer.observe(s.el); });
+})();
+
+/* Code Block Copy Button Functionality */
+document.addEventListener('DOMContentLoaded', function(){
+  var codeBlocks = document.querySelectorAll('.code-block');
+  codeBlocks.forEach(function(block){
+    var pre = block.querySelector('pre');
+    if (!pre) return;
+
+    var btn = document.createElement('button');
+    btn.className = 'code-copy-btn';
+    btn.textContent = 'Copy';
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'Copy code to clipboard');
+
+    btn.addEventListener('click', function(){
+      var code = pre.textContent;
+      navigator.clipboard.writeText(code).then(function(){
+        var original = btn.textContent;
+        btn.textContent = '✓ Copied!';
+        btn.classList.add('copied');
+        setTimeout(function(){
+          btn.textContent = original;
+          btn.classList.remove('copied');
+        }, 2000);
+      }).catch(function(){
+        alert('Failed to copy code');
+      });
+    });
+
+    block.appendChild(btn);
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab 08 – Compliance & Audit Setup (SOC 2 & Data Governance) - AZ-104 Labs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Professional Lab Template - Embedded CSS for local file:// access */
+:root{--bg:#f7f9fd;--card:#fff;--border:#e2e8f0;--text:#1a202c;--muted:#64748b;--primary:#1e3a8a;--panel:#0f172a;--panel-shadow:rgba(15,23,42,.12);--section-gap:48px;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,-apple-system,'Segoe UI',sans-serif;color:var(--text);line-height:1.6}.page{flex:1;min-width:0;padding:48px;max-width:1100px;margin:0 auto}
+h1{font-size:3.4rem;line-height:1.2;margin:0 0 12px 0;color:var(--primary);font-weight:800;letter-spacing:-0.5px}h2{font-size:2.2rem;margin:0 0 24px 0;color:var(--primary);font-weight:800;letter-spacing:-0.5px}h3{font-size:1.45rem;margin:32px 0 16px 0;color:var(--primary);font-weight:700;letter-spacing:-0.3px}h3:first-child{margin-top:0}h4{font-size:1.1rem;margin:20px 0 12px 0;color:#1e3a8a;font-weight:700}
+p{font-size:1.05rem;line-height:1.7;margin:12px 0;color:var(--text)}ul,ol{margin:16px 0;padding-left:24px}li{margin-bottom:10px;line-height:1.7;font-size:1.03rem;color:var(--text)}
+a{color:#1e40af;text-decoration:none;border-bottom:2px solid transparent;font-weight:600;transition:border-color 0.2s}a:hover{border-bottom-color:#1e40af}strong{color:var(--primary);font-weight:700}code{background:#f0f4ff;color:#1e40af;padding:4px 8px;border-radius:6px;font:13px/1.5 'SF Mono',Consolas,'Courier New',monospace;font-weight:500}
+.task-box{margin:24px 0;padding:0;background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(30,64,175,.06);transition:box-shadow 0.2s,border-color 0.2s}.task-box:hover{box-shadow:0 4px 12px rgba(30,64,175,.12);border-color:#c7d2fe}
+.task-header{display:flex;align-items:center;gap:12px;padding:18px 20px;background:linear-gradient(135deg,#dbeafe 0%,#eff6ff 100%);border-bottom:1px solid var(--border)}.task-header .task-icon{font-size:1.4rem;color:#1e40af}.task-header h3{margin:0;font-size:1.2rem;color:var(--primary);font-weight:700}.task-content{padding:20px}
+.code-block{position:relative;margin:24px 0;background:#0f172a;border-radius:10px;overflow:hidden;border:1px solid #1e293b;box-shadow:0 4px 12px rgba(15,23,42,.25)}.code-block pre{margin:0;padding:20px 48px 20px 20px;color:#e2e8f0;font-family:'SF Mono',Consolas,'Courier New',monospace;font-size:0.92rem;line-height:1.7;overflow-x:auto}
+.code-copy-btn{position:absolute;top:12px;right:12px;padding:8px 14px;background:#1e293b;color:#60a5fa;border:1px solid #334155;border-radius:6px;cursor:pointer;font-size:0.85rem;font-weight:600;transition:all 0.2s;user-select:none;box-shadow:0 1px 3px rgba(0,0,0,.2)}.code-copy-btn:hover{background:#334155;color:#93c5fd;border-color:#475569}.code-block .keyword{color:#569cd6}.code-block .string{color:#ce9178}.code-block .comment{color:#6a9955}.code-block .operator{color:#d4d4d4}.code-block .function{color:#dcdcaa}.code-block .property{color:#9cdcfe}
+.callout-box{margin:24px 0;padding:18px 20px;border-radius:10px;border-left:4px solid;display:flex;gap:14px;box-shadow:0 1px 3px rgba(0,0,0,.05)}.callout-icon{font-size:1.5rem;flex-shrink:0;min-width:28px;text-align:center}.callout-content{flex:1}.callout-content h4{margin:0 0 8px 0;font-size:1.08rem;font-weight:700}.callout-content p{margin:8px 0;line-height:1.7;font-size:1.02rem}.callout-content p:first-child{margin-top:0}
+.callout-tip{background:#eff6ff;border-color:#3b82f6}.callout-tip .callout-icon{color:#1e40af}.callout-tip h4{color:#1e40af}.callout-warning{background:#fefce8;border-color:#eab308}.callout-warning .callout-icon{color:#ca8a04}.callout-warning h4{color:#92400e}.callout-important{background:#fee2e2;border-color:#ef4444}.callout-important .callout-icon{color:#dc2626}.callout-important h4{color:#991b1b}
+.section-time{background:#dbeafe;border:1px solid #93c5fd;border-radius:8px;padding:10px 16px;font-size:0.95rem;font-weight:600;color:#1e40af;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}.layout{max-width:1500px;margin:auto;display:flex;align-items:flex-start;gap:32px}.sidebar{flex:0 0 280px;position:sticky;top:88px;max-height:calc(100vh - 108px);overflow-y:auto;padding:24px;background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 2px 8px rgba(30,64,175,.06)}.sidebar summary{cursor:pointer;list-style:none;padding:10px 12px;border-radius:8px;font-weight:600;font-size:.93rem;color:var(--primary);user-select:none;transition:all 0.2s}.sidebar summary::-webkit-details-marker{display:none}.sidebar details[open]>summary{background:#dbeafe}.sidebar summary:hover{background:#eff6ff}.sidebar a{display:block;padding:9px 12px;margin-bottom:2px;border-radius:8px;font-size:.89rem;font-weight:500;color:var(--text);border-bottom:none;border-left:3px solid transparent;line-height:1.5;transition:all 0.15s;text-decoration:none;color:#1a202c}.sidebar a:hover{background:#eff6ff;color:var(--primary)}.site-nav{position:sticky;top:0;z-index:1000;background:var(--primary);color:#fff;display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:14px 32px;font-size:.93rem;box-shadow:0 4px 12px rgba(0,0,0,.1);font-family:Inter,-apple-system,'Segoe UI',sans-serif}.site-nav .nav-brand{font-weight:800;font-size:1.1rem;margin-right:auto;color:#fff;letter-spacing:-0.3px}.site-nav summary{cursor:pointer;list-style:none;padding:8px 16px;border-radius:8px;background:rgba(255,255,255,.12);font-weight:600;color:#fff;user-select:none;transition:background 0.2s}
+</style>
+</head>
+<body>
+<nav class="site-nav" aria-label="Main site navigation">
+  <a class="nav-brand" href="../../index.html">AZ-104 Learning Hub</a>
+  <details class="nav-group" aria-label="Learning module selector">
+    <summary>Learning Module</summary>
+    <div class="nav-menu">
+      <a href="../../00-prerequisites/documents/module-home.html">00 - Prerequisites</a>
+      <a href="../../01-identity-governance/documents/module-home.html">01 - Identity &amp; Governance</a>
+      <a href="../../02-storage/documents/module-home.html">02 - Storage</a>
+      <a href="../../03-compute/documents/module-home.html">03 - Compute</a>
+      <a href="../../04-networking/documents/module-home.html">04 - Networking</a>
+      <a href="../../05-monitor-maintain/documents/module-home.html">05 - Monitor &amp; Maintain</a>
+    </div>
+  </details>
+</nav>
+<div class="layout">
+  <aside class="sidebar" aria-label="Page navigation">
+    <details open>
+      <summary>▶ Module 01 - Identity &amp; Governance</summary>
+      <div>
+        <a href="01-entra-id-overview.html">01 - Entra ID Overview</a>
+<a href="02-rbac-fundamentals.html">02 - RBAC Fundamentals</a>
+<a href="03-management-groups-and-azure-policy.html">03 - Management Groups &amp; Azure Policy</a>
+<a href="04-access-control-scenarios.html">04 - Access Control Scenarios</a>
+<a href="05-identity-best-practices.html">05 - Identity Best Practices</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ Labs</summary>
+      <div>
+        <a href="lab01-entra-users-groups.html">Lab 01 - Entra Users &amp; Groups</a>
+<a href="lab02-rbac-azure-policy.html">Lab 02 - RBAC &amp; Azure Policy</a>
+<a href="lab03-management-groups-subscriptions.html">Lab 03 - Management Groups</a>
+      </div>
+    </details>
+    <details>
+      <summary>▶ On This Page</summary>
+      <div>
+        <a href="#real-life-scenario">Real-Life Scenario</a>
+<a href="#prerequisites">Prerequisites</a>
+<a href="#estimated-time">Estimated Time</a>
+<a href="#part-1-enable-activity-logging-diagnostic-settings">Part 1 – Enable Activity Logging & Diagnostic Settings</a>
+<a href="#part-2-set-up-log-analytics-workspace">Part 2 – Set Up Log Analytics Workspace</a>
+<a href="#part-3-configure-retention-policies">Part 3 – Configure Retention Policies</a>
+<a href="#part-4-create-auditor-access-controls">Part 4 – Create Auditor Access Controls</a>
+<a href="#part-5-set-up-compliance-policies-evidence">Part 5 – Set Up Compliance Policies & Evidence</a>
+<a href="#final-assessment-compliance-audit-checklist">Final Assessment: Compliance & Audit Checklist</a>
+<a href="#key-takeaways">Key Takeaways</a>
+<a href="#real-world-application">Real-World Application</a>
+<a href="#next-steps">Next Steps</a>
+      </div>
+    </details>
+  </aside>
+  <div class="page">
+  <h1>Lab 08 – Compliance & Audit Setup (SOC 2 & Data Governance)</h1>
+
+<h2 id="real-life-scenario">Real-Life Scenario</h2>
+
+<p><strong>Company: FinServe Solutions (Financial Services SaaS)</strong></p>
+
+<p>FinServe is a payment processing company handling millions in customer transactions. Last month, their auditors asked:</p>
+
+<p><strong>"How do we know nobody tampered with customer data? Can you prove nobody deleted audit logs? Show me your audit trail for who accessed sensitive data."</strong></p>
+
+<p><strong>The Problem:</strong></p>
+<ul><ol><li>❌ No activity logging configured</li>
+<li>❌ Audit logs not retained long-term</li>
+<li>❌ Cannot prove who accessed what when</li>
+<li>❌ No compliance evidence for SOC 2 audit</li>
+<li>❌ Cannot detect suspicious activity</li>
+<li>❌ Risk: "We don't know if we've been breached"</li></ol></ul>
+
+<p><strong>Compliance Requirements:</strong></p>
+<div class='code-block'><pre>SOC 2 Type II Audit Requirements:
+<p>├─ Activity logging enabled</p>
+<p>├─ 90-day retention minimum</p>
+<p>├─ Immutable audit trail</p>
+<p>├─ Role-based access to logs (auditor can view, not modify)</p>
+<p>├─ Encryption for logs at rest and in transit</p>
+<p>├─ Monthly compliance reporting</p>
+<p>└─ Detection of unauthorized access attempts</pre></div></p>
+
+<p><strong>Your Challenge:</strong> Implement audit & compliance infrastructure</p>
+
+<p><strong>The Solution You'll Build:</strong></p>
+<div class='code-block'><pre>COMPLIANCE ARCHITECTURE:
+
+<p>Activity Logs (Who did what)</p>
+<p>├─ All subscription activities logged</p>
+<p>├─ Stored for 90+ days</p>
+<p>└─ Forwarded to Log Analytics</p>
+
+<p>Diagnostic Logs (Resource details)</p>
+<p>├─ Storage, Database, Network, VM logs</p>
+<p>├─ Stored for 90+ days</p>
+<p>└─ Forwarded to Log Analytics</p>
+
+<p>Log Analytics Workspace</p>
+<p>├─ Centralized log storage</p>
+<p>├─ 90-day retention policy</p>
+<p>├─ Query capabilities for investigation</p>
+<p>└─ Integration with security monitoring</p>
+
+<p>Compliance Policies</p>
+<p>├─ All data must be encrypted</p>
+<p>├─ All backups enabled</p>
+<p>├─ US regions only (data residency)</p>
+<p>└─ Enforce via Azure Policy</p>
+
+<p>Auditor Access</p>
+<p>├─ Auditors: Reader (view logs, cannot modify)</p>
+<p>├─ Auditors: Log Analytics Reader (query logs)</p>
+<p>└─ Auditors: CANNOT delete or modify logs</p>
+
+<p>RESULT: SOC 2 compliant audit trail ✓</pre></div></p>
+
+<hr class="divider">
+
+<h2 id="prerequisites">Prerequisites</h2>
+
+<p><strong>Required Knowledge:</strong></p>
+<ul><ol><li><a href="lab01-entra-users-groups.md">Lab 01: Entra ID - Users & Groups</a></li>
+<li><a href="lab02-rbac-azure-policy.md">Lab 02: RBAC & Azure Policy</a></li>
+<li><a href="lab03-management-groups-subscriptions.md">Lab 03: Management Groups & Subscriptions</a></li>
+<li><a href="lab04-identity-security-hardening.md">Lab 04: Identity Security Hardening</a> (optional but helpful)</li></ol></ul>
+
+<p><strong>Required Permissions:</strong></p>
+<ul><ol><li>Owner role on at least one subscription</li>
+<li>Global Administrator or User Administrator in Entra ID</li>
+<li>Access to Log Analytics and monitoring features</li></ol></ul>
+
+<p><strong>Cost Note:</strong> Log Analytics charges per GB ingested ($2.50/GB typically). This lab uses free tier initially but may incur costs at scale.</p>
+
+<hr class="divider">
+
+<h2 id="estimated-time">Estimated Time</h2>
+
+<p><strong>Total: 80 minutes</strong></p>
+<ul><ol><li>Part 1: Enable activity logging & diagnostic settings (20 min)</li>
+<li>Part 2: Set up Log Analytics Workspace (15 min)</li>
+<li>Part 3: Configure retention policies (15 min)</li>
+<li>Part 4: Create auditor access controls (15 min)</li>
+<li>Part 5: Set up compliance policies & evidence (15 min)</li></ol></ul>
+
+<p><strong>Difficulty: Intermediate</strong></p>
+
+<hr class="divider">
+
+<h2 id="part-1-enable-activity-logging-diagnostic-settings">Part 1 – Enable Activity Logging & Diagnostic Settings</h2>
+
+<h3 id="the-challenge">The Challenge</h3>
+
+<p>Logs don't exist by default. You must explicitly enable logging to create audit trails.</p>
+
+<h3 id="what-youll-learn">What You'll Learn</h3>
+
+<ul><ol><li>How to enable activity logging</li>
+<li>How to configure diagnostic settings</li>
+<li>How to route logs to storage</li>
+<li>How audit trails are created</li></ol></ul>
+
+<h3 id="step-by-step-tasks">Step-by-Step Tasks</h3>
+
+<p><strong>Step 1: Understand Logging in Azure</strong></p>
+
+<p>Two types of logs exist:</p>
+
+<div class='code-block'><pre>ACTIVITY LOGS (Subscription-level):
+<p>├─ What: Who did what at subscription/resource group level</p>
+<p>├─ Examples:</p>
+<p>│   ├─ User created VM</p>
+<p>│   ├─ Admin deleted storage account</p>
+<p>│   ├─ Policy denied resource creation</p>
+<p>│   └─ Role assignment changed</p>
+<p>├─ Captured: Automatically (no setup needed)</p>
+<p>├─ Retention: 90 days by default</p>
+<p>└─ Purpose: Subscription-level audit trail</p>
+
+<p>DIAGNOSTIC LOGS (Resource-level):</p>
+<p>├─ What: Detailed logs from individual resources</p>
+<p>├─ Examples:</p>
+<p>│   ├─ SQL query executed</p>
+<p>│   ├─ File accessed in storage</p>
+<p>│   ├─ Network security group rule blocked traffic</p>
+<p>│   └─ Key vault accessed</p>
+<p>├─ Captured: Must be enabled per resource</p>
+<p>├─ Retention: Unlimited (if forwarded to storage/workspace)</p>
+<p>└─ Purpose: Detailed compliance evidence</pre></div></p>
+
+<p><strong>Step 2: Create Storage Account for Log Archival</strong></p>
+
+<p>Activity logs can be archived to storage for long-term retention:</p>
+
+<ol><li>Go to <strong>Storage accounts</strong> > <strong>Create</strong></li>
+<li>Create account:</li></ol>
+<div class='code-block'><pre>Name: logsarchive[randomnumber]
+<p>Redundancy: LRS (acceptable for logs)</p>
+<p>Tier: Cool (logs rarely accessed)</p>
+<p>Purpose: Archive audit logs for 7+ years</pre></div></p>
+
+<ol><li>Once created, note the <strong>Storage account ID</strong> (full resource path)</li></ol>
+
+<p><strong>Step 3: Enable Activity Log to Storage</strong></p>
+
+<ol><li>Go to <strong>Activity log</strong> (at subscription level)</li>
+<li>Click <strong>Export Activity Log</strong></li>
+<li>Configure:</li></ol>
+<div class='code-block'><pre>Destination: Storage account
+<p>Storage account: [logsarchive account from Step 2]</p>
+<p>Retention: 365 days (1 year minimum for compliance)</p>
+<p>Events to export: All</pre></div></p>
+
+<ol><li>Click <strong>Save</strong></li></ol>
+
+<p><strong>Step 4: Enable Activity Log to Event Hub (Optional - for real-time monitoring)</strong></p>
+
+<p>For SOC 2, you might want real-time alerts on suspicious activity:</p>
+
+<ol><li>Go to <strong>Activity log</strong> > <strong>Export Activity Log</strong></li>
+<li>Add destination: <strong>Event Hub</strong></li>
+<li>Creates capability to trigger alerts on suspicious events</li>
+<li>Example: Alert when user is deleted, role changed, etc.</li></ol>
+
+<p><strong>Step 5: Enable Diagnostic Settings for Resources</strong></p>
+
+<p>For detailed compliance evidence, enable diagnostics on key resources:</p>
+
+<ol><li>Go to <strong>Subscriptions</strong> > <strong>Diagnostic settings</strong></li>
+<li>Create new setting:</li></ol>
+<div class='code-block'><pre>Name: Send-All-Logs-To-Workspace
+<p>Logs: Check all log categories</p>
+<p>Destination: Log Analytics Workspace (create in Part 2)</p>
+<p>Retention: 90 days minimum</pre></div></p>
+
+<p>Or for individual resources:</p>
+
+<ol><li>Go to <strong>Storage Account</strong> > <strong>Diagnostic settings</strong></li>
+<li>Click <strong>+ Add diagnostic setting</strong></li>
+<li>Configure:</li></ol>
+<div class='code-block'><pre>Name: Storage-Diagnostic-Logs
+<p>Logs:</p>
+<p>├─ StorageRead: ✓</p>
+<p>├─ StorageWrite: ✓</p>
+<p>└─ StorageDelete: ✓</p>
+<p>Destinations: Log Analytics + Storage account</p>
+<p>Retention: 90+ days</pre></div></p>
+
+<p>Repeat for:</p>
+<ul><ol><li>SQL Databases (query logs, connection logs)</li>
+<li>Key Vaults (access logs)</li>
+<li>Network Security Groups (traffic logs)</li></ol></ul>
+
+<p><strong>Step 6: Document Logging Setup</strong></p>
+
+<div class='code-block'><pre>ACTIVITY &amp; DIAGNOSTIC LOGGING CONFIGURATION
+<p>════════════════════════════════════════════════════════════</p>
+
+<p>ACTIVITY LOG:</p>
+<p>├─ Destination: Storage account (logsarchive...)</p>
+<p>├─ Retention: 365 days</p>
+<p>├─ Status: ✓ Enabled</p>
+<p>└─ Purpose: Long-term archive</p>
+
+<p>DIAGNOSTIC LOGS (Resources):</p>
+<p>├─ Log Analytics Destination: [workspace name] (created in Part 2)</p>
+<p>├─ Storage Destination: [archive account]</p>
+<p>├─ Retention: 90 days minimum</p>
+<p>└─ Resources with diagnostics enabled:</p>
+<p>├─ Storage accounts: ✓</p>
+<p>├─ SQL databases: ✓</p>
+<p>├─ Key vaults: ✓</p>
+<p>└─ Other critical resources: ✓</p>
+
+<p>LOGGING STATUS: ✓ ENABLED</pre></div></p>
+
+<h3 id="validation-checklist">Validation Checklist</h3>
+
+<ul><ol><li>[ ] Created storage account for log archival</li>
+<li>[ ] Enabled Activity log to Storage (365-day retention)</li>
+<li>[ ] Enabled Activity log to Event Hub (optional)</li>
+<li>[ ] Enabled diagnostic settings at subscription level</li>
+<li>[ ] Enabled diagnostics on key resources (Storage, SQL, Key Vault)</li>
+<li>[ ] Retention policies set to 90+ days</li>
+<li>[ ] Logging setup documented</li></ol></ul>
+
+<h3 id="success-criteria">Success Criteria</h3>
+
+<p>✅ Complete: Activity logging enabled</p>
+<p>✅ Diagnostic logging configured on key resources</p>
+<p>✅ Long-term retention configured</p>
+<p>✅ Logs flowing to storage for archival</p>
+
+<hr class="divider">
+
+<h2 id="part-2-set-up-log-analytics-workspace">Part 2 – Set Up Log Analytics Workspace</h2>
+
+<h3 id="the-challenge">The Challenge</h3>
+
+<p>Logs need somewhere to be stored, queried, and analyzed. Log Analytics provides this.</p>
+
+<h3 id="what-youll-learn">What You'll Learn</h3>
+
+<ul><ol><li>How to create Log Analytics Workspace</li>
+<li>How to route logs to workspace</li>
+<li>How to query logs for compliance evidence</li>
+<li>How to set up alerting</li></ol></ul>
+
+<h3 id="step-by-step-tasks">Step-by-Step Tasks</h3>
+
+<p><strong>Step 1: Create Log Analytics Workspace</strong></p>
+
+<ol><li>Go to <strong>Log Analytics workspaces</strong> > <strong>Create</strong></li>
+
+<li>Configure:</li></ol>
+<div class='code-block'><pre>Name: compliance-logs-workspace
+<p>Resource Group: [create new or use existing]</p>
+<p>Location: [same region as your resources, e.g., East US]</p>
+<p>Pricing: Pay-as-you-go (or Standard if volume predictable)</p>
+<p>Purpose: Centralized compliance log storage</pre></div></p>
+
+<ol><li>Click <strong>Review + Create</strong> > <strong>Create</strong></li>
+
+<li>Once created, note the <strong>Workspace ID</strong> and <strong>Workspace Key</strong></li></ol>
+
+<p><strong>Step 2: Route Subscription Activity Logs to Workspace</strong></p>
+
+<ol><li>Go to <strong>Activity log</strong> at subscription level</li>
+<li>Click <strong>Export Activity Log</strong></li>
+<li>Add destination: <strong>Log Analytics Workspace</strong></li>
+<li>Select workspace created in Step 1</li>
+<li>Click <strong>Save</strong></li></ol>
+
+<p>Now all subscription activities flow into the workspace.</p>
+
+<p><strong>Step 3: Route Diagnostic Logs from Resources to Workspace</strong></p>
+
+<p>For each resource type:</p>
+
+<ol><li>Go to <strong>Storage Account</strong> > <strong>Diagnostic settings</strong></li>
+<li>Click <strong>+ Add diagnostic setting</strong></li>
+<li>Configure:</li></ol>
+<div class='code-block'><pre>Name: Route-To-Compliance-Workspace
+<p>Logs: Check all relevant categories</p>
+<p>Destination: Log Analytics Workspace</p>
+<p>Select workspace: [compliance-logs-workspace]</p>
+<p>Retention: 90 days</pre></div></p>
+
+<ol><li>Click <strong>Save</strong></li></ol>
+
+<p>Repeat for:</p>
+<ul><ol><li>SQL Databases</li>
+<li>Key Vaults</li>
+<li>Network Security Groups</li>
+<li>App Services (if applicable)</li></ol></ul>
+
+<p><strong>Step 4: Test Logs Are Flowing</strong></p>
+
+<ol><li>Go to <strong>Log Analytics Workspace</strong> > <strong>Logs</strong></li>
+<li>Click <strong>Write a new query</strong> or use template: <strong>Activity Log</strong></li>
+<li>Click <strong>Run</strong> to see if logs are appearing</li></ol>
+
+<p>Expected:</p>
+<div class='code-block'><pre>Sample Activity Log Query Result:
+<p>TimeGenerated: 2024-06-19T14:23:45Z</p>
+<p>OperationName: Microsoft.Storage/storageAccounts/write</p>
+<p>Caller: admin@company.com</p>
+<p>ResourceGroup: rg-compliance-test</p>
+<p>OperationResult: Succeeded</pre></div></p>
+
+<p>If logs don't appear, wait a few minutes (propagation delay) and try again.</p>
+
+<p><strong>Step 5: Create Useful Compliance Queries</strong></p>
+
+<p>Save common compliance queries for later use:</p>
+
+<ol><li>Go to <strong>Log Analytics Workspace</strong> > <strong>Logs</strong> > <strong>Saved Queries</strong></li>
+
+<li>Create Query 1: "Who modified roles?"</li></ol>
+<div class='code-block'><pre>AzureActivity
+<p>| where OperationName contains &quot;role&quot; and OperationResult == &quot;Succeeded&quot;</p>
+<p>| project TimeGenerated, Caller, OperationName, ResourceGroup</p>
+<p>| sort by TimeGenerated desc</pre></div></p>
+
+<ol><li>Create Query 2: "When were resources deleted?"</li></ol>
+<div class='code-block'><pre>AzureActivity
+<p>| where OperationName contains &quot;Delete&quot; and OperationResult == &quot;Succeeded&quot;</p>
+<p>| project TimeGenerated, Caller, ResourceType, ResourceGroup</p>
+<p>| sort by TimeGenerated desc</pre></div></p>
+
+<ol><li>Create Query 3: "Failed access attempts"</li></ol>
+<div class='code-block'><pre>AzureActivity
+<p>| where OperationResult == &quot;Failed&quot;</p>
+<p>| project TimeGenerated, Caller, OperationName, StatusMessage</p>
+<p>| sort by TimeGenerated desc</pre></div></p>
+
+<ol><li>Save each query for future use</li></ol>
+
+<p><strong>Step 6: Document Workspace Setup</strong></p>
+
+<div class='code-block'><pre>LOG ANALYTICS WORKSPACE CONFIGURATION
+<p>════════════════════════════════════════════════════════════</p>
+
+<p>Workspace Details:</p>
+<p>├─ Name: compliance-logs-workspace</p>
+<p>├─ Workspace ID: [ID shown in Portal]</p>
+<p>├─ Location: [region]</p>
+<p>├─ Pricing: Pay-as-you-go</p>
+<p>└─ Status: ✓ Created</p>
+
+<p>Connected Data Sources:</p>
+<p>├─ Activity Logs: ✓ Enabled</p>
+<p>├─ Diagnostic Logs:</p>
+<p>│   ├─ Storage Accounts: ✓</p>
+<p>│   ├─ SQL Databases: ✓</p>
+<p>│   ├─ Key Vaults: ✓</p>
+<p>│   └─ Other resources: ✓</p>
+<p>└─ Status: ✓ All Connected</p>
+
+<p>Saved Queries:</p>
+<p>├─ Role change detection ✓</p>
+<p>├─ Resource deletion tracking ✓</p>
+<p>├─ Failed access attempts ✓</p>
+<p>└─ Total saved queries: 3</p>
+
+<p>WORKSPACE STATUS: ✓ FULLY CONFIGURED</pre></div></p>
+
+<h3 id="validation-checklist">Validation Checklist</h3>
+
+<ul><ol><li>[ ] Log Analytics Workspace created</li>
+<li>[ ] Activity logs routed to workspace</li>
+<li>[ ] Diagnostic logs from resources routed to workspace</li>
+<li>[ ] Logs verified flowing into workspace</li>
+<li>[ ] Compliance queries saved (3 minimum)</li>
+<li>[ ] Workspace documented</li>
+<li>[ ] Ready for retention policies</li></ol></ul>
+
+<h3 id="success-criteria">Success Criteria</h3>
+
+<p>✅ Complete: Workspace created and configured</p>
+<p>✅ All logs flowing into workspace</p>
+<p>✅ Compliance queries available</p>
+<p>✅ Ready for analysis</p>
+
+<hr class="divider">
+
+<h2 id="part-3-configure-retention-policies">Part 3 – Configure Retention Policies</h2>
+
+<h3 id="the-challenge">The Challenge</h3>
+
+<p>Logs must be retained for compliance. Set up long-term retention.</p>
+
+<h3 id="what-youll-learn">What You'll Learn</h3>
+
+<ul><ol><li>How to configure log retention policies</li>
+<li>How to understand retention costs</li>
+<li>How to balance compliance with storage costs</li></ol></ul>
+
+<h3 id="step-by-step-tasks">Step-by-Step Tasks</h3>
+
+<p><strong>Step 1: Set Activity Log Retention (Already done in Part 1)</strong></p>
+
+<p>You already configured:</p>
+<ul><ol><li>Activity Log to Storage: 365 days</li>
+<li>Activity Log to Workspace: Can be configured here</li></ol></ul>
+
+<ol><li>Go to <strong>Log Analytics Workspace</strong> > <strong>Usage and Estimated Costs</strong> > <strong>Data Retention</strong></li>
+<li>Set retention to <strong>90 days minimum</strong> (for compliance)</li>
+<li>Document:</li></ol>
+<div class='code-block'><pre>Activity Log Retention: 365 days (in storage account)
+<p>Workspace Retention: 90 days (in Log Analytics)</pre></div></p>
+
+<p><strong>Step 2: Archive Old Logs to Cheap Storage</strong></p>
+
+<p>For long-term compliance (7+ years), move old logs to cold storage:</p>
+
+<ol><li>Go to <strong>Storage Account</strong> > <strong>Lifecycle management</strong></li>
+<li>Create policy:</li></ol>
+<div class='code-block'><pre>Rule: Archive logs older than 90 days
+<p>Action: Move blobs older than 90 days to Archive tier</p>
+<p>Effect: After 90 days in cool storage, move to archive (cheaper)</p>
+<p>Cost: Archive = $0.01/GB/month vs Cool = $0.01/GB/month</p>
+<p>Savings: Significant for 7-year retention</pre></div></p>
+
+<p><strong>Step 3: Verify Retention Policies</strong></p>
+
+<ol><li>Go to <strong>Log Analytics Workspace</strong> > <strong>Properties</strong></li>
+<li>Verify data retention shown:</li></ol>
+<div class='code-block'><pre>Workspace Data Retention: 90 days
+<p>├─ Free Tier: 90 days maximum (unless you pay)</p>
+<p>├─ Paid Tier: 30-730 days configurable</p>
+<p>└─ Current setting: 90 days</pre></div></p>
+
+<ol><li>Go to <strong>Storage Account</strong> > <strong>Lifecycle Management</strong></li>
+<li>Verify archive rules are configured:</li></ol>
+<div class='code-block'><pre>Lifecycle Rules: ✓ Enabled
+<p>├─ Archive logs &gt;90 days old</p>
+<p>├─ Delete archived logs &gt;2555 days (7 years)</p>
+<p>└─ Status: ✓ Active</pre></div></p>
+
+<p><strong>Step 4: Document Retention Configuration</strong></p>
+
+<div class='code-block'><pre>LOG RETENTION POLICY SUMMARY
+<p>════════════════════════════════════════════════════════════</p>
+
+<p>RETENTION TIMELINE:</p>
+
+<p>Days 0-90: Hot Storage (fast access)</p>
+<p>├─ Location: Log Analytics Workspace</p>
+<p>├─ Access time: Immediate</p>
+<p>├─ Cost: Standard ($0.05/GB)</p>
+<p>└─ Use case: Active investigation, SOC 2 audit</p>
+
+<p>Days 90-365: Cool Storage (archive)</p>
+<p>├─ Location: Storage Account (Cool tier)</p>
+<p>├─ Access time: Minutes</p>
+<p>├─ Cost: Archive ($0.01/GB)</p>
+<p>└─ Use case: Compliance archive, rare access</p>
+
+<p>Years 2-7: Archive Storage (long-term)</p>
+<p>├─ Location: Storage Account (Archive tier)</p>
+<p>├─ Access time: Hours</p>
+<p>├─ Cost: Ultra-cheap ($0.0001/GB)</p>
+<p>└─ Use case: Regulatory requirement, legal hold</p>
+
+<p>After 7 years: Delete</p>
+<p>├─ Deleted from all storage</p>
+<p>├─ Justification: No business/legal requirement beyond 7 years</p>
+<p>└─ Cost: Eliminated</p>
+
+<p>RETENTION COMPLIANCE:</p>
+<p>├─ SOC 2 requirement: 90 days minimum ✓</p>
+<p>├─ Tax requirement: 7 years ✓</p>
+<p>├─ GDPR requirement: As long as needed ✓</p>
+<p>└─ All requirements met: ✓ YES</p>
+
+<p>COST PROJECTION:</p>
+<p>├─ 100 GB/month typical (100 subscriptions)</p>
+<p>├─ Year 1: Hot + Cool = $60/month</p>
+<p>├─ Year 2-7: Archive only = $1/month</p>
+<p>├─ 7-year total: ~$500 (very reasonable)</p>
+<p>└─ Status: ✓ COST-EFFECTIVE</pre></div></p>
+
+<h3 id="validation-checklist">Validation Checklist</h3>
+
+<ul><ol><li>[ ] Activity log retention set to 365+ days</li>
+<li>[ ] Workspace retention set to 90+ days</li>
+<li>[ ] Lifecycle policy configured (move to archive after 90 days)</li>
+<li>[ ] Lifecycle policy configured (delete after 7 years)</li>
+<li>[ ] Retention policy documented</li>
+<li>[ ] Cost projections calculated</li>
+<li>[ ] All retention policies verified</li></ol></ul>
+
+<h3 id="success-criteria">Success Criteria</h3>
+
+<p>✅ Complete: Retention policies configured</p>
+<p>✅ 90-day minimum met for SOC 2</p>
+<p>✅ 7-year retention for tax/legal</p>
+<p>✅ Cost-effective tiering in place</p>
+
+<hr class="divider">
+
+<h2 id="part-4-create-auditor-access-controls">Part 4 – Create Auditor Access Controls</h2>
+
+<h3 id="the-challenge">The Challenge</h3>
+
+<p>Auditors need to view logs for investigation, but CANNOT modify or delete them (immutability).</p>
+
+<h3 id="what-youll-learn">What You'll Learn</h3>
+
+<ul><ol><li>How to create read-only auditor roles</li>
+<li>How to grant Log Analytics access</li>
+<li>How to verify immutability</li></ol></ul>
+
+<h3 id="step-by-step-tasks">Step-by-Step Tasks</h3>
+
+<p><strong>Step 1: Create Auditor Entra Group</strong></p>
+
+<ol><li>Go to <strong>Entra ID</strong> > <strong>Groups</strong> > <strong>New group</strong></li>
+<li>Create:</li></ol>
+<div class='code-block'><pre>Name: grp-auditors
+<p>Type: Security</p>
+<p>Description: Auditors and compliance team (can view all logs, cannot modify)</p>
+<p>Members: Add internal auditors, compliance officers, external audit firms</pre></div></p>
+
+<p><strong>Step 2: Assign Reader Role (Subscription Level)</strong></p>
+
+<p>Allows auditors to view all resources and activity logs:</p>
+
+<ol><li>Go to <strong>Subscriptions</strong> > <strong>Access control (IAM)</strong></li>
+<li>Click <strong>+ Add</strong> > <strong>Add role assignment</strong></li>
+<li>Configure:</li></ol>
+<div class='code-block'><pre>Role: Reader
+<p>Scope: Subscription</p>
+<p>Members: grp-auditors</p>
+<p>Effect: Can view everything, cannot modify</pre></div></p>
+
+<p><strong>Step 3: Assign Log Analytics Reader Role</strong></p>
+
+<p>Allows auditors to query logs in Log Analytics:</p>
+
+<ol><li>Go to <strong>Log Analytics Workspace</strong> > <strong>Access control (IAM)</strong></li>
+<li>Click <strong>+ Add</strong> > <strong>Add role assignment</strong></li>
+<li>Configure:</li></ol>
+<div class='code-block'><pre>Role: Log Analytics Reader
+<p>Scope: Workspace</p>
+<p>Members: grp-auditors</p>
+<p>Effect: Can query/view logs, cannot modify workspace</pre></div></p>
+
+<p><strong>Step 4: Assign Storage Blob Reader (For log archival access)</strong></p>
+
+<p>Auditors might need to access archived logs in storage:</p>
+
+<ol><li>Go to <strong>Storage Account</strong> > <strong>Access control (IAM)</strong></li>
+<li>Click <strong>+ Add</strong> > <strong>Add role assignment</strong></li>
+<li>Configure:</li></ol>
+<div class='code-block'><pre>Role: Storage Blob Data Reader
+<p>Scope: Storage Account</p>
+<p>Members: grp-auditors</p>
+<p>Effect: Can read archived logs, cannot delete</pre></div></p>
+
+<p><strong>Step 5: Verify Immutability</strong></p>
+
+<p>Confirm auditors cannot delete logs even if they wanted to:</p>
+
+<ol><li>Go to <strong>Storage Account</strong> > <strong>Data protection</strong> > <strong>Blob immutability</strong></li>
+<li>Enable:</li></ol>
+<div class='code-block'><pre>Immutable storage: ✓ Enabled
+<p>Lock type: Time-based retention (7 years)</p>
+<p>Effect: Blobs cannot be deleted/overwritten until retention expires</p>
+<p>Purpose: Ensures log immutability (cannot tamper with evidence)</pre></div></p>
+
+<p>This is critical for compliance - proves logs were never altered.</p>
+
+<p><strong>Step 6: Test Auditor Access</strong></p>
+
+<ol><li>Sign in as auditor (or use "Check access")</li>
+<li>Verify:</li></ol>
+<div class='code-block'><pre>Can Do:
+<p>├─ [ ] View subscriptions</p>
+<p>├─ [ ] View all resources</p>
+<p>├─ [ ] Query Log Analytics logs</p>
+<p>├─ [ ] Access archived logs in storage</p>
+<p>└─ [ ] Download logs for investigation</p>
+
+<p>Cannot Do:</p>
+<p>├─ [ ] Create resources</p>
+<p>├─ [ ] Delete resources</p>
+<p>├─ [ ] Modify policies</p>
+<p>├─ [ ] Delete logs</p>
+<p>├─ [ ] Export logs to personal account</p>
+<p>└─ [ ] Change Log Analytics workspace</pre></div></p>
+
+<p><strong>Step 7: Document Auditor Access</strong></p>
+
+<div class='code-block'><pre>AUDITOR ACCESS CONTROL CONFIGURATION
+<p>════════════════════════════════════════════════════════════</p>
+
+<p>Auditor Group: grp-auditors</p>
+
+<p>Role Assignments:</p>
+<p>├─ Subscription Reader</p>
+<p>│  └─ Can view all resources and activity logs</p>
+<p>├─ Log Analytics Reader (on workspace)</p>
+<p>│  └─ Can query logs for investigation</p>
+<p>├─ Storage Blob Data Reader (on archive storage)</p>
+<p>│  └─ Can read archived logs</p>
+<p>└─ Status: ✓ ALL ASSIGNED</p>
+
+<p>Immutability Controls:</p>
+<p>├─ Blob immutability: ✓ Enabled</p>
+<p>├─ Retention lock: 7 years</p>
+<p>├─ Effect: Logs cannot be deleted during retention</p>
+<p>└─ Compliance: ✓ IMMUTABLE</p>
+
+<p>Auditor Capabilities:</p>
+<p>✓ Can: View all logs</p>
+<p>✓ Can: Query for suspicious activity</p>
+<p>✓ Can: Export logs for audit reports</p>
+<p>✗ Cannot: Delete logs</p>
+<p>✗ Cannot: Modify logs</p>
+<p>✗ Cannot: Create/modify resources</p>
+<p>✗ Cannot: Change policies</p>
+
+<p>AUDITOR ACCESS STATUS: ✓ SECURE &amp; COMPLIANT</pre></div></p>
+
+<h3 id="validation-checklist">Validation Checklist</h3>
+
+<ul><ol><li>[ ] Created grp-auditors group</li>
+<li>[ ] Assigned Reader role at subscription level</li>
+<li>[ ] Assigned Log Analytics Reader role</li>
+<li>[ ] Assigned Storage Blob Data Reader role</li>
+<li>[ ] Enabled blob immutability (7-year lock)</li>
+<li>[ ] Tested auditor access (can view, cannot modify)</li>
+<li>[ ] Auditor access documented</li></ol></ul>
+
+<h3 id="success-criteria">Success Criteria</h3>
+
+<p>✅ Complete: Auditor access controls configured</p>
+<p>✅ Auditors can view all logs</p>
+<p>✅ Auditors cannot delete/modify logs</p>
+<p>✅ Immutability enforced (7-year retention)</p>
+
+<hr class="divider">
+
+<h2 id="part-5-set-up-compliance-policies-evidence">Part 5 – Set Up Compliance Policies & Evidence</h2>
+
+<h3 id="the-challenge">The Challenge</h3>
+
+<p>For compliance audits, you need to prove your infrastructure meets standards (encryption, backups, regions, etc.)</p>
+
+<h3 id="what-youll-learn">What You'll Learn</h3>
+
+<ul><ol><li>How to create compliance policies</li>
+<li>How to generate compliance reports</li>
+<li>How to prepare for audits</li></ol></ul>
+
+<h3 id="step-by-step-tasks">Step-by-Step Tasks</h3>
+
+<p><strong>Step 1: Create Encryption Policy</strong></p>
+
+<p>All data must be encrypted:</p>
+
+<ol><li>Go to <strong>Policy</strong> > <strong>Definitions</strong> > <strong>Create Policy</strong></li>
+<li>Create:</li></ol>
+<div class='code-block'><pre>Name: Require-Encryption-All-Resources
+<p>Description: All storage and databases must be encrypted</p>
+<p>Effect: Modify (auto-enable encryption if missing)</p>
+
+<p>Rules:</p>
+<p>├─ Storage: Enable encryption at rest ✓</p>
+<p>├─ Databases: Enable encryption at rest ✓</p>
+<p>├─ Disks: Enable encryption ✓</p>
+<p>└─ Result: All data encrypted by default</pre></div></p>
+
+<p><strong>Step 2: Create Backup Policy</strong></p>
+
+<p>All critical resources must have backups:</p>
+
+<div class='code-block'><pre>Name: Require-Backup-Enabled
+<p>Effect: Deny (prevent creation without backup)</p>
+
+<p>Rules:</p>
+<p>├─ SQL Databases: DENY without backup enabled</p>
+<p>├─ Storage Accounts: DENY without versioning/snapshots</p>
+<p>├─ VMs: DENY without backup policy attached</p>
+<p>└─ Result: Backups mandatory</pre></div></p>
+
+<p><strong>Step 3: Create Data Residency Policy</strong></p>
+
+<p>Data must stay in US (for compliance):</p>
+
+<div class='code-block'><pre>Name: US-Region-Only
+<p>Effect: Deny (non-US regions denied)</p>
+
+<p>Allowed Regions:</p>
+<p>├─ East US</p>
+<p>├─ East US 2</p>
+<p>├─ West US</p>
+<p>├─ Central US</p>
+<p>└─ Result: Data never leaves US</pre></div></p>
+
+<p><strong>Step 4: Create Logging Policy</strong></p>
+
+<p>All resources must have logging enabled:</p>
+
+<div class='code-block'><pre>Name: Require-Diagnostic-Logging
+<p>Effect: Deny (without diagnostic logs)</p>
+
+<p>Rules:</p>
+<p>├─ Storage: DENY without diagnostic logs</p>
+<p>├─ SQL: DENY without audit logs</p>
+<p>├─ Key Vault: DENY without logging</p>
+<p>└─ Result: Audit trail for all resources</pre></div></p>
+
+<p><strong>Step 5: Assign All Compliance Policies</strong></p>
+
+<ol><li>Go to <strong>Policy</strong> > <strong>Assignments</strong> > <strong>Assign Policy</strong></li>
+<li>For each policy created:</li></ol>
+<p>- Select policy</p>
+<p>- Scope: Root Management Group (affects all)</p>
+<p>- Effect: Deny (enforce)</p>
+<p>- Click Assign</p>
+
+<p><strong>Step 6: Generate Compliance Evidence Report</strong></p>
+
+<ol><li>Go to <strong>Policy</strong> > <strong>Compliance</strong></li>
+<li>Review compliance status:</li></ol>
+
+<div class='code-block'><pre>POLICY COMPLIANCE REPORT
+<p>════════════════════════════════════════════════════════════</p>
+
+<p>Generated: [Date]</p>
+<p>Organization: FinServe Solutions</p>
+<p>Audit Purpose: SOC 2 Type II Compliance</p>
+
+<p>COMPLIANCE SUMMARY:</p>
+
+<p>Policy: Encryption Required</p>
+<p>├─ Status: ✓ Compliant (100%)</p>
+<p>├─ Compliant resources: 95/95</p>
+<p>└─ Non-compliant: 0</p>
+
+<p>Policy: Backup Required</p>
+<p>├─ Status: ✓ Compliant (100%)</p>
+<p>├─ Compliant resources: 42/42</p>
+<p>└─ Non-compliant: 0</p>
+
+<p>Policy: US Region Only</p>
+<p>├─ Status: ✓ Compliant (100%)</p>
+<p>├─ All resources in US</p>
+<p>└─ Non-compliant: 0</p>
+
+<p>Policy: Diagnostic Logging</p>
+<p>├─ Status: ✓ Compliant (100%)</p>
+<p>├─ All resources logging</p>
+<p>└─ Non-compliant: 0</p>
+
+<p>OVERALL COMPLIANCE: ✓ 100% COMPLIANT</p>
+
+<p>AUDIT TRAIL EVIDENCE:</p>
+<p>├─ Activity logs: 365 days retained ✓</p>
+<p>├─ Diagnostic logs: 90+ days retained ✓</p>
+<p>├─ Immutability: 7-year lock enabled ✓</p>
+<p>├─ Auditor access: Read-only configured ✓</p>
+<p>└─ Evidence: Complete ✓</p>
+
+<p>CONCLUSION:</p>
+<p>✓ Infrastructure meets SOC 2 requirements</p>
+<p>✓ Audit trail is complete and immutable</p>
+<p>✓ All resources encrypted and backed up</p>
+<p>✓ Data residency requirement met</p>
+<p>✓ Ready for external audit</pre></div></p>
+
+<p><strong>Step 7: Create Monthly Compliance Report</strong></p>
+
+<p>Document what you did this month:</p>
+
+<div class='code-block'><pre>MONTHLY COMPLIANCE ATTESTATION - JUNE 2024
+<p>════════════════════════════════════════════════════════════</p>
+
+<p>Prepared by: Compliance Team</p>
+<p>Date: June 30, 2024</p>
+<p>For: External Auditors (SOC 2 audit)</p>
+
+<p>CONTROLS VERIFIED THIS MONTH:</p>
+
+<p>Activity Logs:</p>
+<p>├─ Logs collected: ✓</p>
+<p>├─ Retention maintained: ✓ (365 days)</p>
+<p>├─ Immutability verified: ✓</p>
+<p>└─ No deletions detected: ✓</p>
+
+<p>Encryption Status:</p>
+<p>├─ Storage accounts: 100% encrypted ✓</p>
+<p>├─ Databases: 100% encrypted ✓</p>
+<p>├─ Disks: 100% encrypted ✓</p>
+<p>└─ Policy enforced: ✓</p>
+
+<p>Backups:</p>
+<p>├─ Databases backed up: ✓</p>
+<p>├─ VMs in backup plan: ✓</p>
+<p>├─ Recovery tested: ✓</p>
+<p>└─ No backup failures: ✓</p>
+
+<p>Access Controls:</p>
+<p>├─ Role assignments reviewed: ✓</p>
+<p>├─ Auditors have read-only: ✓</p>
+<p>├─ Least privilege enforced: ✓</p>
+<p>└─ No inappropriate access: ✓</p>
+
+<p>Incidents This Month:</p>
+<p>├─ Unauthorized access attempts: 0</p>
+<p>├─ Data loss incidents: 0</p>
+<p>├─ Compliance violations: 0</p>
+<p>└─ Status: ✓ CLEAN</p>
+
+<p>SIGNED BY: [Compliance Officer Name]</p>
+<p>DATE: June 30, 2024</pre></div></p>
+
+<h3 id="validation-checklist">Validation Checklist</h3>
+
+<ul><ol><li>[ ] Created encryption policy</li>
+<li>[ ] Created backup policy</li>
+<li>[ ] Created data residency (US-only) policy</li>
+<li>[ ] Created logging policy</li>
+<li>[ ] Assigned all policies (Root scope)</li>
+<li>[ ] Verified policies enforced (100% compliant)</li>
+<li>[ ] Generated compliance report</li>
+<li>[ ] Created monthly attestation</li>
+<li>[ ] Evidence documented</li></ol></ul>
+
+<h3 id="success-criteria">Success Criteria</h3>
+
+<p>✅ Complete: All compliance policies configured</p>
+<p>✅ 100% policy compliance verified</p>
+<p>✅ Evidence documentation created</p>
+<p>✅ Ready for SOC 2 audit</p>
+
+<hr class="divider">
+
+<h2 id="final-assessment-compliance-audit-checklist">Final Assessment: Compliance & Audit Checklist</h2>
+
+<p>After completing all 5 parts, verify everything is in place:</p>
+
+<div class='code-block'><pre>COMPLIANCE &amp; AUDIT SETUP FINAL CHECKLIST
+<p>════════════════════════════════════════════════════════════</p>
+
+<p>ACTIVITY &amp; DIAGNOSTIC LOGGING</p>
+<p>├─ [ ] Activity logs enabled</p>
+<p>├─ [ ] Forwarded to storage (365-day retention)</p>
+<p>├─ [ ] Diagnostic settings configured</p>
+<p>├─ [ ] Logs flowing to Log Analytics</p>
+<p>└─ [ ] Status: ✓ COMPLETE</p>
+
+<p>LOG ANALYTICS WORKSPACE</p>
+<p>├─ [ ] Workspace created</p>
+<p>├─ [ ] All logs routed to workspace</p>
+<p>├─ [ ] Compliance queries saved (3+)</p>
+<p>├─ [ ] Logs verified flowing</p>
+<p>└─ [ ] Status: ✓ COMPLETE</p>
+
+<p>RETENTION POLICIES</p>
+<p>├─ [ ] Activity logs: 365 days</p>
+<p>├─ [ ] Workspace: 90+ days</p>
+<p>├─ [ ] Lifecycle policy: Archive after 90 days</p>
+<p>├─ [ ] Immutability: 7-year lock enabled</p>
+<p>└─ [ ] Status: ✓ COMPLETE</p>
+
+<p>AUDITOR ACCESS CONTROLS</p>
+<p>├─ [ ] Auditor group created</p>
+<p>├─ [ ] Reader role assigned (subscription)</p>
+<p>├─ [ ] Log Analytics Reader assigned</p>
+<p>├─ [ ] Storage Blob Reader assigned</p>
+<p>├─ [ ] Immutability enforced</p>
+<p>└─ [ ] Status: ✓ COMPLETE</p>
+
+<p>COMPLIANCE POLICIES</p>
+<p>├─ [ ] Encryption policy: Enforced ✓</p>
+<p>├─ [ ] Backup policy: Enforced ✓</p>
+<p>├─ [ ] Data residency: US-only ✓</p>
+<p>├─ [ ] Logging policy: Enforced ✓</p>
+<p>├─ [ ] All policies: 100% compliant ✓</p>
+<p>└─ [ ] Status: ✓ COMPLETE</p>
+
+<p>COMPLIANCE EVIDENCE</p>
+<p>├─ [ ] Policy compliance report: Generated ✓</p>
+<p>├─ [ ] Audit trail documented: ✓</p>
+<p>├─ [ ] Monthly attestation: Created ✓</p>
+<p>├─ [ ] Evidence ready for audit: ✓</p>
+<p>└─ [ ] Status: ✓ COMPLETE</p>
+
+<p>OVERALL COMPLETION: &lt;em&gt;&lt;strong&gt; 100% &lt;/strong&gt;&lt;/em&gt; Partial (identify gaps)</p>
+
+<p>SOC 2 AUDIT READINESS: ✓ READY</pre></div></p>
+
+<hr class="divider">
+
+<h2 id="key-takeaways">Key Takeaways</h2>
+
+<p>✅ <strong>Activity logging creates accountability</strong> - Proves who did what when</p>
+<p>✅ <strong>Immutable logs prevent tampering</strong> - Logs cannot be deleted (compliance requirement)</p>
+<p>✅ <strong>Auditor access must be read-only</strong> - Auditors view evidence, cannot alter it</p>
+<p>✅ <strong>Retention tiers are cost-effective</strong> - Hot/Cool/Archive for compliance + budget</p>
+<p>✅ <strong>Policies enforce compliance automatically</strong> - Don't rely on humans to remember</p>
+<p>✅ <strong>Monthly attestation proves compliance</strong> - Document what you did for auditors</p>
+
+<hr class="divider">
+
+<h2 id="real-world-application">Real-World Application</h2>
+
+<p>You've now implemented patterns used by:</p>
+<ul><ol><li><strong>Financial services companies</strong>: SOC 2, PCI-DSS compliance</li>
+<li><strong>Healthcare providers</strong>: HIPAA audit trail requirements</li>
+<li><strong>Large enterprises</strong>: Regulatory compliance (SOX, GDPR)</li>
+<li><strong>SaaS companies</strong>: Customer trust and compliance evidence</li></ol></ul>
+
+<hr class="divider">
+
+<h2 id="next-steps">Next Steps</h2>
+
+<ol><li><strong>Monthly compliance review</strong> - Run queries, generate reports</li>
+<li><strong>Quarterly audits</strong> - Full access review + policy compliance check</li>
+<li><strong>Annual SOC 2 audit</strong> - Provide all evidence to external auditors</li>
+<li><strong>Incident investigation</strong> - Use logs for root cause analysis</li>
+<li><strong>Retention management</strong> - Archive old logs, delete after 7 years</li>
+<li><strong>Team training</strong> - Ensure everyone understands compliance requirements</li></ol>
+
+
+  </div>
+</div>
+<script>
+/* Sidebar Active Link Tracking */
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.sidebar a'));
+  var sections = [];
+  links.forEach(function(a){
+    var el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) sections.push({link:a, el:el});
+  });
+  if (!sections.length || !('IntersectionObserver' in window)) return;
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (!entry.isIntersecting) return;
+      var match = sections.find(function(s){ return s.el === entry.target; });
+      if (!match) return;
+      links.forEach(function(a){ a.classList.remove('active'); });
+      match.link.classList.add('active');
+    });
+  }, { rootMargin: '-100px 0px -70% 0px', threshold: 0 });
+  sections.forEach(function(s){ observer.observe(s.el); });
+})();
+
+/* Code Block Copy Button Functionality */
+document.addEventListener('DOMContentLoaded', function(){
+  var codeBlocks = document.querySelectorAll('.code-block');
+  codeBlocks.forEach(function(block){
+    var pre = block.querySelector('pre');
+    if (!pre) return;
+
+    var btn = document.createElement('button');
+    btn.className = 'code-copy-btn';
+    btn.textContent = 'Copy';
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'Copy code to clipboard');
+
+    btn.addEventListener('click', function(){
+      var code = pre.textContent;
+      navigator.clipboard.writeText(code).then(function(){
+        var original = btn.textContent;
+        btn.textContent = '✓ Copied!';
+        btn.classList.add('copied');
+        setTimeout(function(){
+          btn.textContent = original;
+          btn.classList.remove('copied');
+        }, 2000);
+      }).catch(function(){
+        alert('Failed to copy code');
+      });
+    });
+
+    block.appendChild(btn);
+  });
+});
+</script>
+</body>
+</html>
