@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -72,7 +72,27 @@
   </aside>
   <div class="page">
   <h1>Lab 12 – Virtual Networks & Subnets</h1>
+  <div class="time-estimate-header">
+    <span class="clock-icon">⏱️</span>
+    <span class="time-text">Total Estimated Time: 45 minutes</span>
+  </div>
 
+
+<h2 id="real-life-scenario-">Real-Life Scenario</h2>
+
+<p><strong>Company: FinServe Solutions</strong></p>
+
+<p>FinServe is migrating to Azure and needs to design their network architecture. They need to create virtual networks with proper subnetting strategy, assign static private IPs for critical services, restrict access to storage using service endpoints, create private connections without exposing data to the internet, and plan IP address space for future growth.</p>
+
+<p><strong>The Challenge:</strong> Design a network that isolates workloads, restricts access, and scales without redesign?</p>
+
+<div class="callout-box callout-important">
+  <span class="callout-icon">❗</span>
+  <div class="callout-content">
+    <h4>Core Learning Objective</h4>
+    <p>VNets are the foundation of Azure networking. You'll learn subnetting strategy, IP planning, and access restriction patterns. This is essential for designing secure, scalable cloud infrastructure.</p>
+  </div>
+</div>
 <h2 id="objectives-">Objectives</h2>
 <ul><ol><li>Create a VNet with multiple subnets</li>
 <li>Configure IP addressing, service endpoints, and private endpoints</li>
@@ -83,12 +103,11 @@
 <ul><ol><li>None</li>
 <li>Signed in at <a href="https://portal.azure.com">portal.azure.com</a></li></ol></ul>
 
-<h2 id="estimated-time-">Estimated time</h2>
-<p>35 minutes</p>
+$145 minutes</p>
 
 <p>---</p>
 
-<h2 id="part-1-create-the-vnet-and-subnets-">Part 1 – Create the VNet and subnets</h2>
+<div class="section-header"><h2 id="part-1-create-the-vnet-and-subnets-">Part 1 – Create the VNet and subnets</h2><div class="section-time"><span class="icon">⏱️</span> 15 minutes</div></div>
 
 <ol><li>Search for <strong>Virtual networks</strong> > <strong>Create</strong>.</li>
 <li><strong>Basics</strong> tab:</li></ol>
@@ -117,7 +136,7 @@
 <p>reserves 5 IPs (.0 network, .1 gateway, .2/.3 DNS, broadcast):</p>
 <p>available usable IPs per subnet = 251 (or 256 - 5).</p>
 
-<h2 id="part-2-static-private-ip-">Part 2 – Static private IP</h2>
+<div class="section-header"><h2 id="part-2-static-private-ip-">Part 2 – Static private IP</h2><div class="section-time"><span class="icon">⏱️</span> 8 minutes</div></div>
 
 <div class='callout-box callout-important'><span class='callout-icon'>❗</span><div class='callout-content'><h4>important</h4><p>When planning subnets, always account for the 5 reserved IPs per subnet. A /24 has 256 addresses, but only ~251 are usable for VMs and resources.</p></div></div>
 
@@ -134,7 +153,7 @@
 <p>The VM now has a static private IP <code>10.50.2.10</code> inside <code>subnet-data</code>, with no</p>
 <p>public IP (only reachable from within the VNet or via Bastion/VPN).</p>
 
-<h2 id="part-3-service-endpoints-">Part 3 – Service Endpoints</h2>
+<div class="section-header"><h2 id="part-3-service-endpoints-">Part 3 – Service Endpoints</h2><div class="section-time"><span class="icon">⏱️</span> 10 minutes</div></div>
 
 <p>Service Endpoints extend your VNet's identity to a service (e.g., Storage) over</p>
 <p>the Azure backbone, keeping the service's public endpoint but restricting</p>
@@ -164,7 +183,7 @@
 <p>Now only resources in <code>subnet-data</code> (via the service endpoint) can reach this</p>
 <p>storage account by default — public internet access is denied.</p>
 
-<h2 id="part-4-private-endpoint-">Part 4 – Private Endpoint</h2>
+<div class="section-header"><h2 id="part-4-private-endpoint-">Part 4 – Private Endpoint</h2><div class="section-time"><span class="icon">⏱️</span> 8 minutes</div></div>
 
 <div class='callout-box callout-tip'><span class='callout-icon'>ℹ️</span><div class='callout-content'><h4>tip</h4><p>Private endpoints completely remove public network exposure for PaaS services. For maximum security, combine private endpoints with disabled public access on the storage account.</p></div></div>
 
@@ -192,7 +211,7 @@
 <p>The storage account now has a private IP inside <code>subnet-mgmt</code> — VNet traffic</p>
 <p>reaches it without ever hitting the public internet.</p>
 
-<h2 id="part-5-ip-address-planning-exercise-">Part 5 – IP address planning exercise</h2>
+<div class="section-header"><h2 id="part-5-ip-address-planning-exercise-">Part 5 – IP address planning exercise</h2><div class="section-time"><span class="icon">⏱️</span> 10 minutes</div></div>
 
 <p>Given <code>10.50.0.0/16</code> (65,536 addresses), design subnets for these requirements:</p>
 <ul><ol><li><code>subnet-web</code>: 250 hosts → <code>/24</code> (10.50.1.0/24) ✓ (already created)</li>
