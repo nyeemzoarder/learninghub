@@ -380,6 +380,226 @@ details:focus-visible > summary{outline:2px solid var(--primary);outline-offset:
   </div>
 </div>
 
+<!-- RBAC Scope Hierarchy Visualization -->
+<div style="position:relative;margin:32px 0;background:#fff;border-radius:14px;padding:20px;border:1px solid #d9e0ef;box-shadow:0 2px 8px rgba(0,0,0,0.04)">
+  <button class="magnify-btn" onclick="toggleRBACModal()" style="position:absolute;top:20px;right:20px;background:#eef2ff;border:2px solid #1735ad;color:#1735ad;padding:10px 14px;border-radius:8px;cursor:pointer;font-size:20px;font-weight:bold;transition:all 0.2s">🔍</button>
+
+  <div id="rbac-chart-container" style="overflow-x:auto;margin-bottom:10px">
+    <svg viewBox="0 0 1400 600" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;min-height:400px">
+      <!-- Define styles -->
+      <defs>
+        <style>
+          .rbac-node { fill:#e3f2fd;stroke:#1565c0;stroke-width:2 }
+          .rbac-text { font-family:Inter,sans-serif;font-size:16px;font-weight:600;text-anchor:middle;fill:#1565c0 }
+          .rbac-subtext { font-family:Inter,sans-serif;font-size:12px;text-anchor:middle;fill:#0d47a1 }
+          .rbac-line { stroke:#90caf9;stroke-width:2;fill:none }
+          .rbac-icon { font-size:24px;text-anchor:middle }
+          .role-box { fill:#f8bbd0;stroke:#c2185b;stroke-width:2 }
+          .role-text { font-family:Inter,sans-serif;font-size:13px;text-anchor:middle;fill:#c2185b;font-weight:600 }
+          .inherit-line { stroke:#4caf50;stroke-width:2;fill:none;stroke-dasharray:5,5 }
+        </style>
+      </defs>
+
+      <!-- Title -->
+      <text x="700" y="30" style="font-family:Inter,sans-serif;font-size:20px;font-weight:700;text-anchor:middle;fill:#1f2937">RBAC Scope Hierarchy & Inheritance</text>
+
+      <!-- Subscription Level -->
+      <rect class="rbac-node" x="100" y="80" width="220" height="60" rx="8"/>
+      <text class="rbac-icon" x="130" y="120">🔐</text>
+      <text class="rbac-text" x="210" y="110">Subscription</text>
+      <text class="rbac-subtext" x="210" y="128">az104-prod</text>
+
+      <!-- Resource Group Level -->
+      <rect class="rbac-node" x="420" y="80" width="220" height="60" rx="8"/>
+      <text class="rbac-icon" x="450" y="120">📁</text>
+      <text class="rbac-text" x="530" y="110">Resource Group</text>
+      <text class="rbac-subtext" x="530" y="128">rg-az104-lab02</text>
+
+      <!-- Resource Level -->
+      <rect class="rbac-node" x="740" y="80" width="220" height="60" rx="8"/>
+      <text class="rbac-icon" x="770" y="120">💾</text>
+      <text class="rbac-text" x="850" y="110">Resource</text>
+      <text class="rbac-subtext" x="850" y="128">storage account</text>
+
+      <!-- Scope inheritance lines -->
+      <line class="rbac-line" x1="320" y1="110" x2="420" y2="110"/>
+      <line class="rbac-line" x1="640" y1="110" x2="740" y2="110"/>
+
+      <!-- Role Assignment Level 1: Subscription -->
+      <rect class="role-box" x="80" y="200" width="130" height="45" rx="6"/>
+      <text class="rbac-icon" x="100" y="230">👤</text>
+      <text class="role-text" x="145" y="228">Owner</text>
+
+      <rect class="role-box" x="230" y="200" width="130" height="45" rx="6"/>
+      <text class="rbac-icon" x="250" y="230">👥</text>
+      <text class="role-text" x="295" y="228">Contributor</text>
+
+      <!-- Inheritance from Subscription -->
+      <line class="inherit-line" x1="130" y1="140" x2="130" y2="170"/>
+      <line class="inherit-line" x1="295" y1="140" x2="295" y2="170"/>
+      <text style="font-family:Inter,sans-serif;font-size:11px;fill:#4caf50;font-weight:600" x="130" y="190">Applies to all child resources</text>
+
+      <!-- Role Assignment Level 2: Resource Group -->
+      <rect class="role-box" x="400" y="200" width="130" height="45" rx="6"/>
+      <text class="rbac-icon" x="420" y="230">👤</text>
+      <text class="role-text" x="465" y="228">Reader</text>
+
+      <rect class="role-box" x="550" y="200" width="130" height="45" rx="6"/>
+      <text class="rbac-icon" x="570" y="230">👥</text>
+      <text class="role-text" x="615" y="228">Admin</text>
+
+      <!-- Inheritance from Resource Group -->
+      <line class="inherit-line" x1="450" y1="140" x2="450" y2="170"/>
+      <line class="inherit-line" x1="615" y1="140" x2="615" y2="170"/>
+      <text style="font-family:Inter,sans-serif;font-size:11px;fill:#4caf50;font-weight:600" x="450" y="190">Applies to resources in RG</text>
+
+      <!-- Role Assignment Level 3: Resource -->
+      <rect class="role-box" x="720" y="200" width="130" height="45" rx="6"/>
+      <text class="rbac-icon" x="740" y="230">👤</text>
+      <text class="role-text" x="785" y="228">Storage Contributor</text>
+
+      <rect class="role-box" x="870" y="200" width="130" height="45" rx="6"/>
+      <text class="rbac-icon" x="890" y="230">👤</text>
+      <text class="role-text" x="935" y="228">Storage Reader</text>
+
+      <!-- Inheritance from Resource -->
+      <line class="inherit-line" x1="790" y1="140" x2="790" y2="170"/>
+      <line class="inherit-line" x1="935" y1="140" x2="935" y2="170"/>
+      <text style="font-family:Inter,sans-serif;font-size:11px;fill:#4caf50;font-weight:600" x="790" y="190">Specific resource only</text>
+
+      <!-- Key Points Section -->
+      <rect x="50" y="320" width="1300" height="240" rx="8" style="fill:#f3f7ff;stroke:#bfd0ff;stroke-width:1"/>
+
+      <text style="font-family:Inter,sans-serif;font-size:16px;font-weight:700;fill:#1735ad" x="70" y="350">Key Inheritance Patterns:</text>
+
+      <g style="font-family:Inter,sans-serif;font-size:13px;fill:#1f2937">
+        <text x="70" y="385">• <tspan style="font-weight:600;fill:#1735ad">Subscription-level</tspan>: Owner, Contributor → inherited by ALL resource groups and resources below</text>
+        <text x="70" y="410">• <tspan style="font-weight:600;fill:#1735ad">Resource Group-level</tspan>: Reader, Admin → inherited by ALL resources within that RG only</text>
+        <text x="70" y="435">• <tspan style="font-weight:600;fill:#1735ad">Resource-level</tspan>: Storage Contributor → applies to this resource ONLY, no inheritance to siblings</text>
+        <text x="70" y="465">• <tspan style="font-weight:600;fill:#1735ad">Role assignments are cumulative</tspan>: User can have roles at multiple scopes (e.g., Reader at sub + Admin at RG = effective Admin in that RG)</text>
+        <text x="70" y="490">• <tspan style="font-weight:600;fill:#1735ad">Deny assignments override</tspan>: A Deny at any scope prevents access at that scope and below, even if Allow exists</text>
+        <text x="70" y="515">• <tspan style="font-weight:600;fill:#1735ad">Least privilege principle</tspan>: Assign roles at the narrowest scope needed (Resource > RG > Subscription)</text>
+      </g>
+    </svg>
+  </div>
+</div>
+
+<!-- Full Screen Modal -->
+<div id="rbacModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:9999;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:18px;width:90%;max-width:1200px;max-height:90vh;overflow:auto;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.3)">
+    <button onclick="toggleRBACModal()" style="position:absolute;top:20px;right:20px;background:none;border:none;font-size:28px;cursor:pointer;color:#666">×</button>
+
+    <div style="padding:40px">
+      <svg viewBox="0 0 1400 600" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block">
+        <defs>
+          <style>
+            .rbac-node { fill:#e3f2fd;stroke:#1565c0;stroke-width:2 }
+            .rbac-text { font-family:Inter,sans-serif;font-size:16px;font-weight:600;text-anchor:middle;fill:#1565c0 }
+            .rbac-subtext { font-family:Inter,sans-serif;font-size:12px;text-anchor:middle;fill:#0d47a1 }
+            .rbac-line { stroke:#90caf9;stroke-width:2;fill:none }
+            .rbac-icon { font-size:24px;text-anchor:middle }
+            .role-box { fill:#f8bbd0;stroke:#c2185b;stroke-width:2 }
+            .role-text { font-family:Inter,sans-serif;font-size:13px;text-anchor:middle;fill:#c2185b;font-weight:600 }
+            .inherit-line { stroke:#4caf50;stroke-width:2;fill:none;stroke-dasharray:5,5 }
+          </style>
+        </defs>
+
+        <text x="700" y="30" style="font-family:Inter,sans-serif;font-size:20px;font-weight:700;text-anchor:middle;fill:#1f2937">RBAC Scope Hierarchy & Inheritance</text>
+
+        <rect class="rbac-node" x="100" y="80" width="220" height="60" rx="8"/>
+        <text class="rbac-icon" x="130" y="120">🔐</text>
+        <text class="rbac-text" x="210" y="110">Subscription</text>
+        <text class="rbac-subtext" x="210" y="128">az104-prod</text>
+
+        <rect class="rbac-node" x="420" y="80" width="220" height="60" rx="8"/>
+        <text class="rbac-icon" x="450" y="120">📁</text>
+        <text class="rbac-text" x="530" y="110">Resource Group</text>
+        <text class="rbac-subtext" x="530" y="128">rg-az104-lab02</text>
+
+        <rect class="rbac-node" x="740" y="80" width="220" height="60" rx="8"/>
+        <text class="rbac-icon" x="770" y="120">💾</text>
+        <text class="rbac-text" x="850" y="110">Resource</text>
+        <text class="rbac-subtext" x="850" y="128">storage account</text>
+
+        <line class="rbac-line" x1="320" y1="110" x2="420" y2="110"/>
+        <line class="rbac-line" x1="640" y1="110" x2="740" y2="110"/>
+
+        <rect class="role-box" x="80" y="200" width="130" height="45" rx="6"/>
+        <text class="rbac-icon" x="100" y="230">👤</text>
+        <text class="role-text" x="145" y="228">Owner</text>
+
+        <rect class="role-box" x="230" y="200" width="130" height="45" rx="6"/>
+        <text class="rbac-icon" x="250" y="230">👥</text>
+        <text class="role-text" x="295" y="228">Contributor</text>
+
+        <line class="inherit-line" x1="130" y1="140" x2="130" y2="170"/>
+        <line class="inherit-line" x1="295" y1="140" x2="295" y2="170"/>
+        <text style="font-family:Inter,sans-serif;font-size:11px;fill:#4caf50;font-weight:600" x="130" y="190">Applies to all child resources</text>
+
+        <rect class="role-box" x="400" y="200" width="130" height="45" rx="6"/>
+        <text class="rbac-icon" x="420" y="230">👤</text>
+        <text class="role-text" x="465" y="228">Reader</text>
+
+        <rect class="role-box" x="550" y="200" width="130" height="45" rx="6"/>
+        <text class="rbac-icon" x="570" y="230">👥</text>
+        <text class="role-text" x="615" y="228">Admin</text>
+
+        <line class="inherit-line" x1="450" y1="140" x2="450" y2="170"/>
+        <line class="inherit-line" x1="615" y1="140" x2="615" y2="170"/>
+        <text style="font-family:Inter,sans-serif;font-size:11px;fill:#4caf50;font-weight:600" x="450" y="190">Applies to resources in RG</text>
+
+        <rect class="role-box" x="720" y="200" width="130" height="45" rx="6"/>
+        <text class="rbac-icon" x="740" y="230">👤</text>
+        <text class="role-text" x="785" y="228">Storage Contributor</text>
+
+        <rect class="role-box" x="870" y="200" width="130" height="45" rx="6"/>
+        <text class="rbac-icon" x="890" y="230">👤</text>
+        <text class="role-text" x="935" y="228">Storage Reader</text>
+
+        <line class="inherit-line" x1="790" y1="140" x2="790" y2="170"/>
+        <line class="inherit-line" x1="935" y1="140" x2="935" y2="170"/>
+        <text style="font-family:Inter,sans-serif;font-size:11px;fill:#4caf50;font-weight:600" x="790" y="190">Specific resource only</text>
+
+        <rect x="50" y="320" width="1300" height="240" rx="8" style="fill:#f3f7ff;stroke:#bfd0ff;stroke-width:1"/>
+
+        <text style="font-family:Inter,sans-serif;font-size:16px;font-weight:700;fill:#1735ad" x="70" y="350">Key Inheritance Patterns:</text>
+
+        <g style="font-family:Inter,sans-serif;font-size:13px;fill:#1f2937">
+          <text x="70" y="385">• <tspan style="font-weight:600;fill:#1735ad">Subscription-level</tspan>: Owner, Contributor → inherited by ALL resource groups and resources below</text>
+          <text x="70" y="410">• <tspan style="font-weight:600;fill:#1735ad">Resource Group-level</tspan>: Reader, Admin → inherited by ALL resources within that RG only</text>
+          <text x="70" y="435">• <tspan style="font-weight:600;fill:#1735ad">Resource-level</tspan>: Storage Contributor → applies to this resource ONLY, no inheritance to siblings</text>
+          <text x="70" y="465">• <tspan style="font-weight:600;fill:#1735ad">Role assignments are cumulative</tspan>: User can have roles at multiple scopes (e.g., Reader at sub + Admin at RG = effective Admin in that RG)</text>
+          <text x="70" y="490">• <tspan style="font-weight:600;fill:#1735ad">Deny assignments override</tspan>: A Deny at any scope prevents access at that scope and below, even if Allow exists</text>
+          <text x="70" y="515">• <tspan style="font-weight:600;fill:#1735ad">Least privilege principle</tspan>: Assign roles at the narrowest scope needed (Resource > RG > Subscription)</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggleRBACModal() {
+    const modal = document.getElementById('rbacModal');
+    if (modal.style.display === 'none') {
+      modal.style.display = 'flex';
+    } else {
+      modal.style.display = 'none';
+    }
+  }
+
+  document.getElementById('rbacModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+      this.style.display = 'none';
+    }
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      document.getElementById('rbacModal').style.display = 'none';
+    }
+  });
+</script>
+
 <div class="task-box">
   <div class="task-header">
     <span class="task-icon">✓</span>
