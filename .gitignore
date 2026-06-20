@@ -16,6 +16,9 @@ Thumbs.db
 node_modules/
 package-lock.json
 
+# Work directory (temporary files, test scripts, reports)
+_work/
+
 # Playwright test artifacts
 test-results/
 playwright-report/
