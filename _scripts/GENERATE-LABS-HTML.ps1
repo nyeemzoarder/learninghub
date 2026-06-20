@@ -217,6 +217,10 @@ function Convert-MarkdownToHTML {
     $labLinksHtml = $tocData.LabLinks
     $onThisPageHtml = $tocData.PageLinks
 
+    # Count labs for the summary label
+    $labCount = ([regex]::Matches($labLinksHtml, '<a href=')).Count
+    $labSummaryLabel = if ($labCount -gt 0) { "▶ Labs ($labCount Total)" } else { "▶ Labs" }
+
     # Generate navigation
     $navHtml = Generate-Navigation -ModuleName $ModuleName
 
@@ -261,7 +265,7 @@ $navHtml
       </div>
     </details>
     <details>
-      <summary>▶ Labs</summary>
+      <summary>$labSummaryLabel</summary>
       <div>
         $labLinksHtml
       </div>
@@ -433,7 +437,12 @@ function Get-LabLinks {
         "01-identity-governance" = @(
             '<a href="lab01-entra-users-groups.html">Lab 01 - Entra Users &amp; Groups</a>',
             '<a href="lab02-rbac-azure-policy.html">Lab 02 - RBAC &amp; Azure Policy</a>',
-            '<a href="lab03-management-groups-subscriptions.html">Lab 03 - Management Groups</a>'
+            '<a href="lab03-management-groups-subscriptions.html">Lab 03 - Management Groups</a>',
+            '<a href="lab04-dev-staging-prod-isolation.html">Lab 04 - Env Segregation</a>',
+            '<a href="lab05-cost-management-chargeback.html">Lab 05 - Cost Management</a>',
+            '<a href="lab06-department-delegation-isolation.html">Lab 06 - Department Delegation</a>',
+            '<a href="lab07-identity-security-hardening.html">Lab 07 - Security Hardening</a>',
+            '<a href="lab08-compliance-audit-setup.html">Lab 08 - Compliance &amp; Audit</a>'
         )
         "02-storage" = @(
             '<a href="lab04-storage-accounts.html">Lab 04 - Storage Accounts</a>',
@@ -479,9 +488,9 @@ function Generate-Navigation {
     <div class="nav-menu">
       <a href="../../00-prerequisites/documents/module-home.html"$(if($ModuleDir -eq "00-prerequisites") { " class=""active""" })>00 - Prerequisites</a>
       <a href="../../01-identity-governance/documents/module-home.html"$(if($ModuleDir -eq "01-identity-governance") { " class=""active""" })>01 - Identity &amp; Governance</a>
-      <a href="../../02-storage/documents/module-home.html"$(if($ModuleDir -eq "02-storage") { " class=""active""" })>02 - Storage</a>
+      <a href="../../02-networking/documents/module-home.html"$(if($ModuleDir -eq "02-networking") { " class=""active""" })>02 - Networking</a>
       <a href="../../03-compute/documents/module-home.html"$(if($ModuleDir -eq "03-compute") { " class=""active""" })>03 - Compute</a>
-      <a href="../../04-networking/documents/module-home.html"$(if($ModuleDir -eq "04-networking") { " class=""active""" })>04 - Networking</a>
+      <a href="../../04-storage/documents/module-home.html"$(if($ModuleDir -eq "04-storage") { " class=""active""" })>04 - Storage</a>
       <a href="../../05-monitor-maintain/documents/module-home.html"$(if($ModuleDir -eq "05-monitor-maintain") { " class=""active""" })>05 - Monitor &amp; Maintain</a>
     </div>
   </details>
